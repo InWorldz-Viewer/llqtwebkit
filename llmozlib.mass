@@ -1,0 +1,24 @@
+# llmozlib.mass
+#
+# This is the manifest assembly instructions for the llmozlib project
+# which is distrubuted in our open-source effort.
+#
+# See linden/scripts/export_source.py for details on how this works.
+
+*.cpp
+*.h
+*.bat
+*.sh
+*.txt
+llmozlib.sln
+llmozlib.vcproj
+llmozlib.xcodeproj/**
+llmozlib.exp
+build_mozilla/**
+
+# Files that start with a . are not found by the default glob and
+# recursive matcher.
+build_mozilla/.mozconfig*
+
+# do we need the tests?
+tests/**

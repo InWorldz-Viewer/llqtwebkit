@@ -1,0 +1,615 @@
+Index: view/src/nsViewManager.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/view/src/nsViewManager.cpp,v
+retrieving revision 3.411.2.3
+diff -u -w -r3.411.2.3 nsViewManager.cpp
+--- view/src/nsViewManager.cpp	15 Oct 2005 07:54:38 -0000	3.411.2.3
++++ view/src/nsViewManager.cpp	10 Dec 2005 01:54:22 -0000
+@@ -2422,13 +2422,8 @@
+   // Determine, for each view, whether it is or contains a ZPlaceholderView
+   ComputePlaceholderContainment(displayRoot);
+ 
+-  // Create the Z-ordered view tree
+-  PRBool paintFloats;
+-  if (aEventProcessing) {
+-    paintFloats = PR_TRUE;
+-  } else {
+-    paintFloats = displayRoot->GetFloating();
+-  }
++  // XXXjgaunt - Linden - Always paint floats
++  PRBool paintFloats = PR_TRUE;
+ 
+   {
+     nsHashtable       PlaceholderHash;
+@@ -3564,8 +3559,9 @@
+   nsAutoVoidArray displayList;
+   PLArenaPool displayArena;
+   PL_INIT_ARENA_POOL(&displayArena, "displayArena", 1024);
++  // XXXjgaunt - Linden - fixes scrollbars, popups, iframes, framesets
+   BuildRenderingDisplayList(view, nsRegion(r), &displayList, displayArena,
+-                            PR_TRUE, PR_TRUE, suppressScrolling);
++                            PR_TRUE, PR_FALSE, suppressScrolling);
+   RenderViews(view, *localcx, nsRegion(aRect), surface, displayList);
+   PL_FreeArenaPool(&displayArena);
+   PL_FinishArenaPool(&displayArena);
+@@ -3703,6 +3699,8 @@
+                                         nsHashtable &aMapPlaceholderViewToZTreeNode,
+                                         PLArenaPool &aPool)
+ {
++  // XXXjgaunt - Linden - always paint floats
++  aPaintFloats = PR_TRUE;
+   PRBool retval = PR_FALSE;
+ 
+   aResult = nsnull;
+Index: widget/public/nsGUIEvent.h
+===================================================================
+RCS file: /cvsroot/mozilla/widget/public/nsGUIEvent.h,v
+retrieving revision 3.121.4.1
+diff -u -w -r3.121.4.1 nsGUIEvent.h
+--- widget/public/nsGUIEvent.h	30 Aug 2005 23:15:10 -0000	3.121.4.1
++++ widget/public/nsGUIEvent.h	10 Dec 2005 01:54:23 -0000
+@@ -114,6 +114,7 @@
+ #define NS_EVENT_FLAG_SYSTEM_EVENT        0x0200
+ #define NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY 0x0400 // @see nsIDOM3Event::stopImmediatePropagation()
+ #define NS_EVENT_FLAG_DISPATCHING         0x0800
++#define NS_EVENT_FLAG_NO_MOUSE_CAPTURE    0x1000       // XXXjgaunt
+ 
+ #define NS_PRIV_EVENT_UNTRUSTED_PERMITTED 0x8000
+ 
+Index: widget/src/windows/nsWindow.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/widget/src/windows/nsWindow.cpp,v
+retrieving revision 3.569.2.6
+diff -u -w -r3.569.2.6 nsWindow.cpp
+--- widget/src/windows/nsWindow.cpp	20 Oct 2005 23:34:12 -0000	3.569.2.6
++++ widget/src/windows/nsWindow.cpp	10 Dec 2005 01:54:31 -0000
+@@ -7908,6 +7908,9 @@
+       // Rollup if the event is outside the popup.
+       PRBool rollup = !nsWindow::EventIsInsideWindow(inMsg, (nsWindow*)gRollupWidget);
+ 
++      // XXXjgaunt - Linden - to get events to the popup
++      rollup = PR_FALSE;
++
+       if (rollup && (inMsg == WM_MOUSEWHEEL || inMsg == uMSH_MOUSEWHEEL))
+       {
+         gRollupListener->ShouldRollupOnMouseWheelEvent(&rollup);
+Index: modules/plugin/base/public/nsPluginNativeWindow.h
+===================================================================
+RCS file: /cvsroot/mozilla/modules/plugin/base/public/nsPluginNativeWindow.h,v
+retrieving revision 1.3
+diff -u -w -r1.3 nsPluginNativeWindow.h
+--- modules/plugin/base/public/nsPluginNativeWindow.h	18 Apr 2004 22:01:00 -0000	1.3
++++ modules/plugin/base/public/nsPluginNativeWindow.h	10 Dec 2005 01:54:31 -0000
+@@ -106,4 +106,53 @@
+ nsresult PLUG_NewPluginNativeWindow(nsPluginNativeWindow ** aPluginNativeWindow);
+ nsresult PLUG_DeletePluginNativeWindow(nsPluginNativeWindow * aPluginNativeWindow);
+ 
++/**
++ * Allows access to platform specific window implementations.
++ *
++ * Because the platform specific definitions are in the implementation files
++ *   it isn't possible to call them directly (and probably a good thing at that).
++ *   This class allows access to those classes without revealing the details of
++ *   implementation underneath.
++ */
++class nsPluginWindowHelper {
++public:
++  nsPluginWindowHelper() {}
++  virtual ~nsPluginWindowHelper() {}
++  /**
++   * The default behavior for mozilla's winowed plugins is to capture
++   *   the mouse input on a mouse down message and to release it on a mouse up.
++   *   this works fine if the input coordinates are in the right coordinate
++   *   system. But in some embedding cases it is necessary to translate the
++   *   actual screen coordinates that get passed in by the sytsem. This method
++   *   allows the embedding application to receive the mouse events first so as
++   *   to perform any coordinate translation that needs to happen.
++   *
++   * See the use of this in nsObjectFrame to see an example of it's use.
++   *
++   * @arg aNativeWindow - a pointer to the nsPluginNativeWindow(Win|Mac|Unix..)
++   *      for the plugin. If aMouseCapture is PR_FALSE, this window
++   *      will receive the mouse events.
++   *
++   * @arg aMouseCapture - PR_TRUE means mozilla will capture mouse events
++   *                      PR_FALSE means it won't.
++   */
++  nsresult SetMouseCapture(void *aNativeWindow, PRBool aMouseCapture);
++
++  /**
++   * This allows a message to be sent directly to the plugin's window. 
++   *
++   * @arg aNativeWindow - a pointer to the nsPluginNativeWindow(Win|Mac|Unix..)
++   *      for the plugin.
++   *
++   * @arg aPluginPort - a pointer to the platform dependant impl of the
++   *      nsPluginPort struct. On Windows this is a HWND. This is the handle
++   *      to the plugin's window that will recieve the message.
++   *
++   * @arg aNativeMessage - The native message for the platform. On windows
++   *      this is a nsPluginEvent pointer (event, wParam, lParam). This is
++   *      the message that will be sent to the plugin's window
++   */
++  nsresult SendEventToWindow(void *aNativeWindow, void *aPluginPort, void *aNativeMsg);
++};
++
+ #endif //_nsPluginNativeWindow_h_
+Index: modules/plugin/base/src/nsPluginNativeWindowWin.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/modules/plugin/base/src/nsPluginNativeWindowWin.cpp,v
+retrieving revision 1.15
+diff -u -w -r1.15 nsPluginNativeWindowWin.cpp
+--- modules/plugin/base/src/nsPluginNativeWindowWin.cpp	13 Jul 2005 19:08:20 -0000	1.15
++++ modules/plugin/base/src/nsPluginNativeWindowWin.cpp	10 Dec 2005 01:54:32 -0000
+@@ -140,15 +140,59 @@
+   nsIEventQueueService *GetEventService();
+   PluginWindowEvent * GetPluginWindowEvent(HWND aWnd, UINT aMsg, WPARAM aWParam, LPARAM aLParam);
+ 
++  // XXXjgaunt
++  void SetMouseCapture(PRBool aCapture) { mCanCaptureMouse = aCapture; }
++  PRBool CanCaptureMouse() { return mCanCaptureMouse; }
++  PRBool CanReleaseMouse() { return mMouseCaptured; }
++  void MouseCaptured() { mMouseCaptured = PR_TRUE; }
++  void MouseReleased() { mMouseCaptured = PR_FALSE; }
++
+ private:
+   WNDPROC mPluginWinProc;
+   nsCOMPtr<nsIEventQueueService> mEventService;
+   PluginWindowEvent mPluginWindowEvent;
++  PRBool mCanCaptureMouse;
++  PRBool mMouseCaptured;
+ 
+ public:
+   nsPluginType mPluginType;
+ };
+ 
++// XXXjgaunt
++// class nsPluginWindowHelper
++nsresult nsPluginWindowHelper::SetMouseCapture(void *aNativeWindow, PRBool aMouseCapture) {
++  nsPluginNativeWindowWin *nativeWin = (nsPluginNativeWindowWin *) aNativeWindow;
++  if (nativeWin) {
++    nativeWin->SetMouseCapture(aMouseCapture);
++    return NS_OK;
++  }
++  return NS_ERROR_FAILURE;
++}
++
++// on windows the incomimg pluginport is an HWND, nativemsg is (msg, wparam, lparam)
++nsresult nsPluginWindowHelper::SendEventToWindow(void *aNativeWindow, void *aPluginPort, void *aNativeMsg)
++{
++  nsresult rv = NS_ERROR_FAILURE;
++  nsPluginNativeWindowWin *nativeWin = (nsPluginNativeWindowWin *) aNativeWindow;
++  if (nativeWin) {
++    nsPluginEvent *plugEvent = (nsPluginEvent *) aNativeMsg;
++    if (plugEvent) {
++      if (((nsPluginEvent *) aNativeMsg)->event == 0x0020) {  // the code for WM_SETCURSOR
++        // the wParam for SETCURSOR messages may be set to the parent window, not the plugin's window
++//        rv = PluginWndProc((HWND) aPluginPort, plugEvent->event, (PRUint32)aPluginPort, plugEvent->lParam);
++//        rv = SendMessage((HWND) aPluginPort, plugEvent->event, (PRUint32)aPluginPort, plugEvent->lParam);
++        rv = PostMessage((HWND) aPluginPort, plugEvent->event, (PRUint32)aPluginPort, plugEvent->lParam);
++      }
++      else {
++//        rv = PluginWndProc((HWND) aPluginPort, plugEvent->event, plugEvent->wParam, plugEvent->lParam);
++//        rv = SendMessage((HWND) aPluginPort, plugEvent->event, plugEvent->wParam, plugEvent->lParam);
++        rv = PostMessage((HWND) aPluginPort, plugEvent->event, plugEvent->wParam, plugEvent->lParam);
++      }
++    }
++  }
++  return rv;
++}
++
+ static PRBool sInMessageDispatch = PR_FALSE;
+ static UINT sLastMsg = 0;
+ 
+@@ -208,7 +252,11 @@
+   if (!win)
+     return TRUE;
+ 
+-  // check plugin myme type and cache whether it is Flash or not
++  // XXXjgaunt - so SendMessage() doesn't block
++  if (InSendMessage()) 
++    ReplyMessage(TRUE);
++
++  // check plugin mime-type and cache whether it is Flash or not
+   // Flash will need special treatment later
+   if (win->mPluginType == nsPluginType_Unknown) {
+     nsCOMPtr<nsIPluginInstance> inst;
+@@ -259,8 +307,10 @@
+     case WM_RBUTTONDOWN: {
+       nsCOMPtr<nsIWidget> widget;
+       win->GetPluginWidget(getter_AddRefs(widget));
+-      if (widget)
++      if (widget && win->CanCaptureMouse()) {
+         widget->CaptureMouse(PR_TRUE);
++        win->MouseCaptured();
++      }
+       break;
+     }
+     case WM_LBUTTONUP:
+@@ -271,8 +321,10 @@
+     case WM_RBUTTONUP: {
+       nsCOMPtr<nsIWidget> widget;
+       win->GetPluginWidget(getter_AddRefs(widget));
+-      if (widget)
++      if (widget && win->CanReleaseMouse()) {
+         widget->CaptureMouse(PR_FALSE);
++        win->MouseReleased();
++      }
+       break;
+     }
+     case WM_KEYDOWN:
+@@ -377,6 +429,8 @@
+   mPluginWinProc = NULL;
+   mPluginWindowEvent.SetIsAlloced(PR_FALSE);
+   mPluginType = nsPluginType_Unknown;
++  mCanCaptureMouse = PR_TRUE;
++  mMouseCaptured = PR_FALSE;
+ }
+ 
+ nsPluginNativeWindowWin::~nsPluginNativeWindowWin()
+Index: layout/generic/nsObjectFrame.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/layout/generic/nsObjectFrame.cpp,v
+retrieving revision 1.510.2.4
+diff -u -w -r1.510.2.4 nsObjectFrame.cpp
+--- layout/generic/nsObjectFrame.cpp	13 Oct 2005 22:58:29 -0000	1.510.2.4
++++ layout/generic/nsObjectFrame.cpp	10 Dec 2005 01:54:37 -0000
+@@ -1781,37 +1781,17 @@
+   return rv;
+ }
+ 
+-NS_IMETHODIMP
+-nsObjectFrame::Paint(nsPresContext*       aPresContext,
+-                     nsIRenderingContext& aRenderingContext,
+-                     const nsRect&        aDirtyRect,
+-                     nsFramePaintLayer    aWhichLayer,
+-                     PRUint32             aFlags)
+-{
+-  if (!GetStyleVisibility()->IsVisibleOrCollapsed())
+-    return NS_OK;
+-  
+-  nsIFrame * child = mFrames.FirstChild();
+-  if (child) {    // if we have children, we are probably not really a plugin
+-    nsObjectFrameSuper::Paint(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer);
+-    return NS_OK;
+-  }
+-
+-  // If we are painting in Print Preview do nothing....
+-  if (aPresContext->Type() == nsPresContext::eContext_PrintPreview) {
+-    return NS_OK;
+-  }
+-
+-  // determine if we are printing
+-  if (aPresContext->Type() == nsPresContext::eContext_Print) {
+-    // UNIX Plugins can't PP at this time, so draw an empty box
+-    // we only want to print on the content layer pass
+-    if (eFramePaintLayer_Content != aWhichLayer)
+-      return NS_OK;
+-
+-    // if we are printing, we need to get the correct nsIPluginInstance
+-    // for THIS content node in order to call ->Print() on the right plugin
+-
++// set values for aPlugWin, aPlugPrint and aPlugInstance
++nsresult
++nsObjectFrame::SetupPrinting(nsIRenderingContext& aRenderingContext,
++                             nsPresContext *aPresContext,
++                             nsPluginWindow &aPlugWin,
++                             nsPluginPrint  &aPlugPrint,
++                             nsIPluginInstance *&aPlugInstance) {
++  // We need to make sure we have the right frame for the plugin. This
++  //   seems silly, but it is actually necessary on some pages. We 
++  //   will actually get a null mPluginInstanceOwner sometimes if we
++  //   don't do this.
+     // first, we need to get the document
+     nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
+     NS_ENSURE_TRUE(doc, NS_ERROR_NULL_POINTER);
+@@ -1834,26 +1814,25 @@
+       objectFrame = GetNextObjectFrame(aPresContext,frame);
+     NS_ENSURE_TRUE(objectFrame,NS_ERROR_FAILURE);
+ 
+-    // finally we can get our plugin instance
+-    nsCOMPtr<nsIPluginInstance> pi;
+-    if (NS_FAILED(objectFrame->GetPluginInstance(*getter_AddRefs(pi))) || !pi)
++  // finally, get our plugin instance
++  nsCOMPtr<nsIPluginInstance> tempPluginInstance;
++  if (NS_FAILED(objectFrame->GetPluginInstance(*getter_AddRefs(tempPluginInstance))) ||
++      !tempPluginInstance)
+       return NS_ERROR_FAILURE;
++  NS_IF_ADDREF(aPlugInstance = tempPluginInstance);
+ 
+     // now we need to setup the correct location for printing
+-    nsresult rv;
+-    nsPluginWindow    window;
+     nsPoint           origin;
+     float             t2p;
+-    window.window =   nsnull;
++  aPlugWin.window = nsnull;
+ 
+     // prepare embedded mode printing struct
+-    nsPluginPrint npprint;
+-    npprint.mode = nsPluginMode_Embedded;
++  aPlugPrint.mode = nsPluginMode_Embedded;
+ 
+     // we need to find out if we are windowless or not
+     PRBool windowless = PR_FALSE;
+-    pi->GetValue(nsPluginInstanceVariable_WindowlessBool, (void *)&windowless);
+-    window.type  =  windowless ? nsPluginWindowType_Drawable : nsPluginWindowType_Window;
++  aPlugInstance->GetValue(nsPluginInstanceVariable_WindowlessBool, (void *)&windowless);
++  aPlugWin.type  =  windowless ? nsPluginWindowType_Drawable : nsPluginWindowType_Window;
+ 
+     // Get the offset of the DC
+     nsTransform2D* rcTransform;
+@@ -1865,12 +1844,54 @@
+ 
+     // set it all up
+     // XXX is windowless different?
+-    window.x = origin.x;
+-    window.y = origin.y;
+-    window.width = NSToCoordRound(mRect.width * t2p);
+-    window.height= NSToCoordRound(mRect.height * t2p);
+-    window.clipRect.bottom = 0; window.clipRect.top = 0;
+-    window.clipRect.left = 0; window.clipRect.right = 0;
++  aPlugWin.x = origin.x;
++  aPlugWin.y = origin.y;
++  aPlugWin.width = NSToCoordRound(mRect.width * t2p);
++  aPlugWin.height= NSToCoordRound(mRect.height * t2p);
++  aPlugWin.clipRect.bottom = 0; aPlugWin.clipRect.top = 0;
++  aPlugWin.clipRect.left = 0; aPlugWin.clipRect.right = 0;
++  aPlugPrint.print.embedPrint.window = aPlugWin;
++
++  return NS_OK;
++}
++
++NS_IMETHODIMP
++nsObjectFrame::Paint(nsPresContext*       aPresContext,
++                     nsIRenderingContext& aRenderingContext,
++                     const nsRect&        aDirtyRect,
++                     nsFramePaintLayer    aWhichLayer,
++                     PRUint32             aFlags)
++{
++  if (!GetStyleVisibility()->IsVisibleOrCollapsed())
++    return NS_OK;
++  
++  nsIFrame * child = mFrames.FirstChild();
++  if (child) {    // if we have children, we are probably not really a plugin
++    nsObjectFrameSuper::Paint(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer);
++    return NS_OK;
++  }
++
++  // If we are painting in Print Preview do nothing....
++  if (aPresContext->Type() == nsPresContext::eContext_PrintPreview) {
++    return NS_OK;
++  }
++
++  if (aPresContext->Type() == nsPresContext::eContext_Print) {
++    // UNIX Plugins can't PP at this time, so draw an empty box
++    // we only want to print on the content layer pass
++    if (eFramePaintLayer_Content != aWhichLayer)
++      return NS_OK;
++
++    // data to pass on to the plugin
++    nsPluginPrint  npprint;
++    nsPluginWindow window;
++    nsCOMPtr<nsIPluginInstance> pi;
++    nsresult rv;
++
++    // sets fields in the plugin structs and gets the plugin instance
++    rv = SetupPrinting(aRenderingContext, aPresContext, window, npprint, (*getter_AddRefs(pi)));
++    if (NS_FAILED(rv))
++      return rv;
+     
+ // XXX platform specific printing code
+ #if defined(XP_MAC) && !TARGET_CARBON
+@@ -1893,7 +1914,6 @@
+     
+     window.window = &port;
+     npprint.print.embedPrint.platformPrint = (void*)window.window;
+-    npprint.print.embedPrint.window = window;
+     // send off print info to plugin
+     rv = pi->Print(&npprint);
+ #elif defined(XP_UNIX) && !defined(XP_MACOSX)
+@@ -1922,7 +1942,6 @@
+     window.y =   aDirtyRect.y;
+     window.width =   aDirtyRect.width;
+     window.height =   aDirtyRect.height;
+-    npprint.print.embedPrint.window        = window;
+     rv = pi->Print(&npprint);
+     if (NS_FAILED(rv)) {
+       PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: plugin returned failure %lx\n", (long)rv));
+@@ -1948,7 +1967,6 @@
+       return NS_OK;  // no dc implemented so quit
+ 
+     npprint.print.embedPrint.platformPrint = (void*)pDC;
+-    npprint.print.embedPrint.window = window;
+     // send off print info to plugin
+     rv = pi->Print(&npprint);
+ 
+@@ -1962,9 +1980,13 @@
+ #endif
+ 
+     // XXX Nav 4.x always sent a SetWindow call after print. Should we do the same?
++    /* XXXjgaunt - commenting this out because we lost the frame in
++                 - re-factoring. (setupPrinting())
++                 - Is this really necessary???
+     nsDidReflowStatus status = NS_FRAME_REFLOW_FINISHED; // should we use a special status?
+     frame->DidReflow(shell->GetPresContext(),
+                      nsnull, status);  // DidReflow will take care of it
++    */
+ 
+     return rv;  // done with printing
+   }
+@@ -1975,15 +1997,16 @@
+   if ((NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) && mInstanceOwner)
+       mInstanceOwner->Paint(aDirtyRect);
+ #elif defined (XP_WIN) || defined(XP_OS2)
+-  if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) {
+     nsCOMPtr<nsIPluginInstance> inst;
+     GetPluginInstance(*getter_AddRefs(inst));
+-    if (inst) {
++  if (!inst)
++    return NS_ERROR_FAILURE;
+       // Look if it's windowless
+       nsPluginWindow * window;
+       mInstanceOwner->GetWindow(window);
+ 
+-      if (window->type == nsPluginWindowType_Drawable) {
++  if (window->type == nsPluginWindowType_Drawable &&
++      NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) {
+         // check if we need to call SetWindow with updated parameters
+         PRBool doupdatewindow = PR_FALSE;
+ 
+@@ -2063,11 +2086,61 @@
+ #endif
+ 
+           inst->SetWindow(window);        
+-        }
+ 
+         mInstanceOwner->Paint(aDirtyRect, hdc);
+       }
+     }
++  else if (window->type == nsPluginWindowType_Window &&
++           eFramePaintLayer_Content == aWhichLayer) {
++    // This section handles the case of being called from
++    //   nsViewManager::RenderOffscreen(). That call is made
++    //   from the nsCanvas impl as well as for some embedding
++    //   applications.
++    // We must set things up like we are printing and then
++    //   have the plugin render to a DeviceContext created
++    //   in RenderOffscreen()
++    // We may also get here during regular operation. In that
++    //   case the location we tell the plugin to print is
++    //   merely it's own window.
++
++    // data to pass on to the plugin
++    nsPluginPrint  npprint;
++    nsPluginWindow window;
++    nsCOMPtr<nsIPluginInstance> pi;
++    nsresult rv;
++
++    // sets fields in the plugin structs and gets the plugin instance
++    rv = SetupPrinting(aRenderingContext, aPresContext, window, npprint, (*getter_AddRefs(pi)));
++    if (NS_FAILED(rv))
++      return rv;
++
++#ifdef XP_WIN
++    // This will be the plugin's window's DC or one provided by RenderOffscreen
++    PRUint32 pDC = 0;
++    aRenderingContext.RetrieveCurrentNativeGraphicData(&pDC);
++    if (!pDC)
++      return NS_OK;  // no dc implemented so quit
++
++    // set the context to print to
++    npprint.print.embedPrint.platformPrint = (void*) pDC;
++
++    // tell the plugin to render to the DC - works for Flash, not for quicktime
++    rv = pi->Print(&npprint);
++
++ // XXXjgaunt - try sending a WM_PRINTCLIENT w/ PRF_CLIENT in lparam and DC in wparam
++/*
++    nsPluginWindowHelper helper;
++
++    nsPluginEvent pPluginEvent;
++    pPluginEvent.event  = WM_PRINTCLIENT;
++    pPluginEvent.wParam = (PRUint32) pDC;
++    pPluginEvent.lParam = PRF_CLIENT;
++
++    // call the WinProc with the HWND and the event (message,wparam,lparam)
++    helper.SendEventToWindow((void*) &window, (void*) mInstanceOwner->GetPluginPort(), (void*) &pPluginEvent);
++*/
++
++#endif /* XP_WIN */
+   }
+ #endif /* !XP_MAC */
+   DO_GLOBAL_REFLOW_COUNT_DSP("nsObjectFrame", &aRenderingContext);
+@@ -2095,7 +2168,22 @@
+   }
+ 
+ #ifdef XP_WIN
++  // XXXjgaunt - added the windowless check
++  PRBool windowless = PR_FALSE;
++  nsCOMPtr<nsIPluginInstance> pluginInstance;
++  GetPluginInstance(*getter_AddRefs(pluginInstance));
++
++  if(pluginInstance)
++    pluginInstance->GetValue(nsPluginInstanceVariable_WindowlessBool,
++                             (void *)&windowless);
++
++  if (windowless) {
+   rv = nsObjectFrameSuper::HandleEvent(aPresContext, anEvent, anEventStatus);
++  }
++  else {
++    *anEventStatus = mInstanceOwner->ProcessEvent(*anEvent);
++    rv = *anEventStatus;
++  }
+   return rv;
+ #endif
+ 
+@@ -3864,17 +3952,42 @@
+ #endif
+ 
+ #ifdef XP_WIN
+-  // this code supports windowless plugins
+   nsPluginEvent * pPluginEvent = (nsPluginEvent *)anEvent.nativeMsg;
+   // we can get synthetic events from the nsEventStateManager... these
+   // have no nativeMsg
+ 
+-  if (pPluginEvent) {
+     PRBool eventHandled = PR_FALSE;
++  if (pPluginEvent) {
++    // XXXjgaunt
++    // Are we windowed? If so, pass the event on to the window
++    PRBool windowless = PR_FALSE;
++    mInstance->GetValue(nsPluginInstanceVariable_WindowlessBool,
++                        (void *)&windowless);
++
++    if (windowless) {
+     mInstance->HandleEvent(pPluginEvent, &eventHandled);
+     if (eventHandled)
+       rv = nsEventStatus_eConsumeNoDefault;
+   }
++    else {
++      // set this here, but it could happen earlier. Right now the only
++      //   case we need to set this is for certain types of embedding 
++      //   that need to translate mouse click locations from screen to
++      //   client coordinates.
++      // Default behavior would be to capture (PR_TRUE)
++      nsPluginWindowHelper helper;
++      if (anEvent.flags & NS_EVENT_FLAG_NO_MOUSE_CAPTURE) {
++        helper.SetMouseCapture(mPluginWindow, PR_FALSE);
++      }
++      else {
++        helper.SetMouseCapture(mPluginWindow, PR_TRUE);
++      }
++      // call the WinProc with the HWND and the event (message,wparam,lparam)
++      helper.SendEventToWindow(mPluginWindow, (void*) GetPluginPort(), (void*) pPluginEvent);
++      // XXXjgaunt - not sure if this is right, just following what was above
++      rv = nsEventStatus_eConsumeNoDefault;
++    }
++  }
+ #endif
+ 
+   return rv;
+Index: layout/generic/nsObjectFrame.h
+===================================================================
+RCS file: /cvsroot/mozilla/layout/generic/nsObjectFrame.h,v
+retrieving revision 1.44.12.1
+diff -u -w -r1.44.12.1 nsObjectFrame.h
+--- layout/generic/nsObjectFrame.h	2 Sep 2005 20:25:54 -0000	1.44.12.1
++++ layout/generic/nsObjectFrame.h	10 Dec 2005 01:54:37 -0000
+@@ -203,6 +203,16 @@
+                            nsHTMLReflowMetrics& aMetrics,
+                            const nsHTMLReflowState& aReflowState);
+ 
++  // called from Paint() to collect functionality that is used in
++  //   mulitple places for drastically different purposes: Printing;
++  //   and painting to a different DC than associated with a 
++  //   windowed plugin.
++  nsresult SetupPrinting(nsIRenderingContext& aRenderingContext,
++                         nsPresContext *aPresContext,
++                         nsPluginWindow &aPlugWin,
++                         nsPluginPrint  &aPlugPrint,
++                         nsIPluginInstance *&aPlugInstance);
++
+   friend class nsPluginInstanceOwner;
+ private:
+   nsPluginInstanceOwner *mInstanceOwner;

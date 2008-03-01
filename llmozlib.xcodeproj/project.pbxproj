@@ -1,0 +1,419 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		994AD6C10A8013E800061DFB /* llmozlib_stub.c in Sources */ = {isa = PBXBuildFile; fileRef = 994AD6C00A8013E800061DFB /* llmozlib_stub.c */; };
+		9969444D0A76C57B00BFD09A /* libplds4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 996944470A76C57A00BFD09A /* libplds4.dylib */; };
+		9969444E0A76C57B00BFD09A /* libmozjs.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 996944480A76C57A00BFD09A /* libmozjs.dylib */; };
+		9969444F0A76C57B00BFD09A /* XUL in Frameworks */ = {isa = PBXBuildFile; fileRef = 996944490A76C57B00BFD09A /* XUL */; };
+		996944500A76C57B00BFD09A /* libnspr4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9969444A0A76C57B00BFD09A /* libnspr4.dylib */; };
+		996944510A76C57B00BFD09A /* libplc4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9969444B0A76C57B00BFD09A /* libplc4.dylib */; };
+		996944520A76C57B00BFD09A /* libxpcom.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9969444C0A76C57B00BFD09A /* libxpcom.dylib */; };
+		99CCFC840A76AC7500ED39DE /* llembeddedbrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */; };
+		99CCFC870A76AC7500ED39DE /* llmozlib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC810A76AC7500ED39DE /* llmozlib.cpp */; };
+		99CCFC880A76AC7500ED39DE /* llembeddedbrowserwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		994AD6CA0A80141900061DFB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 994AD6B20A80123C00061DFB;
+			remoteInfo = llmozlib_stub;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		994ACE690A7FEDAF00061DFB /* llmozlib.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; path = llmozlib.exp; sourceTree = "<group>"; };
+		994AD6B30A80123C00061DFB /* libllmozlib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libllmozlib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		994AD6C00A8013E800061DFB /* llmozlib_stub.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = llmozlib_stub.c; sourceTree = SOURCE_ROOT; };
+		996944470A76C57A00BFD09A /* libplds4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libplds4.dylib; path = "libraries/universal-darwin/lib_release/libplds4.dylib"; sourceTree = SOURCE_ROOT; };
+		996944480A76C57A00BFD09A /* libmozjs.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmozjs.dylib; path = "libraries/universal-darwin/lib_release/libmozjs.dylib"; sourceTree = SOURCE_ROOT; };
+		996944490A76C57B00BFD09A /* XUL */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = XUL; path = "libraries/universal-darwin/lib_release/XUL"; sourceTree = SOURCE_ROOT; };
+		9969444A0A76C57B00BFD09A /* libnspr4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libnspr4.dylib; path = "libraries/universal-darwin/lib_release/libnspr4.dylib"; sourceTree = SOURCE_ROOT; };
+		9969444B0A76C57B00BFD09A /* libplc4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libplc4.dylib; path = "libraries/universal-darwin/lib_release/libplc4.dylib"; sourceTree = SOURCE_ROOT; };
+		9969444C0A76C57B00BFD09A /* libxpcom.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxpcom.dylib; path = "libraries/universal-darwin/lib_release/libxpcom.dylib"; sourceTree = SOURCE_ROOT; };
+		99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llembeddedbrowser.cpp; sourceTree = SOURCE_ROOT; };
+		99CCFC7F0A76AC7500ED39DE /* llembeddedbrowser.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llembeddedbrowser.h; sourceTree = SOURCE_ROOT; };
+		99CCFC800A76AC7500ED39DE /* llembeddedbrowserwindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llembeddedbrowserwindow.h; sourceTree = SOURCE_ROOT; };
+		99CCFC810A76AC7500ED39DE /* llmozlib.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llmozlib.cpp; sourceTree = SOURCE_ROOT; };
+		99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llembeddedbrowserwindow.cpp; sourceTree = SOURCE_ROOT; };
+		99CCFC830A76AC7500ED39DE /* llmozlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llmozlib.h; sourceTree = SOURCE_ROOT; };
+		D2AAC0630554660B00DB518D /* libllmozlib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libllmozlib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		994AD6B10A80123C00061DFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D289988505E68E00004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9969444D0A76C57B00BFD09A /* libplds4.dylib in Frameworks */,
+				9969444E0A76C57B00BFD09A /* libmozjs.dylib in Frameworks */,
+				9969444F0A76C57B00BFD09A /* XUL in Frameworks */,
+				996944500A76C57B00BFD09A /* libnspr4.dylib in Frameworks */,
+				996944510A76C57B00BFD09A /* libplc4.dylib in Frameworks */,
+				996944520A76C57B00BFD09A /* libxpcom.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* llmozlib */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				994ACE690A7FEDAF00061DFB /* llmozlib.exp */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+				99CCFCA80A76AD4500ED39DE /* External Libraries */,
+			);
+			name = llmozlib;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */,
+				99CCFC7F0A76AC7500ED39DE /* llembeddedbrowser.h */,
+				99CCFC800A76AC7500ED39DE /* llembeddedbrowserwindow.h */,
+				99CCFC810A76AC7500ED39DE /* llmozlib.cpp */,
+				99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */,
+				99CCFC830A76AC7500ED39DE /* llmozlib.h */,
+				994AD6C00A8013E800061DFB /* llmozlib_stub.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC0630554660B00DB518D /* libllmozlib.dylib */,
+				994AD6B30A80123C00061DFB /* libllmozlib.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		99CCFCA80A76AD4500ED39DE /* External Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				996944470A76C57A00BFD09A /* libplds4.dylib */,
+				996944480A76C57A00BFD09A /* libmozjs.dylib */,
+				996944490A76C57B00BFD09A /* XUL */,
+				9969444A0A76C57B00BFD09A /* libnspr4.dylib */,
+				9969444B0A76C57B00BFD09A /* libplc4.dylib */,
+				9969444C0A76C57B00BFD09A /* libxpcom.dylib */,
+			);
+			name = "External Libraries";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		994AD6AF0A80123C00061DFB /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		994AD6B20A80123C00061DFB /* llmozlib_stub */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 994AD6B60A80125900061DFB /* Build configuration list for PBXNativeTarget "llmozlib_stub" */;
+			buildPhases = (
+				994AD6BA0A8013AA00061DFB /* ShellScript */,
+				994AD6AF0A80123C00061DFB /* Headers */,
+				994AD6B00A80123C00061DFB /* Sources */,
+				994AD6B10A80123C00061DFB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = llmozlib_stub;
+			productName = llmozlib_stub;
+			productReference = 994AD6B30A80123C00061DFB /* libllmozlib.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		D2AAC0620554660B00DB518D /* llmozlib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "llmozlib" */;
+			buildPhases = (
+				99CCFC950A76ACE700ED39DE /* ShellScript */,
+				D2AAC0610554660B00DB518D /* Sources */,
+				D289988505E68E00004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				994AD6CB0A80141900061DFB /* PBXTargetDependency */,
+			);
+			name = llmozlib;
+			productName = llmozlib;
+			productReference = D2AAC0630554660B00DB518D /* libllmozlib.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "llmozlib" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* llmozlib */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC0620554660B00DB518D /* llmozlib */,
+				994AD6B20A80123C00061DFB /* llmozlib_stub */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		994AD6BA0A8013AA00061DFB /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/llmozlib.exp",
+			);
+			outputPaths = (
+				"$(SRCROOT)/llmozlib_stub.c",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Create llmozlib_stub.c from the exports file\nsed -e 's/^_\\(.*\\)/void \\1 (void) {} /' -e 's/^\\(#.*\\)/\\/\\* \\1 \\*\\//' <llmozlib.exp >llmozlib_stub.c";
+		};
+		99CCFC950A76ACE700ED39DE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "LIBS=\"profdirserviceprovider_s\"\nLIBDIR=\"${SRCROOT}/libraries\"\n\ncd \"${LIBDIR}\"\n\nif [ \\! -e ppc-darwin ]\nthen\n\tln -s powerpc-darwin ppc-darwin\nfi\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}\"\n\nfor i in ${LIBS}; do\n\tIN_i386=\"i386-darwin/lib_release/lib$i.a\"\n\tIN_ppc=\"ppc-darwin/lib_release/lib$i.a\"\n\tOUT=\"${BUILT_PRODUCTS_DIR}/lib$i.a\"\n\n\tif [ \"$IN_i386\" -nt \"$OUT\" -o \"$IN_ppc\" -nt \"$OUT\" ]; then\n\t\techo lib$i.a building via libtool\n#\t\techo libtool -static -o \"$OUT\" \"$IN_i386\" \"$IN_ppc\"\n\t\tlibtool -static -o \"$OUT\" \"$IN_i386\" \"$IN_ppc\"\n\t\tranlib \"$OUT\"\n\telse\n\t\techo lib$i.a up to date\n\tfi\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		994AD6B00A80123C00061DFB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				994AD6C10A8013E800061DFB /* llmozlib_stub.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2AAC0610554660B00DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99CCFC840A76AC7500ED39DE /* llembeddedbrowser.cpp in Sources */,
+				99CCFC870A76AC7500ED39DE /* llmozlib.cpp in Sources */,
+				99CCFC880A76AC7500ED39DE /* llembeddedbrowserwindow.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		994AD6CB0A80141900061DFB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 994AD6B20A80123C00061DFB /* llmozlib_stub */;
+			targetProxy = 994AD6CA0A80141900061DFB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB914B08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				EXPORTED_SYMBOLS_FILE = llmozlib.exp;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "MOZILLA_INTERNAL_API=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(HEADER_SEARCH_PATHS)",
+					"$(SRCROOT)/libraries/$(arch)-darwin/include/mozilla/include/**",
+					"$(SRCROOT)/libraries/$(arch)-darwin/include/mozilla/sdk/include/**",
+				);
+				INSTALL_PATH = "@executable_path/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(BUILT_PRODUCTS_DIR)",
+					"$(LIBRARY_SEARCH_PATHS)",
+					"$(SRCROOT)/libraries/universal-darwin/lib_release",
+				);
+				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
+				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
+				OTHER_LDFLAGS = "-lprofdirserviceprovider_s";
+				PRODUCT_NAME = llmozlib;
+				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				UNEXPORTED_SYMBOLS_FILE = "";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB914C08733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				EXECUTABLE_PREFIX = lib;
+				EXPORTED_SYMBOLS_FILE = llmozlib.exp;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = "MOZILLA_INTERNAL_API=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(HEADER_SEARCH_PATHS)",
+					"$(SRCROOT)/libraries/$(arch)-darwin/include/mozilla/include/**",
+					"$(SRCROOT)/libraries/$(arch)-darwin/include/mozilla/sdk/include/**",
+				);
+				INSTALL_PATH = "@executable_path/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(BUILT_PRODUCTS_DIR)",
+					"$(LIBRARY_SEARCH_PATHS)",
+					"$(SRCROOT)/libraries/universal-darwin/lib_release",
+				);
+				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
+				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
+				OTHER_LDFLAGS = "-lprofdirserviceprovider_s";
+				PRODUCT_NAME = llmozlib;
+				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				UNEXPORTED_SYMBOLS_FILE = "";
+			};
+			name = Release;
+		};
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB915008733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		994AD6B70A80125900061DFB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)_stub";
+				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)_stub";
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = llmozlib;
+				SYMROOT = build;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		994AD6B80A80125900061DFB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)_stub";
+				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)_stub";
+				COPY_PHASE_STRIP = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "@executable_path/";
+				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = llmozlib;
+				SYMROOT = build;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "llmozlib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914B08733D8E0010E9CD /* Debug */,
+				1DEB914C08733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "llmozlib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914F08733D8E0010E9CD /* Debug */,
+				1DEB915008733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		994AD6B60A80125900061DFB /* Build configuration list for PBXNativeTarget "llmozlib_stub" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				994AD6B70A80125900061DFB /* Debug */,
+				994AD6B80A80125900061DFB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

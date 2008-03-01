@@ -1,0 +1,3 @@
+LLMozLib build instructions for the Windows platform can be found in the Second Life Open Source Wiki:
+
+https://wiki.secondlife.com/wiki/Compiling_the_viewer_%28MS_Windows%29#LLMozLib
