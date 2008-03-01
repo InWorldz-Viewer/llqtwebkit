@@ -9,7 +9,7 @@
 export CVSROOT=':pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot'
 echo 'use the password "anonymous" if prompted'
 cvs login
-cvs checkout -r FIREFOX_1_5_0_12_RELEASE mozilla/client.mk
+cvs checkout -r FIREFOX_2_0_0_11_RELEASE mozilla/client.mk
 (cd mozilla && make -f client.mk checkout MOZ_CO_PROJECT=xulrunner)
 
 # install our special .mozconfig file
@@ -17,9 +17,9 @@ cp linux-libxul-bits/mozconfig mozilla/.mozconfig
 
 # apply a patch to the mozilla source so that it doesn't try to use the OS 
 # versions of scrollbars, combo boxes, etc.
-cat linux-libxul-bits/linden_updates.patch | (cd mozilla && patch -p0)
+cat linden.patch | (cd mozilla && patch -p0)
 
 # XXX FIXME: ideally we need to bring custom GTK in-tree and do some magic on its .pc files - yuck.  Only Linden Lab's conservative-deps binary builds really care though.
-#export PKG_CONFIG_PATH=/home/moss/linden/GTKBUILD24/lib/pkgconfig
+export PKG_CONFIG_PATH=/tmp/GTKBUILD24/lib/pkgconfig
 (cd mozilla && make -f client.mk build)
 

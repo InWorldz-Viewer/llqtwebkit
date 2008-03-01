@@ -66,8 +66,8 @@ back here to verify that the build is appropriately 'compatible'.
 
 Probably only of interest if you're a Second Life developer!
 
-1. copy llmozlib.h to ${SLSRC}/libraries/include/
-2. copy libllmozlib.a to ${SLSRC}/libraries/i686-linux/lib_release_client/
+1. copy llmozlib2.h to ${SLSRC}/libraries/include/
+2. copy libllmozlib2.a to ${SLSRC}/libraries/i686-linux/lib_release_client/
 3. copy libraries/i686-linux/lib_release/libprofdirserviceprovider_s.a to ${SLSRC}/libraries/i686-linux/lib_release_client/
 4. copy libraries/i686-linux/runtime_release to ${SLSRC}/indra/newview/app_settings/mozilla-runtime-linux-i686
 

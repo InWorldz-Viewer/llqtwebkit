@@ -33,7 +33,7 @@ libraries/i686-linux/*
    * Change CXX as you see fit.
 1. ./build-linux-llmozlib.sh
 
-This simple builder-script will build the libllmozlib.a library.
+This simple builder-script will build the libllmozlib2.a library.
 
 3. BUILDING THE TEST APPLICATIONS
 =================================
@@ -45,13 +45,13 @@ is uBrowser, which is a simple web browser which can be interacted with
 on a 3D surface in OpenGL.  It requires the GLUI library which can be
 downloaded from http://glui.sourceforge.net/
 
-0. Edit tests/ubrowser.llmozlib/ubrowser-linux-build.sh
+0. Edit tests/ubrowser/ubrowser-linux-build.sh
    * Change CXX if appropriate.
-1. cd tests/ubrowser.llmozlib/
+1. cd tests/ubrowser/
 2. ./browser-linux-build.sh
 
 This simple builder-script will build the 'ubrowser' program.  To run:
 
 3. cd ../../libraries/i686-linux/runtime_release
-4. LD_LIBRARY_PATH=`pwd` ../../../tests/ubrowser.llmozlib/ubrowser
+4. LD_LIBRARY_PATH=`pwd` ../../../tests/ubrowser/ubrowser
 

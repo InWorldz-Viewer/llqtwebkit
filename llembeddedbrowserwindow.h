@@ -1,33 +1,40 @@
-/**
- * @file llembeddedbrowserwindow.h
- * @brief LLEmbeddedBrowserWindow and associated helpers declaration.
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * $LicenseInfo:firstyear=2006&license=viewergpl$
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
  *
- * Copyright (c) 2006-2007, Linden Research, Inc.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
- * Second Life Viewer Source Code
- * The source code in this file ("Source Code") is provided by Linden Lab
- * to you under the terms of the GNU General Public License, version 2.0
- * ("GPL"), unless you have obtained a separate licensing agreement
- * ("Other License"), formally executed by you and Linden Lab.  Terms of
- * the GPL can be found in doc/GPL-license.txt in this distribution, or
- * online at http://secondlife.com/developers/opensource/gplv2
+ * The Original Code is Linden Lab Inc. (http://lindenlab.com) code.
  *
- * There are special exceptions to the terms and conditions of the GPL as
- * it is applied to this Source Code. View the full text of the exception
- * in the file doc/FLOSS-exception.txt in this software distribution, or
- * online at http://secondlife.com/developers/opensource/flossexception
+ * The Initial Developer of the Original Code is:
+ *   Callum Prentice (callum@ubrowser.com)
  *
- * By copying, modifying or distributing this software, you acknowledge
- * that you have read and understood your obligations described above,
- * and agree to abide by those obligations.
+ * Portions created by the Initial Developer are Copyright (C) 2006
+ * the Initial Developer. All Rights Reserved.
  *
- * ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
- * WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
- * COMPLETENESS OR PERFORMANCE.
- * $/LicenseInfo$
- */
+ * Contributor(s):
+ *  Callum Prentice (callum@ubrowser.com)
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 #ifndef LLEMBEDDEDBROWSERWINDOW_H
 #define LLEMBEDDEDBROWSERWINDOW_H
@@ -47,15 +54,23 @@
 #include "nsIURIContentListener.h"
 #include "nsWeakReference.h"
 #include "nsIWebBrowser.h"
+#include "nsIToolkit.h"
+#include "nsIScriptGlobalObject.h"
+#include "nsIScriptGlobalObjectOwner.h"
+#include "nsIScriptContext.h"
+
+#ifdef WIN32
+#pragma warning( 3 : 4265 ) // "class has virtual functions, but destructor is not virtual"
+#endif
 
 #include <string>
 #include <list>
 #include <algorithm>
 
-#include "llmozlib.h"
+#include "llmozlib2.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// manages the process of sotring and emitting events that the consumer
+// manages the process of storing and emitting events that the consumer
 // of the embedding class can observe
 template< class T >
 class LLEmbeddedBrowserWindowEmitter
@@ -123,7 +138,8 @@ class LLEmbeddedBrowserWindow :
 	public nsIWebProgressListener,
 	public nsIURIContentListener,
 	public nsSupportsWeakReference,
-	public nsIDOMEventListener
+	public nsIDOMEventListener,
+	public nsIToolkitObserver
 {
 	public:
 		LLEmbeddedBrowserWindow();
@@ -135,29 +151,43 @@ class LLEmbeddedBrowserWindow :
 		NS_DECL_NSIWEBPROGRESSLISTENER
 		NS_DECL_NSIURICONTENTLISTENER
 		NS_DECL_NSIDOMEVENTLISTENER
+		NS_DECL_NSITOOLKITOBSERVER
 
+		// housekeeping
 		nsresult createBrowser( void* nativeWindowHandleIn, PRInt32 widthIn, PRInt32 heightIn, nsIWebBrowser** aBrowser );
+		void setParent( LLEmbeddedBrowser* parentIn ) { mParent = parentIn; };
 		PRBool setSize( PRInt16 widthIn, PRInt16 heightIn );
 		void focusBrowser( PRBool focusBrowserIn );
 		void scrollByLines( PRInt16 linesIn );
 		void setWindowId( int windowIdIn );
 		int getWindowId();
 
+		// random accessors
 		const PRInt16 getPercentComplete();
 		const std::string& getStatusMsg();
 		const std::string& getCurrentUri();
 		const std::string& getClickLinkHref();
+		const std::string& getClickLinkTarget();
 
-		unsigned char* grabWindow();
+		// memory buffer management
+		unsigned char* grabWindow( int xIn, int yIn, int widthIn, int heightIn );
+		PRBool flipWindow( PRBool flip );
 		unsigned char* getPageBuffer();
 		PRInt16 getBrowserWidth();
 		PRInt16 getBrowserHeight();
 		PRInt16 getBrowserDepth();
 		PRInt32 getBrowserRowSpan();
 
-		void setBackgroundColor( PRUint8 redIn, PRUint8 greenIn, PRUint8 blueIn );
+		// set background color that you see in between pages - default is white but sometimes useful to change
+		void setBackgroundColor( const PRUint8 redIn, const PRUint8 greenIn, const PRUint8 blueIn );
+
+		// change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
 		void setCaretColor( const PRUint8 redIn, const PRUint8 greenIn, const PRUint8 blueIn );
 
+		// can turn off updates to a page - e.g. when it's hidden by your windowing system
+		void setEnabled( PRBool enabledIn );
+
+		// navigation
 		void navigateStop();
 		PRBool navigateTo( const std::string uriIn );
 		PRBool canNavigateBack();
@@ -165,9 +195,14 @@ class LLEmbeddedBrowserWindow :
 		PRBool canNavigateForward();
 		void navigateForward();
 
+		// javascript access/control
+		std::string evaluateJavascript( std::string scriptIn );
+
+		// redirection when you hit a missing page
 		bool set404RedirectUrl( std::string redirect_url );
 		bool clr404RedirectUrl();
 
+		// mouse & keyboard events
 		void mouseDown( PRInt16 xPosIn, PRInt16 yPosIn );
 		void mouseUp( PRInt16 xPosIn, PRInt16 yPosIn );
 		void mouseMove( PRInt16 xPosIn, PRInt16 yPosIn );
@@ -175,43 +210,47 @@ class LLEmbeddedBrowserWindow :
 		void keyPress( PRInt16 keyCode );
 		void unicodeInput( PRUint32 uni_char );
 
+		// allow consumers of this class and to observe browser events
 		bool addObserver( LLEmbeddedBrowserWindowObserver* observerIn );
 		bool remObserver( LLEmbeddedBrowserWindowObserver* observerIn );
+
+		// accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
+		void setNoFollowScheme( std::string schemeIn );
+		std::string getNoFollowScheme();
 
 	private:
 		PRBool sendMozillaMouseEvent( PRInt16 eventIn, PRInt16 xPosIn, PRInt16 yPosIn, PRUint32 clickCountIn );
 		PRBool sendMozillaKeyboardEvent( PRUint32 keyIn, PRUint32 ns_vk_code );
 		PRBool renderCaret();
+		PRBool enableToolkitObserver( PRBool enableIn );
+
 		LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
+
+		LLEmbeddedBrowser* mParent;
 		PRInt16 mPercentComplete;
 		std::string mStatusText;
 		std::string mCurrentUri;
 		std::string mClickHref;
-		std::string m404RedirectUrl;
-
+		std::string mClickTarget;
+		std::string mNoFollowScheme;
 		nsCOMPtr< nsIWebBrowser > mWebBrowser;
 		nsCOMPtr< nsIBaseWindow > mBaseWindow;
 		nsCOMPtr< nsIWebNavigation > mWebNav;
-
 		int mWindowId;
-
-		PRUint8 mBackgroundRed;
-		PRUint8 mBackgroundGreen;
-		PRUint8 mBackgroundBlue;
-		PRUint8 mCaretRed;
-		PRUint8 mCaretGreen;
-		PRUint8 mCaretBlue;
-
 		unsigned char* mPageBuffer;
-		size_t mPageBufferSize;
+		std::string m404RedirectUrl;
+		PRBool mEnabled;
+		PRBool mFlipBitmap;
 		PRInt32 mBrowserRowSpan;
 		PRInt16 mBrowserWidth;
 		PRInt16 mBrowserHeight;
 		PRInt16 mBrowserDepth;
+		PRUint8 mBkgRed;
+		PRUint8 mBkgGreen;
+		PRUint8 mBkgBlue;
+		PRUint8 mCaretRed;
+		PRUint8 mCaretGreen;
+		PRUint8 mCaretBlue;
 };
-
-#ifdef WIN32
-#pragma warning( 3 : 4265 ) // "class has virtual functions, but destructor is not virtual"
-#endif
 
 #endif // LLEMBEDEDDBROWSERWINDOW_H

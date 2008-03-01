@@ -1,13 +1,14 @@
 #!/bin/bash
 
-# This script adds or updates libllmozlib.dylib in mozilla-universal-darwin.tgz.
+# This script adds or updates libllmozlib2.dylib in mozilla-universal-darwin.tgz.
 sandbox_location="$1"
 
+xcodebuild -project llmozlib2.xcodeproj -target llmozlib2 -configuration 'Release' build
 
-if [ -f build/Release/libllmozlib.dylib ]; then
-	echo "libllmozlib.dylib found"
+if [ -f build/Release/libllmozlib2.dylib ]; then
+	echo "libllmozlib2.dylib found"
 else
-	echo "libllmozlib.dylib not found, please build the Release target in llmozlib.xcodeproj"
+	echo "libllmozlib2.dylib not found, please build the Release target in llmozlib.xcodeproj"
 	exit 1
 fi
 
@@ -29,10 +30,10 @@ rm -rf mozilla-universal-darwin
 mkdir -p mozilla-universal-darwin
 (cd mozilla-universal-darwin && tar -zxf ../mozilla-universal-darwin-original.tgz)
 
-echo "Adding libllmozlib.dylib..."
+echo "Adding libllmozlib2.dylib..."
 
-# copy in the latest built version of llmozlib
-cp ./build/Release/libllmozlib.dylib mozilla-universal-darwin
+# copy in the latest built version of llmozlib2
+cp ./build/Release/libllmozlib2.dylib mozilla-universal-darwin
 
 echo "Removing unneeded pieces..."
 
@@ -47,7 +48,7 @@ rm -rf mozilla-universal-darwin/xulrunner-bin
 
 echo "Creating mozilla-universal-darwin.tgz..."
 
-# tar up the runtime and llmozlib 
+# tar up the runtime and llmozlib2 
 rm -f ./mozilla-universal-darwin.tgz
 tar -zcf ./mozilla-universal-darwin.tgz \
 	-C mozilla-universal-darwin . 
@@ -61,8 +62,8 @@ echo "Copying mozilla-universal-darwin.tgz to $sandbox_location/indra/newview...
 cp mozilla-universal-darwin.tgz $sandbox_location/indra/newview/
 
 echo "Copying stub library to $sandbox_location/libraries/universal-darwin/..."
-cp build/Release_stub/libllmozlib.dylib $sandbox_location/libraries/universal-darwin/lib_debug/libllmozlib.dylib
-cp build/Release_stub/libllmozlib.dylib $sandbox_location/libraries/universal-darwin/lib_release/libllmozlib.dylib
+cp build/Release_stub/libllmozlib2.dylib $sandbox_location/libraries/universal-darwin/lib_debug/libllmozlib2.dylib
+cp build/Release_stub/libllmozlib2.dylib $sandbox_location/libraries/universal-darwin/lib_release/libllmozlib2.dylib
 
 echo "done!"
 

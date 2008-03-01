@@ -1,14 +1,14 @@
 @rem ===== source/destination dirs that may change depending where you build mozilla =====
-@set SRC_DIR_OPT="c:\mozilla.1.8.0.9\objdir-opt-xulrunner-small"
-@set SRC_DIR_DEBUG="c:\mozilla.1.8.0.9\objdir-debug-xulrunner-small"
+@set SRC_DIR_OPT="c:\mozilla\objdir-opt-xulrunner-small"
+@set SRC_DIR_DEBUG="c:\mozilla\objdir-debug-xulrunner-small"
 @set DEST_DIR="libraries\i686-win32"
 
 @rem =============== instructions ===============
 @echo This batch file copies the files required to build the 
-@echo Linden Lab Mozilla Library (LLMozLib).
+@echo Linden Lab Mozilla Library2 (LLMozLib2).
 @echo.
 @echo It will copy the required files from a Mozilla build in the specified 
-@echo directories to the right location for LLMozLib.
+@echo directories to the right location for LLMozLib2.
 @echo.
 @echo The release build will be copied from:
 @echo  %SRC_DIR_OPT%
@@ -27,6 +27,7 @@ xcopy %SRC_DIR_OPT%\dist\include\content\*.*					%DEST_DIR%\include\mozilla\incl
 xcopy %SRC_DIR_OPT%\dist\include\docshell\*.*					%DEST_DIR%\include\mozilla\include\docshell\ /s
 xcopy %SRC_DIR_OPT%\dist\include\dom\*.*						%DEST_DIR%\include\mozilla\include\dom\ /s
 xcopy %SRC_DIR_OPT%\dist\include\gfx\*.*						%DEST_DIR%\include\mozilla\include\gfx\ /s
+xcopy %SRC_DIR_OPT%\dist\include\js\*.*							%DEST_DIR%\include\mozilla\include\js\ /s
 xcopy %SRC_DIR_OPT%\dist\include\layout\*.*						%DEST_DIR%\include\mozilla\include\layout\ /s
 xcopy %SRC_DIR_OPT%\dist\include\locale\*.*						%DEST_DIR%\include\mozilla\include\locale\ /s
 xcopy %SRC_DIR_OPT%\dist\include\necko\*.*						%DEST_DIR%\include\mozilla\include\necko\ /s

@@ -60,6 +60,9 @@ fi
 
 CURRENTDIR=`pwd`
 
+# parallel build (adjust to taste)
+mk_add_options MOZ_MAKE_FLAGS=-j4
+
 mk_add_options MOZ_CO_PROJECT=xulrunner
 ac_add_options --enable-application=xulrunner
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../objdir-mozilla-linux
@@ -98,7 +101,9 @@ ac_add_options --disable-canvas # TOFU
 ac_add_options --enable-cpp-rtti
 #ac_add_options --with-gtk-prefix=/tmp/GTKBUILD
 #ac_add_options --with-glib-prefix=/tmp/GTKBUILD
-#ac_add_options --disable-pango
+ac_add_options --disable-pango
+#ac_add_options --enable-pango
+#ac_add_options --enable-freetype2
 ac_add_options --disable-gnomevfs
 ac_add_options --disable-gnomeui
 ac_add_options --disable-xinerama

@@ -96,10 +96,12 @@ for i in i386 powerpc ; do
 + /include/pref/
 + /include/necko/
 + /include/nkcache/
++ /include/js/
 + /sdk/
 + /sdk/include/
 + /sdk/include/*/
 + *.h
++ *.tbl
 - *
 EOF
 

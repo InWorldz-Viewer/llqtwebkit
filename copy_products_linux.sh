@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script copies the relevant headers from the mozilla tree to the llmozlib 
 # development tree.
@@ -11,7 +11,7 @@ export MOZ_OBJDIR="build_mozilla/objdir-mozilla-linux"
 # install libraries and headers in llmozlib/libraries/
 export LIBRARIES_DEST="."
 
-export ARCH=i686-linux
+export ARCH=`uname -m`-linux
 
 # make sure the destination directories exist.  If they don't, the user running the script probably hasn't set them up properly.
 if [ \( \! -d "$MOZ_OBJDIR" \) -o  \( \! -d "$LIBRARIES_DEST" \) ] ; then	
@@ -26,7 +26,7 @@ fi
 
 SRC="$MOZ_OBJDIR"
 DST="$LIBRARIES_DEST/libraries/$ARCH"
-for dir in /include/webbrwsr/ /include/docshell/ /include/dom/ /include/xpcom/ /include/widget/ /include/gfx/ /include/string/ /include/uriloader/ /include/view/ /include/layout/ /include/content/ /include/locale/ /include/profdirserviceprovider/ /include/xulapp/ /include/pref/ /include/necko/ /include/nkcache/ /sdk/include/ ; do
+for dir in /include/webbrwsr/ /include/docshell/ /include/dom/ /include/xpcom/ /include/widget/ /include/gfx/ /include/string/ /include/uriloader/ /include/view/ /include/layout/ /include/content/ /include/locale/ /include/profdirserviceprovider/ /include/xulapp/ /include/pref/ /include/necko/ /include/nkcache/ /include/js/ /include/appshell/ /sdk/include/ ; do
 	mkdir -p $DST/include/mozilla/${dir}
 	cp -LR $SRC/dist/${dir}/* $DST/include/mozilla/${dir}
 done
