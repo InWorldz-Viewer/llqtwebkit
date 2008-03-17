@@ -1624,3 +1624,19 @@ diff -u -r3.204.2.13 nsWindow.h
 +#	fi; \
 +#	$(CHOWN_REVERT) $(DIST)/$(STAGEPATH)$(MOZ_PKG_APPNAME); \
 +#	exit $$SAVED
+
+
+--- widget/src/mac/nsMacTSMMessagePump.cpp	2006-06-22 12:13:02.000000000 -0700
++++ widget/src/mac/nsMacTSMMessagePump.cpp	2008-03-13 17:28:13.000000000 -0700
+@@ -310,6 +310,9 @@
+   if (err) 
+     return err;
+ 
++  if(NULL==eventHandler)
++    return errAEEventNotHandled;
++
+   //
+   // length of converted text
+   //
+
+

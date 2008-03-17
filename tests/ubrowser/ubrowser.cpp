@@ -122,14 +122,6 @@ uBrowser::uBrowser() :
 	mHomeUrl[ 4 ] = "http://ubrowser.com";
 	mHomeUrl[ 5 ] = "http://maps.google.com";
 
-	mHomeUrl[ 0 ] = "about:blank";
-	mHomeUrl[ 1 ] = mHomeUrl[ 0 ];
-	mHomeUrl[ 2 ] = mHomeUrl[ 0 ];
-	mHomeUrl[ 3 ] = mHomeUrl[ 0 ];
-	mHomeUrl[ 4 ] = mHomeUrl[ 0 ];
-	mHomeUrl[ 5 ] = mHomeUrl[ 0 ];
-
-
 	// list of bookmarks that demonstrate cool stuff!
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Select a bookmark", "" ) );
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Second Life Home Page", "http://www.secondlife.com" ) );
@@ -158,7 +150,7 @@ uBrowser::uBrowser() :
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Yahoo! User Interface Library slider", "http://developer.yahoo.com/yui/examples/slider/rgb2.html?mode=dist" ) );
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Shared HTML based Whiteboard", "http://donovanpreston.com:8080/draw/" ) );
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Canvas Annimation Kit Experiment", "http://glimr.rubyforge.org/cake/canvas.html#DesignSketching" ) );
-	mBookmarks.push_back( std::pair< std::string, std::string >( "Test", "http://user.lindenlab.com/~callum/test.html" ) );
+	mBookmarks.push_back( std::pair< std::string, std::string >( "Skrbl shared whiteboard (non-flash)", "http://skrbl.com" ) );
 
 	std::cout << std::endl << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
 	std::cout << std::endl << "    GLUT version: " << "3.7.6" << std::endl;	// no way to get real version from GLUT ???

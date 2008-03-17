@@ -9,7 +9,7 @@
 export CVSROOT=':pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot'
 echo 'use the password "anonymous" if prompted'
 cvs login
-cvs checkout -r FIREFOX_2_0_0_11_RELEASE mozilla/client.mk
+cvs checkout -r FIREFOX_2_0_0_13_RELEASE mozilla/client.mk
 (cd mozilla && make -f client.mk checkout MOZ_CO_PROJECT=xulrunner)
 
 # install our special .mozconfig file

@@ -133,9 +133,6 @@ if not exist &quot;$(TargetDir)\glut32.dll&quot; copy ..\dependencies\bin\glut32
 			RelativePath=".\app.cpp">
 		</File>
 		<File
-			RelativePath=".\readme.html">
-		</File>
-		<File
 			RelativePath=".\ubrowser.cpp">
 		</File>
 		<File

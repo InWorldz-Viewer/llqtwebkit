@@ -137,7 +137,7 @@ ac_add_options --disable-logging
 ac_add_options --disable-tests
 ac_add_options --enable-necko-protocols=http,file,about,res,jar,data
 ac_add_options --enable-image-decoders=png,gif,jpeg
-#ac_add_options --enable-svg
+ac_add_options --enable-svg
 #ac_add_options --enable-svg-renderer=cairo
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-activex
