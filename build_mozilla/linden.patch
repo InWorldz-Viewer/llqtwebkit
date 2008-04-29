@@ -1669,3 +1669,65 @@ diff -u -r3.204.2.13 nsWindow.h
    //
    // Extract the Offset parameter
 
+Index: modules/plugin/base/src/nsPluginsDirDarwin.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/modules/plugin/base/src/nsPluginsDirDarwin.cpp,v
+retrieving revision 1.8.2.1
+diff -r1.8.2.1 nsPluginsDirDarwin.cpp
+--- modules/plugin/base/src/nsPluginsDirDarwin.cpp	2008-04-25 12:57:43.000000000 -0700
++++ modules/plugin/base/src/nsPluginsDirDarwin.cpp	2008-04-25 13:14:18.000000000 -0700
+@@ -260,7 +260,7 @@
+ static char* p2cstrdup(StringPtr pstr)
+ {
+     int len = pstr[0];
+-    char* cstr = new char[len + 1];
++    char* cstr = (char*)PR_Malloc((len + 1) * sizeof(char));
+     if (cstr != NULL) {
+         ::BlockMoveData(pstr + 1, cstr, len);
+         cstr[len] = '\0';
+@@ -373,10 +373,10 @@
+ 
+       // fill-in rest of info struct
+       int variantCount = info.fVariantCount;
+-      info.fMimeTypeArray      = new char*[variantCount];
+-      info.fExtensionArray     = new char*[variantCount];
++      info.fMimeTypeArray      = (char **)PR_Malloc(variantCount * sizeof(char *));
++      info.fExtensionArray     = (char **)PR_Malloc(variantCount * sizeof(char *));
+       if (mi.infoStrings)
+-        info.fMimeDescriptionArray = new char*[variantCount];
++        info.fMimeDescriptionArray = (char **)PR_Malloc(variantCount * sizeof(char *));
+ 
+       short mimeIndex = 2, descriptionIndex = 2;
+             for (int i = 0; i < variantCount; i++) {
+@@ -403,20 +403,21 @@
+ {
+     if (info.fPluginInfoSize <= sizeof(nsPluginInfo)) 
+         {
+-            delete[] info.fName;
+-            delete[] info.fDescription;
++
++            PR_Free(info.fName);
++            PR_Free(info.fDescription);
+             int variantCount = info.fVariantCount;
+             for (int i = 0; i < variantCount; i++) 
+                 {
+-                    delete[] info.fMimeTypeArray[i];
+-                    delete[] info.fExtensionArray[i];
+-                    delete[] info.fMimeDescriptionArray[i];
++                    PR_Free(info.fMimeTypeArray[i]);
++                    PR_Free(info.fExtensionArray[i]);
++                    PR_Free(info.fMimeDescriptionArray[i]);
+                 }
+-            delete[] info.fMimeTypeArray;
+-            delete[] info.fMimeDescriptionArray;
+-            delete[] info.fExtensionArray;
+-            delete[] info.fFileName;
+-            delete[] info.fFullPath;
++            PR_Free(info.fMimeTypeArray);
++            PR_Free(info.fMimeDescriptionArray);
++            PR_Free(info.fExtensionArray);
++            PR_Free(info.fFileName);
++            PL_strfree(info.fFullPath);
+         }
+     return NS_OK;
+ }

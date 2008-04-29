@@ -19,7 +19,7 @@ You should only need to do this once, since it's not tied to a particular versio
 Building mozilla from scratch
 -----------------------------
 
-If you want to start from scratch, or are updating to a new mozilla release tag, you should first build the mozilla project.  The script ../mozilla-mac-universal-build/checkout_patch_build.sh will check out the mozilla sources from the mozilla cvs server, apply our local patches, and build the whole thing.  Embedded in this script is the CVS tag to check out, which should correspond to one of the official mozilla releases.  If you update to a later version, please commit the change to checkout_patch_build.sh so that others will be able to tell which version is current.
+If you want to start from scratch, or are updating to a new mozilla release tag, you should first build the mozilla project.  The script checkout_patch_build.sh in the build_mozilla directory will check out the mozilla sources from the mozilla cvs server, apply our local patches, and build the whole thing.  Embedded in this script is the CVS tag to check out, which should correspond to one of the official mozilla releases.  If you update to a later version, please commit the change to checkout_patch_build.sh so that others will be able to tell which version is current.
 
 Once you have the mozilla library built, run the copy_products_mac.sh script in this directory to pull the necessary bits across.  This will repopulate the architecture-specific portions of the libraries directory here, so you may want to do a preemptive 'svn remove' and commit first.  It will also create mozilla-universal-darwin-original.tgz which contains the necessary runtime bits that need to go into the application bundle.
 
