@@ -43,7 +43,7 @@ mk_add_options MOZ_UNIFY_BDATE=1
 if /bin/true ; then
   TARGET_CPU=$MOZ_BUILD_APP
 
-  GCC_VERSION=3.4
+  GCC_VERSION=4.1
   
   CC="gcc-$GCC_VERSION"
   CXX="g++-$GCC_VERSION"
@@ -110,5 +110,5 @@ ac_add_options --disable-xinerama
 ac_add_options --disable-system-cairo
 #ac_add_options --disable-xft
 
-ac_add_options --with-system-jpeg=${CURRENTDIR}/../linux-libxul-bits/lljpeg
+#ac_add_options --with-system-jpeg=${CURRENTDIR}/../linux-libxul-bits/lljpeg
 

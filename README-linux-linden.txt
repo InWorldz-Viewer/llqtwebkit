@@ -14,16 +14,7 @@ These steps otherwise need to be completed before moving on to README-linux.txt
 1. LIBJPEG
 ==========
 
-Linden Lab should NOT NEED TO CHANGE THIS by default, so they can skip this
-section.
-
-We use a specific configuration of x86 libjpeg for Mozilla because, sadly,
-the libjpeg ABI isn't very stable across distributions.  If you want to
-AVOID this custom build of libjpeg and defer to the system libjpeg,
-perform these steps:
-
-1. Edit build_mozilla/linux-libxul-bits/mozconfig:
-   * remove the 'ac_add_options --with-system-jpeg=...' line
+<special instructions no longer applicable>
 
 2. GTK AND FRIENDS
 ==================
