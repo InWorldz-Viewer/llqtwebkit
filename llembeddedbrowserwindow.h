@@ -194,6 +194,7 @@ class LLEmbeddedBrowserWindow :
 		void navigateBack();
 		PRBool canNavigateForward();
 		void navigateForward();
+		void navigateReload();
 
 		// javascript access/control
 		std::string evaluateJavascript( std::string scriptIn );

@@ -44,6 +44,8 @@
 	#endif
 #endif	// WIN32
 
+#include <iostream>
+
 #include "llembeddedbrowser.h"
 #include "llembeddedbrowserwindow.h"
 
@@ -60,11 +62,12 @@
 #include "nsProfileDirServiceProvider.h"
 #include "nsXULAppAPI.h"
 #include "nsIAppShell.h"
-
-#if defined(LL_LINUX) || defined(LL_DARWIN)
+#include "nsIPromptService.h"
+#include "time.h"
 #include "nsWidgetsCID.h"
+#include "nsNetCID.h"
+
 static nsIAppShell *sAppShell = nsnull;
-#endif // defined(LL_LINUX) || defined(LL_DARWIN)
 
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
@@ -205,9 +208,7 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
 	// disable proxy by default
 	enableProxy( false, "", 0 );
 
-#if defined(LL_LINUX) || defined(LL_DARWIN)
-	// Essential on Linux/GTK to add the gecko pump to the GTK event
-	// loop.  Might be harmless/good on other platforms too.
+    // Originally from Linux version but seems to help other platforms too
 	nsresult rv;
 	nsCOMPtr<nsIAppShell> appShell;
 	NS_DEFINE_CID(kAppShellCID, NS_APPSHELL_CID);
@@ -221,7 +222,6 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
 	NS_ADDREF(sAppShell);
 	sAppShell->Create(0, nsnull);
 	sAppShell->Spinup();
-#endif // LL_LINUX
 
 	clearLastError();
 
@@ -398,6 +398,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow( int browserWidt
 	return 0;
 };
 
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::destroyBrowserWindow( LLEmbeddedBrowserWindow* browserWindowIn )
@@ -419,6 +420,7 @@ bool LLEmbeddedBrowser::destroyBrowserWindow( LLEmbeddedBrowserWindow* browserWi
 	{
 		browserAsWin->Destroy();
 	};
+
 
 	browserWindowIn->SetWebBrowser( nsnull );
 

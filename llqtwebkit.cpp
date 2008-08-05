@@ -373,6 +373,21 @@ bool LLMozLib::navigateForward( int browserWindowIdIn )
 	return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLMozLib::navigateReload( int browserWindowIdIn )
+{
+	LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId( browserWindowIdIn );
+	if ( browserWindow )
+	{
+		browserWindow->navigateReload();
+
+		return true;
+	};
+
+	return false;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 const unsigned char* LLMozLib::grabBrowserWindow( int browserWindowIdIn )

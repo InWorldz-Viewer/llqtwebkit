@@ -594,6 +594,7 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
 	if ( ! docShell )
 		return PR_FALSE;
 
+
 	// get pres context
 	nsCOMPtr< nsPresContext > presContext;
 	nsresult result = docShell->GetPresContext( getter_AddRefs( presContext ) );
@@ -867,6 +868,15 @@ void LLEmbeddedBrowserWindow::navigateForward()
 {
 	if ( mWebNav )
 		mWebNav->GoForward();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void LLEmbeddedBrowserWindow::navigateReload()
+{
+	// maybe need a cache version of this too?
+	if ( mWebNav )
+		mWebNav->Reload( nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE );
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -87,10 +87,10 @@ uBrowser::uBrowser() :
 	mIdNavStop( 0x0015 ),
 	mIdNavHome( 0x0016 ),
 	mIdNavForward( 0x0017 ),
+	mIdNavReload( 0x001b ),
 	mIdBrowserSmall( 0x0018 ),
 	mIdBrowserMedium( 0x0019 ),
 	mIdBrowserLarge( 0x001a ),
-	mFocusUrlEdit( 0x001b ),
 	mIdUpdateTypeRB( 0x0100 ),
 	mIdUpdateTypeG( 0x0101 ),
 	mIdUpdateTypeApp( 0x0102 ),
@@ -148,7 +148,6 @@ uBrowser::uBrowser() :
 	mBookmarks.push_back( std::pair< std::string, std::string >( "XUL Mozilla Amazon Browser (MAB)", "http://www.faser.net/mab/chrome/content/mab.xul" ) );
 	mBookmarks.push_back( std::pair< std::string, std::string >( "XUL Widgets", "http://www.hevanet.com/acorbin/xul/top.xul" ) );
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Yahoo! User Interface Library slider", "http://developer.yahoo.com/yui/examples/slider/rgb2.html?mode=dist" ) );
-	mBookmarks.push_back( std::pair< std::string, std::string >( "Shared HTML based Whiteboard", "http://donovanpreston.com:8080/draw/" ) );
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Canvas Annimation Kit Experiment", "http://glimr.rubyforge.org/cake/canvas.html#DesignSketching" ) );
 	mBookmarks.push_back( std::pair< std::string, std::string >( "Skrbl shared whiteboard (non-flash)", "http://skrbl.com" ) );
 
@@ -791,15 +790,16 @@ void uBrowser::makeChrome()
 	mNavForwardButton->set_w( 56 );
 
 	mTopGLUIWindow->add_column( false );
+	GLUI_Button* mNavReloadButton = mTopGLUIWindow->add_button( "Reload", mIdNavReload, gluiCallbackWrapper );
+	mNavReloadButton->set_w( 56 );
+
+	mTopGLUIWindow->add_column( false );
 #ifdef LL_NEWER_GLUI
 	mUrlEdit = mTopGLUIWindow->add_edittext( "Url:", GLUI_EDITTEXT_TEXT, mNavUrl, mIdUrlEdit, gluiCallbackWrapper );
 #else // LL_NEWER_GLUI
 	// Friendly to older GLUI versions.
 	mUrlEdit = mTopGLUIWindow->add_edittext( "Url:", mNavUrl, mIdUrlEdit, gluiCallbackWrapper );
 #endif // LL_NEWER_GLUI
-
-	mTopGLUIWindow->add_column( false );
-	mTopGLUIWindow->add_button( "Focus", mFocusUrlEdit, gluiCallbackWrapper );
 
 	mTopGLUIWindow->set_main_gfx_window( mAppWindow );
 
@@ -955,10 +955,6 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
 
 			// this seems better than sending focus on mouse down (still need to improve this)
 			LLMozLib::getInstance()->focusBrowser( mCurWindowId, true );
-
-			// turn off the URL edit widget so it's "obvious" that you need to press focus to reenable it.
-			// (focus restriction in GLUI i wasn't able to work around)
-			mUrlEdit->disable();
 		};
 	}
 	else
@@ -1112,6 +1108,11 @@ void uBrowser::gluiCallback( int controlIdIn )
 		LLMozLib::getInstance()->navigateForward( mCurWindowId );
 	}
 	else
+	if ( controlIdIn == mIdNavReload )
+	{
+		LLMozLib::getInstance()->navigateReload( mCurWindowId );
+	}
+	else
 	if ( controlIdIn == mIdUrlEdit )
 	{
 		LLMozLib::getInstance()->navigateTo( mCurWindowId, mUrlEdit->get_text() );
@@ -1120,15 +1121,6 @@ void uBrowser::gluiCallback( int controlIdIn )
 	if ( controlIdIn == mIdBookmarks )
 	{
 		LLMozLib::getInstance()->navigateTo( mCurWindowId, mBookmarks[ mSelBookmark ].second.c_str() );
-	}
-	else
-	// silly hack needed to get around a limitation of GLUI (or myunderstanding of it).
-	// I really need a callback when caret enters the edit field so I can do this automatically
-	if ( controlIdIn == mFocusUrlEdit )
-	{
-		mUrlEdit->enable();
-		LLMozLib::getInstance()->focusBrowser( mCurWindowId, false );
-		setFocusNativeWindow();
 	}
 	else
 	// implies the ids are sequential.... ;)

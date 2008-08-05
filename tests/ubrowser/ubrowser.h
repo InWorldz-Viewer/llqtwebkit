@@ -150,10 +150,10 @@ class uBrowser :
 		const int mIdNavStop;
 		const int mIdNavHome;
 		const int mIdNavForward;
+		const int mIdNavReload;
 		const int mIdBrowserSmall;
 		const int mIdBrowserMedium;
 		const int mIdBrowserLarge;
-		const int mFocusUrlEdit;
 		const int mIdFace0;
 		const int mIdFace1;
 		const int mIdFace2;
