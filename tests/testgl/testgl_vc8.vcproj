@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib version.lib comctl32.lib llmozlib2d.lib"
+				AdditionalDependencies="opengl32.lib glu32.lib version.lib comctl32.lib llmozlib2d-vc80.lib"
 				OutputFile="$(OutDir)/testgl.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\dependencies\lib;..\..\Debug"
@@ -145,7 +145,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
-				AdditionalDependencies="opengl32.lib glu32.lib version.lib comctl32.lib llmozlib2.lib glui32.lib"
+				AdditionalDependencies="opengl32.lib glu32.lib version.lib comctl32.lib llmozlib2-vc80.lib glui32.lib"
 				OutputFile="$(OutDir)/testgl.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\dependencies\lib;..\..\Release"
