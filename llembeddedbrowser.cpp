@@ -136,8 +136,12 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
 {
 	mNativeWindowHandle = nativeWindowHandleIn;
 
+    NS_ConvertUTF8toUTF16 applicationDirUTF16(applicationDir.c_str());
+    NS_ConvertUTF8toUTF16 componentDirUTF16(componentDir.c_str());
+	NS_ConvertUTF8toUTF16 profileDirUTF16(profileDir.c_str());
+
 	nsCOMPtr< nsILocalFile > applicationDirNative;
-	nsresult result = NS_NewNativeLocalFile( nsCString( applicationDir.c_str() ), PR_FALSE, getter_AddRefs( applicationDirNative ) );
+	nsresult result = NS_NewLocalFile( applicationDirUTF16, PR_FALSE, getter_AddRefs( applicationDirNative ) );
 	if ( NS_FAILED( result ) )
 	{
 		setLastError( 0x1000 );
@@ -145,7 +149,7 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
 	};
 
 	nsCOMPtr< nsILocalFile > componentDirNative;
-	result = NS_NewNativeLocalFile( nsCString( componentDir.c_str() ), PR_FALSE, getter_AddRefs( componentDirNative ) );
+	result = NS_NewLocalFile( componentDirUTF16 , PR_FALSE, getter_AddRefs( componentDirNative ) );
 	if ( NS_FAILED( result ) )
 	{
 		setLastError( 0x1001 );
@@ -160,7 +164,7 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
 	};
 
 	nsCOMPtr< nsILocalFile > profileDirNative;
-	result = NS_NewNativeLocalFile( nsCString( profileDir.c_str() ), PR_TRUE, getter_AddRefs( profileDirNative ) );
+	result = NS_NewLocalFile( profileDirUTF16 , PR_TRUE, getter_AddRefs( profileDirNative ) );
 	if ( NS_FAILED( result ) )
 	{
 		setLastError( 0x1007 );
