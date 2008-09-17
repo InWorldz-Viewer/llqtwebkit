@@ -1,5 +1,5 @@
 @rem ===== source/destination dirs that may change depending where you build mozilla =====
-@set DEST_DIR=C:\checkouts\release
+@set DEST_DIR=C:\checkouts\latest
 
 @rem =============== instructions ===============
 @echo This batch file copies files from a Mozilla build to Second Life
@@ -14,17 +14,19 @@
 xcopy llmozlib2.h %DEST_DIR%\libraries\include\ /y
 
 @echo ========== copying debug library ==========
-xcopy debug\llmozlib2d.lib %DEST_DIR%\libraries\i686-win32\lib_debug\ /y
+xcopy debug\llmozlib2d.lib %DEST_DIR%\libraries\i686-win32\lib\debug\ /y
+xcopy debug\llmozlib2d-vc80.lib %DEST_DIR%\libraries\i686-win32\lib\debug\ /y
 
 @echo ========== copying release library ==========
-xcopy release\llmozlib2.lib %DEST_DIR%\libraries\i686-win32\lib_release\ /y
+xcopy release\llmozlib2.lib %DEST_DIR%\libraries\i686-win32\lib\release\ /y
+xcopy release\llmozlib2-vc80.lib %DEST_DIR%\libraries\i686-win32\lib\release\ /y
 
 @echo ========== copying debug DLLs and exe ==========
-xcopy libraries\i686-win32\runtime_debug\*.dll %DEST_DIR%\libraries\i686-win32\lib_debug\ /y
-xcopy libraries\i686-win32\runtime_debug\*.exe %DEST_DIR%\libraries\i686-win32\lib_debug\ /y
+xcopy libraries\i686-win32\runtime_debug\*.dll %DEST_DIR%\libraries\i686-win32\lib\debug\ /y
+xcopy libraries\i686-win32\runtime_debug\*.exe %DEST_DIR%\libraries\i686-win32\lib\debug\ /y
 
 @echo ========== copying release DLLs ==========
-xcopy libraries\i686-win32\runtime_release\*.dll %DEST_DIR%\libraries\i686-win32\lib_release\ /y
+xcopy libraries\i686-win32\runtime_release\*.dll %DEST_DIR%\libraries\i686-win32\lib\release\ /y
 
 @echo ========== copying debug runtime files ==========
 xcopy libraries\i686-win32\runtime_debug\chrome\*.*		%DEST_DIR%\indra\newview\app_settings\mozilla_debug\chrome\ /s /y

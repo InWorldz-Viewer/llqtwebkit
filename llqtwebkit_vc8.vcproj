@@ -21,7 +21,7 @@
 			IntermediateDirectory="Debug"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -46,7 +46,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				TreatWChar_tAsBuiltInType="false"
+				TreatWChar_tAsBuiltInType="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
@@ -91,7 +91,7 @@
 			IntermediateDirectory="Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -114,7 +114,7 @@
 				AdditionalIncludeDirectories="&quot;libraries\i686-win32\include\mozilla\include\content&quot;;&quot;libraries\i686-win32\include\mozilla\include\docshell&quot;;&quot;libraries\i686-win32\include\mozilla\include\dom&quot;;&quot;libraries\i686-win32\include\mozilla\include\gfx&quot;;&quot;libraries\i686-win32\include\mozilla\include\js&quot;;&quot;libraries\i686-win32\include\mozilla\include\layout&quot;;&quot;libraries\i686-win32\include\mozilla\include\locale&quot;;&quot;libraries\i686-win32\include\mozilla\include\necko&quot;;&quot;libraries\i686-win32\include\mozilla\include\nkcache&quot;;&quot;libraries\i686-win32\include\mozilla\include\pref&quot;;&quot;libraries\i686-win32\include\mozilla\include\profdirserviceprovider&quot;;&quot;libraries\i686-win32\include\mozilla\include\string&quot;;&quot;libraries\i686-win32\include\mozilla\include\uriloader&quot;;&quot;libraries\i686-win32\include\mozilla\include\view&quot;;&quot;libraries\i686-win32\include\mozilla\include\webbrwsr&quot;;&quot;libraries\i686-win32\include\mozilla\include\widget&quot;;&quot;libraries\i686-win32\include\mozilla\include\xpcom&quot;;&quot;libraries\i686-win32\include\mozilla\include\xulapp&quot;;&quot;libraries\i686-win32\include\mozilla\sdk\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XP_WIN;XP_WIN32;MOZILLA_INTERNAL_API"
 				RuntimeLibrary="0"
-				TreatWChar_tAsBuiltInType="false"
+				TreatWChar_tAsBuiltInType="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
