@@ -39,29 +39,7 @@
 #ifndef LLEMBEDDEDBROWSERWINDOW_H
 #define LLEMBEDDEDBROWSERWINDOW_H
 
-// Mozilla code has non-virtual destructors
-#ifdef WIN32
-#pragma warning( disable : 4265 ) // "class has virtual functions, but destructor is not virtual"
-#endif
-
-#include "nsIBaseWindow.h"
-#include "nsIDOMEventListener.h"
-#include "nsIDOMEventTarget.h"
-#include "nsIInterfaceRequestor.h"
-#include "nsIWebBrowserChrome.h"
-#include "nsIWebNavigation.h"
-#include "nsIWebProgressListener.h"
-#include "nsIURIContentListener.h"
-#include "nsWeakReference.h"
-#include "nsIWebBrowser.h"
-#include "nsIToolkit.h"
-#include "nsIScriptGlobalObject.h"
-#include "nsIScriptGlobalObjectOwner.h"
-#include "nsIScriptContext.h"
-
-#ifdef WIN32
-#pragma warning( 3 : 4265 ) // "class has virtual functions, but destructor is not virtual"
-#endif
+#include <Qt/qglobal.h>
 
 #include <string>
 #include <list>
@@ -75,183 +53,171 @@
 template< class T >
 class LLEmbeddedBrowserWindowEmitter
 {
-	public:
-		LLEmbeddedBrowserWindowEmitter() { };
-		~LLEmbeddedBrowserWindowEmitter() { };
+    public:
+        LLEmbeddedBrowserWindowEmitter() { };
+        ~LLEmbeddedBrowserWindowEmitter() { };
 
-		typedef typename T::EventType EventType;
-		typedef std::list< T* > ObserverContainer;
-		typedef void( T::*observerMethod )( const EventType& );
+        typedef typename T::EventType EventType;
+        typedef std::list< T* > ObserverContainer;
+        typedef void( T::*observerMethod )( const EventType& );
 
-		///////////////////////////////////////////////////////////////////////////////
-		//
-		bool addObserver( T* observerIn )
-		{
-			if ( ! observerIn )
-				return false;
+        ///////////////////////////////////////////////////////////////////////////////
+        //
+        bool addObserver( T* observerIn )
+        {
+            if ( ! observerIn )
+                return false;
 
-			if ( std::find( observers.begin(), observers.end(), observerIn ) != observers.end() )
-				return false;
+            if ( std::find( observers.begin(), observers.end(), observerIn ) != observers.end() )
+                return false;
 
-			observers.push_back( observerIn );
+            observers.push_back( observerIn );
 
-			return true;
-		};
+            return true;
+        };
 
-		///////////////////////////////////////////////////////////////////////////////
-		//
-		bool remObserver( T* observerIn )
-		{
-			if ( ! observerIn )
-				return false;
+        ///////////////////////////////////////////////////////////////////////////////
+        //
+        bool remObserver( T* observerIn )
+        {
+            if ( ! observerIn )
+                return false;
 
-			observers.remove( observerIn );
+            observers.remove( observerIn );
 
-			return true;
-		};
+            return true;
+        };
 
-		///////////////////////////////////////////////////////////////////////////////
-		//
-		void update( observerMethod method, const EventType& msgIn )
-		{
-			typename std::list< T* >::iterator iter = observers.begin();
+        ///////////////////////////////////////////////////////////////////////////////
+        //
+        void update( observerMethod method, const EventType& msgIn )
+        {
+            typename std::list< T* >::iterator iter = observers.begin();
 
-			while( iter != observers.end() )
-			{
-				( ( *iter )->*method )( msgIn );
+            while( iter != observers.end() )
+            {
+                ( ( *iter )->*method )( msgIn );
 
-				++iter;
-			};
-		};
+                ++iter;
+            };
+        };
 
-	protected:
-		ObserverContainer observers;
+    protected:
+        ObserverContainer observers;
 };
 
 class LLEmbeddedBrowser;
 
 ////////////////////////////////////////////////////////////////////////////////
 // class for a "window" that holds a browser - there can be lots of these
-class LLEmbeddedBrowserWindow :
-	public nsIInterfaceRequestor,
-	public nsIWebBrowserChrome,
-	public nsIWebProgressListener,
-	public nsIURIContentListener,
-	public nsSupportsWeakReference,
-	public nsIDOMEventListener,
-	public nsIToolkitObserver
+class LLEmbeddedBrowserWindow
 {
-	public:
-		LLEmbeddedBrowserWindow();
-		virtual ~LLEmbeddedBrowserWindow();
+    public:
+        LLEmbeddedBrowserWindow();
+        virtual ~LLEmbeddedBrowserWindow();
 
-		NS_DECL_ISUPPORTS
-		NS_DECL_NSIINTERFACEREQUESTOR
-		NS_DECL_NSIWEBBROWSERCHROME
-		NS_DECL_NSIWEBPROGRESSLISTENER
-		NS_DECL_NSIURICONTENTLISTENER
-		NS_DECL_NSIDOMEVENTLISTENER
-		NS_DECL_NSITOOLKITOBSERVER
+        // housekeeping
+        //nsresult createBrowser( void* nativeWindowHandleIn, qint32 widthIn, qint32 heightIn, nsIWebBrowser** aBrowser );
+        void setParent( LLEmbeddedBrowser* parentIn ) { mParent = parentIn; };
+        bool setSize( qint16 widthIn, qint16 heightIn );
+        void focusBrowser( bool focusBrowserIn );
+        void scrollByLines( qint16 linesIn );
+        void setWindowId( int windowIdIn );
+        int getWindowId();
 
-		// housekeeping
-		nsresult createBrowser( void* nativeWindowHandleIn, PRInt32 widthIn, PRInt32 heightIn, nsIWebBrowser** aBrowser );
-		void setParent( LLEmbeddedBrowser* parentIn ) { mParent = parentIn; };
-		PRBool setSize( PRInt16 widthIn, PRInt16 heightIn );
-		void focusBrowser( PRBool focusBrowserIn );
-		void scrollByLines( PRInt16 linesIn );
-		void setWindowId( int windowIdIn );
-		int getWindowId();
+        // random accessors
+        const qint16 getPercentComplete();
+        const std::string& getStatusMsg();
+        const std::string& getCurrentUri();
+        const std::string& getClickLinkHref();
+        const std::string& getClickLinkTarget();
 
-		// random accessors
-		const PRInt16 getPercentComplete();
-		const std::string& getStatusMsg();
-		const std::string& getCurrentUri();
-		const std::string& getClickLinkHref();
-		const std::string& getClickLinkTarget();
+        // memory buffer management
+        unsigned char* grabWindow( int xIn, int yIn, int widthIn, int heightIn );
+        bool flipWindow( bool flip );
+        unsigned char* getPageBuffer();
+        qint16 getBrowserWidth();
+        qint16 getBrowserHeight();
+        qint16 getBrowserDepth();
+        qint32 getBrowserRowSpan();
 
-		// memory buffer management
-		unsigned char* grabWindow( int xIn, int yIn, int widthIn, int heightIn );
-		PRBool flipWindow( PRBool flip );
-		unsigned char* getPageBuffer();
-		PRInt16 getBrowserWidth();
-		PRInt16 getBrowserHeight();
-		PRInt16 getBrowserDepth();
-		PRInt32 getBrowserRowSpan();
+        // set background color that you see in between pages - default is white but sometimes useful to change
+        void setBackgroundColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
 
-		// set background color that you see in between pages - default is white but sometimes useful to change
-		void setBackgroundColor( const PRUint8 redIn, const PRUint8 greenIn, const PRUint8 blueIn );
+        // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
+        void setCaretColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
 
-		// change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
-		void setCaretColor( const PRUint8 redIn, const PRUint8 greenIn, const PRUint8 blueIn );
+        // can turn off updates to a page - e.g. when it's hidden by your windowing system
+        void setEnabled( bool enabledIn );
 
-		// can turn off updates to a page - e.g. when it's hidden by your windowing system
-		void setEnabled( PRBool enabledIn );
+        // navigation
+        void navigateStop();
+        bool navigateTo( const std::string uriIn );
+        bool canNavigateBack();
+        void navigateBack();
+        bool canNavigateForward();
+        void navigateForward();
+        void navigateReload();
 
-		// navigation
-		void navigateStop();
-		PRBool navigateTo( const std::string uriIn );
-		PRBool canNavigateBack();
-		void navigateBack();
-		PRBool canNavigateForward();
-		void navigateForward();
-		void navigateReload();
+        // javascript access/control
+        std::string evaluateJavascript( std::string scriptIn );
 
-		// javascript access/control
-		std::string evaluateJavascript( std::string scriptIn );
+        // redirection when you hit a missing page
+        bool set404RedirectUrl( std::string redirect_url );
+        bool clr404RedirectUrl();
 
-		// redirection when you hit a missing page
-		bool set404RedirectUrl( std::string redirect_url );
-		bool clr404RedirectUrl();
+        // mouse & keyboard events
+        void mouseDown( qint16 xPosIn, qint16 yPosIn );
+        void mouseUp( qint16 xPosIn, qint16 yPosIn );
+        void mouseMove( qint16 xPosIn, qint16 yPosIn );
+        void mouseLeftDoubleClick( qint16 xPosIn, qint16 yPosIn );
+        void keyPress( qint16 keyCode );
+        void unicodeInput( quint32 uni_char );
 
-		// mouse & keyboard events
-		void mouseDown( PRInt16 xPosIn, PRInt16 yPosIn );
-		void mouseUp( PRInt16 xPosIn, PRInt16 yPosIn );
-		void mouseMove( PRInt16 xPosIn, PRInt16 yPosIn );
-		void mouseLeftDoubleClick( PRInt16 xPosIn, PRInt16 yPosIn );
-		void keyPress( PRInt16 keyCode );
-		void unicodeInput( PRUint32 uni_char );
+        // allow consumers of this class and to observe browser events
+        bool addObserver( LLEmbeddedBrowserWindowObserver* observerIn );
+        bool remObserver( LLEmbeddedBrowserWindowObserver* observerIn );
 
-		// allow consumers of this class and to observe browser events
-		bool addObserver( LLEmbeddedBrowserWindowObserver* observerIn );
-		bool remObserver( LLEmbeddedBrowserWindowObserver* observerIn );
+        // accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
+        void setNoFollowScheme( std::string schemeIn );
+        std::string getNoFollowScheme();
 
-		// accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
-		void setNoFollowScheme( std::string schemeIn );
-		std::string getNoFollowScheme();
+    private:
+        LLEmbeddedBrowser* mParent;
+        LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
+        /*
+           bool sendMozillaMouseEvent( qint16 eventIn, qint16 xPosIn, qint16 yPosIn, quint32 clickCountIn );
+        bool sendMozillaKeyboardEvent( quint32 keyIn, quint32 ns_vk_code );
+        bool renderCaret();
+        bool enableToolkitObserver( bool enableIn );
+    */
 
-	private:
-		PRBool sendMozillaMouseEvent( PRInt16 eventIn, PRInt16 xPosIn, PRInt16 yPosIn, PRUint32 clickCountIn );
-		PRBool sendMozillaKeyboardEvent( PRUint32 keyIn, PRUint32 ns_vk_code );
-		PRBool renderCaret();
-		PRBool enableToolkitObserver( PRBool enableIn );
-
-		LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
-
-		LLEmbeddedBrowser* mParent;
-		PRInt16 mPercentComplete;
-		std::string mStatusText;
-		std::string mCurrentUri;
-		std::string mClickHref;
-		std::string mClickTarget;
-		std::string mNoFollowScheme;
-		nsCOMPtr< nsIWebBrowser > mWebBrowser;
-		nsCOMPtr< nsIBaseWindow > mBaseWindow;
-		nsCOMPtr< nsIWebNavigation > mWebNav;
-		int mWindowId;
-		unsigned char* mPageBuffer;
-		std::string m404RedirectUrl;
-		PRBool mEnabled;
-		PRBool mFlipBitmap;
-		PRInt32 mBrowserRowSpan;
-		PRInt16 mBrowserWidth;
-		PRInt16 mBrowserHeight;
-		PRInt16 mBrowserDepth;
-		PRUint8 mBkgRed;
-		PRUint8 mBkgGreen;
-		PRUint8 mBkgBlue;
-		PRUint8 mCaretRed;
-		PRUint8 mCaretGreen;
-		PRUint8 mCaretBlue;
+        qint16 mPercentComplete;
+        std::string mStatusText;
+        std::string mCurrentUri;
+        std::string mClickHref;
+        std::string mClickTarget;
+        std::string mNoFollowScheme;
+        /*
+        nsCOMPtr< nsIWebBrowser > mWebBrowser;
+        nsCOMPtr< nsIBaseWindow > mBaseWindow;
+        nsCOMPtr< nsIWebNavigation > mWebNav;
+        */
+        int mWindowId;
+        unsigned char* mPageBuffer;
+        std::string m404RedirectUrl;
+        bool mEnabled;
+        bool mFlipBitmap;
+        qint32 mBrowserRowSpan;
+        qint16 mBrowserWidth;
+        qint16 mBrowserHeight;
+        qint16 mBrowserDepth;
+        quint8 mBkgRed;
+        quint8 mBkgGreen;
+        quint8 mBkgBlue;
+        quint8 mCaretRed;
+        quint8 mCaretGreen;
+        quint8 mCaretBlue;
 };
 
 #endif // LLEMBEDEDDBROWSERWINDOW_H
