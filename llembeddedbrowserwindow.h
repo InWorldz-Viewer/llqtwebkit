@@ -40,6 +40,7 @@
 #define LLEMBEDDEDBROWSERWINDOW_H
 
 #include <Qt/qglobal.h>
+#include <QtGui/QtGui>
 
 #include <string>
 #include <list>
@@ -110,114 +111,117 @@ class LLEmbeddedBrowser;
 
 ////////////////////////////////////////////////////////////////////////////////
 // class for a "window" that holds a browser - there can be lots of these
+class QWebPage;
 class LLEmbeddedBrowserWindow
 {
-    public:
-        LLEmbeddedBrowserWindow();
-        virtual ~LLEmbeddedBrowserWindow();
+public:
+    LLEmbeddedBrowserWindow();
+    virtual ~LLEmbeddedBrowserWindow();
 
-        // housekeeping
-        //nsresult createBrowser( void* nativeWindowHandleIn, qint32 widthIn, qint32 heightIn, nsIWebBrowser** aBrowser );
-        void setParent( LLEmbeddedBrowser* parentIn ) { mParent = parentIn; };
-        bool setSize( qint16 widthIn, qint16 heightIn );
-        void focusBrowser( bool focusBrowserIn );
-        void scrollByLines( qint16 linesIn );
-        void setWindowId( int windowIdIn );
-        int getWindowId();
+    // housekeeping
+    //nsresult createBrowser( void* nativeWindowHandleIn, qint32 widthIn, qint32 heightIn, nsIWebBrowser** aBrowser );
+    void setParent( LLEmbeddedBrowser* parentIn ) { mParent = parentIn; };
+    bool setSize( qint16 widthIn, qint16 heightIn );
+    void focusBrowser( bool focusBrowserIn );
+    void scrollByLines( qint16 linesIn );
+    void setWindowId( int windowIdIn );
+    int getWindowId();
 
-        // random accessors
-        const qint16 getPercentComplete();
-        const std::string& getStatusMsg();
-        const std::string& getCurrentUri();
-        const std::string& getClickLinkHref();
-        const std::string& getClickLinkTarget();
+    // random accessors
+    const qint16 getPercentComplete();
+    const std::string& getStatusMsg();
+    const std::string& getCurrentUri();
+    const std::string& getClickLinkHref();
+    const std::string& getClickLinkTarget();
 
-        // memory buffer management
-        unsigned char* grabWindow( int xIn, int yIn, int widthIn, int heightIn );
-        bool flipWindow( bool flip );
-        unsigned char* getPageBuffer();
-        qint16 getBrowserWidth();
-        qint16 getBrowserHeight();
-        qint16 getBrowserDepth();
-        qint32 getBrowserRowSpan();
+    // memory buffer management
+    unsigned char* grabWindow( int xIn, int yIn, int widthIn, int heightIn );
+    bool flipWindow( bool flip );
+    unsigned char* getPageBuffer();
+    qint16 getBrowserWidth();
+    qint16 getBrowserHeight();
+    qint16 getBrowserDepth();
+    qint32 getBrowserRowSpan();
 
-        // set background color that you see in between pages - default is white but sometimes useful to change
-        void setBackgroundColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
+    // set background color that you see in between pages - default is white but sometimes useful to change
+    void setBackgroundColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
 
-        // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
-        void setCaretColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
+    // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
+    void setCaretColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
 
-        // can turn off updates to a page - e.g. when it's hidden by your windowing system
-        void setEnabled( bool enabledIn );
+    // can turn off updates to a page - e.g. when it's hidden by your windowing system
+    void setEnabled( bool enabledIn );
 
-        // navigation
-        void navigateStop();
-        bool navigateTo( const std::string uriIn );
-        bool canNavigateBack();
-        void navigateBack();
-        bool canNavigateForward();
-        void navigateForward();
-        void navigateReload();
+    // navigation
+    void navigateStop();
+    bool navigateTo( const std::string uriIn );
+    bool canNavigateBack();
+    void navigateBack();
+    bool canNavigateForward();
+    void navigateForward();
+    void navigateReload();
 
-        // javascript access/control
-        std::string evaluateJavascript( std::string scriptIn );
+    // javascript access/control
+    std::string evaluateJavascript( std::string scriptIn );
 
-        // redirection when you hit a missing page
-        bool set404RedirectUrl( std::string redirect_url );
-        bool clr404RedirectUrl();
+    // redirection when you hit a missing page
+    bool set404RedirectUrl( std::string redirect_url );
+    bool clr404RedirectUrl();
 
-        // mouse & keyboard events
-        void mouseDown( qint16 xPosIn, qint16 yPosIn );
-        void mouseUp( qint16 xPosIn, qint16 yPosIn );
-        void mouseMove( qint16 xPosIn, qint16 yPosIn );
-        void mouseLeftDoubleClick( qint16 xPosIn, qint16 yPosIn );
-        void keyPress( qint16 keyCode );
-        void unicodeInput( quint32 uni_char );
+    // mouse & keyboard events
+    void mouseDown( qint16 xPosIn, qint16 yPosIn );
+    void mouseUp( qint16 xPosIn, qint16 yPosIn );
+    void mouseMove( qint16 xPosIn, qint16 yPosIn );
+    void mouseLeftDoubleClick( qint16 xPosIn, qint16 yPosIn );
+    void keyPress( qint16 keyCode );
+    void unicodeInput( quint32 uni_char );
 
-        // allow consumers of this class and to observe browser events
-        bool addObserver( LLEmbeddedBrowserWindowObserver* observerIn );
-        bool remObserver( LLEmbeddedBrowserWindowObserver* observerIn );
+    // allow consumers of this class and to observe browser events
+    bool addObserver( LLEmbeddedBrowserWindowObserver* observerIn );
+    bool remObserver( LLEmbeddedBrowserWindowObserver* observerIn );
 
-        // accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
-        void setNoFollowScheme( std::string schemeIn );
-        std::string getNoFollowScheme();
+    // accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
+    void setNoFollowScheme( std::string schemeIn );
+    std::string getNoFollowScheme();
 
-    private:
-        LLEmbeddedBrowser* mParent;
-        LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
-        /*
-           bool sendMozillaMouseEvent( qint16 eventIn, qint16 xPosIn, qint16 yPosIn, quint32 clickCountIn );
-        bool sendMozillaKeyboardEvent( quint32 keyIn, quint32 ns_vk_code );
-        bool renderCaret();
-        bool enableToolkitObserver( bool enableIn );
+private:
+    QWebPage *page;
+    QImage image;
+    LLEmbeddedBrowser* mParent;
+    LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
+    /*
+       bool sendMozillaMouseEvent( qint16 eventIn, qint16 xPosIn, qint16 yPosIn, quint32 clickCountIn );
+    bool sendMozillaKeyboardEvent( quint32 keyIn, quint32 ns_vk_code );
+    bool renderCaret();
+    bool enableToolkitObserver( bool enableIn );
+*/
+
+    qint16 mPercentComplete;
+    std::string mStatusText;
+    std::string mCurrentUri;
+    std::string mClickHref;
+    std::string mClickTarget;
+    std::string mNoFollowScheme;
+    /*
+    nsCOMPtr< nsIWebBrowser > mWebBrowser;
+    nsCOMPtr< nsIBaseWindow > mBaseWindow;
+    nsCOMPtr< nsIWebNavigation > mWebNav;
     */
-
-        qint16 mPercentComplete;
-        std::string mStatusText;
-        std::string mCurrentUri;
-        std::string mClickHref;
-        std::string mClickTarget;
-        std::string mNoFollowScheme;
-        /*
-        nsCOMPtr< nsIWebBrowser > mWebBrowser;
-        nsCOMPtr< nsIBaseWindow > mBaseWindow;
-        nsCOMPtr< nsIWebNavigation > mWebNav;
-        */
-        int mWindowId;
-        unsigned char* mPageBuffer;
-        std::string m404RedirectUrl;
-        bool mEnabled;
-        bool mFlipBitmap;
-        qint32 mBrowserRowSpan;
-        qint16 mBrowserWidth;
-        qint16 mBrowserHeight;
-        qint16 mBrowserDepth;
-        quint8 mBkgRed;
-        quint8 mBkgGreen;
-        quint8 mBkgBlue;
-        quint8 mCaretRed;
-        quint8 mCaretGreen;
-        quint8 mCaretBlue;
+    int mWindowId;
+    unsigned char* mPageBuffer;
+    std::string m404RedirectUrl;
+    bool mEnabled;
+    bool mFlipBitmap;
+    qint32 mBrowserRowSpan;
+    qint16 mBrowserWidth;
+    qint16 mBrowserHeight;
+    qint16 mBrowserDepth;
+    quint8 mBkgRed;
+    quint8 mBkgGreen;
+    quint8 mBkgBlue;
+    quint8 mCaretRed;
+    quint8 mCaretGreen;
+    quint8 mCaretBlue;
 };
 
 #endif // LLEMBEDEDDBROWSERWINDOW_H

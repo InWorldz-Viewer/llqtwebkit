@@ -38,73 +38,60 @@
 
 #include "llembeddedbrowser.h"
 
+#include "llembeddedbrowserwindow.h"
+
 #include <QtWebKit/QtWebKit>
+#include <QtGui/QtGui>
 
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
 
-////////////////////////////////////////////////////////////////////////////////
-//
 LLEmbeddedBrowser::LLEmbeddedBrowser() :
     mErrorNum( 0 ),
     mNativeWindowHandle( 0 )
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 LLEmbeddedBrowser::~LLEmbeddedBrowser()
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 LLEmbeddedBrowser* LLEmbeddedBrowser::getInstance()
 {
-    if (!sInstance) {
+    if (!sInstance)
         sInstance = new LLEmbeddedBrowser;
-    }
     return sInstance;
 };
 
-////////////////////////////////////////////////////////////////////////////////
-//
 void LLEmbeddedBrowser::setLastError( int errorNumIn )
 {
     mErrorNum = errorNumIn;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 void LLEmbeddedBrowser::clearLastError()
 {
     mErrorNum = 0x0000;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 int LLEmbeddedBrowser::getLastError()
 {
     return mErrorNum;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 std::string LLEmbeddedBrowser::getGREVersion()
 {
     // take the string directly from Qt
     return std::string(QT_VERSION_STR);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowser::init(std::string applicationDir,
                              std::string componentDir,
                              std::string profileDir,
                              void* nativeWindowHandleIn)
 {
     qWarning() << "LLEmbeddedBrowser::init()" << "not implemented";
-/*
+    QApplication *application = new QApplication(0, 0);
+    /*
     mNativeWindowHandle = nativeWindowHandleIn;
 
     NS_ConvertUTF8toUTF16 applicationDirUTF16(applicationDir.c_str());
@@ -203,8 +190,6 @@ bool LLEmbeddedBrowser::init(std::string applicationDir,
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowser::reset()
 {
     qWarning() << "LLEmbeddedBrowser::reset()" << "not implemented";
@@ -212,16 +197,12 @@ bool LLEmbeddedBrowser::reset()
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowser::clearCache()
 {
     qWarning() << "LLEmbeddedBrowser::clearCache()" << "not implemented";
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowser::enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn )
 {
     qWarning() << "LLEmbeddedBrowser::enableProxy()" << "not implemented";
@@ -253,8 +234,6 @@ bool LLEmbeddedBrowser::enableProxy( bool proxyEnabledIn, std::string proxyHostN
     return false;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowser::enableCookies( bool enabledIn )
 {
     qWarning() << "LLEmbeddedBrowser::enableCookies()" << "not implemented";
@@ -272,8 +251,6 @@ bool LLEmbeddedBrowser::enableCookies( bool enabledIn )
     return false;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowser::clearAllCookies()
 {
     qWarning() << "LLEmbeddedBrowser::clearAllCookies()" << "not implemented";
@@ -286,8 +263,6 @@ bool LLEmbeddedBrowser::clearAllCookies()
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowser::enablePlugins( bool enabledIn )
 {
     qWarning() << "LLEmbeddedBrowser::enablePlugins()" << "not implemented";
@@ -317,8 +292,6 @@ bool LLEmbeddedBrowser::enablePlugins( bool enabledIn )
     return false;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 void LLEmbeddedBrowser::setBrowserAgentId( std::string idIn )
 {
     qWarning() << "LLEmbeddedBrowser::setBrowserAgentId()" << "not implemented";
@@ -331,88 +304,21 @@ void LLEmbeddedBrowser::setBrowserAgentId( std::string idIn )
     */
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
-LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow( int browserWidthIn, int browserHeightIn )
+LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int browserWidthIn, int browserHeightIn)
 {
-    qWarning() << "LLEmbeddedBrowser::createBrowserWindow()" << "not implemented";
-    /*
-    nsCOMPtr< nsIWebBrowserChrome > chrome;
-
-    LLEmbeddedBrowserWindow* newWin = new LLEmbeddedBrowserWindow();
-    if ( ! newWin )
-    {
-        return 0;
-    };
-
-    nsIWebBrowserChrome** aNewWindow = getter_AddRefs( chrome );
-
-    CallQueryInterface( NS_STATIC_CAST( nsIWebBrowserChrome*, newWin ), aNewWindow );
-
-    NS_ADDREF( *aNewWindow );
-
-    newWin->SetChromeFlags( nsIWebBrowserChrome::CHROME_ALL );
-
-    nsCOMPtr< nsIWebBrowser > newBrowser;
-
-    newWin->createBrowser( mNativeWindowHandle, browserWidthIn, browserHeightIn, getter_AddRefs( newBrowser ) );
-    if ( ! newBrowser )
-    {
-        return 0;
-    };
-
-    if ( newWin && chrome )
-    {
-        newWin->setParent( this );
-        nsCOMPtr< nsIWebBrowser > newBrowser;
-        chrome->GetWebBrowser( getter_AddRefs( newBrowser ) );
-        nsCOMPtr< nsIWebNavigation > webNav( do_QueryInterface ( newBrowser ) );
-        webNav->LoadURI( NS_ConvertUTF8toUTF16( "about:blank" ).get(), nsIWebNavigation::LOAD_FLAGS_NONE, nsnull, nsnull, nsnull );
-
+    LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
+    if (newWin) {
+        newWin->setParent(this);
         clearLastError();
-
         return newWin;
     };
-
-    setLastError( 0x2001 );
-    */
     return 0;
-};
+}
 
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLEmbeddedBrowser::destroyBrowserWindow( LLEmbeddedBrowserWindow* browserWindowIn )
+bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow *browserWindowIn)
 {
-    qWarning() << "LLEmbeddedBrowser::destroyBrowserWindow()" << "not implemented";
-    /*
-    nsCOMPtr< nsIWebBrowser > webBrowser;
-    nsCOMPtr< nsIWebNavigation > webNavigation;
-
-    browserWindowIn->GetWebBrowser( getter_AddRefs( webBrowser ) );
-    webNavigation = do_QueryInterface( webBrowser );
-    if ( webNavigation )
-    {
-        webNavigation->Stop( nsIWebNavigation::STOP_ALL );
-    };
-
-    nsCOMPtr< nsIWebBrowser > browser = nsnull;
-    browserWindowIn->GetWebBrowser( getter_AddRefs( browser ) );
-    nsCOMPtr< nsIBaseWindow > browserAsWin = do_QueryInterface( browser );
-    if ( browserAsWin )
-    {
-        browserAsWin->Destroy();
-    };
-
-
-    browserWindowIn->SetWebBrowser( nsnull );
-
-    NS_RELEASE( browserWindowIn );
-
     delete browserWindowIn;
-
     clearLastError();
-    */
     return true;
 }
 
