@@ -1,3 +1,7 @@
+/*
+   Copyright (C) 2008 Torch Mobile Inc. http://www.torchmobile.com/
+*/
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -11,16 +15,10 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Linden Lab Inc. (http://lindenlab.com) code.
+ * The Original Code is Torch Mobile Inc. (http://www.torchmobile.com/) code
  *
  * The Initial Developer of the Original Code is:
- *   Callum Prentice (callum@ubrowser.com)
- *
- * Portions created by the Initial Developer are Copyright (C) 2006
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *  Callum Prentice (callum@ubrowser.com)
+ *   Benjamin Meyer (benjamin.meyer@torchmobile.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -46,18 +44,25 @@ WebPage::WebPage(QObject *parent)
 {
     connect(this, SIGNAL(loadProgress(int)),
             this, SLOT(loadProgressSlot(int)));
+    connect(this, SIGNAL(statusBarMessage(const QString &)),
+            this, SLOT(statusBarMessageSlot(const QString &)));
+    connect(mainFrame(), SIGNAL(urlChanged(const QUrl&)),
+            this, SLOT(urlChangedSlot(const QUrl&)));
+    connect(this, SIGNAL(repaintRequested(const QRect & )),
+            this, SLOT(repaintRequestedSlot(const QRect &)));
 }
 
 void WebPage::loadProgressSlot(int progress) {
-    qDebug() << QString::fromStdString(window->getCurrentUri()) << "progress" << progress;
     window->mPercentComplete = progress;
     LLEmbeddedBrowserWindowEvent event( window->getWindowId(), window->getCurrentUri(), progress);
     window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onUpdateProgress, event );
+}
 
-    int width = window->getBrowserWidth();
-    int height = window->getBrowserHeight();
-    LLEmbeddedBrowserWindowEvent event2( window->getWindowId(), window->getCurrentUri(), 0, 0, width, height );
-    window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event2 );
+void WebPage::statusBarMessageSlot(const QString &text)
+{
+    window->mStatusText = text.toStdString();
+    LLEmbeddedBrowserWindowEvent event( window->getWindowId(), window->getCurrentUri(), window->mStatusText );
+    window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onStatusTextChange, event );
 }
 
 QString WebPage::userAgentForUrl(const QUrl &url) const
@@ -66,5 +71,19 @@ QString WebPage::userAgentForUrl(const QUrl &url) const
     if (!setAgent.isEmpty())
         return setAgent;
     return QWebPage::userAgentForUrl(url);
+}
+
+void WebPage::urlChangedSlot(const QUrl &url)
+{
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri() );
+    window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onLocationChange, event );
+}
+
+void WebPage::repaintRequestedSlot(const QRect &dirtyRect)
+{
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
+            dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height() );
+
+    window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event );
 }
 
