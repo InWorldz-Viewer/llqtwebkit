@@ -38,22 +38,20 @@
 
 #include "llembeddedbrowser.h"
 
+#include "llembeddedbrowser_p.h"
 #include "llembeddedbrowserwindow.h"
-
-#include <QtWebKit/QtWebKit>
-#include <QtGui/QtGui>
 
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
 
-LLEmbeddedBrowser::LLEmbeddedBrowser() :
-    mErrorNum( 0 ),
-    mNativeWindowHandle( 0 )
+LLEmbeddedBrowser::LLEmbeddedBrowser()
 {
+    d = new LLEmbeddedBrowserPrivate;
 }
 
 LLEmbeddedBrowser::~LLEmbeddedBrowser()
 {
+    delete d;
 }
 
 LLEmbeddedBrowser* LLEmbeddedBrowser::getInstance()
@@ -65,17 +63,17 @@ LLEmbeddedBrowser* LLEmbeddedBrowser::getInstance()
 
 void LLEmbeddedBrowser::setLastError( int errorNumIn )
 {
-    mErrorNum = errorNumIn;
+    d->mErrorNum = errorNumIn;
 }
 
 void LLEmbeddedBrowser::clearLastError()
 {
-    mErrorNum = 0x0000;
+    d->mErrorNum = 0x0000;
 }
 
 int LLEmbeddedBrowser::getLastError()
 {
-    return mErrorNum;
+    return d->mErrorNum;
 }
 
 std::string LLEmbeddedBrowser::getGREVersion()
@@ -89,149 +87,49 @@ bool LLEmbeddedBrowser::init(std::string applicationDir,
                              std::string profileDir,
                              void* nativeWindowHandleIn)
 {
-    qWarning() << "LLEmbeddedBrowser::init()" << "not implemented";
-    QApplication *application = new QApplication(0, 0);
-    /*
-    mNativeWindowHandle = nativeWindowHandleIn;
+    QWebSettings::setIconDatabasePath(QString::fromStdString(applicationDir));
 
-    NS_ConvertUTF8toUTF16 applicationDirUTF16(applicationDir.c_str());
-    NS_ConvertUTF8toUTF16 componentDirUTF16(componentDir.c_str());
-    NS_ConvertUTF8toUTF16 profileDirUTF16(profileDir.c_str());
+    // Until QtWebkit defaults to 16
+    QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
+    QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFixedFontSize, 16);
 
-    nsCOMPtr< nsILocalFile > applicationDirNative;
-    nsresult result = NS_NewLocalFile( applicationDirUTF16, PR_FALSE, getter_AddRefs( applicationDirNative ) );
-    if ( NS_FAILED( result ) )
-    {
-        setLastError( 0x1000 );
-        return false;
-    };
-
-    nsCOMPtr< nsILocalFile > componentDirNative;
-    result = NS_NewLocalFile( componentDirUTF16 , PR_FALSE, getter_AddRefs( componentDirNative ) );
-    if ( NS_FAILED( result ) )
-    {
-        setLastError( 0x1001 );
-        return false;
-    };
-
-    result = XRE_InitEmbedding( componentDirNative, applicationDirNative, nsnull, nsnull, 0 );
-    if ( NS_FAILED( result ) )
-    {
-        setLastError( 0x1002 );
-        return false;
-    };
-
-    nsCOMPtr< nsILocalFile > profileDirNative;
-    result = NS_NewLocalFile( profileDirUTF16 , PR_TRUE, getter_AddRefs( profileDirNative ) );
-    if ( NS_FAILED( result ) )
-    {
-        setLastError( 0x1007 );
-        return false;
-    };
-    nsCOMPtr< nsProfileDirServiceProvider > locProvider;
-    NS_NewProfileDirServiceProvider( PR_TRUE, getter_AddRefs( locProvider ) );
-    if ( ! locProvider )
-    {
-        setLastError( 0x1003 );
-        XRE_TermEmbedding();
-        return PR_FALSE;
-    };
-
-    result = locProvider->Register();
-    if ( NS_FAILED( result ) )
-    {
-        setLastError( 0x1004 );
-        XRE_TermEmbedding();
-        return PR_FALSE;
-    };
-
-    result = locProvider->SetProfileDir( profileDirNative );
-    if ( NS_FAILED( result ) )
-    {
-        setLastError( 0x1005 );
-        XRE_TermEmbedding();
-        return PR_FALSE;
-    };
-
-    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-    if ( pref )
-    {
-        pref->SetBoolPref( "security.warn_entering_secure", PR_FALSE );
-        pref->SetBoolPref( "security.warn_entering_weak", PR_FALSE );
-        pref->SetBoolPref( "security.warn_leaving_secure", PR_FALSE );
-        pref->SetBoolPref( "security.warn_submit_insecure", PR_FALSE );
-        pref->SetBoolPref( "network.protocol-handler.warn-external-default", PR_FALSE );
-    }
-    else
-    {
-        setLastError( 0x1006 );
-    };
-
-    // disable proxy by default
-    enableProxy( false, "", 0 );
-
-    // Originally from Linux version but seems to help other platforms too
-    nsresult rv;
-    nsCOMPtr<nsIAppShell> appShell;
-    NS_DEFINE_CID(kAppShellCID, NS_APPSHELL_CID);
-    appShell = do_CreateInstance(kAppShellCID, &rv);
-    if (!appShell)
-    {
-        setLastError( 0x1008 );
-        return PR_FALSE;
-    }
-    sAppShell = appShell.get();
-    NS_ADDREF(sAppShell);
-    sAppShell->Create(0, nsnull);
-    sAppShell->Spinup();
-
+#if QT_VERSION >= 0x040500
+    d->diskCache = new QNetworkDiskCache(&d->networkAccessManager);
+    d->diskCache->setCacheDirectory(QString::fromStdString(applicationDir));
+    d->networkAccessManager.setCache(d->diskCache);
+#endif
+    d->networkCookieJar = new NetworkCookieJar(&d->networkAccessManager);
+    d->networkAccessManager.setCookieJar(d->networkCookieJar);
     clearLastError();
-*/
     return true;
 }
 
+// What should reset do?
 bool LLEmbeddedBrowser::reset()
 {
-    qWarning() << "LLEmbeddedBrowser::reset()" << "not implemented";
-    //XRE_TermEmbedding();
+    qWarning() << __FUNCTION__ << "not implemented";
     return true;
 }
 
 bool LLEmbeddedBrowser::clearCache()
 {
-    qWarning() << "LLEmbeddedBrowser::clearCache()" << "not implemented";
+    d->diskCache->clear();
     return true;
 }
 
 bool LLEmbeddedBrowser::enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn )
 {
-    qWarning() << "LLEmbeddedBrowser::enableProxy()" << "not implemented";
-    /*nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-    if ( pref )
-    {
-        if ( proxyEnabledIn )
-            pref->SetIntPref( "network.proxy.type", 1 );
-        else
-            pref->SetIntPref( "network.proxy.type", 0 );
-
-        pref->SetCharPref( "network.proxy.ssl", proxyHostNameIn.c_str() );
-        pref->SetIntPref( "network.proxy.ssl_port", proxyPortIn );
-
-        pref->SetCharPref( "network.proxy.ftp", proxyHostNameIn.c_str() );
-        pref->SetIntPref( "network.proxy.ftp_port", proxyPortIn );
-
-        pref->SetCharPref( "network.proxy.gopher", proxyHostNameIn.c_str() );
-        pref->SetIntPref( "network.proxy.gopher_port", proxyPortIn );
-
-        pref->SetCharPref( "network.proxy.http", proxyHostNameIn.c_str() );
-        pref->SetIntPref( "network.proxy.http_port", proxyPortIn );
-
-        pref->SetBoolPref( "network.proxy.share_proxy_settings", true );
-
-        return true;
-    };
-*/
-    return false;
+    QNetworkProxy proxy;
+    if (proxyEnabledIn) {
+        proxy.setType(QNetworkProxy::HttpProxy);
+        QString hostName = QString::fromStdString(proxyHostNameIn);
+        proxy.setHostName(hostName);
+        proxy.setPort(proxyPortIn);
+        //proxy.setUser(settings.value(QLatin1String("userName")).toString());
+        //proxy.setPassword(settings.value(QLatin1String("password")).toString());
+    }
+    d->networkAccessManager.setProxy(proxy);
+    return true;
 }
 
 bool LLEmbeddedBrowser::enableCookies( bool enabledIn )
@@ -253,55 +151,20 @@ bool LLEmbeddedBrowser::enableCookies( bool enabledIn )
 
 bool LLEmbeddedBrowser::clearAllCookies()
 {
-    qWarning() << "LLEmbeddedBrowser::clearAllCookies()" << "not implemented";
-    /*nsCOMPtr< nsICookieManager > cookieManager = do_GetService( NS_COOKIEMANAGER_CONTRACTID );
-    if ( ! cookieManager )
-        return false;
-
-    cookieManager->RemoveAll();
-*/
+    d->networkCookieJar->clear();
     return true;
 }
 
 bool LLEmbeddedBrowser::enablePlugins( bool enabledIn )
 {
-    qWarning() << "LLEmbeddedBrowser::enablePlugins()" << "not implemented";
-    /*
-    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-    if ( pref )
-    {
-        if ( enabledIn )
-        {
-            pref->SetBoolPref( "plugin.scan.plid.all", PR_TRUE );
-            pref->SetBoolPref( "xpinstall-enabled", PR_TRUE );
-        }
-        else
-        {
-            pref->SetBoolPref( "plugin.scan.plid.all", PR_FALSE );
-            pref->SetBoolPref( "xpinstall-enabled", PR_FALSE );
-            pref->SetBoolPref( "plugin.scan.4xPluginFolder", PR_FALSE );
-            pref->SetCharPref( "plugin.scan.Quicktime", "20.0" );
-            pref->SetCharPref( "plugin.scan.Acrobat", "99.0" );
-            pref->SetCharPref( "plugin.scan.SunJRE", "99.0" );
-            pref->SetCharPref( "plugin.scan.WindowsMediaPlayer", "99.0" );
-        };
-
-        return true;
-    };
-    */
-    return false;
+    QWebSettings *defaultSettings = QWebSettings::globalSettings();
+    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, enabledIn);
+    return true;
 }
 
 void LLEmbeddedBrowser::setBrowserAgentId( std::string idIn )
 {
-    qWarning() << "LLEmbeddedBrowser::setBrowserAgentId()" << "not implemented";
-    /*
-    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-    if ( pref )
-    {
-        pref->SetCharPref( "general.useragent.extra.* ", idIn.c_str() );
-    };
-    */
+    d->userAgentString = QString::fromStdString(idIn);
 }
 
 LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int browserWidthIn, int browserHeightIn)
@@ -322,4 +185,25 @@ bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow *browserWin
     return true;
 }
 
+NetworkCookieJar::NetworkCookieJar(QObject *parent)
+{
+}
+
+QList<QNetworkCookie> NetworkCookieJar::cookiesForUrl(const QUrl &url) const
+{
+    if (!allowCookies)
+        return QList<QNetworkCookie>();
+    return QNetworkCookieJar::cookiesForUrl(url);
+}
+
+bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url)
+{
+    if (!allowCookies)
+        return false;
+    return QNetworkCookieJar::setCookiesFromUrl(cookieList, url);
+}
+
+void NetworkCookieJar::clear() {
+    setAllCookies(QList<QNetworkCookie>());
+}
 

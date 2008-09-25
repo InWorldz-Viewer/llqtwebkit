@@ -45,6 +45,7 @@
 class LLEmbeddedBrowserWindow;
 class LLEmbeddedBrowserWindowObserver;
 
+class LLEmbeddedBrowserPrivate;
 class LLEmbeddedBrowser
 {
     public:
@@ -69,9 +70,11 @@ class LLEmbeddedBrowser
         int getLastError();
 
     private:
+        friend class LLEmbeddedBrowserWindow;
+        friend class LLEmbeddedBrowserWindowPrivate;
+        LLEmbeddedBrowserPrivate *d;
+
         static LLEmbeddedBrowser* sInstance;
-        void* mNativeWindowHandle;
-        int mErrorNum;
 };
 
 #endif    // LLEMBEDDEDBROWSER_H

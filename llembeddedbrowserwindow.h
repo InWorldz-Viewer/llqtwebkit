@@ -111,7 +111,7 @@ class LLEmbeddedBrowser;
 
 ////////////////////////////////////////////////////////////////////////////////
 // class for a "window" that holds a browser - there can be lots of these
-class WebPage;
+class LLEmbeddedBrowserWindowPrivate;
 class LLEmbeddedBrowserWindow
 {
 public:
@@ -120,7 +120,7 @@ public:
 
     // housekeeping
     //nsresult createBrowser( void* nativeWindowHandleIn, qint32 widthIn, qint32 heightIn, nsIWebBrowser** aBrowser );
-    void setParent( LLEmbeddedBrowser* parentIn ) { mParent = parentIn; };
+    void setParent( LLEmbeddedBrowser* parentIn );
     bool setSize( qint16 widthIn, qint16 heightIn );
     void focusBrowser( bool focusBrowserIn );
     void scrollByLines( qint16 linesIn );
@@ -186,9 +186,8 @@ public:
 
 private:
     friend class WebPage;
-    WebPage *page;
-    QImage image;
-    LLEmbeddedBrowser* mParent;
+    LLEmbeddedBrowserWindowPrivate *d;
+
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
 
     qint16 mPercentComplete;
@@ -198,7 +197,6 @@ private:
     std::string mClickTarget;
     std::string mNoFollowScheme;
     int mWindowId;
-    unsigned char* mPageBuffer;
     std::string m404RedirectUrl;
     bool mEnabled;
     bool mFlipBitmap;

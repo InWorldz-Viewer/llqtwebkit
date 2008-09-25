@@ -37,6 +37,8 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "llembeddedbrowserwindow.h"
+#include "llembeddedbrowser_p.h"
+#include "llembeddedbrowserwindow_p.h"
 
 #include "llembeddedbrowser.h"
 #include "webpage.h"
@@ -45,11 +47,17 @@
 #include <QtWebKit/QtWebKit>
 #include <QtOpenGL/QtOpenGL>
 
+QString LLEmbeddedBrowserWindowPrivate::userAgent() const
+{
+    if (!mParent)
+        return QString();
+    return mParent->d->userAgentString;
+}
+
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
-    : mParent( 0 ),
+    :
     mWindowId( 0 ),
     mPercentComplete( 0 ),
-    mPageBuffer( 0 ),
     mEnabled( true ),
     mCurrentUri( "" ),
     mStatusText( "" ),
@@ -59,15 +67,20 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     m404RedirectUrl( "" ),
     mFlipBitmap( false )
 {
-    page = new WebPage;
-    page->window = this;
-    page->mainFrame()->load(QUrl("http://www.google.com"));
+    d = new LLEmbeddedBrowserWindowPrivate();
+    d->page->window = this;
+    d->page->mainFrame()->load(QUrl("http://www.google.com"));
 }
 
 LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
 {
-    qDebug() << "destorying page";
-    delete page;
+    delete d;
+}
+
+void LLEmbeddedBrowserWindow::setParent(LLEmbeddedBrowser* parentIn)
+{
+    d->mParent = parentIn;
+    d->page->setNetworkAccessManager(&parentIn->d->networkAccessManager);
 }
 
 // called when the page loading progress changes - emits event to consumer
@@ -245,7 +258,7 @@ bool LLEmbeddedBrowserWindow::remObserver( LLEmbeddedBrowserWindowObserver* obse
 // used by observers of this class to get the current URI
 const std::string LLEmbeddedBrowserWindow::getCurrentUri()
 {
-    return page->mainFrame()->url().toString().toStdString();
+    return d->page->mainFrame()->url().toString().toStdString();
 }
 
 // utility method that is used by observers to retrieve data after an event
@@ -292,12 +305,12 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStatusChange( nsIWebProgress* aWebProgr
 unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthIn, int heightIn )
 {
     qDebug() << __FUNCTION__;
-    image = QImage(page->viewportSize(), QImage::Format_RGB32);
-    QPainter painter(&image);
-    page->mainFrame()->render(&painter);
+    d->image = QImage(d->page->viewportSize(), QImage::Format_RGB32);
+    QPainter painter(&d->image);
+    d->page->mainFrame()->render(&painter);
     painter.end();
-    image = QGLWidget::convertToGLFormat(image);
-    return image.bits();
+    d->image = QGLWidget::convertToGLFormat(d->image);
+    return d->image.bits();
     /*
     // save the pixels and optionally invert them
     // (it's useful the SL client to get bitmaps that are inverted compared
@@ -322,22 +335,22 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
 unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
 {
     qDebug() << __FUNCTION__;
-    image = QImage(page->viewportSize(), QImage::Format_RGB32);
-    QPainter painter(&image);
-    page->mainFrame()->render(&painter);
+    d->image = QImage(d->page->viewportSize(), QImage::Format_RGB32);
+    QPainter painter(&d->image);
+    d->page->mainFrame()->render(&painter);
     painter.end();
-    image = QGLWidget::convertToGLFormat(image);
-    return image.bits();
+    d->image = QGLWidget::convertToGLFormat(d->image);
+    return d->image.bits();
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserWidth()
 {
-    return image.width();
+    return d->image.width();
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserHeight()
 {
-    return image.height();
+    return d->image.height();
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserDepth()
@@ -355,7 +368,7 @@ bool LLEmbeddedBrowserWindow::navigateTo( const std::string uriIn )
 {
     QUrl url = QUrl(QString::fromStdString(uriIn));
     qDebug() << __FUNCTION__ << url;
-    page->mainFrame()->load(url);
+    d->page->mainFrame()->load(url);
 
     int width = getBrowserWidth();
     int height = getBrowserHeight();
@@ -367,38 +380,38 @@ bool LLEmbeddedBrowserWindow::navigateTo( const std::string uriIn )
 
 bool LLEmbeddedBrowserWindow::canNavigateBack()
 {
-    page->history()->canGoBack();
+    d->page->history()->canGoBack();
 }
 
 void LLEmbeddedBrowserWindow::navigateStop()
 {
-    page->triggerAction(QWebPage::Stop);
+    d->page->triggerAction(QWebPage::Stop);
 }
 
 void LLEmbeddedBrowserWindow::navigateBack()
 {
-    page->triggerAction(QWebPage::Back);
+    d->page->triggerAction(QWebPage::Back);
 }
 
 bool LLEmbeddedBrowserWindow::canNavigateForward()
 {
-    page->history()->canGoForward();
+    d->page->history()->canGoForward();
 }
 
 void LLEmbeddedBrowserWindow::navigateForward()
 {
-    page->triggerAction(QWebPage::Forward);
+    d->page->triggerAction(QWebPage::Forward);
 }
 
 void LLEmbeddedBrowserWindow::navigateReload()
 {
-    page->triggerAction(QWebPage::Reload);
+    d->page->triggerAction(QWebPage::Reload);
 }
 
 // set the size of the browser window
 bool LLEmbeddedBrowserWindow::setSize(qint16 widthIn, qint16 heightIn)
 {
-    page->setViewportSize(QSize(widthIn, heightIn));
+    d->page->setViewportSize(QSize(widthIn, heightIn));
     return true;
 }
 
@@ -411,32 +424,32 @@ bool LLEmbeddedBrowserWindow::flipWindow(bool flip)
 void LLEmbeddedBrowserWindow::mouseLeftDoubleClick( qint16 xPosIn, qint16 yPosIn )
 {
     QMouseEvent event(QEvent::MouseButtonDblClick, QPoint(xPosIn, yPosIn), Qt::LeftButton, 0, 0);
-    qApp->sendEvent(page, &event);
+    qApp->sendEvent(d->page, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseDown(qint16 xPosIn, qint16 yPosIn)
 {
     QMouseEvent event(QEvent::MouseButtonPress, QPoint(xPosIn, yPosIn), Qt::LeftButton, 0, 0);
-    qApp->sendEvent(page, &event);
+    qApp->sendEvent(d->page, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseUp(qint16 xPosIn, qint16 yPosIn)
 {
     QMouseEvent event(QEvent::MouseButtonRelease, QPoint(xPosIn, yPosIn), Qt::LeftButton, 0, 0);
-    qApp->sendEvent(page, &event);
+    qApp->sendEvent(d->page, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseMove( qint16 xPosIn, qint16 yPosIn )
 {
     QMouseEvent event(QEvent::MouseMove, QPoint(xPosIn, yPosIn), Qt::NoButton, 0, 0);
-    qApp->sendEvent(page, &event);
+    qApp->sendEvent(d->page, &event);
 }
 
 // utility methods to set an error message so something else can look at it
 void LLEmbeddedBrowserWindow::scrollByLines( qint16 linesIn )
 {
-    int currentScrollValue = page->mainFrame()->scrollBarValue(Qt::Vertical);
-    page->mainFrame()->setScrollBarValue(Qt::Vertical, currentScrollValue + linesIn);
+    int currentScrollValue = d->page->mainFrame()->scrollBarValue(Qt::Vertical);
+    d->page->mainFrame()->setScrollBarValue(Qt::Vertical, currentScrollValue + linesIn);
 }
 
 // higher level keyboard functions
@@ -446,11 +459,11 @@ void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 {
     {
         QKeyEvent event( QEvent::KeyPress, keyCode, Qt::NoModifier);
-        qApp->sendEvent(page, &event);
+        qApp->sendEvent(d->page, &event);
     }
     {
         QKeyEvent event( QEvent::KeyRelease, keyCode, Qt::NoModifier);
-        qApp->sendEvent(page, &event);
+        qApp->sendEvent(d->page, &event);
     }
     //sendMozillaKeyboardEvent( 0, keyCode );
 }
@@ -553,7 +566,7 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::HandleEvent( nsIDOMEvent* anEvent )
 void LLEmbeddedBrowserWindow::focusBrowser( bool focusBrowserIn )
 {
     QFocusEvent event(focusBrowserIn ? QEvent::FocusIn : QEvent::FocusOut, Qt::OtherFocusReason);
-    qApp->sendEvent(page, &event);
+    qApp->sendEvent(d->page, &event);
 }
 
 void LLEmbeddedBrowserWindow::setWindowId( int windowIdIn )
@@ -668,7 +681,7 @@ NS_METHOD LLEmbeddedBrowserWindow::NotifyInvalidated( nsIWidget *aWidget, qint32
 std::string LLEmbeddedBrowserWindow::evaluateJavascript( std::string scriptIn )
 {
     QString script = QString::fromStdString(scriptIn);
-    QString result = page->mainFrame()->evaluateJavaScript(script).toString();
+    QString result = d->page->mainFrame()->evaluateJavaScript(script).toString();
     return result.toStdString();
 }
 
