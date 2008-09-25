@@ -1,3 +1,7 @@
+/*
+   Copyright (C) 2008 Torch Mobile Inc. http://www.torchmobile.com/
+*/
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -11,16 +15,10 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Linden Lab Inc. (http://lindenlab.com) code.
+ * The Original Code is Torch Mobile Inc. (http://www.torchmobile.com/) code
  *
  * The Initial Developer of the Original Code is:
- *   Callum Prentice (callum@ubrowser.com)
- *
- * Portions created by the Initial Developer are Copyright (C) 2006
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *  Callum Prentice (callum@ubrowser.com)
+ *   Benjamin Meyer (benjamin.meyer@torchmobile.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
