@@ -69,7 +69,6 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
 {
     d = new LLEmbeddedBrowserWindowPrivate();
     d->page->window = this;
-    d->page->mainFrame()->load(QUrl("http://www.google.com"));
 }
 
 LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
@@ -220,6 +219,7 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnLocationChange( nsIWebProgress* webProg
 // change the background color that gets used between pages (usually white)
 void LLEmbeddedBrowserWindow::setBackgroundColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn )
 {
+    qDebug() << __FUNCTION__ << "Not implemented";
     /*
     mBkgRed = redIn;
     mBkgGreen = greenIn;
@@ -230,6 +230,7 @@ void LLEmbeddedBrowserWindow::setBackgroundColor( const quint8 redIn, const quin
 // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
 void LLEmbeddedBrowserWindow::setCaretColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn )
 {
+    qDebug() << __FUNCTION__ << "Not implemented";
     /*
     mCaretRed = redIn;
     mCaretGreen = greenIn;
@@ -240,6 +241,7 @@ void LLEmbeddedBrowserWindow::setCaretColor( const quint8 redIn, const quint8 gr
 //
 void LLEmbeddedBrowserWindow::setEnabled( bool enabledIn )
 {
+    qDebug() << __FUNCTION__ << "Not implemented";
     //mEnabled = enabledIn;
 }
 
@@ -258,6 +260,7 @@ bool LLEmbeddedBrowserWindow::remObserver( LLEmbeddedBrowserWindowObserver* obse
 // used by observers of this class to get the current URI
 const std::string LLEmbeddedBrowserWindow::getCurrentUri()
 {
+    qDebug() << __FUNCTION__ << "Not implemented" << d->page->mainFrame()->url();
     return d->page->mainFrame()->url().toString().toStdString();
 }
 
@@ -270,18 +273,21 @@ const qint16 LLEmbeddedBrowserWindow::getPercentComplete()
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getStatusMsg()
 {
+    qDebug() << __FUNCTION__ << "Not implemented";
     //return mStatusText;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
 {
+    qDebug() << __FUNCTION__ << "Not implemented";
     //return mClickHref;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
 {
+    qDebug() << __FUNCTION__ << "Not implemented";
     //return mClickTarget;
 }
 /*
@@ -304,31 +310,15 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStatusChange( nsIWebProgress* aWebProgr
 //       need to make this work with arbitrary rects (i.e. the dirty rect)
 unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthIn, int heightIn )
 {
-    qDebug() << __FUNCTION__;
+    qDebug() << __FUNCTION__ << mFlipBitmap;
     d->image = QImage(d->page->viewportSize(), QImage::Format_RGB32);
     QPainter painter(&d->image);
     d->page->mainFrame()->render(&painter);
     painter.end();
+    if ( !mFlipBitmap )
+        d->image = d->image.mirrored();
     d->image = QGLWidget::convertToGLFormat(d->image);
     return d->image.bits();
-    /*
-    // save the pixels and optionally invert them
-    // (it's useful the SL client to get bitmaps that are inverted compared
-    // to the way that Mozilla renders them - allow to optionally flip
-    if ( mFlipBitmap )
-    {
-        for( int y = mBrowserHeight - 1; y > -1; --y )
-        {
-            memcpy( mPageBuffer + y * mBrowserRowSpan,
-                        data + ( mBrowserHeight - y - 1 ) * mBrowserRowSpan,
-                            mBrowserRowSpan );
-        };
-    }
-    else
-    {
-        memcpy( mPageBuffer, data, mBrowserRowSpan * mBrowserHeight );
-    };
-    */
 }
 
 // return the buffer that contains the rendered page
@@ -339,6 +329,8 @@ unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
     QPainter painter(&d->image);
     d->page->mainFrame()->render(&painter);
     painter.end();
+    if ( !mFlipBitmap )
+        d->image = d->image.mirrored();
     d->image = QGLWidget::convertToGLFormat(d->image);
     return d->image.bits();
 }
@@ -360,7 +352,6 @@ qint16 LLEmbeddedBrowserWindow::getBrowserDepth()
 
 qint32 LLEmbeddedBrowserWindow::getBrowserRowSpan()
 {
-    qDebug() << "getBrowserRowSpan";
     return 4 * getBrowserWidth();
 }
 
@@ -369,12 +360,6 @@ bool LLEmbeddedBrowserWindow::navigateTo( const std::string uriIn )
     QUrl url = QUrl(QString::fromStdString(uriIn));
     qDebug() << __FUNCTION__ << url;
     d->page->mainFrame()->load(url);
-
-    int width = getBrowserWidth();
-    int height = getBrowserHeight();
-    LLEmbeddedBrowserWindowEvent event( getWindowId(), getCurrentUri(), 0, 0, width, height );
-    mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event );
-
     return true;
 }
 
@@ -417,6 +402,7 @@ bool LLEmbeddedBrowserWindow::setSize(qint16 widthIn, qint16 heightIn)
 
 bool LLEmbeddedBrowserWindow::flipWindow(bool flip)
 {
+    qDebug() << __FUNCTION__ << "Not implemented" << flip;
     mFlipBitmap = flip;
     return true;
 }
@@ -457,8 +443,10 @@ void LLEmbeddedBrowserWindow::scrollByLines( qint16 linesIn )
 // accept a (mozilla-style) keycode
 void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 {
+    qDebug() << __FUNCTION__ << keyCode;
     {
         QKeyEvent event( QEvent::KeyPress, keyCode, Qt::NoModifier);
+        qDebug() << event.text();
         qApp->sendEvent(d->page, &event);
     }
     {
@@ -471,6 +459,7 @@ void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 // accept keyboard input that's already been translated into a unicode char.
 void LLEmbeddedBrowserWindow::unicodeInput( quint32 uni_char )
 {
+    qDebug() << __FUNCTION__ << "Not implemented";
     //sendMozillaKeyboardEvent( uni_char, 0 );
 }
 /*
