@@ -291,12 +291,21 @@ void LLEmbeddedBrowserWindow::scrollByLines( qint16 linesIn )
 // accept a (mozilla-style) keycode
 void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 {
+    Qt::Key key;
+    switch (keyCode) {
+    case 8: key = Qt::Key_Backspace; break;
+    case 13: key = Qt::Key_Return; break;
+    // TODO the rest of them
+    default:
+            key = (Qt::Key)keyCode;
+    }
+
     {
-        QKeyEvent event( QEvent::KeyPress, keyCode, Qt::NoModifier, QChar(keyCode));
+        QKeyEvent event( QEvent::KeyPress, key, Qt::NoModifier, QChar(keyCode));
         qApp->sendEvent(d->page, &event);
     }
     {
-        QKeyEvent event( QEvent::KeyRelease, keyCode, Qt::NoModifier, QChar(keyCode));
+        QKeyEvent event( QEvent::KeyRelease, key, Qt::NoModifier, QChar(keyCode));
         qApp->sendEvent(d->page, &event);
     }
 }
