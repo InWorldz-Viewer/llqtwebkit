@@ -11,7 +11,7 @@ SRCS='llembeddedbrowser.cpp llembeddedbrowserwindow.cpp llmozlib2.cpp webpage.cp
 LIBNAME=libllmozlib2
 OBJS=`echo ${SRCS} | sed s/\\.cpp/.o/g`
 #INCS_LINE="`find libraries/${MOZARCH}/include -type d | sed s/^/-I/`"
-INCS_LINE="-I/home/ben/dev/qt-snapshot/include"
+INCS_LINE="-I$QTDIR/include"
 DEFS='-DMOZILLA_INTERNAL_API -DLL_LINUX=1'
 OPTS='-ggdb -fvisibility=hidden'
 
