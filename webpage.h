@@ -56,6 +56,7 @@ class WebPage : public QWebPage
         void statusBarMessageSlot(const QString &);
         void urlChangedSlot(const QUrl &url);
         void repaintRequestedSlot(const QRect &dirtyRect);
+        void scrollRequestedSlot( int dx, int dy, const QRect & rectToScroll);
 };
 
 #endif

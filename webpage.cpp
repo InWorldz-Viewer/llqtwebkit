@@ -50,6 +50,8 @@ WebPage::WebPage(QObject *parent)
             this, SLOT(urlChangedSlot(const QUrl&)));
     connect(this, SIGNAL(repaintRequested(const QRect & )),
             this, SLOT(repaintRequestedSlot(const QRect &)));
+    connect(this, SIGNAL(scrollRequested(int, int, const QRect &)),
+            this, SLOT(scrollRequestedSlot(int, int, const QRect &)));
 }
 
 void WebPage::loadProgressSlot(int progress) {
@@ -84,6 +86,13 @@ void WebPage::repaintRequestedSlot(const QRect &dirtyRect)
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
             dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height() );
 
+    window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event );
+}
+
+void WebPage::scrollRequestedSlot( int dx, int dy, const QRect & rectToScroll )
+{
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
+            0, 0, window->getBrowserWidth(), window->getBrowserHeight());
     window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event );
 }
 
