@@ -4,7 +4,7 @@
 
 CXX='g++'
 MOZARCH='i686-linux'
-SRCS='llembeddedbrowser.cpp llembeddedbrowserwindow.cpp llmozlib2.cpp'
+SRCS='llembeddedbrowser.cpp llembeddedbrowserwindow.cpp llmozlib2.cpp webpage.cpp moc_webpage.cpp'
 
 #------------------------
 
@@ -16,6 +16,8 @@ DEFS='-DMOZILLA_INTERNAL_API -DLL_LINUX=1'
 OPTS='-ggdb -fvisibility=hidden'
 
 rm -f ${LIBNAME}.a ${OBJS}
+
+moc webpage.h -o moc_webpage.cpp
 
 for source in ${SRCS} ; do
     ${CXX} ${OPTS} ${DEFS} ${INCS_LINE} -c ${source}

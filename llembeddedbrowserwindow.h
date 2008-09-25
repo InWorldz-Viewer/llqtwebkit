@@ -111,7 +111,7 @@ class LLEmbeddedBrowser;
 
 ////////////////////////////////////////////////////////////////////////////////
 // class for a "window" that holds a browser - there can be lots of these
-class QWebPage;
+class WebPage;
 class LLEmbeddedBrowserWindow
 {
 public:
@@ -129,10 +129,10 @@ public:
 
     // random accessors
     const qint16 getPercentComplete();
-    const std::string& getStatusMsg();
-    const std::string& getCurrentUri();
-    const std::string& getClickLinkHref();
-    const std::string& getClickLinkTarget();
+    const std::string getStatusMsg();
+    const std::string getCurrentUri();
+    const std::string getClickLinkHref();
+    const std::string getClickLinkTarget();
 
     // memory buffer management
     unsigned char* grabWindow( int xIn, int yIn, int widthIn, int heightIn );
@@ -185,16 +185,11 @@ public:
     std::string getNoFollowScheme();
 
 private:
-    QWebPage *page;
+    friend class WebPage;
+    WebPage *page;
     QImage image;
     LLEmbeddedBrowser* mParent;
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
-    /*
-       bool sendMozillaMouseEvent( qint16 eventIn, qint16 xPosIn, qint16 yPosIn, quint32 clickCountIn );
-    bool sendMozillaKeyboardEvent( quint32 keyIn, quint32 ns_vk_code );
-    bool renderCaret();
-    bool enableToolkitObserver( bool enableIn );
-*/
 
     qint16 mPercentComplete;
     std::string mStatusText;
@@ -202,26 +197,11 @@ private:
     std::string mClickHref;
     std::string mClickTarget;
     std::string mNoFollowScheme;
-    /*
-    nsCOMPtr< nsIWebBrowser > mWebBrowser;
-    nsCOMPtr< nsIBaseWindow > mBaseWindow;
-    nsCOMPtr< nsIWebNavigation > mWebNav;
-    */
     int mWindowId;
     unsigned char* mPageBuffer;
     std::string m404RedirectUrl;
     bool mEnabled;
     bool mFlipBitmap;
-    qint32 mBrowserRowSpan;
-    qint16 mBrowserWidth;
-    qint16 mBrowserHeight;
-    qint16 mBrowserDepth;
-    quint8 mBkgRed;
-    quint8 mBkgGreen;
-    quint8 mBkgBlue;
-    quint8 mCaretRed;
-    quint8 mCaretGreen;
-    quint8 mCaretBlue;
 };
 
 #endif // LLEMBEDEDDBROWSERWINDOW_H

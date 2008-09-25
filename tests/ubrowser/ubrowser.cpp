@@ -1310,7 +1310,6 @@ GLenum uBrowser::getGLTextureFormat(int size)
     return GL_BGRA;
 #elif defined(LL_LINUX)
     return GL_RGBA;
-    return GL_BGRA;
 #else
     #error uBrowser::getGLTextureFormat() needs an implementation for this platform!
 #endif

@@ -39,18 +39,16 @@
 #include "llembeddedbrowserwindow.h"
 
 #include "llembeddedbrowser.h"
+#include "webpage.h"
 
 #include <QtGui/QtGui>
 #include <QtWebKit/QtWebKit>
 #include <QtOpenGL/QtOpenGL>
 
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
-    : mParent( 0 )
-    /*mWebBrowser( nsnull ),
-    mBaseWindow( nsnull ),
+    : mParent( 0 ),
     mWindowId( 0 ),
     mPercentComplete( 0 ),
-    mBrowserDepth( 4 ),
     mPageBuffer( 0 ),
     mEnabled( true ),
     mCurrentUri( "" ),
@@ -58,16 +56,11 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     mClickHref( "" ),
     mClickTarget( "" ),
     mNoFollowScheme( "secondlife://" ),
-    mBkgRed( 0xff ),
-    mBkgGreen( 0xff ),
-    mBkgBlue( 0xff ),
-    mCaretRed( 0x0 ),
-    mCaretGreen( 0x0 ),
-    mCaretBlue( 0x0 ),
     m404RedirectUrl( "" ),
-    mFlipBitmap( false )*/
+    mFlipBitmap( false )
 {
-    page = new QWebPage;
+    page = new WebPage;
+    page->window = this;
     page->mainFrame()->load(QUrl("http://www.google.com"));
 }
 
@@ -79,26 +72,6 @@ LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
 
 // called when the page loading progress changes - emits event to consumer
 /*
-NS_IMETHODIMP LLEmbeddedBrowserWindow::OnProgressChange( nsIWebProgress* progress, nsIRequest* request,
-                                                    qint32 curSelfProgress, qint32 maxSelfProgress,
-                                                        qint32 curTotalProgress, qint32 maxTotalProgress )
-{
-    mPercentComplete = static_cast< qint16 >
-        ( static_cast< float >( curTotalProgress * 100.0f ) / static_cast< float >( maxTotalProgress ) );
-
-    if ( mPercentComplete < 0 )
-        mPercentComplete = 0;
-
-    if ( mPercentComplete > 100 )
-        mPercentComplete = 100;
-
-    LLEmbeddedBrowserWindowEvent event( getWindowId(), getCurrentUri(), mPercentComplete );
-    mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onUpdateProgress, event );
-
-    return NS_OK;
-}
-
-
 // called when the browser state changes - as described below - emits event to consumer
 NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStateChange( nsIWebProgress* progress, nsIRequest* request,
                                                     quint32 progressStateFlags, nsresult status )
@@ -270,7 +243,7 @@ bool LLEmbeddedBrowserWindow::remObserver( LLEmbeddedBrowserWindowObserver* obse
 }
 
 // used by observers of this class to get the current URI
-const std::string& LLEmbeddedBrowserWindow::getCurrentUri()
+const std::string LLEmbeddedBrowserWindow::getCurrentUri()
 {
     return page->mainFrame()->url().toString().toStdString();
 }
@@ -278,23 +251,23 @@ const std::string& LLEmbeddedBrowserWindow::getCurrentUri()
 // utility method that is used by observers to retrieve data after an event
 const qint16 LLEmbeddedBrowserWindow::getPercentComplete()
 {
-    //return mPercentComplete;
+    return mPercentComplete;
 }
 
 // utility method that is used by observers to retrieve data after an event
-const std::string& LLEmbeddedBrowserWindow::getStatusMsg()
+const std::string LLEmbeddedBrowserWindow::getStatusMsg()
 {
     //return mStatusText;
 }
 
 // utility method that is used by observers to retrieve data after an event
-const std::string& LLEmbeddedBrowserWindow::getClickLinkHref()
+const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
 {
     //return mClickHref;
 }
 
 // utility method that is used by observers to retrieve data after an event
-const std::string& LLEmbeddedBrowserWindow::getClickLinkTarget()
+const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
 {
     //return mClickTarget;
 }
@@ -312,22 +285,13 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStatusChange( nsIWebProgress* aWebProgr
 
     return NS_OK;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// implement this if you want to do something when the security state changtes
-NS_IMETHODIMP LLEmbeddedBrowserWindow::OnSecurityChange( nsIWebProgress* aWebProgress,
-                                                    nsIRequest* aRequest,
-                                                        quint32 state )
-{
-    return NS_OK;
-}
 */
 // render a page into memory and grab the window
 // TODO: 0,0, browser width, browser height is always passed in right now
 //       need to make this work with arbitrary rects (i.e. the dirty rect)
 unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthIn, int heightIn )
 {
-    qDebug() << "grabWindow";
+    qDebug() << __FUNCTION__;
     image = QImage(page->viewportSize(), QImage::Format_RGB32);
     QPainter painter(&image);
     page->mainFrame()->render(&painter);
@@ -335,85 +299,15 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
     image = QGLWidget::convertToGLFormat(image);
     return image.bits();
     /*
-    // sanity check
-    if ( ! mWebBrowser )
-        return 0;
-
-    // only grab the window if it's enabled
-    if ( ! mEnabled )
-        return false;
-
-    // get the docshell
-    nsCOMPtr< nsIDocShell > docShell = do_GetInterface( mWebBrowser );
-    if ( ! docShell )
-        return false;
-
-
-    // get pres context
-    nsCOMPtr< nsPresContext > presContext;
-    nsresult result = docShell->GetPresContext( getter_AddRefs( presContext ) );
-    if ( NS_FAILED( result ) || ( ! presContext ) )
-        return false;
-
-    // get view manager
-    nsIViewManager* viewManager = presContext->GetViewManager();
-    if ( ! viewManager )
-        return false;
-
-    // get the view
-    nsIScrollableView* scrollableView = NULL;
-    viewManager->GetRootScrollableView( &scrollableView );
-    nsIView* view = NULL;
-    if ( scrollableView )
-        scrollableView->GetScrolledView( view );
-    else
-        viewManager->GetRootView( view );
-
-    // get the rectangle we want to render in twips (this looks odd but takees care of scrolling too)
-    nsRect rect = view->GetBounds() - view->GetPosition() - view->GetPosition();
-    if ( rect.IsEmpty() )
-        return 0;
-
-    float p2t = presContext->PixelsToTwips();
-    rect.width = NSIntPixelsToTwips( widthIn, p2t );
-    rect.height = NSIntPixelsToTwips( heightIn, p2t );
-
-    // render the page
-    nsCOMPtr< nsIRenderingContext > context;
-    result = viewManager->RenderOffscreen( view, rect, false, false, NS_RGB( mBkgRed, mBkgGreen, mBkgBlue  ), getter_AddRefs( context ) );
-    if ( NS_FAILED( result ) )
-        return 0;
-
-    // retrieve the surface we rendered to
-    nsIDrawingSurface* surface = nsnull;
-    context->GetDrawingSurface( &surface );
-    if ( ! surface )
-        return 0;
-
-    // lock the surface and retrieve a pointer to the rendered data and current row span
-    quint8* data;
-    qint32 rowLen;
-    // sometime rowspan ! width in pixels * bytes per pixel so save row span value and use in application
-    result = surface->Lock( xIn, yIn, widthIn, heightIn, reinterpret_cast< void** >( &data ), &mBrowserRowSpan, &rowLen, NS_LOCK_SURFACE_READ_ONLY );
-    if ( NS_FAILED ( result ) )
-        return 0;
-
-    // save row span - it *can* change during the life of the app
-    mBrowserDepth = rowLen / mBrowserWidth;
-
-    // create memory buffer here so it can be deleted and recreated elsewhere
-    if ( ! mPageBuffer )
-        mPageBuffer = new unsigned char[ mBrowserRowSpan * mBrowserHeight ];
-
-    // save the pixels and optionally invert them 
+    // save the pixels and optionally invert them
     // (it's useful the SL client to get bitmaps that are inverted compared
     // to the way that Mozilla renders them - allow to optionally flip
     if ( mFlipBitmap )
     {
         for( int y = mBrowserHeight - 1; y > -1; --y )
         {
-            memcpy( mPageBuffer + y * mBrowserRowSpan, 
-                        data + ( mBrowserHeight - y - 1 ) * mBrowserRowSpan, 
+            memcpy( mPageBuffer + y * mBrowserRowSpan,
+                        data + ( mBrowserHeight - y - 1 ) * mBrowserRowSpan,
                             mBrowserRowSpan );
         };
     }
@@ -421,99 +315,9 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
     {
         memcpy( mPageBuffer, data, mBrowserRowSpan * mBrowserHeight );
     };
-
-    // release and destroy the surface we rendered to
-    surface->Unlock();
-    context->DestroyDrawingSurface( surface );
-
-    renderCaret();
-
-    return mPageBuffer;
     */
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// all this just to render a caret!
-/*
-bool LLEmbeddedBrowserWindow::renderCaret()
-{
-    nsCOMPtr< nsIWebBrowserFocus > focus = do_QueryInterface( mWebBrowser );
-
-    nsCOMPtr< nsIDOMElement > focusedElement;
-    focus->GetFocusedElement( getter_AddRefs( focusedElement ) );
-    if ( ! focusedElement )
-        return NS_ERROR_FAILURE;
-
-    nsCOMPtr<nsIContent> focusedContent = do_QueryInterface( focusedElement );
-
-    nsCOMPtr< nsIDOMWindow > domWindow;
-    mWebBrowser->GetContentDOMWindow( getter_AddRefs( domWindow ) );
-    if ( ! domWindow )
-        return NS_ERROR_FAILURE;
-
-    nsCOMPtr< nsIDOMDocument > domDocument;
-    domWindow->GetDocument( getter_AddRefs( domDocument ) );
-    if ( ! domDocument )
-        return NS_ERROR_FAILURE;
-
-    nsCOMPtr< nsIDocument> document = do_QueryInterface( domDocument );
-    if ( ! document )
-        return NS_ERROR_FAILURE;
-
-    nsIPresShell* presShell = document->GetShellAt( 0 );
-    if ( ! presShell )
-        return NS_ERROR_FAILURE;
-
-    nsCOMPtr< nsICaret > caret;
-    presShell->GetCaret( getter_AddRefs( caret ) );
-
-    nsIFrame* frame = nsnull;
-    presShell->GetPrimaryFrameFor( focusedContent, &frame );
-    if ( ! frame )
-        return NS_ERROR_FAILURE;
-
-    nsCOMPtr<nsISelectionController> selCtrl;
-    frame->GetSelectionController( presShell->GetPresContext(), getter_AddRefs( selCtrl ) );
-
-    nsCOMPtr<nsISelection> selection;
-    selCtrl->GetSelection( nsISelectionController::SELECTION_NORMAL, getter_AddRefs( selection ) );
-
-    bool collapsed;
-    nsRect coords;
-    nsIView* caretView;
-    caret->GetCaretCoordinates( nsICaret::eTopLevelWindowCoordinates, selection, &coords, &collapsed, &caretView );
-
-    float twips2Pixls = presShell->GetPresContext()->TwipsToPixels();
-
-    qint32 caretX = NSTwipsToIntPixels( coords.x, twips2Pixls );
-    qint32 caretY = NSTwipsToIntPixels( coords.y, twips2Pixls );
-    qint32 caretHeight = NSTwipsToIntPixels( coords.height, twips2Pixls );
-
-    if ( caretX > -1 && caretX < mBrowserWidth && caretY > -1 && caretY < mBrowserHeight )
-    {
-        if ( mPageBuffer )
-        {
-            for( int y = 1; y < caretHeight - 1; ++y )
-            {
-                qint32 base_pos = caretY + y;
-                if ( mFlipBitmap )
-                    base_pos = mBrowserHeight - ( caretY + y );
-
-                // sometimes the caret seems valid when it really isn't - cap it to size of screen
-                if ( caretY + y + caretHeight < mBrowserHeight )
-                {
-                    mPageBuffer[ base_pos * getBrowserRowSpan() + ( caretX + 1 ) * mBrowserDepth + 0 ] = mCaretBlue;
-                    mPageBuffer[ base_pos * getBrowserRowSpan() + ( caretX + 1 ) * mBrowserDepth + 1 ] = mCaretGreen;
-                    mPageBuffer[ base_pos * getBrowserRowSpan() + ( caretX + 1 ) * mBrowserDepth + 2 ] = mCaretRed;
-                };
-            };
-        };
-    };
-
-    return NS_OK;
-}*/
-
-////////////////////////////////////////////////////////////////////////////////
 // return the buffer that contains the rendered page
 unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
 {
@@ -524,46 +328,33 @@ unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
     painter.end();
     image = QGLWidget::convertToGLFormat(image);
     return image.bits();
-    //return mPageBuffer;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 qint16 LLEmbeddedBrowserWindow::getBrowserWidth()
 {
-    return page->mainFrame()->contentsSize().width();
+    return image.width();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 qint16 LLEmbeddedBrowserWindow::getBrowserHeight()
 {
-    return page->mainFrame()->contentsSize().height();
+    return image.height();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 qint16 LLEmbeddedBrowserWindow::getBrowserDepth()
 {
     return 4;
-    //return mBrowserDepth;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 qint32 LLEmbeddedBrowserWindow::getBrowserRowSpan()
 {
     qDebug() << "getBrowserRowSpan";
     return 4 * getBrowserWidth();
-    //return mBrowserRowSpan;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowserWindow::navigateTo( const std::string uriIn )
 {
-    qDebug() << "navigateTo";
     QUrl url = QUrl(QString::fromStdString(uriIn));
+    qDebug() << __FUNCTION__ << url;
     page->mainFrame()->load(url);
 
     int width = getBrowserWidth();
@@ -572,97 +363,73 @@ bool LLEmbeddedBrowserWindow::navigateTo( const std::string uriIn )
     mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event );
 
     return true;
-};
+}
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowserWindow::canNavigateBack()
 {
- /*
-    if ( ! mWebNav )
-    {
-        return false;
-    };
-
-    bool canGoBack = false;
-
-    nsresult result = mWebNav->GetCanGoBack( &canGoBack );
-    if ( NS_FAILED( result ) )
-    {
-        return false;
-    };
-
-    return canGoBack;
-    */
-};
+    page->history()->canGoBack();
+}
 
 void LLEmbeddedBrowserWindow::navigateStop()
 {
     page->triggerAction(QWebPage::Stop);
-};
+}
 
 void LLEmbeddedBrowserWindow::navigateBack()
 {
     page->triggerAction(QWebPage::Back);
-};
+}
 
 bool LLEmbeddedBrowserWindow::canNavigateForward()
 {
-    // TODO
-};
+    page->history()->canGoForward();
+}
 
 void LLEmbeddedBrowserWindow::navigateForward()
 {
     page->triggerAction(QWebPage::Forward);
-};
+}
 
 void LLEmbeddedBrowserWindow::navigateReload()
 {
     page->triggerAction(QWebPage::Reload);
-};
+}
 
 // set the size of the browser window
-bool LLEmbeddedBrowserWindow::setSize( qint16 widthIn, qint16 heightIn )
+bool LLEmbeddedBrowserWindow::setSize(qint16 widthIn, qint16 heightIn)
 {
     page->setViewportSize(QSize(widthIn, heightIn));
     return true;
 }
 
-//
-bool LLEmbeddedBrowserWindow::flipWindow( bool flip )
+bool LLEmbeddedBrowserWindow::flipWindow(bool flip)
 {
     mFlipBitmap = flip;
-    return false;//true;
+    return true;
 }
 
-// higher level mouse event
 void LLEmbeddedBrowserWindow::mouseLeftDoubleClick( qint16 xPosIn, qint16 yPosIn )
 {
-    // Internally Mozilla represents double-click as a 2-count mouse down event.
-    // TODO: support triple-click
-    //const quint32 clickCount = 2;
-    //sendMozillaMouseEvent( NS_MOUSE_LEFT_BUTTON_DOWN, xPosIn, yPosIn, clickCount );
+    QMouseEvent event(QEvent::MouseButtonDblClick, QPoint(xPosIn, yPosIn), Qt::LeftButton, 0, 0);
+    qApp->sendEvent(page, &event);
 }
 
-// higher level mouse event
-void LLEmbeddedBrowserWindow::mouseDown( qint16 xPosIn, qint16 yPosIn )
+void LLEmbeddedBrowserWindow::mouseDown(qint16 xPosIn, qint16 yPosIn)
 {
-    //const quint32 clickCount = 1;
-    //sendMozillaMouseEvent( NS_MOUSE_LEFT_BUTTON_DOWN, xPosIn, yPosIn, clickCount );
+    QMouseEvent event(QEvent::MouseButtonPress, QPoint(xPosIn, yPosIn), Qt::LeftButton, 0, 0);
+    qApp->sendEvent(page, &event);
 }
 
-// higher level mouse event
-void LLEmbeddedBrowserWindow::mouseUp( qint16 xPosIn, qint16 yPosIn )
+void LLEmbeddedBrowserWindow::mouseUp(qint16 xPosIn, qint16 yPosIn)
 {
-    //const quint32 clickCount = 1;
-    //sendMozillaMouseEvent( NS_MOUSE_LEFT_BUTTON_UP, xPosIn, yPosIn, clickCount );
+    QMouseEvent event(QEvent::MouseButtonRelease, QPoint(xPosIn, yPosIn), Qt::LeftButton, 0, 0);
+    qApp->sendEvent(page, &event);
 }
 
-// higher level mouse event
 void LLEmbeddedBrowserWindow::mouseMove( qint16 xPosIn, qint16 yPosIn )
 {
-    //const quint32 clickCount = 1;    // ignored?
-    //sendMozillaMouseEvent( NS_MOUSE_MOVE, xPosIn, yPosIn, clickCount );
+    QMouseEvent event(QEvent::MouseMove, QPoint(xPosIn, yPosIn), Qt::NoButton, 0, 0);
+    qApp->sendEvent(page, &event);
 }
 
 // utility methods to set an error message so something else can look at it
@@ -671,69 +438,20 @@ void LLEmbeddedBrowserWindow::scrollByLines( qint16 linesIn )
     int currentScrollValue = page->mainFrame()->scrollBarValue(Qt::Vertical);
     page->mainFrame()->setScrollBarValue(Qt::Vertical, currentScrollValue + linesIn);
 }
-/*
-// synthesizes a mouse event and sends into the embedded instance
-// eventIn - NS_MOUSE_LEFT_BUTTON_DOWN, NS_MOUSE_LEFT_BUTTON_UP, etc.
-// xPosIn, yPosIn - coordinates (in browser window space)
-// clickCountIn - use 1 for single click, 2 for double-click, etc.
-bool LLEmbeddedBrowserWindow::sendMozillaMouseEvent( qint16 eventIn, qint16 xPosIn, qint16 yPosIn, quint32 clickCountIn )
-{
-    if ( ! mEnabled )
-        return false;
 
-    if ( ! mWebBrowser )
-        return false;
-
-    nsCOMPtr< nsIDocShell > docShell = do_GetInterface( mWebBrowser );
-    if ( ! docShell )
-        return false;
-
-    nsCOMPtr< nsPresContext > presContext;
-    nsresult result = docShell->GetPresContext( getter_AddRefs( presContext ) );
-    if ( NS_FAILED( result ) || ( ! presContext ) )
-        return false;
-
-    nsIViewManager* viewManager = presContext->GetViewManager();
-    if ( ! viewManager )
-        return false;
-
-    nsIView* rootView;
-    result = viewManager->GetRootView( rootView );
-    if ( NS_FAILED( result ) || ( ! rootView ) )
-        return false;
-
-    nsCOMPtr< nsIWidget > widget = rootView->GetWidget();
-    if ( ! widget )
-        return false;
-
-    nsMouseEvent mouseEvent( true, eventIn, widget, nsMouseEvent::eReal );
-    mouseEvent.clickCount = clickCountIn;
-    mouseEvent.isShift = 0;
-    mouseEvent.isControl = 0;
-    mouseEvent.isAlt = 0;
-    mouseEvent.isMeta = 0;
-    mouseEvent.widget = widget;
-    mouseEvent.nativeMsg = nsnull;
-    mouseEvent.point.x = xPosIn;
-    mouseEvent.point.y = yPosIn;
-    mouseEvent.refPoint.x = xPosIn;
-    mouseEvent.refPoint.y = yPosIn;
-    mouseEvent.flags = 0;
-
-    nsEventStatus status;
-    result = viewManager->DispatchEvent( &mouseEvent, &status );
-    if ( NS_FAILED( result ) )
-        return false;
-
-    return true;
-};
-*/
-////////////////////////////////////////////////////////////////////////////////
 // higher level keyboard functions
 
 // accept a (mozilla-style) keycode
 void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 {
+    {
+        QKeyEvent event( QEvent::KeyPress, keyCode, Qt::NoModifier);
+        qApp->sendEvent(page, &event);
+    }
+    {
+        QKeyEvent event( QEvent::KeyRelease, keyCode, Qt::NoModifier);
+        qApp->sendEvent(page, &event);
+    }
     //sendMozillaKeyboardEvent( 0, keyCode );
 }
 
@@ -831,38 +549,20 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::HandleEvent( nsIDOMEvent* anEvent )
 };
     */
 
-////////////////////////////////////////////////////////////////////////////////
 // give focus to the browser so that input keyboard events work
 void LLEmbeddedBrowserWindow::focusBrowser( bool focusBrowserIn )
 {
-    /*
-    if ( mWebBrowser )
-    {
-        if ( focusBrowserIn )
-        {
-            nsCOMPtr< nsIWebBrowserFocus > focus( do_GetInterface( mWebBrowser ) );
-            focus->Activate();
-        }
-        else
-        {
-            nsCOMPtr< nsIWebBrowserFocus > focus( do_GetInterface( mWebBrowser ) );
-            focus->Deactivate();
-        };
-    };*/
+    QFocusEvent event(focusBrowserIn ? QEvent::FocusIn : QEvent::FocusOut, Qt::OtherFocusReason);
+    qApp->sendEvent(page, &event);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 void LLEmbeddedBrowserWindow::setWindowId( int windowIdIn )
 {
     mWindowId = windowIdIn;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 int LLEmbeddedBrowserWindow::getWindowId()
 {
-    //printf("## Getting id for %p and it is %d\n", this, mWindowId );
     return mWindowId;
 }
 
@@ -965,49 +665,22 @@ NS_METHOD LLEmbeddedBrowserWindow::NotifyInvalidated( nsIWidget *aWidget, qint32
 }
     */
 
-////////////////////////////////////////////////////////////////////////////////
-//
 std::string LLEmbeddedBrowserWindow::evaluateJavascript( std::string scriptIn )
 {
-    /*
-    nsCOMPtr< nsIScriptGlobalObjectOwner > theGlobalObjectOwner( do_GetInterface( mWebBrowser ) );
-
-    if ( theGlobalObjectOwner )
-    {
-        nsIScriptGlobalObject* theGlobalObject;
-        theGlobalObject = theGlobalObjectOwner->GetScriptGlobalObject();
-
-        nsIScriptContext* theScriptContext = theGlobalObject->GetContext();
-
-        bool IsUndefined;
-        nsString output;
-        nsresult result = theScriptContext->EvaluateString(NS_ConvertUTF8toUTF16(scriptIn.c_str()),
-           nsnull, nsnull, "", 1, nsnull, &output, &IsUndefined);
-
-        if( NS_FAILED( result ) )
-            return "";
-
-        return std::string( NS_ConvertUTF16toUTF8( output ).get() );
-    }
-    */
-    return "";
+    QString script = QString::fromStdString(scriptIn);
+    QString result = page->mainFrame()->evaluateJavaScript(script).toString();
+    return result.toStdString();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowserWindow::set404RedirectUrl( std::string redirect_url )
 {
     m404RedirectUrl = redirect_url;
-
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
 bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
 {
-    m404RedirectUrl = std::string( "" );
-
+    m404RedirectUrl = std::string();
     return true;
 }
 
@@ -1017,5 +690,6 @@ void LLEmbeddedBrowserWindow::setNoFollowScheme( std::string schemeIn )
 
 std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
 {
+    return std::string();
 }
 
