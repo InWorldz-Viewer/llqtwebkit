@@ -443,82 +443,22 @@ void LLEmbeddedBrowserWindow::scrollByLines( qint16 linesIn )
 // accept a (mozilla-style) keycode
 void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 {
-    qDebug() << __FUNCTION__ << keyCode;
     {
-        QKeyEvent event( QEvent::KeyPress, keyCode, Qt::NoModifier);
-        qDebug() << event.text();
+        QKeyEvent event( QEvent::KeyPress, 0, Qt::NoModifier, QChar(keyCode));
+        qDebug() << event.text() << QChar(keyCode);
         qApp->sendEvent(d->page, &event);
     }
     {
-        QKeyEvent event( QEvent::KeyRelease, keyCode, Qt::NoModifier);
+        QKeyEvent event( QEvent::KeyRelease, 0, Qt::NoModifier, QChar(keyCode));
         qApp->sendEvent(d->page, &event);
     }
-    //sendMozillaKeyboardEvent( 0, keyCode );
 }
 
 // accept keyboard input that's already been translated into a unicode char.
 void LLEmbeddedBrowserWindow::unicodeInput( quint32 uni_char )
 {
     qDebug() << __FUNCTION__ << "Not implemented";
-    //sendMozillaKeyboardEvent( uni_char, 0 );
 }
-/*
-////////////////////////////////////////////////////////////////////////////////
-// synthesizes a keyboard event and sends into the embedded instance
-bool LLEmbeddedBrowserWindow::sendMozillaKeyboardEvent( quint32 uni_char, quint32 ns_vk_code )
-{
-    if ( ! mEnabled )
-        return false;
-
-    if ( ! mWebBrowser )
-        return false;
-
-    nsCOMPtr< nsIDocShell > docShell = do_GetInterface( mWebBrowser );
-    if ( ! docShell )
-        return false;
-
-    nsCOMPtr< nsPresContext > presContext;
-    docShell->GetPresContext( getter_AddRefs( presContext ) );
-    if ( ! presContext )
-        return false;
-
-    nsIViewManager* viewManager = presContext->GetViewManager();
-    if ( ! viewManager )
-        return false;
-
-    nsIView* rootView;
-    viewManager->GetRootView( rootView );
-    if ( ! rootView )
-        return false;
-
-    nsCOMPtr< nsIWidget > widget = rootView->GetWidget();
-    if ( ! widget )
-        return false;
-
-    nsKeyEvent keyEvent( true, NS_KEY_PRESS, widget );
-    keyEvent.keyCode = ns_vk_code;
-    keyEvent.charCode = uni_char;
-    keyEvent.isChar = uni_char ? true : false;
-    keyEvent.isShift = 0;
-    keyEvent.isControl = 0;
-    keyEvent.isAlt = 0;
-    keyEvent.isMeta = 0;
-    keyEvent.widget = widget;
-    keyEvent.nativeMsg = nsnull;
-    keyEvent.point.x = 0;
-    keyEvent.point.y = 0;
-    keyEvent.refPoint.x = 0;
-    keyEvent.refPoint.y = 0;
-    keyEvent.flags = 0;
-
-    nsEventStatus status;
-    nsresult result = viewManager->DispatchEvent( &keyEvent, &status );
-    if ( NS_FAILED( result ) )
-        return false;
-
-    return true;
-}
-*/
 ////////////////////////////////////////////////////////////////////////////////
 // override nsIWebBrowserChrome::HandleEvent ()
     /*
