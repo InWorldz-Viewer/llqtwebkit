@@ -202,7 +202,11 @@ class testGL :
 								// because sometimes the rowspan != width * bytes per pixel (mBrowserWindowWidth)
 								LLMozLib::getInstance()->getBrowserRowSpan( mBrowserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( mBrowserWindowId ),
 									mBrowserWindowHeight,
-										LLMozLib::getInstance()->getBrowserDepth( mBrowserWindowId ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT,
+#ifdef _WINDOWS
+                                    LLMozLib::getInstance()->getBrowserDepth(mBrowserWindowId ) == 3 ? GL_BGRA_EXT : GL_BGRA_EXT,
+#elif defined(__APPLE__)
+                                    GL_RGBA,
+#endif
 											GL_UNSIGNED_BYTE,
 												pixels );
 					};
