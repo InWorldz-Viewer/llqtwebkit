@@ -165,7 +165,8 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
 {
     d->image = QImage(d->page->viewportSize(), QImage::Format_RGB32);
     QPainter painter(&d->image);
-    d->page->mainFrame()->render(&painter);
+    QRegion clip(xIn, yIn, widthIn, heightIn);
+    d->page->mainFrame()->render(&painter, clip);
     painter.end();
     if ( !mFlipBitmap )
         d->image = d->image.mirrored();
@@ -176,10 +177,6 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
 // return the buffer that contains the rendered page
 unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
 {
-    return d->image.bits();
-    /*
-    // Should be able to just return image.bits, but getPageBuffer is being called when grabWindow should be... grr
-    */
     return grabWindow(0, 0, getBrowserWidth(), getBrowserHeight());
 }
 
