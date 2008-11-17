@@ -42,7 +42,11 @@
 
 #include <iostream>
 
+#ifdef LL_OSX
+#include "GLUT/glut.h"
+#else
 #include "GL/glut.h"
+#endif
 #include "llmozlib2.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -379,9 +383,13 @@ class testGL :
 			// Can't get this via GLUT so had to use this hack
 			#ifdef _WINDOWS
 			return FindWindow( NULL, mAppWindowName.c_str() );
-			#else
-			#error "You will need an implementation of this method"
-			#endif
+			#else 
+                #ifdef LL_OSX
+                    // not needed on osx
+                #else
+                    #error "You will need an implementation of this method"
+                #endif
+            #endif
 		};
 
 	private:
