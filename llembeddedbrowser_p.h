@@ -62,6 +62,9 @@ class LLEmbeddedBrowserPrivate
         int argc = 0;
         char **argv = 0;
         application = new QApplication(argc, argv);
+#if defined(__APPLE__)
+        application->setStyle("windows");
+#endif
     }
     ~LLEmbeddedBrowserPrivate()
     {
