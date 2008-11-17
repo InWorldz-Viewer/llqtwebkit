@@ -57,13 +57,21 @@ class LLEmbeddedBrowserPrivate
     LLEmbeddedBrowserPrivate()
         : mErrorNum(0)
         , mNativeWindowHandle(0)
-        , application(0, 0)
-    {}
+        , application(0)
+    {
+        int argc = 0;
+        char **argv = 0;
+        application = new QApplication(argc, argv);
+    }
+    ~LLEmbeddedBrowserPrivate()
+    {
+        delete application;
+    }
 
     int mErrorNum;
     void* mNativeWindowHandle;
     QNetworkAccessManager networkAccessManager;
-    QApplication application;
+    QApplication *application;
     QNetworkDiskCache *diskCache;
     NetworkCookieJar *networkCookieJar;
     QString userAgentString;
