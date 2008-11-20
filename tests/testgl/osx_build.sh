@@ -1,8 +1,7 @@
 #!/bin/bash -x
 
 CXX=g++
-INCFLAGS=-I../..
-
+INCFLAGS="-I../.. -I$QTDIR/include"
 CXXOPT="-ggdb -DLL_NEWER_GLUI -DLL_OSX -L$QTDIR/lib"
 LIBFLAGS="$PWD/../../libllmozlib2.a -lQtWebKit -lQtOpenGL -lQtNetwork -lQtGui -lQtCore -framework GLUT -framework OpenGL"
 

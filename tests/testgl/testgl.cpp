@@ -43,6 +43,7 @@
 #include <iostream>
 
 #ifdef LL_OSX
+#include <Qt/qapplication.h>
 #include "GLUT/glut.h"
 #else
 #include "GL/glut.h"
@@ -165,6 +166,7 @@ class testGL :
 		//
 		void idle()
 		{
+			qApp->processEvents();
 			// onPageChanged event sets this
 			if ( mNeedsUpdate )
 				// grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
