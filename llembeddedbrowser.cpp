@@ -113,8 +113,12 @@ bool LLEmbeddedBrowser::reset()
 
 bool LLEmbeddedBrowser::clearCache()
 {
+#if QT_VERSION >= 0x040500
     d->diskCache->clear();
     return true;
+#else
+	return false;
+#endif
 }
 
 bool LLEmbeddedBrowser::enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn )

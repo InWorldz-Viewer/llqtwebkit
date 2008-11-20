@@ -75,7 +75,9 @@ class LLEmbeddedBrowserPrivate
     void* mNativeWindowHandle;
     QNetworkAccessManager networkAccessManager;
     QApplication *application;
+#if QT_VERSION >= 0x040500
     QNetworkDiskCache *diskCache;
+#endif
     NetworkCookieJar *networkCookieJar;
     QString userAgentString;
 };
