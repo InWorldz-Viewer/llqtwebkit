@@ -40,10 +40,13 @@
 #include <windows.h>
 #endif
 
+
 #include <iostream>
 
 #ifdef LL_OSX
 #include <Qt/qapplication.h>
+#include <QtPlugin>
+Q_IMPORT_PLUGIN(qgif)
 #include "GLUT/glut.h"
 #else
 #include "GL/glut.h"
