@@ -62,6 +62,7 @@ class LLEmbeddedBrowserPrivate
         int argc = 0;
         char **argv = 0;
         application = new QApplication(argc, argv);
+        application->addLibraryPath(qApp->applicationDirPath());
 #if defined(__APPLE__)
         application->setStyle("windows");
 #endif

@@ -43,8 +43,15 @@
 #include <vector>
 #include <math.h>
 
+#ifdef LL_OSX
+#include <Qt/qapplication.h>
+#include <QtPlugin>
+Q_IMPORT_PLUGIN(qgif)
+#include "GLUT/glut.h"
+#else
 #include "GL/glut.h"
-#include "glui.h"
+#endif
+#include "GLUI/glui.h"
 #include "llmozlib2.h"
 
 static void gluiCallbackWrapper( int controlIdIn );

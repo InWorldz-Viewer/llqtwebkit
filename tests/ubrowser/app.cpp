@@ -38,8 +38,12 @@
 
 #include "ubrowser.h"
 
+#ifdef LL_OSX
+#include "GLUT/glut.h"
+#else
 #include "GL/glut.h"
-#include "glui.h"
+#endif
+#include "GLUI/glui.h"
 
 uBrowser* theApp;
 

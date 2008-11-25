@@ -13,7 +13,8 @@ OBJS=`echo ${SRCS} | sed s/\\.cpp/.o/g`
 #INCS_LINE="`find libraries/${MOZARCH}/include -type d | sed s/^/-I/`"
 INCS_LINE="-I$QTDIR/include"
 DEFS='-DMOZILLA_INTERNAL_API -DLL_LINUX=1'
-OPTS='-ggdb -fvisibility=hidden'
+OPTS='-ggdb'
+# -fvisibility=hidden'
 
 rm -f ${LIBNAME}.a ${OBJS}
 

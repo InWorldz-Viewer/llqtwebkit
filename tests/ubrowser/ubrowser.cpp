@@ -714,7 +714,8 @@ void uBrowser::display()
 //
 void uBrowser::idle()
 {
-#ifdef LL_LINUX
+	qApp->processEvents();
+/*#ifdef LL_LINUX
     // pump the GTK+Gecko event queue for a (limited) while.  this should
     // be done so that the Gecko event queue doesn't starve, and done
     // *here* so that mNeedsUpdate[] can be populated by callbacks
@@ -723,14 +724,13 @@ void uBrowser::idle()
     for (int iter=0; iter<10; ++iter)
         if (gtk_events_pending())
             gtk_main_iteration();
-#endif // LL_LINUX
-
+#endif // LL_LINUX*/
     // we need to grab the contents of the rendered page
     for( int i = 0; i < mNumBrowserWindows; ++i )
     {
         if ( mNeedsUpdate[ i ] )
             LLMozLib::getInstance()->grabBrowserWindow( mWindowId[ i ] );
-    };
+	}
 
     // enable/disable back button depending on whether we can go back or not
     if ( LLMozLib::getInstance()->canNavigateBack( mCurWindowId ) )
@@ -1254,7 +1254,7 @@ void* uBrowser::getNativeWindowHandle()
         dummyWindow = NewCWindow(
             NULL,
             &window_rect,
-            "\p",
+            (const unsigned char*)"\p",
             false,                // Create the window invisible.
             zoomDocProc,        // Window with a grow box and a zoom box
             kLastWindowOfClass,        // create it behind other windows
@@ -1307,7 +1307,7 @@ GLenum uBrowser::getGLTextureFormat(int size)
 #ifdef _WINDOWS
     return (size == 3) ? GL_BGR_EXT : GL_BGRA_EXT;
 #elif defined(__APPLE__)
-    return GL_BGRA;
+    return GL_RGBA;
 #elif defined(LL_LINUX)
     return GL_RGBA;
 #else
