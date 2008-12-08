@@ -40,10 +40,11 @@
 
 #ifdef LL_OSX
 #include "GLUT/glut.h"
+#include "GLUI/glui.h"
 #else
 #include "GL/glut.h"
+#include "glui.h"
 #endif
-#include "GLUI/glui.h"
 
 uBrowser* theApp;
 
