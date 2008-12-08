@@ -170,6 +170,8 @@ class LLEmbeddedBrowserWindowObserver
 
 ////////////////////////////////////////////////////////////////////////////////
 // main library class
+
+#pragma GCC visibility push(default)
 class LLMozLib
 {
 	public:
@@ -250,6 +252,8 @@ class LLMozLib
 		typedef std::map< int, LLEmbeddedBrowserWindow* >::iterator BrowserWindowMapIter;
 		BrowserWindowMap mBrowserWindowMap;
 };
+
+#pragma GCC visibility pop
 
 // Mozilla virtual keycodes.
 // We don't want to suck in Mozilla headers so we copy these consts
