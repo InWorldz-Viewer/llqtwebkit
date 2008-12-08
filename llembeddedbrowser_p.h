@@ -60,11 +60,11 @@ class LLEmbeddedBrowserPrivate
         , application(0)
     {
         int argc = 0;
-        char **argv = 0;
-        application = new QApplication(argc, argv);
+        static const char *const argv = "";
+        application = new QApplication(argc,  (char **)&argv);
         application->addLibraryPath(qApp->applicationDirPath());
 #if defined(__APPLE__)
-        application->setStyle("windows");
+        qApp->setStyle("windows");
 #endif
     }
     ~LLEmbeddedBrowserPrivate()
