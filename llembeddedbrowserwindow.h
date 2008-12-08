@@ -205,6 +205,7 @@ private:
     std::string m404RedirectUrl;
     bool mEnabled;
     bool mFlipBitmap;
+    unsigned char* mPageBuffer;
 };
 
 #endif // LLEMBEDEDDBROWSERWINDOW_H

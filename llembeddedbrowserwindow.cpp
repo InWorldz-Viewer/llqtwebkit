@@ -52,6 +52,12 @@
 #include <QtWebKit/QtWebKit>
 #include <QtOpenGL/QtOpenGL>
 
+Q_IMPORT_PLUGIN(qgif)
+Q_IMPORT_PLUGIN(qjpeg)
+Q_IMPORT_PLUGIN(qsvg)
+Q_IMPORT_PLUGIN(qtiff)
+Q_IMPORT_PLUGIN(qico)
+
 QString LLEmbeddedBrowserWindowPrivate::userAgent() const
 {
     if (!mParent)
@@ -70,7 +76,8 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     mClickTarget( "" ),
     mNoFollowScheme( "secondlife://" ),
     m404RedirectUrl( "" ),
-    mFlipBitmap( false )
+    mFlipBitmap( false ),
+    mPageBuffer(NULL)
 {
     d = new LLEmbeddedBrowserWindowPrivate();
     d->page->window = this;
@@ -145,17 +152,21 @@ const std::string LLEmbeddedBrowserWindow::getStatusMsg()
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
 {
+	std::string result;
     // This function doesn't seem to be used?
     qDebug() << __FUNCTION__ << "Not implemented";
     //return mClickHref;
+	return result;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
 {
+	std::string result;
     // This function doesn't seem to be used?
     qDebug() << __FUNCTION__ << "Not implemented";
     //return mClickTarget;
+	return result;
 }
 
 // render a page into memory and grab the window
@@ -171,13 +182,14 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
     if ( !mFlipBitmap )
         d->image = d->image.mirrored();
     d->image = QGLWidget::convertToGLFormat(d->image);
-    return d->image.bits();
+    mPageBuffer = d->image.bits();
+    return mPageBuffer;
 }
 
 // return the buffer that contains the rendered page
 unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
 {
-    return grabWindow(0, 0, getBrowserWidth(), getBrowserHeight());
+    return mPageBuffer;
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserWidth()
@@ -211,7 +223,7 @@ bool LLEmbeddedBrowserWindow::navigateTo( const std::string uriIn )
 
 bool LLEmbeddedBrowserWindow::canNavigateBack()
 {
-    d->page->history()->canGoBack();
+    return d->page->history()->canGoBack();
 }
 
 void LLEmbeddedBrowserWindow::navigateStop()
@@ -226,7 +238,7 @@ void LLEmbeddedBrowserWindow::navigateBack()
 
 bool LLEmbeddedBrowserWindow::canNavigateForward()
 {
-    d->page->history()->canGoForward();
+    return d->page->history()->canGoForward();
 }
 
 void LLEmbeddedBrowserWindow::navigateForward()
@@ -243,6 +255,7 @@ void LLEmbeddedBrowserWindow::navigateReload()
 bool LLEmbeddedBrowserWindow::setSize(qint16 widthIn, qint16 heightIn)
 {
     d->page->setViewportSize(QSize(widthIn, heightIn));
+    mPageBuffer = NULL;
     return true;
 }
 
@@ -289,20 +302,49 @@ void LLEmbeddedBrowserWindow::scrollByLines( qint16 linesIn )
 void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 {
     Qt::Key key;
-    switch (keyCode) {
-    case 8: key = Qt::Key_Backspace; break;
-    case 13: key = Qt::Key_Return; break;
-    // TODO the rest of them
-    default:
-            key = (Qt::Key)keyCode;
+	QChar text;
+	
+    switch (keyCode) 
+	{
+		case LL_DOM_VK_CANCEL:			key = Qt::Key_Cancel;		break;
+		case LL_DOM_VK_HELP:			key = Qt::Key_Help;			break;
+		case LL_DOM_VK_BACK_SPACE:		key = Qt::Key_Backspace;	break;
+		case LL_DOM_VK_TAB:				key = Qt::Key_Tab;			break;
+		case LL_DOM_VK_CLEAR:			key = Qt::Key_Clear;		break;
+		case LL_DOM_VK_RETURN:			key = Qt::Key_Return;		break;
+		case LL_DOM_VK_ENTER:			key = Qt::Key_Enter;		break;
+		case LL_DOM_VK_SHIFT:			key = Qt::Key_Shift;		break;
+		case LL_DOM_VK_CONTROL:			key = Qt::Key_Control;		break;
+		case LL_DOM_VK_ALT:				key = Qt::Key_Alt;			break;
+		case LL_DOM_VK_PAUSE:			key = Qt::Key_Pause;		break;
+		case LL_DOM_VK_CAPS_LOCK:		key = Qt::Key_CapsLock;		break;
+		case LL_DOM_VK_ESCAPE:			key = Qt::Key_Escape;		break;
+		case LL_DOM_VK_SPACE:			key = Qt::Key_Space;		break;
+		case LL_DOM_VK_PAGE_UP:			key = Qt::Key_PageUp;		break;
+		case LL_DOM_VK_PAGE_DOWN:		key = Qt::Key_PageDown;		break;
+		case LL_DOM_VK_END:				key = Qt::Key_End;			break;
+		case LL_DOM_VK_HOME:			key = Qt::Key_Home;			break;
+		case LL_DOM_VK_LEFT:			key = Qt::Key_Left;			break;
+		case LL_DOM_VK_UP:				key = Qt::Key_Up;			break;
+		case LL_DOM_VK_RIGHT:			key = Qt::Key_Right;		break;
+		case LL_DOM_VK_DOWN:			key = Qt::Key_Down;			break;
+		case LL_DOM_VK_PRINTSCREEN:		key = Qt::Key_Print;		break;
+		case LL_DOM_VK_INSERT:			key = Qt::Key_Insert;		break;
+		case LL_DOM_VK_DELETE:			key = Qt::Key_Delete;		break;
+		case LL_DOM_VK_CONTEXT_MENU:	key = Qt::Key_Menu;			break;
+		
+		default: 
+			key = (Qt::Key)keyCode; 
+			text = QChar(keyCode);
+		break;
     }
 
     {
-        QKeyEvent event( QEvent::KeyPress, key, Qt::NoModifier, QChar(keyCode));
+        QKeyEvent event( QEvent::KeyPress, key, Qt::NoModifier, text);
         qApp->sendEvent(d->page, &event);
     }
     {
-        QKeyEvent event( QEvent::KeyRelease, key, Qt::NoModifier, QChar(keyCode));
+        QKeyEvent event( QEvent::KeyRelease, key, Qt::NoModifier, text);
         qApp->sendEvent(d->page, &event);
     }
 }
@@ -310,7 +352,18 @@ void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 // accept keyboard input that's already been translated into a unicode char.
 void LLEmbeddedBrowserWindow::unicodeInput( quint32 uni_char )
 {
-    qDebug() << __FUNCTION__ << "Not implemented";
+    Qt::Key key = Qt::Key_unknown;
+	QChar input((uint)uni_char);
+	
+	{
+        QKeyEvent event( QEvent::KeyPress, key, Qt::NoModifier, input);
+        qApp->sendEvent(d->page, &event);
+	}
+    {
+        QKeyEvent event( QEvent::KeyRelease, key, Qt::NoModifier, input);
+        qApp->sendEvent(d->page, &event);
+    }
+	
 }
 
 // give focus to the browser so that input keyboard events work
