@@ -714,7 +714,6 @@ void uBrowser::display()
 //
 void uBrowser::idle()
 {
-	qApp->processEvents();
 /*#ifdef LL_LINUX
     // pump the GTK+Gecko event queue for a (limited) while.  this should
     // be done so that the Gecko event queue doesn't starve, and done

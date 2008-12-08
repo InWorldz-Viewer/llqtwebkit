@@ -44,9 +44,6 @@
 #include <math.h>
 
 #ifdef LL_OSX
-#include <Qt/qapplication.h>
-#include <QtPlugin>
-Q_IMPORT_PLUGIN(qgif)
 #include "GLUT/glut.h"
 #include "GLUI/glui.h"
 #else
