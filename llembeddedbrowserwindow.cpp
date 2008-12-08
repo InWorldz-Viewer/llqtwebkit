@@ -156,7 +156,7 @@ const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
     // This function doesn't seem to be used?
     qDebug() << __FUNCTION__ << "Not implemented";
     //return mClickHref;
-	return result;
+    return result;
 }
 
 // utility method that is used by observers to retrieve data after an event
@@ -166,7 +166,7 @@ const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
     // This function doesn't seem to be used?
     qDebug() << __FUNCTION__ << "Not implemented";
     //return mClickTarget;
-	return result;
+    return result;
 }
 
 // render a page into memory and grab the window
@@ -303,38 +303,38 @@ void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 {
     Qt::Key key;
 	QChar text;
-	
-    switch (keyCode) 
+
+    switch (keyCode)
 	{
 		case LL_DOM_VK_CANCEL:			key = Qt::Key_Cancel;		break;
-		case LL_DOM_VK_HELP:			key = Qt::Key_Help;			break;
+		case LL_DOM_VK_HELP:			key = Qt::Key_Help;		break;
 		case LL_DOM_VK_BACK_SPACE:		key = Qt::Key_Backspace;	break;
-		case LL_DOM_VK_TAB:				key = Qt::Key_Tab;			break;
+		case LL_DOM_VK_TAB:			key = Qt::Key_Tab;		break;
 		case LL_DOM_VK_CLEAR:			key = Qt::Key_Clear;		break;
 		case LL_DOM_VK_RETURN:			key = Qt::Key_Return;		break;
 		case LL_DOM_VK_ENTER:			key = Qt::Key_Enter;		break;
 		case LL_DOM_VK_SHIFT:			key = Qt::Key_Shift;		break;
 		case LL_DOM_VK_CONTROL:			key = Qt::Key_Control;		break;
-		case LL_DOM_VK_ALT:				key = Qt::Key_Alt;			break;
+		case LL_DOM_VK_ALT:			key = Qt::Key_Alt;		break;
 		case LL_DOM_VK_PAUSE:			key = Qt::Key_Pause;		break;
 		case LL_DOM_VK_CAPS_LOCK:		key = Qt::Key_CapsLock;		break;
 		case LL_DOM_VK_ESCAPE:			key = Qt::Key_Escape;		break;
 		case LL_DOM_VK_SPACE:			key = Qt::Key_Space;		break;
 		case LL_DOM_VK_PAGE_UP:			key = Qt::Key_PageUp;		break;
 		case LL_DOM_VK_PAGE_DOWN:		key = Qt::Key_PageDown;		break;
-		case LL_DOM_VK_END:				key = Qt::Key_End;			break;
-		case LL_DOM_VK_HOME:			key = Qt::Key_Home;			break;
-		case LL_DOM_VK_LEFT:			key = Qt::Key_Left;			break;
-		case LL_DOM_VK_UP:				key = Qt::Key_Up;			break;
+		case LL_DOM_VK_END:			key = Qt::Key_End;		break;
+		case LL_DOM_VK_HOME:			key = Qt::Key_Home;		break;
+		case LL_DOM_VK_LEFT:			key = Qt::Key_Left;		break;
+		case LL_DOM_VK_UP:			key = Qt::Key_Up;		break;
 		case LL_DOM_VK_RIGHT:			key = Qt::Key_Right;		break;
-		case LL_DOM_VK_DOWN:			key = Qt::Key_Down;			break;
+		case LL_DOM_VK_DOWN:			key = Qt::Key_Down;		break;
 		case LL_DOM_VK_PRINTSCREEN:		key = Qt::Key_Print;		break;
 		case LL_DOM_VK_INSERT:			key = Qt::Key_Insert;		break;
 		case LL_DOM_VK_DELETE:			key = Qt::Key_Delete;		break;
-		case LL_DOM_VK_CONTEXT_MENU:	key = Qt::Key_Menu;			break;
-		
-		default: 
-			key = (Qt::Key)keyCode; 
+		case LL_DOM_VK_CONTEXT_MENU:	        key = Qt::Key_Menu;		break;
+
+		default:
+			key = (Qt::Key)keyCode;
 			text = QChar(keyCode);
 		break;
     }
@@ -353,17 +353,16 @@ void LLEmbeddedBrowserWindow::keyPress( qint16 keyCode )
 void LLEmbeddedBrowserWindow::unicodeInput( quint32 uni_char )
 {
     Qt::Key key = Qt::Key_unknown;
-	QChar input((uint)uni_char);
-	
-	{
+    QChar input((uint)uni_char);
+
+    {
         QKeyEvent event( QEvent::KeyPress, key, Qt::NoModifier, input);
         qApp->sendEvent(d->page, &event);
-	}
+    }
     {
         QKeyEvent event( QEvent::KeyRelease, key, Qt::NoModifier, input);
         qApp->sendEvent(d->page, &event);
     }
-	
 }
 
 // give focus to the browser so that input keyboard events work
