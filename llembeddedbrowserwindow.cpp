@@ -87,15 +87,10 @@ void LLEmbeddedBrowserWindow::setParent(LLEmbeddedBrowser* parentIn)
 // change the background color that gets used between pages (usually white)
 void LLEmbeddedBrowserWindow::setBackgroundColor(const quint8 redIn, const quint8 greenIn, const quint8 blueIn)
 {
-    Q_UNUSED(redIn);
-    Q_UNUSED(greenIn);
-    Q_UNUSED(blueIn);
-    qDebug() << __FUNCTION__ << "Not implemented";
-    /*
-    mBkgRed = redIn;
-    mBkgGreen = greenIn;
-    mBkgBlue = blueIn;
-    */
+    QColor backgroundColor(redIn, greenIn, blueIn);
+    QPalette p = d->mPage->palette();
+    p.setColor(QPalette::Normal, QPalette::Window, backgroundColor);
+    d->mPage->setPalette(p);
 }
 
 // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
