@@ -68,18 +68,6 @@ QString LLEmbeddedBrowserWindowPrivate::userAgent() const
 }
 
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
-    :
-    mPercentComplete(0),
-    mStatusText(""),
-    mCurrentUri(""),
-    mClickHref(""),
-    mClickTarget(""),
-    mNoFollowScheme("secondlife://"),
-    mWindowId(0),
-    m404RedirectUrl(""),
-    mEnabled(true),
-    mFlipBitmap(false),
-    mPageBuffer(NULL)
 {
     d = new LLEmbeddedBrowserWindowPrivate();
     d->mPage->window = this;
@@ -124,19 +112,19 @@ void LLEmbeddedBrowserWindow::setEnabled(bool enabledIn)
 {
     // what exactly should this do?
     qDebug() << __FUNCTION__ << "Not implemented";
-    mEnabled = enabledIn;
+    d->mEnabled = enabledIn;
 }
 
 // allow consumers of this class to observe events - add themselves as an observer
 bool LLEmbeddedBrowserWindow::addObserver(LLEmbeddedBrowserWindowObserver* observerIn)
 {
-    return mEventEmitter.addObserver(observerIn);
+    return d->mEventEmitter.addObserver(observerIn);
 }
 
 // allow consumers of this class to observe events - remove themselves as an observer
 bool LLEmbeddedBrowserWindow::remObserver(LLEmbeddedBrowserWindowObserver* observerIn)
 {
-    return mEventEmitter.remObserver(observerIn);
+    return d->mEventEmitter.remObserver(observerIn);
 }
 
 // used by observers of this class to get the current URI
@@ -148,13 +136,13 @@ const std::string LLEmbeddedBrowserWindow::getCurrentUri()
 // utility method that is used by observers to retrieve data after an event
 const qint16 LLEmbeddedBrowserWindow::getPercentComplete()
 {
-    return mPercentComplete;
+    return d->mPercentComplete;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getStatusMsg()
 {
-    return mStatusText;
+    return d->mStatusText;
 }
 
 // utility method that is used by observers to retrieve data after an event
@@ -163,7 +151,7 @@ const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
     std::string result;
     // This function doesn't seem to be used?
     qDebug() << __FUNCTION__ << "Not implemented";
-    //return mClickHref;
+    //return d->mClickHref;
     return result;
 }
 
@@ -173,7 +161,7 @@ const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
     std::string result;
     // This function doesn't seem to be used?
     qDebug() << __FUNCTION__ << "Not implemented";
-    //return mClickTarget;
+    //return d->mClickTarget;
     return result;
 }
 
@@ -187,19 +175,19 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int xIn, int yIn, int widthIn
     QRegion clip(xIn, yIn, widthIn, heightIn);
     d->mPage->mainFrame()->render(&painter, clip);
     painter.end();
-    if (!mFlipBitmap)
+    if (!d->mFlipBitmap)
     {
         d->mImage = d->mImage.mirrored();
     }
     d->mImage = QGLWidget::convertToGLFormat(d->mImage);
-    mPageBuffer = d->mImage.bits();
-    return mPageBuffer;
+    d->mPageBuffer = d->mImage.bits();
+    return d->mPageBuffer;
 }
 
 // return the buffer that contains the rendered page
 unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
 {
-    return mPageBuffer;
+    return d->mPageBuffer;
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserWidth()
@@ -264,13 +252,13 @@ void LLEmbeddedBrowserWindow::navigateReload()
 bool LLEmbeddedBrowserWindow::setSize(qint16 widthIn, qint16 heightIn)
 {
     d->mPage->setViewportSize(QSize(widthIn, heightIn));
-    mPageBuffer = NULL;
+    d->mPageBuffer = NULL;
     return true;
 }
 
 bool LLEmbeddedBrowserWindow::flipWindow(bool flip)
 {
-    mFlipBitmap = flip;
+    d->mFlipBitmap = flip;
     return true;
 }
 
@@ -381,12 +369,12 @@ void LLEmbeddedBrowserWindow::focusBrowser(bool focusBrowserIn)
 
 void LLEmbeddedBrowserWindow::setWindowId(int windowIdIn)
 {
-    mWindowId = windowIdIn;
+    d->mWindowId = windowIdIn;
 }
 
 int LLEmbeddedBrowserWindow::getWindowId()
 {
-    return mWindowId;
+    return d->mWindowId;
 }
 
 std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string scriptIn)
@@ -398,13 +386,13 @@ std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string scriptIn)
 
 bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
 {
-    m404RedirectUrl = redirect_url;
+    d->m404RedirectUrl = redirect_url;
     return true;
 }
 
 bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
 {
-    m404RedirectUrl = std::string();
+    d->m404RedirectUrl = std::string();
     return true;
 }
 
@@ -412,10 +400,11 @@ void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string schemeIn)
 {
     Q_UNUSED(schemeIn);
     qDebug() << __FUNCTION__ << "Not implemented";
+    d->mNoFollowScheme = schemeIn;
 }
 
 std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
 {
-    return std::string();
+    return d->mNoFollowScheme;
 }
 
