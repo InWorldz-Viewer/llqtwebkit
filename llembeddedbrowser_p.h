@@ -94,6 +94,5 @@ class LLEmbeddedBrowserPrivate
     QString mUserAgentString;
 };
 
-
 #endif
 
