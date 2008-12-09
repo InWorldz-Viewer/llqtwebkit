@@ -67,15 +67,15 @@ QString LLEmbeddedBrowserWindowPrivate::userAgent() const
 
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     :
-    mWindowId( 0 ),
     mPercentComplete( 0 ),
-    mEnabled( true ),
-    mCurrentUri( "" ),
     mStatusText( "" ),
+    mCurrentUri( "" ),
     mClickHref( "" ),
     mClickTarget( "" ),
     mNoFollowScheme( "secondlife://" ),
+    mWindowId( 0 ),
     m404RedirectUrl( "" ),
+    mEnabled( true ),
     mFlipBitmap( false ),
     mPageBuffer(NULL)
 {
@@ -97,6 +97,9 @@ void LLEmbeddedBrowserWindow::setParent(LLEmbeddedBrowser* parentIn)
 // change the background color that gets used between pages (usually white)
 void LLEmbeddedBrowserWindow::setBackgroundColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn )
 {
+    Q_UNUSED(redIn);
+    Q_UNUSED(greenIn);
+    Q_UNUSED(blueIn);
     qDebug() << __FUNCTION__ << "Not implemented";
     /*
     mBkgRed = redIn;
@@ -108,6 +111,9 @@ void LLEmbeddedBrowserWindow::setBackgroundColor( const quint8 redIn, const quin
 // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
 void LLEmbeddedBrowserWindow::setCaretColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn )
 {
+    Q_UNUSED(redIn);
+    Q_UNUSED(greenIn);
+    Q_UNUSED(blueIn);
     qDebug() << __FUNCTION__ << "Not implemented";
 }
 
@@ -116,7 +122,7 @@ void LLEmbeddedBrowserWindow::setEnabled( bool enabledIn )
 {
     // what exactly should this do?
     qDebug() << __FUNCTION__ << "Not implemented";
-    //mEnabled = enabledIn;
+    mEnabled = enabledIn;
 }
 
 // allow consumers of this class to observe events - add themselves as an observer
@@ -134,7 +140,7 @@ bool LLEmbeddedBrowserWindow::remObserver( LLEmbeddedBrowserWindowObserver* obse
 // used by observers of this class to get the current URI
 const std::string LLEmbeddedBrowserWindow::getCurrentUri()
 {
-    return d->page->mainFrame()->url().toString().toStdString();
+    return QString(d->page->mainFrame()->url().toEncoded()).toStdString();
 }
 
 // utility method that is used by observers to retrieve data after an event
@@ -403,6 +409,8 @@ bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
 
 void LLEmbeddedBrowserWindow::setNoFollowScheme( std::string schemeIn )
 {
+    Q_UNUSED(schemeIn);
+    qDebug() << __FUNCTION__ << "Not implemented";
 }
 
 std::string LLEmbeddedBrowserWindow::getNoFollowScheme()

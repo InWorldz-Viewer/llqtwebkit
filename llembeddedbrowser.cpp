@@ -87,6 +87,9 @@ bool LLEmbeddedBrowser::init(std::string applicationDir,
                              std::string profileDir,
                              void* nativeWindowHandleIn)
 {
+    Q_UNUSED(componentDir);
+    Q_UNUSED(profileDir);
+    Q_UNUSED(nativeWindowHandleIn);
     QWebSettings::setIconDatabasePath(QString::fromStdString(applicationDir));
 
     // Until QtWebkit defaults to 16
@@ -138,6 +141,7 @@ bool LLEmbeddedBrowser::enableProxy( bool proxyEnabledIn, std::string proxyHostN
 
 bool LLEmbeddedBrowser::enableCookies( bool enabledIn )
 {
+    Q_UNUSED(enabledIn);
     qWarning() << "LLEmbeddedBrowser::enableCookies()" << "not implemented";
     /*nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
     if ( pref )
@@ -175,6 +179,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int browserWidth
 {
     LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
     if (newWin) {
+        newWin->setSize(browserWidthIn, browserHeightIn);
         newWin->setParent(this);
         clearLastError();
         return newWin;
@@ -190,6 +195,7 @@ bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow *browserWin
 }
 
 NetworkCookieJar::NetworkCookieJar(QObject *parent)
+    : QNetworkCookieJar(parent)
 {
 }
 

@@ -77,6 +77,7 @@ QString WebPage::userAgentForUrl(const QUrl &url) const
 
 void WebPage::urlChangedSlot(const QUrl &url)
 {
+    Q_UNUSED(url);
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri() );
     window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onLocationChange, event );
 }
@@ -91,8 +92,12 @@ void WebPage::repaintRequestedSlot(const QRect &dirtyRect)
 
 void WebPage::scrollRequestedSlot( int dx, int dy, const QRect & rectToScroll )
 {
+    Q_UNUSED(dx);
+    Q_UNUSED(dy);
+    Q_UNUSED(rectToScroll);
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
             0, 0, window->getBrowserWidth(), window->getBrowserHeight());
+            //dx, dy, rectToScroll.width(), rectToScroll.height());
     window->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event );
 }
 

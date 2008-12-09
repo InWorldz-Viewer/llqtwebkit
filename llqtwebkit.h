@@ -85,8 +85,8 @@ class LLEmbeddedBrowserWindowEvent
 		LLEmbeddedBrowserWindowEvent( int eventWindowIdIn, std::string uriIn, std::string stringValIn, int intValIn ) :
 			mEventWindowId( eventWindowIdIn ),
 			mEventUri( uriIn ),
-			mStringVal( stringValIn ),
-			mIntVal( intValIn )
+			mIntVal( intValIn ),
+			mStringVal( stringValIn )
 		{
 		};
 
@@ -155,17 +155,17 @@ class LLEmbeddedBrowserWindowEvent
 class LLEmbeddedBrowserWindowObserver
 {
 	public:
-		virtual ~LLEmbeddedBrowserWindowObserver() { };
+		virtual ~LLEmbeddedBrowserWindowObserver();
 		typedef LLEmbeddedBrowserWindowEvent EventType;
 
-		virtual void onPageChanged( const EventType& eventIn ) { };
-		virtual void onNavigateBegin( const EventType& eventIn ) { };
-		virtual void onNavigateComplete( const EventType& eventIn ) { };
-		virtual void onUpdateProgress( const EventType& eventIn ) { };
-		virtual void onStatusTextChange( const EventType& eventIn ) { };
-		virtual void onLocationChange( const EventType& eventIn ) { };
-		virtual void onClickLinkHref( const EventType& eventIn ) { };
-		virtual void onClickLinkNoFollow( const EventType& eventIn ) { };
+		virtual void onPageChanged( const EventType& eventIn );
+		virtual void onNavigateBegin( const EventType& eventIn );
+		virtual void onNavigateComplete( const EventType& eventIn );
+		virtual void onUpdateProgress( const EventType& eventIn );
+		virtual void onStatusTextChange( const EventType& eventIn );
+		virtual void onLocationChange( const EventType& eventIn );
+		virtual void onClickLinkHref( const EventType& eventIn );
+		virtual void onClickLinkNoFollow( const EventType& eventIn );
 };
 
 ////////////////////////////////////////////////////////////////////////////////

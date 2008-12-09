@@ -684,3 +684,39 @@ LLEmbeddedBrowserWindow* LLMozLib::getBrowserWindowFromWindowId( int browserWind
         return 0;
 }
 
+LLEmbeddedBrowserWindowObserver::~LLEmbeddedBrowserWindowObserver()
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onPageChanged( const EventType& )
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onNavigateBegin( const EventType& )
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onNavigateComplete( const EventType& )
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onUpdateProgress( const EventType& )
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onStatusTextChange( const EventType& )
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onLocationChange( const EventType& )
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onClickLinkHref( const EventType& )
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow( const EventType& )
+{
+}
+
