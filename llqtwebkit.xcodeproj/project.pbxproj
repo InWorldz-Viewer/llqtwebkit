@@ -126,6 +126,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "llmozlib2" */;
 			buildPhases = (
+				99515FE60EEF3A480040F5E4 /* ShellScript */,
 				D2AAC0610554660B00DB518D /* Sources */,
 				D289988505E68E00004EDB86 /* Frameworks */,
 			);
@@ -171,6 +172,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Create llmozlib_stub.c from the exports file\nsed -e 's/^_\\(.*\\)/void \\1 (void) {} /' -e 's/^\\(#.*\\)/\\/\\* \\1 \\*\\//' <llmozlib2.exp >llmozlib2_stub.c";
+		};
+		99515FE60EEF3A480040F5E4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "QTDIR/bin/moc llwebpage.h -o moc_llwebpage.cpp";
 		};
 /* End PBXShellScriptBuildPhase section */
 
