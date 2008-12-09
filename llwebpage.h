@@ -50,6 +50,7 @@ class LLWebPage : public QWebPage
 
     protected:
         QString userAgentForUrl(const QUrl& url) const;
+        bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);
 
     public slots:
         void loadProgressSlot(int progress);

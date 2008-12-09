@@ -399,12 +399,13 @@ bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
 void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string schemeIn)
 {
     Q_UNUSED(schemeIn);
-    qDebug() << __FUNCTION__ << "Not implemented";
-    d->mNoFollowScheme = schemeIn;
+    d->mNoFollowScheme = QString::fromStdString(schemeIn);
+    // The scheme part of the url is what is before '://'
+    d->mNoFollowScheme = d->mNoFollowScheme.mid(0,d->mNoFollowScheme.indexOf("://"));
 }
 
 std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
 {
-    return d->mNoFollowScheme;
+    return d->mNoFollowScheme.toStdString();
 }
 

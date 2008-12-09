@@ -104,3 +104,16 @@ void LLWebPage::scrollRequestedSlot(int dx, int dy, const QRect& rectToScroll)
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
 }
 
+
+bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type)
+{
+    if (request.url().scheme() == window->d->mNoFollowScheme)
+    {
+        std::string rawUri = QString(request.url().toEncoded()).toStdString();
+        LLEmbeddedBrowserWindowEvent event(window->getWindowId(), rawUri, rawUri);
+	window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);
+        return false;
+    }
+    return QWebPage::acceptNavigationRequest(frame, request, type);
+}
+

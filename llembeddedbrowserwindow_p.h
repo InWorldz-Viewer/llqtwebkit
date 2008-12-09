@@ -113,7 +113,7 @@ class LLEmbeddedBrowserWindowPrivate
         , mCurrentUri("")
         //, mClickHref("")
         //, mClickTarget("")
-        , mNoFollowScheme("secondlife://")
+        , mNoFollowScheme("secondlife")
         , mWindowId(0)
         , m404RedirectUrl("")
         , mEnabled(true)
@@ -140,7 +140,7 @@ class LLEmbeddedBrowserWindowPrivate
     std::string mCurrentUri;
     //std::string mClickHref;
     //std::string mClickTarget;
-    std::string mNoFollowScheme;
+    QString mNoFollowScheme;
     int mWindowId;
     std::string m404RedirectUrl;
     bool mEnabled;
