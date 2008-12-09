@@ -59,18 +59,18 @@ class LLEmbeddedBrowser
 
         static LLEmbeddedBrowser* getInstance();
 
-        bool init( std::string applicationDir, std::string componentDir, std::string profileDir, void* nativeWindowHandleIn );
+        bool init(std::string applicationDir, std::string componentDir, std::string profileDir, void* nativeWindowHandleIn);
         bool reset();
         bool clearCache();
-        bool enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn );
-        bool enableCookies( bool enabledIn );
+        bool enableProxy(bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn);
+        bool enableCookies(bool enabledIn);
         bool clearAllCookies();
-        bool enablePlugins( bool enabledIn );
+        bool enablePlugins(bool enabledIn);
         std::string getGREVersion();
-        void setBrowserAgentId( std::string idIn );
-        LLEmbeddedBrowserWindow* createBrowserWindow( int browserWidthIn, int browserHeightIn );
-        bool destroyBrowserWindow( LLEmbeddedBrowserWindow* browserWindowIn );
-        void setLastError( int errorNumIn );
+        void setBrowserAgentId(std::string idIn);
+        LLEmbeddedBrowserWindow* createBrowserWindow(int browserWidthIn, int browserHeightIn);
+        bool destroyBrowserWindow(LLEmbeddedBrowserWindow* browserWindowIn);
+        void setLastError(int errorNumIn);
         void clearLastError();
         int getLastError();
 

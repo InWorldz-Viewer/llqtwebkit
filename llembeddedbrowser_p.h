@@ -41,14 +41,17 @@
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
 
-class NetworkCookieJar : public QNetworkCookieJar
+class LLNetworkCookieJar : public QNetworkCookieJar
 {
 public:
-    NetworkCookieJar(QObject *parent = 0);
-    bool allowCookies;
-    QList<QNetworkCookie> cookiesForUrl(const QUrl &url) const;
-    bool setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url);
+    LLNetworkCookieJar(QObject *parent = 0);
+
+
+    QList<QNetworkCookie> cookiesForUrl(const QUrl& url) const;
+    bool setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl& url);
     void clear();
+
+    bool mAllowCookies;
 };
 
 class LLEmbeddedBrowserPrivate
@@ -57,30 +60,38 @@ class LLEmbeddedBrowserPrivate
     LLEmbeddedBrowserPrivate()
         : mErrorNum(0)
         , mNativeWindowHandle(0)
-        , application(0)
+        , mNetworkAccessManager(0)
+        , mApplication(0)
+#if QT_VERSION >= 0x040500
+        , mDiskCache(0)
+#endif
+        , mNetworkCookieJar(0)
     {
         int argc = 0;
         static const char *const argv = "";
-        application = new QApplication(argc,  (char **)&argv);
-        application->addLibraryPath(qApp->applicationDirPath());
+        mApplication = new QApplication(argc,  (char **)&argv);
+        mApplication->addLibraryPath(qApp->applicationDirPath());
 #if defined(__APPLE__)
         qApp->setStyle("windows");
 #endif
+        mNetworkAccessManager = new QNetworkAccessManager;
     }
+
     ~LLEmbeddedBrowserPrivate()
     {
-        delete application;
+        delete mApplication;
+        delete mNetworkAccessManager;
     }
 
     int mErrorNum;
     void* mNativeWindowHandle;
-    QNetworkAccessManager networkAccessManager;
-    QApplication *application;
+    QNetworkAccessManager *mNetworkAccessManager;
+    QApplication *mApplication;
 #if QT_VERSION >= 0x040500
-    QNetworkDiskCache *diskCache;
+    QNetworkDiskCache *mDiskCache;
 #endif
-    NetworkCookieJar *networkCookieJar;
-    QString userAgentString;
+    LLNetworkCookieJar *mNetworkCookieJar;
+    QString mUserAgentString;
 };
 
 

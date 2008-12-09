@@ -65,44 +65,44 @@ class LLEmbeddedBrowserWindowEmitter
 
         typedef typename T::EventType EventType;
         typedef std::list< T* > ObserverContainer;
-        typedef void( T::*observerMethod )( const EventType& );
+        typedef void(T::*observerMethod)(const EventType&);
 
         ///////////////////////////////////////////////////////////////////////////////
         //
-        bool addObserver( T* observerIn )
+        bool addObserver(T* observerIn)
         {
-            if ( ! observerIn )
+            if (! observerIn)
                 return false;
 
-            if ( std::find( observers.begin(), observers.end(), observerIn ) != observers.end() )
+            if (std::find(observers.begin(), observers.end(), observerIn) != observers.end())
                 return false;
 
-            observers.push_back( observerIn );
+            observers.push_back(observerIn);
 
             return true;
         };
 
         ///////////////////////////////////////////////////////////////////////////////
         //
-        bool remObserver( T* observerIn )
+        bool remObserver(T* observerIn)
         {
-            if ( ! observerIn )
+            if (! observerIn)
                 return false;
 
-            observers.remove( observerIn );
+            observers.remove(observerIn);
 
             return true;
         };
 
         ///////////////////////////////////////////////////////////////////////////////
         //
-        void update( observerMethod method, const EventType& msgIn )
+        void update(observerMethod method, const EventType& msgIn)
         {
             typename std::list< T* >::iterator iter = observers.begin();
 
-            while( iter != observers.end() )
+            while(iter != observers.end())
             {
-                ( ( *iter )->*method )( msgIn );
+                ((*iter)->*method)(msgIn);
 
                 ++iter;
             };
@@ -124,12 +124,12 @@ public:
     virtual ~LLEmbeddedBrowserWindow();
 
     // housekeeping
-    //nsresult createBrowser( void* nativeWindowHandleIn, qint32 widthIn, qint32 heightIn, nsIWebBrowser** aBrowser );
-    void setParent( LLEmbeddedBrowser* parentIn );
-    bool setSize( qint16 widthIn, qint16 heightIn );
-    void focusBrowser( bool focusBrowserIn );
-    void scrollByLines( qint16 linesIn );
-    void setWindowId( int windowIdIn );
+    //nsresult createBrowser(void* nativeWindowHandleIn, qint32 widthIn, qint32 heightIn, nsIWebBrowser** aBrowser);
+    void setParent(LLEmbeddedBrowser* parentIn);
+    bool setSize(qint16 widthIn, qint16 heightIn);
+    void focusBrowser(bool focusBrowserIn);
+    void scrollByLines(qint16 linesIn);
+    void setWindowId(int windowIdIn);
     int getWindowId();
 
     // random accessors
@@ -140,8 +140,8 @@ public:
     const std::string getClickLinkTarget();
 
     // memory buffer management
-    unsigned char* grabWindow( int xIn, int yIn, int widthIn, int heightIn );
-    bool flipWindow( bool flip );
+    unsigned char* grabWindow(int xIn, int yIn, int widthIn, int heightIn);
+    bool flipWindow(bool flip);
     unsigned char* getPageBuffer();
     qint16 getBrowserWidth();
     qint16 getBrowserHeight();
@@ -149,17 +149,17 @@ public:
     qint32 getBrowserRowSpan();
 
     // set background color that you see in between pages - default is white but sometimes useful to change
-    void setBackgroundColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
+    void setBackgroundColor(const quint8 redIn, const quint8 greenIn, const quint8 blueIn);
 
     // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
-    void setCaretColor( const quint8 redIn, const quint8 greenIn, const quint8 blueIn );
+    void setCaretColor(const quint8 redIn, const quint8 greenIn, const quint8 blueIn);
 
     // can turn off updates to a page - e.g. when it's hidden by your windowing system
-    void setEnabled( bool enabledIn );
+    void setEnabled(bool enabledIn);
 
     // navigation
     void navigateStop();
-    bool navigateTo( const std::string uriIn );
+    bool navigateTo(const std::string uriIn);
     bool canNavigateBack();
     void navigateBack();
     bool canNavigateForward();
@@ -167,30 +167,30 @@ public:
     void navigateReload();
 
     // javascript access/control
-    std::string evaluateJavascript( std::string scriptIn );
+    std::string evaluateJavascript(std::string scriptIn);
 
     // redirection when you hit a missing page
-    bool set404RedirectUrl( std::string redirect_url );
+    bool set404RedirectUrl(std::string redirect_url);
     bool clr404RedirectUrl();
 
     // mouse & keyboard events
-    void mouseDown( qint16 xPosIn, qint16 yPosIn );
-    void mouseUp( qint16 xPosIn, qint16 yPosIn );
-    void mouseMove( qint16 xPosIn, qint16 yPosIn );
-    void mouseLeftDoubleClick( qint16 xPosIn, qint16 yPosIn );
-    void keyPress( qint16 keyCode );
-    void unicodeInput( quint32 uni_char );
+    void mouseDown(qint16 xPosIn, qint16 yPosIn);
+    void mouseUp(qint16 xPosIn, qint16 yPosIn);
+    void mouseMove(qint16 xPosIn, qint16 yPosIn);
+    void mouseLeftDoubleClick(qint16 xPosIn, qint16 yPosIn);
+    void keyPress(qint16 keyCode);
+    void unicodeInput(quint32 uni_char);
 
     // allow consumers of this class and to observe browser events
-    bool addObserver( LLEmbeddedBrowserWindowObserver* observerIn );
-    bool remObserver( LLEmbeddedBrowserWindowObserver* observerIn );
+    bool addObserver(LLEmbeddedBrowserWindowObserver* observerIn);
+    bool remObserver(LLEmbeddedBrowserWindowObserver* observerIn);
 
     // accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
-    void setNoFollowScheme( std::string schemeIn );
+    void setNoFollowScheme(std::string schemeIn);
     std::string getNoFollowScheme();
 
 private:
-    friend class WebPage;
+    friend class LLWebPage;
     LLEmbeddedBrowserWindowPrivate *d;
 
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;

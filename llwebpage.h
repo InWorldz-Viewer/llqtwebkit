@@ -34,29 +34,29 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef WEBPAGE_H
-#define WEBPAGE_H
+#ifndef LLWEBPAGE_H
+#define LLWEBPAGE_H
 
 #include <QtWebKit/QtWebKit>
 
 class LLEmbeddedBrowserWindow;
-class WebPage : public QWebPage
+class LLWebPage : public QWebPage
 {
     Q_OBJECT
 
     public:
-        WebPage(QObject *parent = 0);
+        LLWebPage(QObject *parent = 0);
         LLEmbeddedBrowserWindow *window;
 
     protected:
-        QString userAgentForUrl(const QUrl &url) const;
+        QString userAgentForUrl(const QUrl& url) const;
 
     public slots:
         void loadProgressSlot(int progress);
         void statusBarMessageSlot(const QString &);
-        void urlChangedSlot(const QUrl &url);
-        void repaintRequestedSlot(const QRect &dirtyRect);
-        void scrollRequestedSlot( int dx, int dy, const QRect & rectToScroll);
+        void urlChangedSlot(const QUrl& url);
+        void repaintRequestedSlot(const QRect& dirtyRect);
+        void scrollRequestedSlot(int dx, int dy, const QRect& rectToScroll);
 };
 
 #endif

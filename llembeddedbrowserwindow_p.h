@@ -37,30 +37,31 @@
 #ifndef LLEMBEDDEDBROWSERWINDOW_P_H
 #define LLEMBEDDEDBROWSERWINDOW_P_H
 
-#include "webpage.h"
+#include "llwebpage.h"
 
-#include <QtWebKit/QtWebKit>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+#include <QtWebKit/QtWebKit>
 
 class LLEmbeddedBrowserWindowPrivate
 {
     public:
     LLEmbeddedBrowserWindowPrivate()
         : mParent(0)
+        , mPage(new LLWebPage)
     {
-        page = new WebPage;
     }
 
     ~LLEmbeddedBrowserWindowPrivate()
     {
-        delete page;
+        delete mPage;
     }
 
     QString userAgent() const;
-    WebPage *page;
-    QImage image;
+
     LLEmbeddedBrowser *mParent;
+    LLWebPage *mPage;
+    QImage mImage;
 };
 
 #endif

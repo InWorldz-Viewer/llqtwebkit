@@ -16,12 +16,12 @@ HEADERS += llembeddedbrowser.h \
            llembeddedbrowserwindow.h \
            llembeddedbrowserwindow_p.h \
            llmozlib2.h \
-           webpage.h
+           llwebpage.h
 
 SOURCES += llembeddedbrowser.cpp \
            llembeddedbrowserwindow.cpp \
            llmozlib2.cpp \
-           webpage.cpp
+           llwebpage.cpp
 
 RCC_DIR     = $$PWD/.rcc
 UI_DIR      = $$PWD/.ui

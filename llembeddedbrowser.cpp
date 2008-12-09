@@ -1,3 +1,7 @@
+/*
+   Copyright (C) 2008 Torch Mobile Inc. http://www.torchmobile.com/
+*/
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -21,6 +25,7 @@
  *
  * Contributor(s):
  *  Callum Prentice (callum@ubrowser.com)
+ *  Benjamin Meyer (benjamin.meyer@torchmobile.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -45,8 +50,8 @@
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
 
 LLEmbeddedBrowser::LLEmbeddedBrowser()
+    : d(new LLEmbeddedBrowserPrivate)
 {
-    d = new LLEmbeddedBrowserPrivate;
 }
 
 LLEmbeddedBrowser::~LLEmbeddedBrowser()
@@ -59,9 +64,9 @@ LLEmbeddedBrowser* LLEmbeddedBrowser::getInstance()
     if (!sInstance)
         sInstance = new LLEmbeddedBrowser;
     return sInstance;
-};
+}
 
-void LLEmbeddedBrowser::setLastError( int errorNumIn )
+void LLEmbeddedBrowser::setLastError(int errorNumIn)
 {
     d->mErrorNum = errorNumIn;
 }
@@ -97,12 +102,12 @@ bool LLEmbeddedBrowser::init(std::string applicationDir,
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFixedFontSize, 16);
 
 #if QT_VERSION >= 0x040500
-    d->diskCache = new QNetworkDiskCache(&d->networkAccessManager);
-    d->diskCache->setCacheDirectory(QString::fromStdString(applicationDir));
-    d->networkAccessManager.setCache(d->diskCache);
+    d->mDiskCache = new QNetworkDiskCache(d->mNetworkAccessManager);
+    d->mDiskCache->setCacheDirectory(QString::fromStdString(applicationDir));
+    d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
-    d->networkCookieJar = new NetworkCookieJar(&d->networkAccessManager);
-    d->networkAccessManager.setCookieJar(d->networkCookieJar);
+    d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager);
+    d->mNetworkAccessManager->setCookieJar(d->mNetworkCookieJar);
     clearLastError();
     return true;
 }
@@ -117,103 +122,93 @@ bool LLEmbeddedBrowser::reset()
 bool LLEmbeddedBrowser::clearCache()
 {
 #if QT_VERSION >= 0x040500
-    d->diskCache->clear();
+    d->mDiskCache->clear();
     return true;
 #else
-	return false;
+    return false;
 #endif
 }
 
-bool LLEmbeddedBrowser::enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn )
+bool LLEmbeddedBrowser::enableProxy(bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn)
 {
     QNetworkProxy proxy;
-    if (proxyEnabledIn) {
+    if (proxyEnabledIn)
+    {
         proxy.setType(QNetworkProxy::HttpProxy);
         QString hostName = QString::fromStdString(proxyHostNameIn);
         proxy.setHostName(hostName);
         proxy.setPort(proxyPortIn);
-        //proxy.setUser(settings.value(QLatin1String("userName")).toString());
-        //proxy.setPassword(settings.value(QLatin1String("password")).toString());
     }
-    d->networkAccessManager.setProxy(proxy);
+    d->mNetworkAccessManager->setProxy(proxy);
     return true;
 }
 
-bool LLEmbeddedBrowser::enableCookies( bool enabledIn )
+bool LLEmbeddedBrowser::enableCookies(bool enabledIn)
 {
-    Q_UNUSED(enabledIn);
-    qWarning() << "LLEmbeddedBrowser::enableCookies()" << "not implemented";
-    /*nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-    if ( pref )
-    {
-        if ( enabledIn )
-            pref->SetIntPref( "network.cookie.cookieBehavior", 0 );
-        else
-            pref->SetIntPref( "network.cookie.cookieBehavior", 2 );
-
-        return true;
-    }
-    */
+    d->mNetworkCookieJar->mAllowCookies = enabledIn;
     return false;
 }
 
 bool LLEmbeddedBrowser::clearAllCookies()
 {
-    d->networkCookieJar->clear();
+    d->mNetworkCookieJar->clear();
     return true;
 }
 
-bool LLEmbeddedBrowser::enablePlugins( bool enabledIn )
+bool LLEmbeddedBrowser::enablePlugins(bool enabledIn)
 {
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
     defaultSettings->setAttribute(QWebSettings::PluginsEnabled, enabledIn);
     return true;
 }
 
-void LLEmbeddedBrowser::setBrowserAgentId( std::string idIn )
+void LLEmbeddedBrowser::setBrowserAgentId(std::string idIn)
 {
-    d->userAgentString = QString::fromStdString(idIn);
+    d->mUserAgentString = QString::fromStdString(idIn);
 }
 
 LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int browserWidthIn, int browserHeightIn)
 {
     LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
-    if (newWin) {
+    if (newWin)
+    {
         newWin->setSize(browserWidthIn, browserHeightIn);
         newWin->setParent(this);
         clearLastError();
         return newWin;
-    };
+    }
     return 0;
 }
 
-bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow *browserWindowIn)
+bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow* browserWindowIn)
 {
     delete browserWindowIn;
     clearLastError();
     return true;
 }
 
-NetworkCookieJar::NetworkCookieJar(QObject *parent)
+LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent)
     : QNetworkCookieJar(parent)
+    , mAllowCookies(true)
 {
 }
 
-QList<QNetworkCookie> NetworkCookieJar::cookiesForUrl(const QUrl &url) const
+QList<QNetworkCookie> LLNetworkCookieJar::cookiesForUrl(const QUrl& url) const
 {
-    if (!allowCookies)
+    if (!mAllowCookies)
         return QList<QNetworkCookie>();
     return QNetworkCookieJar::cookiesForUrl(url);
 }
 
-bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url)
+bool LLNetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl& url)
 {
-    if (!allowCookies)
+    if (!mAllowCookies)
         return false;
     return QNetworkCookieJar::setCookiesFromUrl(cookieList, url);
 }
 
-void NetworkCookieJar::clear() {
+void LLNetworkCookieJar::clear()
+{
     setAllCookies(QList<QNetworkCookie>());
 }
 

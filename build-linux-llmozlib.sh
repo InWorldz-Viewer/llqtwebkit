@@ -4,7 +4,7 @@
 
 CXX='g++'
 MOZARCH='i686-linux'
-SRCS='llembeddedbrowser.cpp llembeddedbrowserwindow.cpp llmozlib2.cpp webpage.cpp moc_webpage.cpp'
+SRCS='llembeddedbrowser.cpp llembeddedbrowserwindow.cpp llmozlib2.cpp llwebpage.cpp moc_webpage.cpp'
 
 #------------------------
 
@@ -18,7 +18,7 @@ OPTS='-ggdb'
 
 rm -f ${LIBNAME}.a ${OBJS}
 
-moc webpage.h -o moc_webpage.cpp
+moc llwebpage.h -o moc_llwebpage.cpp
 
 for source in ${SRCS} ; do
     ${CXX} ${OPTS} ${DEFS} ${INCS_LINE} -c ${source}
