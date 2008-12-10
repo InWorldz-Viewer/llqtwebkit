@@ -105,8 +105,6 @@ void LLEmbeddedBrowserWindow::setCaretColor(const quint8 red, const quint8 green
 //
 void LLEmbeddedBrowserWindow::setEnabled(bool enabled)
 {
-    // what exactly should this do?
-    qDebug() << __FUNCTION__ << "Not implemented";
     d->mEnabled = enabled;
 }
 
@@ -165,6 +163,10 @@ const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
 //       need to make this work with arbitrary rects (i.e. the dirty rect)
 unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int height)
 {
+    // only grab the window if it's enabled
+    if (!d->mEnabled)
+        return 0;
+
     d->mImage = QImage(d->mPage->viewportSize(), QImage::Format_RGB32);
     QPainter painter(&d->mImage);
     QRegion clip(x, y, width, height);
