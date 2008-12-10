@@ -111,6 +111,7 @@ public:
     // redirection when you hit a missing page
     bool set404RedirectUrl(std::string redirect_url);
     bool clr404RedirectUrl();
+    void load404RedirectUrl();
 
     // mouse & keyboard events
     void mouseDown(qint16 x, qint16 y);
@@ -134,5 +135,4 @@ private:
 
 
 };
-
 #endif // LLEMBEDEDDBROWSERWINDOW_H

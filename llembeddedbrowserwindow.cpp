@@ -393,6 +393,14 @@ bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
     return true;
 }
 
+
+void LLEmbeddedBrowserWindow::load404RedirectUrl()
+{
+	QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
+	navigateStop();
+	d->mPage->mainFrame()->load(url);
+}
+
 void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)
 {
     Q_UNUSED(scheme);

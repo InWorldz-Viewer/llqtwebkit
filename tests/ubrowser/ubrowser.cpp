@@ -153,6 +153,7 @@ uBrowser::uBrowser() :
     mBookmarks.push_back( std::pair< std::string, std::string >( "Yahoo! User Interface Library slider", "http://developer.yahoo.com/yui/examples/slider/rgb2.html?mode=dist" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Canvas Annimation Kit Experiment", "http://glimr.rubyforge.org/cake/canvas.html#DesignSketching" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Skrbl shared whiteboard (non-flash)", "http://skrbl.com" ) );
+    mBookmarks.push_back( std::pair< std::string, std::string >( "404 test page", "http://www.us-japan.org/www.ita.doc.gov" ) );
 
     std::cout << std::endl << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
     std::cout << std::endl << "    GLUT version: " << "3.7.6" << std::endl;    // no way to get real version from GLUT ???

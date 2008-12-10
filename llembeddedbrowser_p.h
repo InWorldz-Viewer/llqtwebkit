@@ -40,6 +40,7 @@
 #include <QtWebKit/QtWebKit>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+#include "llembeddedbrowser.h"
 
 class LLNetworkCookieJar : public QNetworkCookieJar
 {
@@ -52,6 +53,20 @@ public:
     void clear();
 
     bool mAllowCookies;
+};
+class LLEmbeddedBrowserPrivate;
+class LLNetworkAccessManager: public QNetworkAccessManager
+{
+	Q_OBJECT
+public:
+	LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser, QObject *parent = 0);
+
+public slots:
+	void finishLoading(QNetworkReply * reply);
+
+private:
+	LLEmbeddedBrowserPrivate* mBrowser;
+
 };
 
 class LLEmbeddedBrowserPrivate
@@ -74,7 +89,7 @@ class LLEmbeddedBrowserPrivate
 #if defined(__APPLE__)
         qApp->setStyle("windows");
 #endif
-        mNetworkAccessManager = new QNetworkAccessManager;
+        mNetworkAccessManager = new LLNetworkAccessManager(this);
     }
 
     ~LLEmbeddedBrowserPrivate()
@@ -85,7 +100,7 @@ class LLEmbeddedBrowserPrivate
 
     int mErrorNum;
     void* mNativeWindowHandle;
-    QNetworkAccessManager *mNetworkAccessManager;
+    LLNetworkAccessManager *mNetworkAccessManager;
     QApplication *mApplication;
 #if QT_VERSION >= 0x040500
     QNetworkDiskCache *mDiskCache;

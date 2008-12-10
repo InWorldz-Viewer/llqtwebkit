@@ -46,6 +46,8 @@
 #include "llembeddedbrowser_p.h"
 #include "llembeddedbrowserwindow.h"
 
+#include <QtCore/qvariant.h>
+
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
 
@@ -111,7 +113,7 @@ bool LLEmbeddedBrowser::reset()
         delete window;
     d->windows.clear();
     delete d->mNetworkAccessManager;
-    d->mNetworkAccessManager = new QNetworkAccessManager;
+    d->mNetworkAccessManager = new LLNetworkAccessManager(d);
 #if QT_VERSION >= 0x040500
     d->mDiskCache = new QNetworkDiskCache(d->mNetworkAccessManager);
     d->mDiskCache->setCacheDirectory(d->mApplicationDirectory);
@@ -217,3 +219,25 @@ void LLNetworkCookieJar::clear()
     setAllCookies(QList<QNetworkCookie>());
 }
 
+LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser,QObject* parent)
+	:QNetworkAccessManager(parent)
+	,mBrowser(browser)
+{
+	connect(this, SIGNAL(finished(QNetworkReply*)),
+	                this, SLOT(finishLoading(QNetworkReply*)));
+}
+void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
+{
+	if(reply->error() == QNetworkReply::ContentNotFoundError)
+	{
+		QString url = QString(reply->url().toEncoded());
+		if(mBrowser)
+		{
+			foreach(LLEmbeddedBrowserWindow *window, mBrowser->windows)
+			{
+				if(QString::fromStdString(window->getCurrentUri()) == url)
+					window->load404RedirectUrl();
+			}
+		}
+	}
+}
