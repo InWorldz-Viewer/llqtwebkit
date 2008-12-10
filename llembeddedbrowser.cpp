@@ -101,21 +101,25 @@ bool LLEmbeddedBrowser::init(std::string application_directory,
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFixedFontSize, 16);
 
+    d->mApplicationDirectory = QString::fromStdString(application_directory);
+    return reset();
+}
+
+bool LLEmbeddedBrowser::reset()
+{
+    foreach(LLEmbeddedBrowserWindow *window, d->windows)
+        delete window;
+    d->windows.clear();
+    delete d->mNetworkAccessManager;
+    d->mNetworkAccessManager = new QNetworkAccessManager;
 #if QT_VERSION >= 0x040500
     d->mDiskCache = new QNetworkDiskCache(d->mNetworkAccessManager);
-    d->mDiskCache->setCacheDirectory(QString::fromStdString(application_directory));
+    d->mDiskCache->setCacheDirectory(d->mApplicationDirectory);
     d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
     d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager);
     d->mNetworkAccessManager->setCookieJar(d->mNetworkCookieJar);
     clearLastError();
-    return true;
-}
-
-// What should reset do?
-bool LLEmbeddedBrowser::reset()
-{
-    qWarning() << __FUNCTION__ << "not implemented";
     return true;
 }
 
@@ -175,6 +179,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int h
         newWin->setSize(width, height);
         newWin->setParent(this);
         clearLastError();
+        d->windows.append(newWin);
         return newWin;
     }
     return 0;

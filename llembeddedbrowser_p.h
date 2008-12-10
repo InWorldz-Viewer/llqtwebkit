@@ -92,6 +92,9 @@ class LLEmbeddedBrowserPrivate
 #endif
     LLNetworkCookieJar *mNetworkCookieJar;
     QString mUserAgentString;
+
+    QString mApplicationDirectory;
+    QList<LLEmbeddedBrowserWindow*> windows;
 };
 
 #endif
