@@ -85,22 +85,22 @@ void LLWebPage::urlChangedSlot(const QUrl& url)
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLocationChange, event);
 }
 
-void LLWebPage::repaintRequestedSlot(const QRect& dirtyRect)
+void LLWebPage::repaintRequestedSlot(const QRect& dirty_rect)
 {
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
-            dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height());
+            dirty_rect.x(), dirty_rect.y(), dirty_rect.width(), dirty_rect.height());
 
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
 }
 
-void LLWebPage::scrollRequestedSlot(int dx, int dy, const QRect& rectToScroll)
+void LLWebPage::scrollRequestedSlot(int dx, int dy, const QRect& rect_to_scroll)
 {
     Q_UNUSED(dx);
     Q_UNUSED(dy);
-    Q_UNUSED(rectToScroll);
+    Q_UNUSED(rect_to_scroll);
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
             0, 0, window->getBrowserWidth(), window->getBrowserHeight());
-            //dx, dy, rectToScroll.width(), rectToScroll.height());
+            //dx, dy, rect_to_scroll.width(), rect_to_scroll.height());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
 }
 

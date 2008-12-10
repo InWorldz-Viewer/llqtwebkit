@@ -48,7 +48,7 @@ public:
 
 
     QList<QNetworkCookie> cookiesForUrl(const QUrl& url) const;
-    bool setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl& url);
+    bool setCookiesFromUrl(const QList<QNetworkCookie> &cookie_list, const QUrl& url);
     void clear();
 
     bool mAllowCookies;

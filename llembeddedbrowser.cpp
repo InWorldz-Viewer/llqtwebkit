@@ -66,9 +66,9 @@ LLEmbeddedBrowser* LLEmbeddedBrowser::getInstance()
     return sInstance;
 }
 
-void LLEmbeddedBrowser::setLastError(int errorNumIn)
+void LLEmbeddedBrowser::setLastError(int error_number)
 {
-    d->mErrorNum = errorNumIn;
+    d->mErrorNum = error_number;
 }
 
 void LLEmbeddedBrowser::clearLastError()
@@ -87,15 +87,15 @@ std::string LLEmbeddedBrowser::getGREVersion()
     return std::string(QT_VERSION_STR);
 }
 
-bool LLEmbeddedBrowser::init(std::string applicationDir,
-                             std::string componentDir,
-                             std::string profileDir,
-                             void* nativeWindowHandleIn)
+bool LLEmbeddedBrowser::init(std::string application_directory,
+                             std::string component_directory,
+                             std::string profile_directory,
+                             void* native_window_handle)
 {
-    Q_UNUSED(componentDir);
-    Q_UNUSED(profileDir);
-    Q_UNUSED(nativeWindowHandleIn);
-    QWebSettings::setIconDatabasePath(QString::fromStdString(applicationDir));
+    Q_UNUSED(component_directory);
+    Q_UNUSED(profile_directory);
+    Q_UNUSED(native_window_handle);
+    QWebSettings::setIconDatabasePath(QString::fromStdString(application_directory));
 
     // Until QtWebkit defaults to 16
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
@@ -103,7 +103,7 @@ bool LLEmbeddedBrowser::init(std::string applicationDir,
 
 #if QT_VERSION >= 0x040500
     d->mDiskCache = new QNetworkDiskCache(d->mNetworkAccessManager);
-    d->mDiskCache->setCacheDirectory(QString::fromStdString(applicationDir));
+    d->mDiskCache->setCacheDirectory(QString::fromStdString(application_directory));
     d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
     d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager);
@@ -129,23 +129,23 @@ bool LLEmbeddedBrowser::clearCache()
 #endif
 }
 
-bool LLEmbeddedBrowser::enableProxy(bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn)
+bool LLEmbeddedBrowser::enableProxy(bool enabled, std::string host_name, int port)
 {
     QNetworkProxy proxy;
-    if (proxyEnabledIn)
+    if (enabled)
     {
         proxy.setType(QNetworkProxy::HttpProxy);
-        QString hostName = QString::fromStdString(proxyHostNameIn);
-        proxy.setHostName(hostName);
-        proxy.setPort(proxyPortIn);
+        QString q_host_name = QString::fromStdString(host_name);
+        proxy.setHostName(q_host_name);
+        proxy.setPort(port);
     }
     d->mNetworkAccessManager->setProxy(proxy);
     return true;
 }
 
-bool LLEmbeddedBrowser::enableCookies(bool enabledIn)
+bool LLEmbeddedBrowser::enableCookies(bool enabled)
 {
-    d->mNetworkCookieJar->mAllowCookies = enabledIn;
+    d->mNetworkCookieJar->mAllowCookies = enabled;
     return false;
 }
 
@@ -155,24 +155,24 @@ bool LLEmbeddedBrowser::clearAllCookies()
     return true;
 }
 
-bool LLEmbeddedBrowser::enablePlugins(bool enabledIn)
+bool LLEmbeddedBrowser::enablePlugins(bool enabled)
 {
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
-    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, enabledIn);
+    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, enabled);
     return true;
 }
 
-void LLEmbeddedBrowser::setBrowserAgentId(std::string idIn)
+void LLEmbeddedBrowser::setBrowserAgentId(std::string id)
 {
-    d->mUserAgentString = QString::fromStdString(idIn);
+    d->mUserAgentString = QString::fromStdString(id);
 }
 
-LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int browserWidthIn, int browserHeightIn)
+LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height)
 {
     LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
     if (newWin)
     {
-        newWin->setSize(browserWidthIn, browserHeightIn);
+        newWin->setSize(width, height);
         newWin->setParent(this);
         clearLastError();
         return newWin;
@@ -180,9 +180,9 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int browserWidth
     return 0;
 }
 
-bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow* browserWindowIn)
+bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow* browser_window)
 {
-    delete browserWindowIn;
+    delete browser_window;
     clearLastError();
     return true;
 }
@@ -200,11 +200,11 @@ QList<QNetworkCookie> LLNetworkCookieJar::cookiesForUrl(const QUrl& url) const
     return QNetworkCookieJar::cookiesForUrl(url);
 }
 
-bool LLNetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl& url)
+bool LLNetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookie_list, const QUrl& url)
 {
     if (!mAllowCookies)
         return false;
-    return QNetworkCookieJar::setCookiesFromUrl(cookieList, url);
+    return QNetworkCookieJar::setCookiesFromUrl(cookie_list, url);
 }
 
 void LLNetworkCookieJar::clear()

@@ -62,7 +62,7 @@ LLMozLib* LLMozLib::getInstance()
     if (! sInstance)
     {
         sInstance = new LLMozLib;
-    };
+    }
 
     return sInstance;
 }
@@ -75,12 +75,15 @@ LLMozLib::~LLMozLib()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::init(std::string applicationDir, std::string componentDir, std::string profileDir, void* nativeWindowHandleIn)
+bool LLMozLib::init(std::string application_directory,
+                          std::string component_directory,
+                          std::string profile_directory,
+                          void* native_window_handle)
 {
-    return LLEmbeddedBrowser::getInstance()->init(applicationDir,
-                                                        componentDir,
-                                                            profileDir,
-                                                                nativeWindowHandleIn);
+    return LLEmbeddedBrowser::getInstance()->init(application_directory,
+                                                  component_directory,
+                                                  profile_directory,
+                                                  native_window_handle);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,488 +134,470 @@ const std::string LLMozLib::getVersion()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLMozLib::setBrowserAgentId(std::string idIn)
+void LLMozLib::setBrowserAgentId(std::string id)
 {
-    LLEmbeddedBrowser::getInstance()->setBrowserAgentId(idIn);
+    LLEmbeddedBrowser::getInstance()->setBrowserAgentId(id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::enableProxy(bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn)
+bool LLMozLib::enableProxy(bool enabled, std::string host_name, int port)
 {
-    return LLEmbeddedBrowser::getInstance()->enableProxy(proxyEnabledIn, proxyHostNameIn, proxyPortIn);
+    return LLEmbeddedBrowser::getInstance()->enableProxy(enabled, host_name, port);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLMozLib::createBrowserWindow(int browserWindowWidthIn, int browserWindowHeightIn)
+int LLMozLib::createBrowserWindow(int width, int height)
 {
-    LLEmbeddedBrowserWindow* browserWindow = LLEmbeddedBrowser::getInstance()->createBrowserWindow(browserWindowWidthIn, browserWindowHeightIn);
+    LLEmbeddedBrowserWindow* browser_window = LLEmbeddedBrowser::getInstance()->createBrowserWindow(width, height);
 
-    if (browserWindow)
+    if (browser_window)
     {
         // arbitrary limit so we don't exhaust system resources
         int id(0);
         while (++id < mMaxBrowserWindows)
         {
-            std::pair< BrowserWindowMapIter, bool > result = mBrowserWindowMap.insert(std::make_pair(id, browserWindow));
+            std::pair< BrowserWindowMapIter, bool > result = mBrowserWindowMap.insert(std::make_pair(id, browser_window));
 
             // find first place the insert succeeds and use that index as the id
             if (result.second)
             {
-                browserWindow->setWindowId(id);
-
+                browser_window->setWindowId(id);
                 return id;
-            };
-        };
-    };
+            }
+        }
+    }
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::destroyBrowserWindow(int browserWindowIdIn)
+bool LLMozLib::destroyBrowserWindow(int browser_window_id)
 {
-    // don't use the utility method here since we need the iterator to remove the entry from the map
-    BrowserWindowMapIter iter = mBrowserWindowMap.find(browserWindowIdIn);
-    LLEmbeddedBrowserWindow* browserWindow = (*iter).second;
+    // don't use the utility method here since we need the iteratorator to remove the entry from the map
+    BrowserWindowMapIter iterator = mBrowserWindowMap.find(browser_window_id);
+    LLEmbeddedBrowserWindow* browser_window = (*iterator).second;
 
-    if (browserWindow)
+    if (browser_window)
     {
-        LLEmbeddedBrowser::getInstance()->destroyBrowserWindow(browserWindow);
-    };
+        LLEmbeddedBrowser::getInstance()->destroyBrowserWindow(browser_window);
+    }
 
-    mBrowserWindowMap.erase(iter);
+    mBrowserWindowMap.erase(iterator);
 
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setBackgroundColor(int browserWindowIdIn, const int redIn, const int greenIn, const int blueIn)
+bool LLMozLib::setBackgroundColor(int browser_window_id, const int red, const int green, const int blue)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->setBackgroundColor(redIn, greenIn, blueIn);
-
+        browser_window->setBackgroundColor(red, green, blue);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setCaretColor(int browserWindowIdIn, const int redIn, const int greenIn, const int blueIn)
+bool LLMozLib::setCaretColor(int browser_window_id, const int red, const int green, const int blue)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->setCaretColor(redIn, greenIn, blueIn);
-
+        browser_window->setCaretColor(red, green, blue);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setEnabled(int browserWindowIdIn, bool enabledIn)
+bool LLMozLib::setEnabled(int browser_window_id, bool enabled)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->setEnabled(enabledIn);
-
+        browser_window->setEnabled(enabled);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setSize(int browserWindowIdIn, int widthIn, int heightIn)
+bool LLMozLib::setSize(int browser_window_id, int width, int height)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->setSize(widthIn, heightIn);
-
+        browser_window->setSize(width, height);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::scrollByLines(int browserWindowIdIn, int linesIn)
+bool LLMozLib::scrollByLines(int browser_window_id, int lines)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->scrollByLines(linesIn);
-
+        browser_window->scrollByLines(lines);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::addObserver(int browserWindowIdIn, LLEmbeddedBrowserWindowObserver* subjectIn)
+bool LLMozLib::addObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->addObserver(subjectIn);
-    };
+        browser_window->addObserver(subject);
+    }
 
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::remObserver(int browserWindowIdIn, LLEmbeddedBrowserWindowObserver* subjectIn)
+bool LLMozLib::remObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->remObserver(subjectIn);
-    };
+        browser_window->remObserver(subject);
+    }
 
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::navigateTo(int browserWindowIdIn, const std::string uriIn)
+bool LLMozLib::navigateTo(int browser_window_id, const std::string uri)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->navigateTo(uriIn) ? true : false;
-    };
+        return browser_window->navigateTo(uri) ? true : false;
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::navigateStop(int browserWindowIdIn)
+bool LLMozLib::navigateStop(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->navigateStop();
-
+        browser_window->navigateStop();
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::canNavigateBack(int browserWindowIdIn)
+bool LLMozLib::canNavigateBack(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->canNavigateBack() ? true : false;
-    };
+        return browser_window->canNavigateBack() ? true : false;
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::navigateBack(int browserWindowIdIn)
+bool LLMozLib::navigateBack(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->navigateBack();
-
+        browser_window->navigateBack();
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::canNavigateForward(int browserWindowIdIn)
+bool LLMozLib::canNavigateForward(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->canNavigateForward() ? true : false;
-    };
+        return browser_window->canNavigateForward() ? true : false;
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::navigateForward(int browserWindowIdIn)
+bool LLMozLib::navigateForward(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->navigateForward();
-
+        browser_window->navigateForward();
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::navigateReload(int browserWindowIdIn)
+bool LLMozLib::navigateReload(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->navigateReload();
-
+        browser_window->navigateReload();
         return true;
-    };
+    }
 
     return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-const unsigned char* LLMozLib::grabBrowserWindow(int browserWindowIdIn)
+const unsigned char* LLMozLib::grabBrowserWindow(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->grabWindow(0, 0, getBrowserWidth(browserWindowIdIn), getBrowserHeight(browserWindowIdIn));
-    };
+        return browser_window->grabWindow(0, 0, getBrowserWidth(browser_window_id), getBrowserHeight(browser_window_id));
+    }
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const unsigned char* LLMozLib::getBrowserWindowPixels(int browserWindowIdIn)
+const unsigned char* LLMozLib::getBrowserWindowPixels(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->getPageBuffer();
-    };
+        return browser_window->getPageBuffer();
+    }
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const bool LLMozLib::flipWindow(int browserWindowIdIn, bool flipIn)
+const bool LLMozLib::flipWindow(int browser_window_id, bool flip)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->flipWindow(flipIn);
-
+        browser_window->flipWindow(flip);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserWidth(int browserWindowIdIn)
+const int LLMozLib::getBrowserWidth(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->getBrowserWidth();
-    };
+        return browser_window->getBrowserWidth();
+    }
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserHeight(int browserWindowIdIn)
+const int LLMozLib::getBrowserHeight(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->getBrowserHeight();
-    };
+        return browser_window->getBrowserHeight();
+    }
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserDepth(int browserWindowIdIn)
+const int LLMozLib::getBrowserDepth(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->getBrowserDepth();
-    };
+        return browser_window->getBrowserDepth();
+    }
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserRowSpan(int browserWindowIdIn)
+const int LLMozLib::getBrowserRowSpan(int browser_window_id)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->getBrowserRowSpan();
-    };
+        return browser_window->getBrowserRowSpan();
+    }
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseDown(int browserWindowIdIn, int xPosIn, int yPosIn)
+bool LLMozLib::mouseDown(int browser_window_id, int x, int y)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->mouseDown(xPosIn, yPosIn);
-
+        browser_window->mouseDown(x, y);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseUp(int browserWindowIdIn, int xPosIn, int yPosIn)
+bool LLMozLib::mouseUp(int browser_window_id, int x, int y)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->mouseUp(xPosIn, yPosIn);
-
+        browser_window->mouseUp(x, y);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseMove(int browserWindowIdIn, int xPosIn, int yPosIn)
+bool LLMozLib::mouseMove(int browser_window_id, int x, int y)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->mouseMove(xPosIn, yPosIn);
-
+        browser_window->mouseMove(x, y);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseLeftDoubleClick(int browserWindowIdIn, int xPosIn, int yPosIn)
+bool LLMozLib::mouseLeftDoubleClick(int browser_window_id, int x, int y)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->mouseLeftDoubleClick(xPosIn, yPosIn);
-
+        browser_window->mouseLeftDoubleClick(x, y);
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::keyPress(int browserWindowIdIn, int keyCodeIn)
+bool LLMozLib::keyPress(int browser_window_id, int key_code)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->keyPress(keyCodeIn);
-
+        browser_window->keyPress(key_code);
         return true;
-    };
+    }
 
     return false;
 }
 
-bool LLMozLib::unicodeInput(int browserWindowIdIn, unsigned long uni_char)
+bool LLMozLib::unicodeInput(int browser_window_id, unsigned long uni_char)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->unicodeInput(uni_char);
-
+        browser_window->unicodeInput(uni_char);
         return true;
-    };
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLMozLib::focusBrowser(int browserWindowIdIn, bool focusBrowserIn)
-{
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
-    {
-        browserWindow->focusBrowser(focusBrowserIn);
-
-        return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLMozLib::setNoFollowScheme(int browserWindowIdIn, std::string schemeIn)
+bool LLMozLib::focusBrowser(int browser_window_id, bool focus_browser)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        browserWindow->setNoFollowScheme(schemeIn);
-    };
+        browser_window->focusBrowser(focus_browser);
+        return true;
+    }
+
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-std::string LLMozLib::getNoFollowScheme(int browserWindowIdIn)
+void LLMozLib::setNoFollowScheme(int browser_window_id, std::string scheme)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->getNoFollowScheme();
-    };
+        browser_window->setNoFollowScheme(scheme);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+std::string LLMozLib::getNoFollowScheme(int browser_window_id)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        return browser_window->getNoFollowScheme();
+    }
 
     return ("");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::enableCookies(bool enabledIn)
+bool LLMozLib::enableCookies(bool enabled)
 {
-    return LLEmbeddedBrowser::getInstance()->enableCookies(enabledIn);
+    return LLEmbeddedBrowser::getInstance()->enableCookies(enabled);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -624,20 +609,20 @@ bool LLMozLib::clearAllCookies()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::enablePlugins(bool enabledIn)
+bool LLMozLib::enablePlugins(bool enabled)
 {
-    return LLEmbeddedBrowser::getInstance()->enablePlugins(enabledIn);
+    return LLEmbeddedBrowser::getInstance()->enablePlugins(enabled);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-std::string LLMozLib::evaluateJavascript(int browserWindowIdIn, const std::string scriptIn)
+std::string LLMozLib::evaluateJavascript(int browser_window_id, const std::string script)
 {
-    LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId(browserWindowIdIn);
-    if (browserWindow)
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
     {
-        return browserWindow->evaluateJavascript(scriptIn);
-    };
+        return browser_window->evaluateJavascript(script);
+    }
 
     return "";
 }
@@ -650,9 +635,8 @@ bool LLMozLib::set404RedirectUrl(int browser_window_in, std::string redirect_url
     if (browser_window)
     {
         browser_window->set404RedirectUrl(redirect_url);
-
         return true;
-    };
+    }
 
     return false;
 }
@@ -665,21 +649,20 @@ bool LLMozLib::clr404RedirectUrl(int browser_window_in)
     if (browser_window)
     {
         browser_window->clr404RedirectUrl();
-
         return true;
-    };
+    }
 
     return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // utility method to get an LLEmbeddedBrowserWindow* from a window id (int)
-LLEmbeddedBrowserWindow* LLMozLib::getBrowserWindowFromWindowId(int browserWindowIdIn)
+LLEmbeddedBrowserWindow* LLMozLib::getBrowserWindowFromWindowId(int browser_window_id)
 {
-    BrowserWindowMapIter iter = mBrowserWindowMap.find(browserWindowIdIn);
+    BrowserWindowMapIter iterator = mBrowserWindowMap.find(browser_window_id);
 
-    if (iter != mBrowserWindowMap.end())
-        return (*iter).second;
+    if (iterator != mBrowserWindowMap.end())
+        return (*iterator).second;
     else
         return 0;
 }

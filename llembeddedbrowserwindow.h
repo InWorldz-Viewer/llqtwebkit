@@ -64,11 +64,11 @@ public:
     virtual ~LLEmbeddedBrowserWindow();
 
     // housekeeping
-    void setParent(LLEmbeddedBrowser* parentIn);
-    bool setSize(qint16 widthIn, qint16 heightIn);
-    void focusBrowser(bool focusBrowserIn);
-    void scrollByLines(qint16 linesIn);
-    void setWindowId(int windowIdIn);
+    void setParent(LLEmbeddedBrowser* parent);
+    bool setSize(qint16 width, qint16 height);
+    void focusBrowser(bool focus_browser);
+    void scrollByLines(qint16 lines);
+    void setWindowId(int window_id);
     int getWindowId();
 
     // random accessors
@@ -79,7 +79,7 @@ public:
     const std::string getClickLinkTarget();
 
     // memory buffer management
-    unsigned char* grabWindow(int xIn, int yIn, int widthIn, int heightIn);
+    unsigned char* grabWindow(int x, int y, int width, int height);
     bool flipWindow(bool flip);
     unsigned char* getPageBuffer();
     qint16 getBrowserWidth();
@@ -88,17 +88,17 @@ public:
     qint32 getBrowserRowSpan();
 
     // set background color that you see in between pages - default is white but sometimes useful to change
-    void setBackgroundColor(const quint8 redIn, const quint8 greenIn, const quint8 blueIn);
+    void setBackgroundColor(const quint8 red, const quint8 green, const quint8 blue);
 
     // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
-    void setCaretColor(const quint8 redIn, const quint8 greenIn, const quint8 blueIn);
+    void setCaretColor(const quint8 red, const quint8 green, const quint8 blue);
 
     // can turn off updates to a page - e.g. when it's hidden by your windowing system
     void setEnabled(bool enabledIn);
 
     // navigation
     void navigateStop();
-    bool navigateTo(const std::string uriIn);
+    bool navigateTo(const std::string uri);
     bool canNavigateBack();
     void navigateBack();
     bool canNavigateForward();
@@ -106,26 +106,26 @@ public:
     void navigateReload();
 
     // javascript access/control
-    std::string evaluateJavascript(std::string scriptIn);
+    std::string evaluateJavascript(std::string script);
 
     // redirection when you hit a missing page
     bool set404RedirectUrl(std::string redirect_url);
     bool clr404RedirectUrl();
 
     // mouse & keyboard events
-    void mouseDown(qint16 xPosIn, qint16 yPosIn);
-    void mouseUp(qint16 xPosIn, qint16 yPosIn);
-    void mouseMove(qint16 xPosIn, qint16 yPosIn);
-    void mouseLeftDoubleClick(qint16 xPosIn, qint16 yPosIn);
-    void keyPress(qint16 keyCode);
-    void unicodeInput(quint32 uni_char);
+    void mouseDown(qint16 x, qint16 y);
+    void mouseUp(qint16 x, qint16 y);
+    void mouseMove(qint16 x, qint16 y);
+    void mouseLeftDoubleClick(qint16 x, qint16 y);
+    void keyPress(qint16 key_code);
+    void unicodeInput(quint32 unicode_char);
 
     // allow consumers of this class and to observe browser events
-    bool addObserver(LLEmbeddedBrowserWindowObserver* observerIn);
-    bool remObserver(LLEmbeddedBrowserWindowObserver* observerIn);
+    bool addObserver(LLEmbeddedBrowserWindowObserver* observer);
+    bool remObserver(LLEmbeddedBrowserWindowObserver* observer);
 
     // accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
-    void setNoFollowScheme(std::string schemeIn);
+    void setNoFollowScheme(std::string scheme);
     std::string getNoFollowScheme();
 
 private:

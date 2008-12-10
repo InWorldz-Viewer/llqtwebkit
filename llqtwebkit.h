@@ -50,54 +50,54 @@ class LLEmbeddedBrowserWindow;
 class LLEmbeddedBrowserWindowEvent
 {
 	public:
-		LLEmbeddedBrowserWindowEvent(int eventWindowIdIn, std::string uriIn) :
-			mEventWindowId(eventWindowIdIn),
-			mEventUri(uriIn)
+		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri) :
+			mEventWindowId(window_id),
+			mEventUri(uri)
 		{
 		};
 
 		// single int passed with the event - e.g. progress
-		LLEmbeddedBrowserWindowEvent(int eventWindowIdIn, std::string uriIn, int intValIn) :
-			mEventWindowId(eventWindowIdIn),
-			mEventUri(uriIn),
-			mIntVal(intValIn)
+		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, int value) :
+			mEventWindowId(window_id),
+			mEventUri(uri),
+			mIntVal(value)
 		{
 		};
 
 		// string passed with the event
-		LLEmbeddedBrowserWindowEvent(int eventWindowIdIn, std::string uriIn, std::string stringValIn) :
-			mEventWindowId(eventWindowIdIn),
-			mEventUri(uriIn),
-			mStringVal(stringValIn)
+		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value) :
+			mEventWindowId(window_id),
+			mEventUri(uri),
+			mStringVal(value)
 		{
 		};
 
 		// 2 strings passed with the event
-		LLEmbeddedBrowserWindowEvent(int eventWindowIdIn, std::string uriIn, std::string stringValIn, std::string stringVal2In) :
-			mEventWindowId(eventWindowIdIn),
-			mEventUri(uriIn),
-			mStringVal(stringValIn),
-			mStringVal2(stringVal2In)
+		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value, std::string value2) :
+			mEventWindowId(window_id),
+			mEventUri(uri),
+			mStringVal(value),
+			mStringVal2(value2)
 		{
 		};
 
 		// string and an int passed with the event
-		LLEmbeddedBrowserWindowEvent(int eventWindowIdIn, std::string uriIn, std::string stringValIn, int intValIn) :
-			mEventWindowId(eventWindowIdIn),
-			mEventUri(uriIn),
-			mIntVal(intValIn),
-			mStringVal(stringValIn)
+		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value, int value2) :
+			mEventWindowId(window_id),
+			mEventUri(uri),
+			mIntVal(value2),
+			mStringVal(value)
 		{
-		};
+		}
 
 		// 4 ints passed (semantically as a rectangle but could be anything - didn't want to make a RECT type structure)
-		LLEmbeddedBrowserWindowEvent(int eventWindowIdIn, std::string uriIn, int xIn, int yIn, int widthIn, int heightIn) :
-			mEventWindowId(eventWindowIdIn),
-			mEventUri(uriIn),
-			mXVal(xIn),
-			mYVal(yIn),
-			mWidthVal(widthIn),
-			mHeightVal(heightIn)
+		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, int x, int y, int width, int height) :
+			mEventWindowId(window_id),
+			mEventUri(uri),
+			mXVal(x),
+			mYVal(y),
+			mWidthVal(width),
+			mHeightVal(height)
 		{
 		};
 
@@ -130,12 +130,12 @@ class LLEmbeddedBrowserWindowEvent
 			return mStringVal2;
 		};
 
-		void getRectValue(int& xOut, int& yOut, int& widthOut, int& heightOut) const
+		void getRectValue(int& x, int& y, int& width, int& height) const
 		{
-			xOut = mXVal;
-			yOut = mYVal;
-			widthOut = mWidthVal;
-			heightOut = mHeightVal;
+			x = mXVal;
+			y = mYVal;
+			width = mWidthVal;
+			height = mHeightVal;
 		};
 
 	private:
@@ -158,14 +158,14 @@ class LLEmbeddedBrowserWindowObserver
 		virtual ~LLEmbeddedBrowserWindowObserver();
 		typedef LLEmbeddedBrowserWindowEvent EventType;
 
-		virtual void onPageChanged(const EventType& eventIn);
-		virtual void onNavigateBegin(const EventType& eventIn);
-		virtual void onNavigateComplete(const EventType& eventIn);
-		virtual void onUpdateProgress(const EventType& eventIn);
-		virtual void onStatusTextChange(const EventType& eventIn);
-		virtual void onLocationChange(const EventType& eventIn);
-		virtual void onClickLinkHref(const EventType& eventIn);
-		virtual void onClickLinkNoFollow(const EventType& eventIn);
+		virtual void onPageChanged(const EventType& event);
+		virtual void onNavigateBegin(const EventType& event);
+		virtual void onNavigateComplete(const EventType& event);
+		virtual void onUpdateProgress(const EventType& event);
+		virtual void onStatusTextChange(const EventType& event);
+		virtual void onLocationChange(const EventType& event);
+		virtual void onClickLinkHref(const EventType& event);
+		virtual void onClickLinkNoFollow(const EventType& event);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,71 +181,74 @@ class LLMozLib
 		static LLMozLib* getInstance();
 
 		// housekeeping
-		bool init(std::string applicationDir, std::string componentDir, std::string profileDir, void* nativeWindowHandleIn);
+		bool init(std::string application_directory,
+                          std::string component_directory,
+                          std::string profile_directory,
+                          void* native_window_handle);
 		bool reset();
 		bool clearCache();
 		int getLastError();
 		const std::string getVersion();
-		void setBrowserAgentId(std::string idIn);
-		bool enableProxy(bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn);
-		bool enableCookies(bool enabledIn);
+		void setBrowserAgentId(std::string id);
+		bool enableProxy(bool enabled, std::string host_name, int port);
+		bool enableCookies(bool enabled);
 		bool clearAllCookies();
-		bool enablePlugins(bool enabledIn);
+		bool enablePlugins(bool enabled);
 
 		// browser window - creation/deletion, mutation etc.
-		int createBrowserWindow(int browserWindowWidthIn, int browserWindowHeightIn);
-		bool destroyBrowserWindow(int browserWindowIdIn);
-		bool setSize(int browserWindowIdIn, int widthIn, int heightIn);
-		bool scrollByLines(int browserWindowIdIn, int linesIn);
-		bool setBackgroundColor(int browserWindowIdIn, const int redIn, const int greenIn, const int blueIn);
-		bool setCaretColor(int browserWindowIdIn, const int redIn, const int greenIn, const int blueIn);
-		bool setEnabled(int browserWindowIdIn, bool enabledIn);
+		int createBrowserWindow(int width, int height);
+		bool destroyBrowserWindow(int browser_window_id);
+		bool setSize(int browser_window_id, int width, int height);
+		bool scrollByLines(int browser_window_id, int lines);
+		bool setBackgroundColor(int browser_window_id, const int red, const int green, const int blue);
+		bool setCaretColor(int browser_window_id, const int red, const int green, const int blue);
+		bool setEnabled(int browser_window_id, bool enabled);
 
 		// add/remove yourself as an observer on browser events - see LLEmbeddedBrowserWindowObserver declaration
-		bool addObserver(int browserWindowIdIn, LLEmbeddedBrowserWindowObserver* subjectIn);
-		bool remObserver(int browserWindowIdIn, LLEmbeddedBrowserWindowObserver* subjectIn);
+		bool addObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject);
+		bool remObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject);
 
 		// navigation - self explanatory
-		bool navigateTo(int browserWindowIdIn, const std::string uriIn);
-		bool navigateStop(int browserWindowIdIn);
-		bool canNavigateBack(int browserWindowIdIn);
-		bool navigateBack(int browserWindowIdIn);
-		bool canNavigateForward(int browserWindowIdIn);
-		bool navigateForward(int browserWindowIdIn);
-		bool navigateReload(int browserWindowIdIn);
+		bool navigateTo(int browser_window_id, const std::string uri);
+		bool navigateStop(int browser_window_id);
+		bool canNavigateBack(int browser_window_id);
+		bool navigateBack(int browser_window_id);
+		bool canNavigateForward(int browser_window_id);
+		bool navigateForward(int browser_window_id);
+		bool navigateReload(int browser_window_id);
 
 		// javascript access/control
-		std::string evaluateJavascript(int browserWindowIdIn, const std::string scriptIn);
+		std::string evaluateJavascript(int browser_window_id, const std::string script);
 
 		// set/clear URL to redirect to when a 404 page is reached
 		bool set404RedirectUrl(int browser_window_in, std::string redirect_url);
 		bool clr404RedirectUrl(int browser_window_in);
 
 		// access to rendered bitmap data
-		const unsigned char* grabBrowserWindow(int browserWindowIdIn);		// renders page to memory and returns pixels
-		const unsigned char* getBrowserWindowPixels(int browserWindowIdIn);	// just returns pixels - no render
-		const bool flipWindow(int browserWindowIdIn, bool flipIn);			// optionally flip window (pixels) you get back
-		const int getBrowserWidth(int browserWindowIdIn);						// current browser width (can vary slightly after page is rendered)
-		const int getBrowserHeight(int browserWindowIdIn);					// current height
-		const int getBrowserDepth(int browserWindowIdIn);						// depth in bytes
-		const int getBrowserRowSpan(int browserWindowIdIn);					// width in pixels * depth in bytes
+		const unsigned char* grabBrowserWindow(int browser_window_id);		// renders page to memory and returns pixels
+		const unsigned char* getBrowserWindowPixels(int browser_window_id);	// just returns pixels - no render
+		const bool flipWindow(int browser_window_id, bool flip);			// optionally flip window (pixels) you get back
+		const int getBrowserWidth(int browser_window_id);						// current browser width (can vary slightly after page is rendered)
+		const int getBrowserHeight(int browser_window_id);					// current height
+		const int getBrowserDepth(int browser_window_id);						// depth in bytes
+		const int getBrowserRowSpan(int browser_window_id);					// width in pixels * depth in bytes
 
 		// mouse/keyboard interaction
-		bool mouseDown(int browserWindowIdIn, int xPosIn, int yPosIn);			// send a mouse down event to a browser window at given XY in browser space
-		bool mouseUp(int browserWindowIdIn, int xPosIn, int yPosIn);				// send a mouse up event to a browser window at given XY in browser space
-		bool mouseMove(int browserWindowIdIn, int xPosIn, int yPosIn);			// send a mouse move event to a browser window at given XY in browser space
-		bool mouseLeftDoubleClick(int browserWindowIdIn, int xPosIn, int yPosIn);	// send a mouse left button double click to a browser window at given XY in browser space
-		bool keyPress(int browserWindowIdIn, int keyCodeIn);						// send a key press event to a browser window
-		bool unicodeInput (int browserWindowIdIn, unsigned long uni_char);		// send a unicode keypress event to a browser window
-		bool focusBrowser(int browserWindowIdIn, bool focusBrowserIn);			// set/remove focus to given browser window
+		bool mouseDown(int browser_window_id, int x, int y);			// send a mouse down event to a browser window at given XY in browser space
+		bool mouseUp(int browser_window_id, int x, int y);				// send a mouse up event to a browser window at given XY in browser space
+		bool mouseMove(int browser_window_id, int x, int y);			// send a mouse move event to a browser window at given XY in browser space
+		bool mouseLeftDoubleClick(int browser_window_id, int x, int y);	// send a mouse left button double click to a browser window at given XY in browser space
+		bool keyPress(int browser_window_id, int key_code);						// send a key press event to a browser window
+		bool unicodeInput (int browser_window_id, unsigned long uni_char);		// send a unicode keypress event to a browser window
+		bool focusBrowser(int browser_window_id, bool focus_browser);			// set/remove focus to given browser window
 
 		// accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
-		void setNoFollowScheme(int browserWindowIdIn, std::string schemeIn);
-		std::string getNoFollowScheme(int browserWindowIdIn);
+		void setNoFollowScheme(int browser_window_id, std::string scheme);
+		std::string getNoFollowScheme(int browser_window_id);
 
 	private:
 		LLMozLib();
-		LLEmbeddedBrowserWindow* getBrowserWindowFromWindowId(int browserWindowIdIn);
+		LLEmbeddedBrowserWindow* getBrowserWindowFromWindowId(int browser_window_id);
 		static LLMozLib* sInstance;
 		const int mMaxBrowserWindows;
 		typedef std::map< int, LLEmbeddedBrowserWindow* > BrowserWindowMap;

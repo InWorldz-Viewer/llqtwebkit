@@ -59,44 +59,43 @@ class LLEmbeddedBrowserWindowEmitter
 
         ///////////////////////////////////////////////////////////////////////////////
         //
-        bool addObserver(T* observerIn)
+        bool addObserver(T* observer)
         {
-            if (! observerIn)
+            if (! observer)
                 return false;
 
-            if (std::find(observers.begin(), observers.end(), observerIn) != observers.end())
+            if (std::find(observers.begin(), observers.end(), observer) != observers.end())
                 return false;
 
-            observers.push_back(observerIn);
+            observers.push_back(observer);
 
             return true;
-        };
+        }
 
         ///////////////////////////////////////////////////////////////////////////////
         //
-        bool remObserver(T* observerIn)
+        bool remObserver(T* observer)
         {
-            if (! observerIn)
+            if (! observer)
                 return false;
 
-            observers.remove(observerIn);
+            observers.remove(observer);
 
             return true;
-        };
+        }
 
         ///////////////////////////////////////////////////////////////////////////////
         //
-        void update(observerMethod method, const EventType& msgIn)
+        void update(observerMethod method, const EventType& msg)
         {
             typename std::list< T* >::iterator iter = observers.begin();
 
             while(iter != observers.end())
             {
-                ((*iter)->*method)(msgIn);
-
+                ((*iter)->*method)(msg);
                 ++iter;
-            };
-        };
+            }
+        }
 
     protected:
         ObserverContainer observers;
