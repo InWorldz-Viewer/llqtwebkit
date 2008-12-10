@@ -99,7 +99,7 @@ void LLEmbeddedBrowserWindow::setCaretColor(const quint8 redIn, const quint8 gre
     Q_UNUSED(redIn);
     Q_UNUSED(greenIn);
     Q_UNUSED(blueIn);
-    qDebug() << __FUNCTION__ << "Not implemented";
+    // QtWebKit paints the caret so we don't have to
 }
 
 //
