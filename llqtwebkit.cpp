@@ -97,6 +97,7 @@ int LLMozLib::getLastError()
 //
 bool LLMozLib::reset()
 {
+    mBrowserWindowMap.clear();
     return LLEmbeddedBrowser::getInstance()->reset();
 }
 
