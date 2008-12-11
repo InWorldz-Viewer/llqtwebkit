@@ -170,7 +170,7 @@ class uBrowser :
 		const int mIdUpdateTypeApp;
 		std::string mHomeUrl[ MaxBrowsers ];
 		std::vector< std::pair< std::string, std::string > > mBookmarks;
-		bool mNeedsUpdate[ MaxBrowsers ];
+		int mNeedsUpdate[ MaxBrowsers ];
 		int mWindowId[ MaxBrowsers ];
 		int mCurWindowId;
 		int mCurFace;

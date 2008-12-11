@@ -676,7 +676,7 @@ void uBrowser::display()
     {
         if ( mWindowId[ i ] )
         {
-            if ( mNeedsUpdate[ i ] )
+            if ( mNeedsUpdate[ i ] == 1)
             {
                 const unsigned char* pixels = LLMozLib::getInstance()->getBrowserWindowPixels( mWindowId[ i ] );
                 if ( pixels )
@@ -691,12 +691,12 @@ void uBrowser::display()
                             //rowSpan / depth,
                             mBrowserWindowWidth,
                                 mBrowserWindowHeight,
-                                    getGLTextureFormat( LLMozLib::getInstance()->getBrowserDepth( mWindowId[ i ] ) ),
+                                    getGLTextureFormat(depth),
                                         GL_UNSIGNED_BYTE,
                                             pixels );
                 }
 
-                mNeedsUpdate[ i ] = false;
+                mNeedsUpdate[ i ] = 0;
             };
         };
     };
@@ -732,9 +732,10 @@ void uBrowser::idle()
     // we need to grab the contents of the rendered page
     for( int i = 0; i < mNumBrowserWindows; ++i )
     {
-        if ( mNeedsUpdate[ i ] )
+        if ( mNeedsUpdate[ i ] == 2)
             LLMozLib::getInstance()->grabBrowserWindow( mWindowId[ i ] );
-	}
+	    mNeedsUpdate[ i ] = 1;
+        }
 
     // enable/disable back button depending on whether we can go back or not
     if ( LLMozLib::getInstance()->canNavigateBack( mCurWindowId ) )
@@ -1230,7 +1231,7 @@ void uBrowser::onPageChanged( const EventType& eventIn )
     {
         if ( mWindowId[ i ] == eventIn.getEventWindowId() )
         {
-            mNeedsUpdate[ i ] = true;
+            mNeedsUpdate[ i ] = 2;
         };
     };
 }
