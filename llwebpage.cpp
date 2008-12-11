@@ -114,6 +114,18 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 	window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);
         return false;
     }
-    return QWebPage::acceptNavigationRequest(frame, request, type);
+    bool accepted = QWebPage::acceptNavigationRequest(frame, request, type);
+    if (accepted && type == QWebPage::NavigationTypeLinkClicked) {
+        QUrl url = request.url();
+        window->d->mClickHref = QString(url.toEncoded()).toStdString();
+        // TODO Enhance QWebHistTestResult to provide a way to get the DOM path at x,y
+        window->d->mClickTarget = std::string();
+        LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
+                                           window->getCurrentUri(),
+                                           window->d->mClickHref,
+                                           window->d->mClickTarget);
+        window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkHref, event);
+    }
+    return accepted;
 }
 

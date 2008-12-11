@@ -110,8 +110,8 @@ class LLEmbeddedBrowserWindowPrivate
         , mPercentComplete(0)
         , mStatusText("")
         , mCurrentUri("")
-        //, mClickHref("")
-        //, mClickTarget("")
+        , mClickHref("")
+        , mClickTarget("")
         , mNoFollowScheme("secondlife")
         , mWindowId(0)
         , m404RedirectUrl("")
@@ -137,8 +137,8 @@ class LLEmbeddedBrowserWindowPrivate
     qint16 mPercentComplete;
     std::string mStatusText;
     std::string mCurrentUri;
-    //std::string mClickHref;
-    //std::string mClickTarget;
+    std::string mClickHref;
+    std::string mClickTarget;
     QString mNoFollowScheme;
     int mWindowId;
     std::string m404RedirectUrl;

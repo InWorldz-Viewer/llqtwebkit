@@ -141,21 +141,13 @@ const std::string LLEmbeddedBrowserWindow::getStatusMsg()
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
 {
-    std::string result;
-    // This function doesn't seem to be used?
-    qDebug() << __FUNCTION__ << "Not implemented";
-    //return d->mClickHref;
-    return result;
+    return d->mClickHref;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
 {
-    std::string result;
-    // This function doesn't seem to be used?
-    qDebug() << __FUNCTION__ << "Not implemented";
-    //return d->mClickTarget;
-    return result;
+    return d->mClickTarget;
 }
 
 // render a page into memory and grab the window
