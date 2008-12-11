@@ -389,7 +389,7 @@ const unsigned char* LLMozLib::grabBrowserWindow(int browser_window_id)
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        return browser_window->grabWindow(0, 0, getBrowserWidth(browser_window_id), getBrowserHeight(browser_window_id));
+        return browser_window->grabWindow(0, 0, browser_window->getBrowserWidth(), browser_window->getBrowserHeight());
     }
 
     return 0;
