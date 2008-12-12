@@ -58,6 +58,8 @@ Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
 Q_IMPORT_PLUGIN(qico)
 
+//#define LLEMBEDDEDBROWSER_DEBUG
+
 QString LLEmbeddedBrowserWindowPrivate::userAgent() const
 {
     if (mParent)
@@ -80,6 +82,9 @@ LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
 
 void LLEmbeddedBrowserWindow::setParent(LLEmbeddedBrowser* parent)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << parent;
+#endif
     d->mParent = parent;
     d->mPage->setNetworkAccessManager(parent->d->mNetworkAccessManager);
 }
@@ -87,6 +92,9 @@ void LLEmbeddedBrowserWindow::setParent(LLEmbeddedBrowser* parent)
 // change the background color that gets used between pages (usually white)
 void LLEmbeddedBrowserWindow::setBackgroundColor(const quint8 red, const quint8 green, const quint8 blue)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << red << green << blue;
+#endif
     QColor background_color(red, green, blue);
     QPalette p = d->mPage->palette();
     p.setColor(QPalette::Normal, QPalette::Window, background_color);
@@ -96,6 +104,9 @@ void LLEmbeddedBrowserWindow::setBackgroundColor(const quint8 red, const quint8 
 // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
 void LLEmbeddedBrowserWindow::setCaretColor(const quint8 red, const quint8 green, const quint8 blue)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << red << green << blue;
+#endif
     Q_UNUSED(red);
     Q_UNUSED(green);
     Q_UNUSED(blue);
@@ -105,18 +116,27 @@ void LLEmbeddedBrowserWindow::setCaretColor(const quint8 red, const quint8 green
 //
 void LLEmbeddedBrowserWindow::setEnabled(bool enabled)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << enabled;
+#endif
     d->mEnabled = enabled;
 }
 
 // allow consumers of this class to observe events - add themselves as an observer
 bool LLEmbeddedBrowserWindow::addObserver(LLEmbeddedBrowserWindowObserver* observer)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << observer;
+#endif
     return d->mEventEmitter.addObserver(observer);
 }
 
 // allow consumers of this class to observe events - remove themselves as an observer
 bool LLEmbeddedBrowserWindow::remObserver(LLEmbeddedBrowserWindowObserver* observer)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << observer;
+#endif
     return d->mEventEmitter.remObserver(observer);
 }
 
@@ -129,32 +149,45 @@ const std::string LLEmbeddedBrowserWindow::getCurrentUri()
 // utility method that is used by observers to retrieve data after an event
 const qint16 LLEmbeddedBrowserWindow::getPercentComplete()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mPercentComplete;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getStatusMsg()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mStatusText;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mClickHref;
 }
 
 // utility method that is used by observers to retrieve data after an event
 const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mClickTarget;
 }
 
 // render a page into memory and grab the window
-// TODO: 0,0, browser width, browser height is always passed in right now
-//       need to make this work with arbitrary rects (i.e. the dirty rect)
 unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int height)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << width << height;
+#endif
     // only grab the window if it's enabled
     if (!d->mEnabled)
         return 0;
@@ -176,31 +209,49 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
 // return the buffer that contains the rendered page
 unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mPageBuffer;
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserWidth()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mImage.width();
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserHeight()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mImage.height();
 }
 
 qint16 LLEmbeddedBrowserWindow::getBrowserDepth()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return 4;
 }
 
 qint32 LLEmbeddedBrowserWindow::getBrowserRowSpan()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return 4 * getBrowserWidth();
 }
 
 bool LLEmbeddedBrowserWindow::navigateTo(const std::string uri)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(uri);
+#endif
     QUrl url = QUrl(QString::fromStdString(uri));
     navigateStop();
     d->mPage->mainFrame()->load(url);
@@ -214,11 +265,17 @@ bool LLEmbeddedBrowserWindow::canNavigateBack()
 
 void LLEmbeddedBrowserWindow::navigateStop()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     d->mPage->triggerAction(QWebPage::Stop);
 }
 
 void LLEmbeddedBrowserWindow::navigateBack()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     d->mPage->triggerAction(QWebPage::Back);
 }
 
@@ -229,17 +286,26 @@ bool LLEmbeddedBrowserWindow::canNavigateForward()
 
 void LLEmbeddedBrowserWindow::navigateForward()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     d->mPage->triggerAction(QWebPage::Forward);
 }
 
 void LLEmbeddedBrowserWindow::navigateReload()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     d->mPage->triggerAction(QWebPage::Reload);
 }
 
 // set the size of the browser window
 bool LLEmbeddedBrowserWindow::setSize(qint16 width, qint16 height)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << width << height;
+#endif
     d->mPage->setViewportSize(QSize(width, height));
     d->mPageBuffer = NULL;
     return true;
@@ -247,30 +313,45 @@ bool LLEmbeddedBrowserWindow::setSize(qint16 width, qint16 height)
 
 bool LLEmbeddedBrowserWindow::flipWindow(bool flip)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << flip;
+#endif
     d->mFlipBitmap = flip;
     return true;
 }
 
 void LLEmbeddedBrowserWindow::mouseLeftDoubleClick(qint16 x, qint16 y)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
+#endif
     QMouseEvent event(QEvent::MouseButtonDblClick, QPoint(x, y), Qt::LeftButton, 0, 0);
     qApp->sendEvent(d->mPage, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseDown(qint16 x, qint16 y)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << d->mPage->mainFrame()->geometry();
+#endif
     QMouseEvent event(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, 0, 0);
     qApp->sendEvent(d->mPage, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseUp(qint16 x, qint16 y)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
+#endif
     QMouseEvent event(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, 0, 0);
     qApp->sendEvent(d->mPage, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseMove(qint16 x, qint16 y)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
+#endif
     if (x == 0 && y == 0)
     {
         return;
@@ -282,6 +363,9 @@ void LLEmbeddedBrowserWindow::mouseMove(qint16 x, qint16 y)
 // utility methods to set an error message so something else can look at it
 void LLEmbeddedBrowserWindow::scrollByLines(qint16 lines)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << lines;
+#endif
     int currentScrollValue = d->mPage->mainFrame()->scrollBarValue(Qt::Vertical);
     d->mPage->mainFrame()->setScrollBarValue(Qt::Vertical, currentScrollValue + lines);
 }
@@ -289,6 +373,9 @@ void LLEmbeddedBrowserWindow::scrollByLines(qint16 lines)
 // accept a (mozilla-style) keycode
 void LLEmbeddedBrowserWindow::keyPress(qint16 key_code)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << key_code;
+#endif
     Qt::Key key;
     QChar text;
 
@@ -340,6 +427,9 @@ void LLEmbeddedBrowserWindow::keyPress(qint16 key_code)
 // accept keyboard input that's already been translated into a unicode char.
 void LLEmbeddedBrowserWindow::unicodeInput(quint32 unicode_char)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << unicode_char;
+#endif
     Qt::Key key = Qt::Key_unknown;
     QChar input((uint)unicode_char);
 
@@ -352,12 +442,18 @@ void LLEmbeddedBrowserWindow::unicodeInput(quint32 unicode_char)
 // give focus to the browser so that input keyboard events work
 void LLEmbeddedBrowserWindow::focusBrowser(bool focus_browser)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << focus_browser;
+#endif
     QFocusEvent event(focus_browser ? QEvent::FocusIn : QEvent::FocusOut, Qt::OtherFocusReason);
     qApp->sendEvent(d->mPage, &event);
 }
 
 void LLEmbeddedBrowserWindow::setWindowId(int window_id)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << window_id;
+#endif
     d->mWindowId = window_id;
 }
 
@@ -368,6 +464,9 @@ int LLEmbeddedBrowserWindow::getWindowId()
 
 std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(script);
+#endif
     QString q_script = QString::fromStdString(script);
     QString result = d->mPage->mainFrame()->evaluateJavaScript(q_script).toString();
     return result.toStdString();
@@ -375,12 +474,18 @@ std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
 
 bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(redirect_url);
+#endif
     d->m404RedirectUrl = redirect_url;
     return true;
 }
 
 bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     d->m404RedirectUrl = std::string();
     return true;
 }
@@ -388,14 +493,19 @@ bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
 
 void LLEmbeddedBrowserWindow::load404RedirectUrl()
 {
-	QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
-	navigateStop();
-	d->mPage->mainFrame()->load(url);
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
+    QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
+    navigateStop();
+    d->mPage->mainFrame()->load(url);
 }
 
 void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)
 {
-    Q_UNUSED(scheme);
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(scheme);
+#endif
     d->mNoFollowScheme = QString::fromStdString(scheme);
     // The scheme part of the url is what is before '://'
     d->mNoFollowScheme = d->mNoFollowScheme.mid(0,d->mNoFollowScheme.indexOf("://"));
@@ -403,6 +513,9 @@ void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)
 
 std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
 {
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
+#endif
     return d->mNoFollowScheme.toStdString();
 }
 
