@@ -134,7 +134,7 @@ class LLEmbeddedBrowserWindowPrivate
     QImage mImage;
 
 
-    qint16 mPercentComplete;
+    int16_t mPercentComplete;
     std::string mStatusText;
     std::string mCurrentUri;
     std::string mClickHref;

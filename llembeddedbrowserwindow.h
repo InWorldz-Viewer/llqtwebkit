@@ -49,6 +49,12 @@
 #include <string>
 #include <list>
 #include <algorithm>
+#ifdef _MSC_VER
+#include "pstdint.h"
+#else
+#include <stdint.h>        // Use the C99 official header
+#endif
+
 
 #include "llmozlib2.h"
 
@@ -65,14 +71,14 @@ public:
 
     // housekeeping
     void setParent(LLEmbeddedBrowser* parent);
-    bool setSize(qint16 width, qint16 height);
+    bool setSize(int16_t width, int16_t height);
     void focusBrowser(bool focus_browser);
-    void scrollByLines(qint16 lines);
+    void scrollByLines(int16_t lines);
     void setWindowId(int window_id);
     int getWindowId();
 
     // random accessors
-    const qint16 getPercentComplete();
+    const int16_t getPercentComplete();
     const std::string getStatusMsg();
     const std::string getCurrentUri();
     const std::string getClickLinkHref();
@@ -82,16 +88,16 @@ public:
     unsigned char* grabWindow(int x, int y, int width, int height);
     bool flipWindow(bool flip);
     unsigned char* getPageBuffer();
-    qint16 getBrowserWidth();
-    qint16 getBrowserHeight();
-    qint16 getBrowserDepth();
-    qint32 getBrowserRowSpan();
+    int16_t getBrowserWidth();
+    int16_t getBrowserHeight();
+    int16_t getBrowserDepth();
+    int32_t getBrowserRowSpan();
 
     // set background color that you see in between pages - default is white but sometimes useful to change
-    void setBackgroundColor(const quint8 red, const quint8 green, const quint8 blue);
+    void setBackgroundColor(const uint8_t red, const uint8_t green, const uint8_t blue);
 
     // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
-    void setCaretColor(const quint8 red, const quint8 green, const quint8 blue);
+    void setCaretColor(const uint8_t red, const uint8_t green, const uint8_t blue);
 
     // can turn off updates to a page - e.g. when it's hidden by your windowing system
     void setEnabled(bool enabledIn);
@@ -114,12 +120,12 @@ public:
     void load404RedirectUrl();
 
     // mouse & keyboard events
-    void mouseDown(qint16 x, qint16 y);
-    void mouseUp(qint16 x, qint16 y);
-    void mouseMove(qint16 x, qint16 y);
-    void mouseLeftDoubleClick(qint16 x, qint16 y);
-    void keyPress(qint16 key_code);
-    void unicodeInput(quint32 unicode_char);
+    void mouseDown(int16_t x, int16_t y);
+    void mouseUp(int16_t x, int16_t y);
+    void mouseMove(int16_t x, int16_t y);
+    void mouseLeftDoubleClick(int16_t x, int16_t y);
+    void keyPress(int16_t key_code);
+    void unicodeInput(uint32_t unicode_char);
 
     // allow consumers of this class and to observe browser events
     bool addObserver(LLEmbeddedBrowserWindowObserver* observer);
