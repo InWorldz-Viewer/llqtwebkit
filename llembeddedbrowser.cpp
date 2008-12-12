@@ -220,24 +220,27 @@ void LLNetworkCookieJar::clear()
 }
 
 LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser,QObject* parent)
-	:QNetworkAccessManager(parent)
-	,mBrowser(browser)
+    : QNetworkAccessManager(parent)
+    , mBrowser(browser)
 {
-	connect(this, SIGNAL(finished(QNetworkReply*)),
-	                this, SLOT(finishLoading(QNetworkReply*)));
+    connect(this, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(finishLoading(QNetworkReply*)));
 }
+
 void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
 {
-	if(reply->error() == QNetworkReply::ContentNotFoundError)
-	{
-		QString url = QString(reply->url().toEncoded());
-		if(mBrowser)
-		{
-			foreach(LLEmbeddedBrowserWindow *window, mBrowser->windows)
-			{
-				if(QString::fromStdString(window->getCurrentUri()) == url)
-					window->load404RedirectUrl();
-			}
-		}
-	}
+    if (reply->error() == QNetworkReply::ContentNotFoundError)
+    {
+        QString url = QString(reply->url().toEncoded());
+        if (mBrowser)
+        {
+            std::string current_url = url.toStdString();
+            foreach (LLEmbeddedBrowserWindow *window, mBrowser->windows)
+            {
+                if (window->getCurrentUri() == current_url)
+                    window->load404RedirectUrl();
+            }
+        }
+    }
 }
+
