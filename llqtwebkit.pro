@@ -4,24 +4,7 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 
-!mac {
-unix {
-    DEFINES += LL_LINUX
-}
-}
-
-# Input
-HEADERS += llembeddedbrowser.h \
-           llembeddedbrowser_p.h \
-           llembeddedbrowserwindow.h \
-           llembeddedbrowserwindow_p.h \
-           llmozlib2.h \
-           llwebpage.h
-
-SOURCES += llembeddedbrowser.cpp \
-           llembeddedbrowserwindow.cpp \
-           llmozlib2.cpp \
-           llwebpage.cpp
+include(llmozlib2.pri)
 
 RCC_DIR     = $$PWD/.rcc
 UI_DIR      = $$PWD/.ui

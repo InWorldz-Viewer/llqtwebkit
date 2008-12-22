@@ -97,6 +97,11 @@ class LLEmbeddedBrowserWindowEmitter
             }
         }
 
+        int getObserverNumber()
+        {
+            return observers.size();
+        }
+
     protected:
         ObserverContainer observers;
 };
@@ -113,7 +118,7 @@ class LLEmbeddedBrowserWindowPrivate
         , mClickHref("")
         , mClickTarget("")
         , mNoFollowScheme("secondlife")
-        , mWindowId(0)
+        , mWindowId(-1)
         , m404RedirectUrl("")
         , mEnabled(true)
         , mFlipBitmap(false)

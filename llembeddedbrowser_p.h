@@ -54,18 +54,19 @@ public:
 
     bool mAllowCookies;
 };
+
 class LLEmbeddedBrowserPrivate;
 class LLNetworkAccessManager: public QNetworkAccessManager
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser, QObject *parent = 0);
+    LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser, QObject* parent = 0);
 
 public slots:
-	void finishLoading(QNetworkReply * reply);
+    void finishLoading(QNetworkReply* reply);
 
 private:
-	LLEmbeddedBrowserPrivate* mBrowser;
+    LLEmbeddedBrowserPrivate* mBrowser;
 
 };
 
@@ -82,10 +83,13 @@ class LLEmbeddedBrowserPrivate
 #endif
         , mNetworkCookieJar(0)
     {
-        int argc = 0;
-        static const char *const argv = "";
-        mApplication = new QApplication(argc,  (char **)&argv);
-        mApplication->addLibraryPath(qApp->applicationDirPath());
+        if (!qApp)
+        {
+            int argc = 0;
+            static const char *const argv = "";
+            mApplication = new QApplication(argc,  (char **)&argv);
+            mApplication->addLibraryPath(qApp->applicationDirPath());
+        }
 #if defined(__APPLE__)
         qApp->setStyle("windows");
 #endif

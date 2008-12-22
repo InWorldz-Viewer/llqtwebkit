@@ -76,6 +76,7 @@ class LLEmbeddedBrowser
         void setLastError(int error_number);
         void clearLastError();
         int getLastError();
+        int getWindowCount() const;
 
     private:
         friend class LLEmbeddedBrowserWindow;

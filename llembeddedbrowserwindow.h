@@ -130,6 +130,7 @@ public:
     // allow consumers of this class and to observe browser events
     bool addObserver(LLEmbeddedBrowserWindowObserver* observer);
     bool remObserver(LLEmbeddedBrowserWindowObserver* observer);
+    int getObserverNumber();
 
     // accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
     void setNoFollowScheme(std::string scheme);

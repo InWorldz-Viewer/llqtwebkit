@@ -128,11 +128,13 @@ bool LLEmbeddedBrowser::reset()
 bool LLEmbeddedBrowser::clearCache()
 {
 #if QT_VERSION >= 0x040500
-    d->mDiskCache->clear();
-    return true;
-#else
-    return false;
+    if (d->mDiskCache)
+    {
+        d->mDiskCache->clear();
+        return true;
+    }
 #endif
+    return false;
 }
 
 bool LLEmbeddedBrowser::enableProxy(bool enabled, std::string host_name, int port)
@@ -151,12 +153,16 @@ bool LLEmbeddedBrowser::enableProxy(bool enabled, std::string host_name, int por
 
 bool LLEmbeddedBrowser::enableCookies(bool enabled)
 {
+    if (!d->mNetworkCookieJar)
+        return false;
     d->mNetworkCookieJar->mAllowCookies = enabled;
     return false;
 }
 
 bool LLEmbeddedBrowser::clearAllCookies()
 {
+    if (!d->mNetworkCookieJar)
+        return false;
     d->mNetworkCookieJar->clear();
     return true;
 }
@@ -189,9 +195,19 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int h
 
 bool LLEmbeddedBrowser::destroyBrowserWindow(LLEmbeddedBrowserWindow* browser_window)
 {
-    delete browser_window;
-    clearLastError();
-    return true;
+    // check if exists in windows list
+    if (d->windows.removeOne(browser_window))
+    {
+        delete browser_window;
+        clearLastError();
+        return true;
+    }
+    return false;
+}
+
+int LLEmbeddedBrowser::getWindowCount() const
+{
+    return d->windows.size();
 }
 
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent)

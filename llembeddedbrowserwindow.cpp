@@ -86,7 +86,13 @@ void LLEmbeddedBrowserWindow::setParent(LLEmbeddedBrowser* parent)
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << parent;
 #endif
     d->mParent = parent;
-    d->mPage->setNetworkAccessManager(parent->d->mNetworkAccessManager);
+    if (parent)
+    {
+        d->mPage->setNetworkAccessManager(parent->d->mNetworkAccessManager);
+    } else
+    {
+        d->mPage->setNetworkAccessManager(0);
+    }
 }
 
 // change the background color that gets used between pages (usually white)
@@ -138,6 +144,11 @@ bool LLEmbeddedBrowserWindow::remObserver(LLEmbeddedBrowserWindowObserver* obser
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << observer;
 #endif
     return d->mEventEmitter.remObserver(observer);
+}
+
+int LLEmbeddedBrowserWindow::getObserverNumber()
+{
+	return d->mEventEmitter.getObserverNumber();
 }
 
 // used by observers of this class to get the current URI
@@ -308,6 +319,7 @@ bool LLEmbeddedBrowserWindow::setSize(int16_t width, int16_t height)
 #endif
     d->mPage->setViewportSize(QSize(width, height));
     d->mPageBuffer = NULL;
+    d->mImage = QImage(d->mPage->viewportSize(), QImage::Format_RGB32);
     return true;
 }
 
@@ -414,14 +426,10 @@ void LLEmbeddedBrowserWindow::keyPress(int16_t key_code)
 		break;
     }
 
-    {
-        QKeyEvent event(QEvent::KeyPress, key, Qt::NoModifier, text);
-        qApp->sendEvent(d->mPage, &event);
-    }
-    {
-        QKeyEvent event(QEvent::KeyRelease, key, Qt::NoModifier, text);
-        qApp->sendEvent(d->mPage, &event);
-    }
+    QKeyEvent press_event(QEvent::KeyPress, key, Qt::NoModifier, text);
+    qApp->sendEvent(d->mPage, &press_event);
+    QKeyEvent release_event(QEvent::KeyRelease, key, Qt::NoModifier, text);
+    qApp->sendEvent(d->mPage, &release_event);
 }
 
 // accept keyboard input that's already been translated into a unicode char.
@@ -508,7 +516,7 @@ void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)
 #endif
     d->mNoFollowScheme = QString::fromStdString(scheme);
     // The scheme part of the url is what is before '://'
-    d->mNoFollowScheme = d->mNoFollowScheme.mid(0,d->mNoFollowScheme.indexOf("://"));
+    d->mNoFollowScheme = d->mNoFollowScheme.mid(0, d->mNoFollowScheme.indexOf("://"));
 }
 
 std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
