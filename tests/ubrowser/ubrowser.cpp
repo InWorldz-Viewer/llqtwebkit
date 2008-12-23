@@ -40,6 +40,7 @@
 
 #ifdef _WINDOWS
 #include <windows.h>
+#include <Qt/qapplication.h>
 #elif defined(__APPLE__)
     // Grr... glui.h #defines Byte for some reason, which conflicts with the Carbon headers.
     #ifdef Byte
@@ -718,8 +719,10 @@ void uBrowser::display()
 //
 void uBrowser::idle()
 {
-#ifdef LL_LINUX
-    qApp->processEvents();
+#ifdef _WINDOWS
+	qApp->processEvents();
+#elif defined(LL_LINUX)
+	qApp->processEvents();
     // pump the GTK+Gecko event queue for a (limited) while.  this should
     // be done so that the Gecko event queue doesn't starve, and done
     // *here* so that mNeedsUpdate[] can be populated by callbacks
