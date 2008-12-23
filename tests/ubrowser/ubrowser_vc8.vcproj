@@ -3,9 +3,8 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="ubrowser"
-	ProjectGUID="{2BB09AF3-E27A-4EB8-AEC3-F5380C7585A5}"
-	RootNamespace="ubrowser"
-	Keyword="Win32Proj"
+	ProjectGUID="{0179E019-F1B0-3148-9A70-5A7FC9721141}"
+	Keyword="Qt4VSv1.0"
 	>
 	<Platforms>
 		<Platform
@@ -17,11 +16,11 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory="."
+			IntermediateDirectory="debug\"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -37,100 +36,27 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				WarningLevel="0"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\dependencies\include;..\..\"
-				PreprocessorDefinitions="WIN32;_DEBUG;DEBUG;_WINDOWS;XP_WIN;XP_WIN32;MOZILLA_INTERNAL_API"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
+				AdditionalOptions="-Zm200 -w34100 -w34189 -Zm200 -w34100 -w34189 -w34100 -w34189"
+				Optimization="4"
+				AdditionalIncludeDirectories="c:\Qt4.4.3\include\QtCore;c:\Qt4.4.3\include\QtGui;c:\Qt4.4.3\include\QtOpenGL;c:\Qt4.4.3\include\QtWebKit;c:\Qt4.4.3\include;.;..\..;c:\Qt4.4.3\include\ActiveQt;debug;&quot;c:\Qt4.4.3\mkspecs\win32-msvc2005&quot;"
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_WEBKIT_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;QT_NETWORK4_LIB"
+				GeneratePreprocessedFile="0"
+				ExceptionHandling="1"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="false"
+				TreatWChar_tAsBuiltInType="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation="debug\"
+				ObjectFile="debug\"
+				ProgramDataBaseFileName=".\"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib version.lib comctl32.lib llmozlib2d-vc80.lib glui32d-vc8.lib"
-				OutputFile="$(OutDir)/ubrowser.exe"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\dependencies\lib;..\..\Debug"
-				IgnoreDefaultLibraryNames="msvcrtd.lib"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/ubrowser.pdb"
-				SubSystem="1"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying  runtime files"
-				CommandLine="if not exist &quot;$(TargetDir)\chrome\&quot; xcopy ..\..\libraries\i686-win32\runtime_debug\*.* &quot;$(TargetDir)&quot; /s /y&#x0D;&#x0A;if not exist &quot;$(TargetDir)\glut32.dll&quot; copy ..\dependencies\bin\glut32.dll &quot;$(TargetDir)&quot; /y&#x0D;&#x0A;"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				AdditionalIncludeDirectories="..\dependencies\include;..\..\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;XP_WIN;XP_WIN32;MOZILLA_INTERNAL_API"
-				RuntimeLibrary="0"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -138,24 +64,24 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,_WINDOWS,QT_WEBKIT_LIB,QT_OPENGL_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				IgnoreImportLibrary="false"
-				AdditionalDependencies="opengl32.lib glu32.lib version.lib comctl32.lib llmozlib2-vc80.lib glui32-vc8.lib"
-				OutputFile="$(OutDir)/ubrowser.exe"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\dependencies\lib;..\..\Release"
-				IgnoreAllDefaultLibraries="false"
-				IgnoreDefaultLibraryNames="MSVCRT.lib"
+				IgnoreImportLibrary="true"
+				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; &quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
+				AdditionalDependencies="opengl32.lib glui32.lib glut32.lib glu32.lib gdi32.lib user32.lib c:\Qt4.4.3\lib\qtmaind.lib C:/Work/Code/llmozlib/llmozlib/llmozlib2/tests/ubrowser/../../Debug/llmozlib2.lib c:\Qt4.4.3\lib\QtWebKitd4.lib c:\Qt4.4.3\lib\QtOpenGLd4.lib c:\Qt4.4.3\lib\QtGuid4.lib c:\Qt4.4.3\lib\QtCored4.lib c:\Qt4.4.3\lib\QtNetwork4.lib"
+				OutputFile="debug\ubrowser.exe"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="c:\Qt4.4.3\lib"
+				IgnoreDefaultLibraryNames="LIBCD.lib"
 				GenerateDebugInformation="true"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				ProgramDatabaseFile=""
+				SubSystem="2"
+				LinkTimeCodeGeneration="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -180,30 +106,130 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Copying  runtime files"
-				CommandLine="if not exist &quot;$(TargetDir)\chrome\&quot; xcopy ..\..\libraries\i686-win32\runtime_release\*.* &quot;$(TargetDir)&quot; /s /y&#x0D;&#x0A;if not exist &quot;$(TargetDir)\glut32.dll&quot; copy ..\dependencies\bin\glut32.dll &quot;$(TargetDir)&quot; /y&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="release\"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				WarningLevel="0"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm200 -w34100 -w34189 -Zm200 -w34100 -w34189 -w34100 -w34189"
+				Optimization="2"
+				AdditionalIncludeDirectories="&quot;c:\Qt4.4.3\include\QtCore&quot;,&quot;c:\Qt4.4.3\include\QtCore&quot;,&quot;c:\Qt4.4.3\include\QtGui&quot;,&quot;c:\Qt4.4.3\include\QtGui&quot;,&quot;c:\Qt4.4.3\include\QtOpenGL&quot;,&quot;c:\Qt4.4.3\include\QtOpenGL&quot;,&quot;c:\Qt4.4.3\include\QtWebKit&quot;,&quot;c:\Qt4.4.3\include\QtWebKit&quot;,&quot;c:\Qt4.4.3\include&quot;,&quot;.&quot;,&quot;..\..&quot;,&quot;c:\Qt4.4.3\include\ActiveQt&quot;,&quot;release&quot;,&quot;.&quot;,c:\Qt4.4.3\mkspecs\win32-msvc2005"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,_WINDOWS,QT_NO_DEBUG,QT_WEBKIT_LIB,QT_OPENGL_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
+				GeneratePreprocessedFile="0"
+				ExceptionHandling="1"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="false"
+				TreatWChar_tAsBuiltInType="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation="release\"
+				ObjectFile="release\"
+				ProgramDataBaseFileName=".\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,_WINDOWS,QT_NO_DEBUG,QT_WEBKIT_LIB,QT_OPENGL_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
+				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; &quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
+				AdditionalDependencies="opengl32.lib glu32.lib gdi32.lib user32.lib c:\Qt4.4.3\lib\qtmain.lib C:/Work/Code/llmozlib/llmozlib/llmozlib2/tests/ubrowser/../../Debug/llmozlib2.lib c:\Qt4.4.3\lib\QtWebKit4.lib c:\Qt4.4.3\lib\QtOpenGL4.lib c:\Qt4.4.3\lib\QtGui4.lib c:\Qt4.4.3\lib\QtCore4.lib"
+				OutputFile="release\ubrowser.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="c:\Qt4.4.3\lib"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile=""
+				SubSystem="2"
+				LinkTimeCodeGeneration="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 	</Configurations>
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath=".\app.cpp"
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-		</File>
-		<File
-			RelativePath=".\readme.html"
+			<File
+				RelativePath="app.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ubrowser.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-		</File>
-		<File
-			RelativePath=".\ubrowser.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ubrowser.h"
-			>
-		</File>
+			<File
+				RelativePath="ubrowser.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

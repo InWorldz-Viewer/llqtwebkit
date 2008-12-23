@@ -6,8 +6,7 @@ INCLUDEPATH += ../../
 
 CONFIG += static
 
-QT += webkit opengl
-LIBS += $$PWD/../../libllmozlib2.a
+QT += webkit opengl network
 
 !mac {
 unix {
@@ -16,6 +15,7 @@ unix {
 #    DEFINES += LL_LINUX LL_NEWER_GLUI
     LIBS += -lglui -lglut
     LIBS += $$system(pkg-config gtk+-2.0 --libs)
+	LIBS += $$PWD/../../libllmozlib2.a
 }
 }
 
@@ -23,6 +23,12 @@ mac {
     LIBS += -framework GLUT -framework OpenGL -framework GLUI
     DEFINES += LL_OSX
     QTPLUGIN += qgif
+}
+
+
+win32{
+    DEFINES += _WINDOWS
+	LIBS += $$PWD/../../Debug/llmozlib2.lib
 }
 
 # Input

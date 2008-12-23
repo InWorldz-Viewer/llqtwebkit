@@ -1244,7 +1244,7 @@ void* uBrowser::getNativeWindowHandle()
     // Can't get this via GLUT so had to use this hack
 #ifdef _WINDOWS
 
-    return FindWindow( NULL, mName.c_str() );
+    return FindWindow( NULL, (LPCWSTR)mName.c_str() );
 
 #elif defined(__APPLE__)
     // The Mozilla libraries need a "native window ref" for some reason.  They don't care which window it is, though.
@@ -1295,7 +1295,7 @@ void uBrowser::setFocusNativeWindow()
 {
     // need to set focus to the browser window so that keyboard events work
 #ifdef _WINDOWS
-SetFocus( FindWindow( NULL, mName.c_str() ) );
+SetFocus( FindWindow( NULL, (LPCWSTR)mName.c_str() ) );
 #elif defined(__APPLE__)
 // Don't think this is necessary on the Mac...
 #elif defined(LL_LINUX)
