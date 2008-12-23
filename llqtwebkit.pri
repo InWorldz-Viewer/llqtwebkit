@@ -7,6 +7,14 @@ unix {
 }
 }
 
+mac {
+    DEFINES += LL_OSX
+}
+
+win32{
+    DEFINES += _WINDOWS
+}
+
 # Input
 HEADERS += llembeddedbrowser.h \
            llembeddedbrowser_p.h \
