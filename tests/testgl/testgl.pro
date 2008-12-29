@@ -10,11 +10,30 @@ INCLUDEPATH += ../../
 
 CONFIG += static
 
-QT += webkit opengl
+QT += webkit opengl network
 
-DEFINES += LL_NEWER_GLUI LL_OSX
-//QMAKE_LFLAGS += -L/path/to/framework/directory/
-LIBS += -framework GLUT -framework OpenGL $$PWD/../../libllmozlib2.a
+!mac {
+unix {
+    DEFINES += LL_LINUX
+#    DEFINES += LL_LINUX LL_NEWER_GLUI
+    LIBS += -lglui -lglut
+    LIBS += $$PWD/../../libllmozlib2.a
+}
+}
+
+mac {
+    DEFINES += LL_OSX
+    LIBS += -framework GLUT -framework OpenGL
+}
+
+
+win32{
+    DEFINES += _WINDOWS
+    INCLUDEPATH += ../
+    LIBS += -L../GL $$PWD/../../Debug/llmozlib2.lib
+    DESTDIR=../GL
+}
+
 QTPLUGIN += qgif
 # Input
 SOURCES += testgl.cpp
