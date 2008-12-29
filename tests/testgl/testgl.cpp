@@ -38,6 +38,7 @@
 
 #ifdef _WINDOWS
 #include <windows.h>
+#include <Qt/qapplication.h>
 #endif
 
 
@@ -208,7 +209,7 @@ class testGL :
 								LLMozLib::getInstance()->getBrowserRowSpan( mBrowserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( mBrowserWindowId ),
 									mBrowserWindowHeight,
 #ifdef _WINDOWS
-                                    LLMozLib::getInstance()->getBrowserDepth(mBrowserWindowId ) == 3 ? GL_BGRA_EXT : GL_BGRA_EXT,
+                                    LLMozLib::getInstance()->getBrowserDepth(mBrowserWindowId ) == 3 ? GL_RGBA : GL_RGBA,
 #elif defined(__APPLE__)
                                     GL_RGBA,
 #endif
@@ -391,7 +392,7 @@ class testGL :
 			// My implementation of the embedded browser needs a native window handle
 			// Can't get this via GLUT so had to use this hack
 			#ifdef _WINDOWS
-			return FindWindow( NULL, mAppWindowName.c_str() );
+			return FindWindow( NULL, (LPCWSTR)mAppWindowName.c_str() );
 			#else 
                 #ifdef LL_OSX
                     // not needed on osx
