@@ -8,7 +8,9 @@
  b. Glut: http://www.xmission.com/~nate/glut.html  Grab the library and header zip.
  b1. Rename the downloaded directory to C:\llmozlib\llmozlib2\tests\GL
  c. Glui32: http://glui.sourceforge.net/
-
+ c1. Extract the zip and follow the instructions to compile the library
+ c2. Copy glui.h and from the include into C:\llmozlib\llmozlib2\tests\GL
+ c3. Copy glui32.lib from msvc/lib into C:\llmozlib\llmozlib2\tests\GL
 
 2) Build llmozlib.a
  a. Launch the Qt command prompt
@@ -28,7 +30,7 @@
  cd C:\llmozlib\llmozlib2\tests\ubrowser
  qmake CONFIG-=debug
  nmake
- {...}
+ ..\GL\ubrowser.exe
 
 Notes:
 a.To use Visual studio 2005, under qt command prompt to get a .vcproj, run
@@ -36,5 +38,5 @@ a.To use Visual studio 2005, under qt command prompt to get a .vcproj, run
 
 b. Make sure all libs and app are built as Multi-threaded Dll or Multi-threaded debug dll.
  In Visual Studio this is in Properties->configuration->c/c++->code generation->runtime library
- ii.make sure qtxxx.dll is in the PATH.
 
+c. Make sure the Qt.dll's are in the PATH or current directory
