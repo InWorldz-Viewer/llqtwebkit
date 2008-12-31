@@ -26,9 +26,11 @@ mac {
 }
 
 
-win32{
+win32 {
     DEFINES += _WINDOWS
-	LIBS += $$PWD/../../Debug/llmozlib2.lib
+    INCLUDEPATH += ../ ../GL
+    LIBS += -L../GL $$PWD/../../Debug/llmozlib2.lib
+    DESTDIR=../GL
 }
 
 # Input
