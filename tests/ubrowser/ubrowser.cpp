@@ -1312,15 +1312,7 @@ SetFocus( FindWindow( NULL, (LPCWSTR)mName.c_str() ) );
 //
 GLenum uBrowser::getGLTextureFormat(int size)
 {
-#ifdef _WINDOWS
-    return (size == 3) ? GL_BGR_EXT : GL_BGRA_EXT;
-#elif defined(__APPLE__)
     return GL_RGBA;
-#elif defined(LL_LINUX)
-    return GL_RGBA;
-#else
-    #error uBrowser::getGLTextureFormat() needs an implementation for this platform!
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
