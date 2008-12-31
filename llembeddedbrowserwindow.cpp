@@ -148,13 +148,14 @@ bool LLEmbeddedBrowserWindow::remObserver(LLEmbeddedBrowserWindowObserver* obser
 
 int LLEmbeddedBrowserWindow::getObserverNumber()
 {
-	return d->mEventEmitter.getObserverNumber();
+    return d->mEventEmitter.getObserverNumber();
 }
 
 // used by observers of this class to get the current URI
-const std::string LLEmbeddedBrowserWindow::getCurrentUri()
+const std::string& LLEmbeddedBrowserWindow::getCurrentUri()
 {
-    return QString(d->mPage->mainFrame()->url().toEncoded()).toStdString();
+    d->mCurrentUri = QString(d->mPage->mainFrame()->url().toEncoded()).toStdString();
+    return d->mCurrentUri;
 }
 
 // utility method that is used by observers to retrieve data after an event
@@ -167,7 +168,7 @@ const int16_t LLEmbeddedBrowserWindow::getPercentComplete()
 }
 
 // utility method that is used by observers to retrieve data after an event
-const std::string LLEmbeddedBrowserWindow::getStatusMsg()
+const std::string& LLEmbeddedBrowserWindow::getStatusMsg()
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
@@ -176,7 +177,7 @@ const std::string LLEmbeddedBrowserWindow::getStatusMsg()
 }
 
 // utility method that is used by observers to retrieve data after an event
-const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
+const std::string& LLEmbeddedBrowserWindow::getClickLinkHref()
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
@@ -185,7 +186,7 @@ const std::string LLEmbeddedBrowserWindow::getClickLinkHref()
 }
 
 // utility method that is used by observers to retrieve data after an event
-const std::string LLEmbeddedBrowserWindow::getClickLinkTarget()
+const std::string& LLEmbeddedBrowserWindow::getClickLinkTarget()
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
