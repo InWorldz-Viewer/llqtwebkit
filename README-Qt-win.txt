@@ -9,6 +9,7 @@
  b1. Rename the downloaded directory to C:\llmozlib\llmozlib2\tests\GL
  c. Glui32: http://glui.sourceforge.net/
  c1. Extract the zip and follow the instructions to compile the library
+     Make sure to build a debug library
  c2. Copy glui.h and from the include into C:\llmozlib\llmozlib2\tests\GL
  c3. Copy glui32.lib from msvc/lib into C:\llmozlib\llmozlib2\tests\GL
 
