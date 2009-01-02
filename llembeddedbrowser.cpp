@@ -116,7 +116,9 @@ bool LLEmbeddedBrowser::reset()
     d->mNetworkAccessManager = new LLNetworkAccessManager(d);
 #if QT_VERSION >= 0x040500
     d->mDiskCache = new QNetworkDiskCache(d->mNetworkAccessManager);
-    d->mDiskCache->setCacheDirectory(d->mApplicationDirectory);
+    QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation)
+                            + QLatin1String("/browser");
+    d->mDiskCache->setCacheDirectory(location);
     d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
     d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager);
