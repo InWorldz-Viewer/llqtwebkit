@@ -52,6 +52,8 @@ LLWebPage::LLWebPage(QObject *parent)
             this, SLOT(repaintRequestedSlot(const QRect &)));
     connect(this, SIGNAL(scrollRequested(int, int, const QRect &)),
             this, SLOT(scrollRequestedSlot(int, int, const QRect &)));
+    connect(this, SIGNAL(loadFinished(bool)),
+            this, SLOT(loadFinished(bool)));
 }
 
 void LLWebPage::loadProgressSlot(int progress)
@@ -127,5 +129,12 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
         window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkHref, event);
     }
     return accepted;
+}
+
+void LLWebPage::loadFinished(bool)
+{
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
+            window->getCurrentUri());
+    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateComplete, event);
 }
 
