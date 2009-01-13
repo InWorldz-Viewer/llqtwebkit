@@ -51,13 +51,13 @@
 #include <QtGui/QtGui>
 #include <QtWebKit/QtWebKit>
 #include <QtOpenGL/QtOpenGL>
-
+/*
 Q_IMPORT_PLUGIN(qgif)
 Q_IMPORT_PLUGIN(qjpeg)
 Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
 Q_IMPORT_PLUGIN(qico)
-
+*/
 //#define LLEMBEDDEDBROWSER_DEBUG
 
 QString LLEmbeddedBrowserWindowPrivate::userAgent() const
@@ -264,7 +264,7 @@ bool LLEmbeddedBrowserWindow::navigateTo(const std::string uri)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(uri);
 #endif
-    QUrl url = QUrl(QString::fromStdString(uri));
+    QUrl url = QUrl::fromEncoded((QString::fromStdString(uri).toLocal8Bit()));
     navigateStop();
     d->mPage->mainFrame()->load(url);
     return true;
