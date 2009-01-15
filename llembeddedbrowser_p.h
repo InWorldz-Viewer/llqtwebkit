@@ -40,9 +40,11 @@
 #include <QtWebKit/QtWebKit>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+
+#include "cookiejar.h"
 #include "llembeddedbrowser.h"
 
-class LLNetworkCookieJar : public QNetworkCookieJar
+class LLNetworkCookieJar : public CookieJar
 {
 public:
     LLNetworkCookieJar(QObject *parent = 0);

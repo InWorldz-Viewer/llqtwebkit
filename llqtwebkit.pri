@@ -32,3 +32,5 @@ RCC_DIR     = .rcc
 UI_DIR      = .ui
 MOC_DIR     = .moc
 OBJECTS_DIR = .obj
+
+include(qtwebkit_cookiejar/src.pri)
