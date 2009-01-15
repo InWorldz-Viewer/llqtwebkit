@@ -5,6 +5,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../
 
 CONFIG += static
+QT += webkit opengl network
 
 !mac {
 unix {
