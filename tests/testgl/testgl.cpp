@@ -36,16 +36,15 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include <Qt/qapplication.h>
+
 #ifdef _WINDOWS
 #include <windows.h>
-#include <Qt/qapplication.h>
 #endif
-
 
 #include <iostream>
 
 #ifdef LL_OSX
-#include <Qt/qapplication.h>
 #include <QtPlugin>
 Q_IMPORT_PLUGIN(qgif)
 #include "GLUT/glut.h"
@@ -55,7 +54,7 @@ Q_IMPORT_PLUGIN(qgif)
 #include "llmozlib2.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Implementation of the test app - implemented as a class and derrives from 
+// Implementation of the test app - implemented as a class and derrives from
 // the observer so we can catch events emitted by LLMozLib
 //
 class testGL :
@@ -63,17 +62,17 @@ class testGL :
 {
 	public:
 		testGL() :
-			mAppWindowWidth( 800 ),						// dimensions of the app window - can be anything 
+			mAppWindowWidth( 800 ),						// dimensions of the app window - can be anything
 			mAppWindowHeight( 600 ),
 			mBrowserWindowWidth( mAppWindowWidth ),		// dimensions of the embedded browser - can be anything
 			mBrowserWindowHeight( mAppWindowHeight ),	// but looks best when it's the same as the app window
 			mAppTextureWidth( -1 ),						// dimensions of the texture that the browser is rendered into
 			mAppTextureHeight( -1 ),					// calculated at initialization
 			mAppTexture( 0 ),
-			mNeedsUpdate( true ),						// flag to indicate if browser texture needs an update 
+			mNeedsUpdate( true ),						// flag to indicate if browser texture needs an update
 			mBrowserWindowId( 0 ),
-			mAppWindowName( "testGL" ),					
-			mHomeUrl( "http://www.google.com" )			
+			mAppWindowName( "testGL" ),
+			mHomeUrl( "http://www.google.com" )
 		{
 			std::cout << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
 		};
@@ -212,6 +211,8 @@ class testGL :
                                     LLMozLib::getInstance()->getBrowserDepth(mBrowserWindowId ) == 3 ? GL_RGBA : GL_RGBA,
 #elif defined(__APPLE__)
                                     GL_RGBA,
+#elif defined(LL_LINUX)
+                                    GL_RGBA,
 #endif
 											GL_UNSIGNED_BYTE,
 												pixels );
@@ -234,16 +235,16 @@ class testGL :
 			glEnable( GL_TEXTURE_2D );
 			glColor3f( 1.0f, 1.0f, 1.0f );
 			glBegin( GL_QUADS );
-				glTexCoord2f( 1.0f, 0.0f ); 
+				glTexCoord2f( 1.0f, 0.0f );
 				glVertex2d( mAppWindowWidth, 0 );
 
-				glTexCoord2f( 0.0f, 0.0f ); 
+				glTexCoord2f( 0.0f, 0.0f );
 				glVertex2d( 0, 0 );
 
-				glTexCoord2f( 0.0f, 1.0f ); 
+				glTexCoord2f( 0.0f, 1.0f );
 				glVertex2d( 0, mAppWindowHeight );
 
-				glTexCoord2f( 1.0f, 1.0f ); 
+				glTexCoord2f( 1.0f, 1.0f );
 				glVertex2d( mAppWindowWidth, mAppWindowHeight );
 			glEnd();
 
@@ -279,7 +280,7 @@ class testGL :
 				};
 			};
 
-			// force a GLUT  update 
+			// force a GLUT  update
 			glutPostRedisplay();
 		}
 
@@ -294,7 +295,7 @@ class testGL :
 			// send event to LLMozLib
 			LLMozLib::getInstance()->mouseMove( mBrowserWindowId, xIn, yIn );
 
-			// force a GLUT  update 
+			// force a GLUT  update
 			glutPostRedisplay();
 		};
 
@@ -393,11 +394,11 @@ class testGL :
 			// Can't get this via GLUT so had to use this hack
 			#ifdef _WINDOWS
 			return FindWindow( NULL, (LPCWSTR)mAppWindowName.c_str() );
-			#else 
+			#else
                 #ifdef LL_OSX
                     // not needed on osx
                 #else
-                    #error "You will need an implementation of this method"
+                    //#error "You will need an implementation of this method"
                 #endif
             #endif
 		};
@@ -512,3 +513,4 @@ int main( int argc, char* argv[] )
 
 	return 0;
 }
+
