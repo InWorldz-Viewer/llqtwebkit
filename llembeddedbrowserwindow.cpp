@@ -101,10 +101,7 @@ void LLEmbeddedBrowserWindow::setBackgroundColor(const uint8_t red, const uint8_
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << red << green << blue;
 #endif
-    QColor background_color(red, green, blue);
-    QPalette p = d->mPage->palette();
-    p.setColor(QPalette::Normal, QPalette::Window, background_color);
-    d->mPage->setPalette(p);
+    d->backgroundColor = QColor(red, green, blue);
 }
 
 // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
@@ -321,6 +318,7 @@ bool LLEmbeddedBrowserWindow::setSize(int16_t width, int16_t height)
     d->mPage->setViewportSize(QSize(width, height));
     d->mPageBuffer = NULL;
     d->mImage = QImage(d->mPage->viewportSize(), QImage::Format_RGB32);
+    d->mImage.fill(d->backgroundColor.rgb());
     return true;
 }
 
@@ -498,7 +496,6 @@ bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
     d->m404RedirectUrl = std::string();
     return true;
 }
-
 
 void LLEmbeddedBrowserWindow::load404RedirectUrl()
 {

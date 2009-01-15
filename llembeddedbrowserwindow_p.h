@@ -150,6 +150,7 @@ class LLEmbeddedBrowserWindowPrivate
     bool mEnabled;
     bool mFlipBitmap;
     unsigned char* mPageBuffer;
+    QColor backgroundColor;
 };
 
 #endif
