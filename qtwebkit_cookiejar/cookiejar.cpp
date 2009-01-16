@@ -120,7 +120,7 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const
             i = cookies.erase(i);
             continue;
         }
-        if (isSecure != i->isSecure()) {
+        if (!isSecure && i->isSecure()) {
             i = cookies.erase(i);
             continue;
         }
@@ -323,7 +323,7 @@ bool CookieJarPrivate::matchingDomain(const QNetworkCookie &cookie, const QUrl &
     }
 
     // Check for blacklist
-    if (matchesBlacklist(parts.last()))
+    if (parts.count() == 2 && matchesBlacklist(parts.last()))
         return false;
 
     QStringList urlParts = url.host().toLower().split(QLatin1Char('.'), QString::SkipEmptyParts);
