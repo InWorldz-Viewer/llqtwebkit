@@ -35,7 +35,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 // Updated from https://wiki.mozilla.org/TLD_List#External_Links
-// To set a custom list use CookieJar::setSecondLevelDomains()
+// To set a custom list use NetworkCookieJar::setSecondLevelDomains()
 static const char *const twoLevelDomains[] = {
     "ao",
     "ar",

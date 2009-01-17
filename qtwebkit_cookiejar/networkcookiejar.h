@@ -34,43 +34,32 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef COOKIEJARPRIVATE_H
-#define COOKIEJARPRIVATE_H
+#ifndef NETWORKCOOKIEJAR_H
+#define NETWORKCOOKIEJAR_H
 
-#include "trie_p.h"
+#include <qnetworkcookie.h>
 
-QT_BEGIN_NAMESPACE
-QDataStream &operator<<(QDataStream &stream, const QNetworkCookie &cookie)
-{
-    stream << cookie.toRawForm();
-    return stream;
-}
-
-QDataStream &operator>>(QDataStream &stream, QNetworkCookie &cookie)
-{
-    QByteArray value;
-    stream >> value;
-    QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
-    if (!newCookies.isEmpty())
-        cookie = newCookies.first();
-    return stream;
-}
-QT_END_NAMESPACE
-
-class CookieJarPrivate {
+class NetworkCookieJarPrivate;
+class NetworkCookieJar : public QNetworkCookieJar {
+    Q_OBJECT
 public:
-    CookieJarPrivate()
-        : setSecondLevelDomain(false)
-    {}
+    NetworkCookieJar(QObject *parent = 0);
+    ~NetworkCookieJar();
 
-    Trie<QNetworkCookie> tree;
-    mutable bool setSecondLevelDomain;
-    mutable QStringList secondLevelDomains;
+    virtual QList<QNetworkCookie> cookiesForUrl(const QUrl & url) const;
+    virtual bool setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url);
 
-    bool matchesBlacklist(const QString &string) const;
-    bool matchingDomain(const QNetworkCookie &cookie, const QUrl &url) const;
-    QString urlPath(const QUrl &url) const;
-    bool matchingPath(const QNetworkCookie &cookie, const QString &urlPath) const;
+protected:
+    QByteArray saveState() const;
+    bool restoreState(const QByteArray &state);
+    void endSession();
+
+    QList<QNetworkCookie> allCookies() const;
+    void setAllCookies(const QList<QNetworkCookie> &cookieList);
+    void setSecondLevelDomains(const QStringList &secondLevelDomains);
+
+private:
+    NetworkCookieJarPrivate *d;
 };
 
 #endif

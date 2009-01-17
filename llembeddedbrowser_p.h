@@ -41,10 +41,10 @@
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
 
-#include "cookiejar.h"
+#include "networkcookiejar.h"
 #include "llembeddedbrowser.h"
 
-class LLNetworkCookieJar : public CookieJar
+class LLNetworkCookieJar : public NetworkCookieJar
 {
 public:
     LLNetworkCookieJar(QObject *parent = 0);

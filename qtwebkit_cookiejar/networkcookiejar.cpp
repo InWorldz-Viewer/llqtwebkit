@@ -34,34 +34,34 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "cookiejar.h"
-#include "cookiejar_p.h"
+#include "networkcookiejar.h"
+#include "networkcookiejar_p.h"
 #include "twoleveldomains_p.h"
 
-//#define COOKIEJAR_DEBUG
+//#define NETWORKCOOKIEJAR_DEBUG
 
 #ifndef QT_NO_DEBUG
 // ^ Prevent being left on in a released product by accident
 // qDebug any cookies that are rejected for further inspection
-#define COOKIEJAR_LOGREJECTEDCOOKIES
+#define NETWORKCOOKIEJAR_LOGREJECTEDCOOKIES
 #include <qdebug.h>
 #endif
 
 #include <qurl.h>
 #include <qdatetime.h>
 
-#if defined(COOKIEJAR_DEBUG)
+#if defined(NETWORKCOOKIEJAR_DEBUG)
 #include <qdebug.h>
 #endif
 
 
-CookieJar::CookieJar(QObject *parent)
+NetworkCookieJar::NetworkCookieJar(QObject *parent)
         : QNetworkCookieJar(parent)
 {
-    d = new CookieJarPrivate;
+    d = new NetworkCookieJarPrivate;
 }
 
-CookieJar::~CookieJar()
+NetworkCookieJar::~NetworkCookieJar()
 {
     delete d;
 }
@@ -81,10 +81,10 @@ inline static bool shorterPaths(const QNetworkCookie &c1, const QNetworkCookie &
     return c2.path().length() < c1.path().length();
 }
 
-QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const
+QList<QNetworkCookie> NetworkCookieJar::cookiesForUrl(const QUrl &url) const
 {
-#if defined(COOKIEJAR_DEBUG)
-    qDebug() << "CookieJar::" << __FUNCTION__ << url;
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+    qDebug() << "NetworkCookieJar::" << __FUNCTION__ << url;
 #endif
     // Generate split host
     QString host = url.host();
@@ -139,23 +139,21 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const
     return cookies;
 }
 
-static const qint32 CookieJarMagic = 0xae;
+static const qint32 NetworkCookieJarMagic = 0xae;
 
-QByteArray CookieJar::saveState () const
+QByteArray NetworkCookieJar::saveState () const
 {
     int version = 1;
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    ((CookieJar*)this)->endSession();
-
-    stream << qint32(CookieJarMagic);
+    stream << qint32(NetworkCookieJarMagic);
     stream << qint32(version);
     stream << d->tree;
     return data;
 }
 
-bool CookieJar::restoreState(const QByteArray &state)
+bool NetworkCookieJar::restoreState(const QByteArray &state)
 {
     int version = 1;
     QByteArray sd = state;
@@ -166,7 +164,7 @@ bool CookieJar::restoreState(const QByteArray &state)
     qint32 v;
     stream >> marker;
     stream >> v;
-    if (marker != CookieJarMagic || v != version)
+    if (marker != NetworkCookieJarMagic || v != version)
         return false;
     stream >> d->tree;
     return true;
@@ -175,7 +173,7 @@ bool CookieJar::restoreState(const QByteArray &state)
 /*!
     Remove any session cookies or cookies that have expired.
   */
-void CookieJar::endSession()
+void NetworkCookieJar::endSession()
 {
     const QList<QNetworkCookie> cookies = d->tree.all();
     QDateTime now = QDateTime::currentDateTime().toTimeSpec(Qt::UTC);
@@ -189,10 +187,10 @@ void CookieJar::endSession()
     }
 }
 
-bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url)
+bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url)
 {
-#if defined(COOKIEJAR_DEBUG)
-    qDebug() << "CookieJar::" << __FUNCTION__ << url;
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+    qDebug() << "NetworkCookieJar::" << __FUNCTION__ << url;
 #endif
     QDateTime now = QDateTime::currentDateTime().toTimeSpec(Qt::UTC);
     bool changed = false;
@@ -208,8 +206,8 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
         if (cookie.path().isEmpty()) {
             cookie.setPath(fullUrlPath);
         } else if (!d->matchingPath(cookie, urlPath)) {
-#ifdef COOKIEJAR_LOGREJECTEDCOOKIES
-            qDebug() << "CookieJar::" << __FUNCTION__
+#ifdef NETWORKCOOKIEJAR_LOGREJECTEDCOOKIES
+            qDebug() << "NetworkCookieJar::" << __FUNCTION__
                      << "Blocked cookie because: path doesn't match: " << cookie << url;
 #endif
             continue;
@@ -221,8 +219,8 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
                 continue;
             cookie.setDomain(host);
         } else if (!d->matchingDomain(cookie, url)) {
-#ifdef COOKIEJAR_LOGREJECTEDCOOKIES
-            qDebug() << "CookieJar::" << __FUNCTION__
+#ifdef NETWORKCOOKIEJAR_LOGREJECTEDCOOKIES
+            qDebug() << "NetworkCookieJar::" << __FUNCTION__
                      << "Blocked cookie because: domain doesn't match: " << cookie << url;
 #endif
             continue;
@@ -254,18 +252,18 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
     return changed;
 }
 
-QList<QNetworkCookie> CookieJar::allCookies() const
+QList<QNetworkCookie> NetworkCookieJar::allCookies() const
 {
-#if defined(COOKIEJAR_DEBUG)
-    qDebug() << "CookieJar::" << __FUNCTION__;
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+    qDebug() << "NetworkCookieJar::" << __FUNCTION__;
 #endif
     return d->tree.all();
 }
 
-void CookieJar::setAllCookies(const QList<QNetworkCookie> &cookieList)
+void NetworkCookieJar::setAllCookies(const QList<QNetworkCookie> &cookieList)
 {
-#if defined(COOKIEJAR_DEBUG)
-    qDebug() << "CookieJar::" << __FUNCTION__ << cookieList.count();
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+    qDebug() << "NetworkCookieJar::" << __FUNCTION__ << cookieList.count();
 #endif
     d->tree.clear();
     foreach (QNetworkCookie cookie, cookieList) {
@@ -274,7 +272,7 @@ void CookieJar::setAllCookies(const QList<QNetworkCookie> &cookieList)
     }
 }
 
-QString CookieJarPrivate::urlPath(const QUrl &url) const
+QString NetworkCookieJarPrivate::urlPath(const QUrl &url) const
 {
     QString urlPath = url.path();
     if (!urlPath.endsWith(QLatin1Char('/')))
@@ -282,7 +280,7 @@ QString CookieJarPrivate::urlPath(const QUrl &url) const
     return urlPath;
 }
 
-bool CookieJarPrivate::matchingPath(const QNetworkCookie &cookie, const QString &urlPath) const
+bool NetworkCookieJarPrivate::matchingPath(const QNetworkCookie &cookie, const QString &urlPath) const
 {
     QString cookiePath = cookie.path();
     if (!cookiePath.endsWith(QLatin1Char('/')))
@@ -291,7 +289,7 @@ bool CookieJarPrivate::matchingPath(const QNetworkCookie &cookie, const QString 
     return urlPath.startsWith(cookiePath);
 }
 
-bool CookieJarPrivate::matchesBlacklist(const QString &string) const
+bool NetworkCookieJarPrivate::matchesBlacklist(const QString &string) const
 {
     if (!setSecondLevelDomain) {
         // Alternatively to save a little bit of ram we could just
@@ -305,7 +303,7 @@ bool CookieJarPrivate::matchesBlacklist(const QString &string) const
         return (i != secondLevelDomains.constEnd());
 }
 
-bool CookieJarPrivate::matchingDomain(const QNetworkCookie &cookie, const QUrl &url) const
+bool NetworkCookieJarPrivate::matchingDomain(const QNetworkCookie &cookie, const QUrl &url) const
 {
     QString domain = cookie.domain().simplified().toLower();
     domain.remove(QLatin1Char(' '));
@@ -341,7 +339,7 @@ bool CookieJarPrivate::matchingDomain(const QNetworkCookie &cookie, const QUrl &
     return true;
 }
 
-void CookieJar::setSecondLevelDomains(const QStringList &secondLevelDomains)
+void NetworkCookieJar::setSecondLevelDomains(const QStringList &secondLevelDomains)
 {
     d->setSecondLevelDomain = true;
     d->secondLevelDomains = secondLevelDomains;

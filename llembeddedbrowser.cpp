@@ -213,7 +213,7 @@ int LLEmbeddedBrowser::getWindowCount() const
 }
 
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent)
-    : CookieJar(parent)
+    : NetworkCookieJar(parent)
     , mAllowCookies(true)
 {
 }
@@ -222,14 +222,14 @@ QList<QNetworkCookie> LLNetworkCookieJar::cookiesForUrl(const QUrl& url) const
 {
     if (!mAllowCookies)
         return QList<QNetworkCookie>();
-    return CookieJar::cookiesForUrl(url);
+    return NetworkCookieJar::cookiesForUrl(url);
 }
 
 bool LLNetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookie_list, const QUrl& url)
 {
     if (!mAllowCookies)
         return false;
-    return CookieJar::setCookiesFromUrl(cookie_list, url);
+    return NetworkCookieJar::setCookiesFromUrl(cookie_list, url);
 }
 
 void LLNetworkCookieJar::clear()
