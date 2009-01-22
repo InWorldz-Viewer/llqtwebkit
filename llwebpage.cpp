@@ -138,3 +138,25 @@ void LLWebPage::loadFinished(bool)
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateComplete, event);
 }
 
+QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFile)
+{
+    qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << "Returning empty string";
+    return QString();
+}
+
+void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
+{
+    qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg;
+}
+
+bool LLWebPage::javaScriptConfirm(QWebFrame* frame, const QString& msg)
+{
+    qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg << "returning true";
+    return true;
+}
+
+bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QString& defaultValue, QString* result)
+{
+    qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg << defaultValue << "returning false";
+    return false;
+}

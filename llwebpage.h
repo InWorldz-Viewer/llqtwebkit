@@ -60,6 +60,13 @@ class LLWebPage : public QWebPage
         void scrollRequestedSlot(int dx, int dy, const QRect& rect_to_scroll);
         void loadFinished(bool ok);
 
+    protected:
+        QString chooseFile(QWebFrame* parentFrame, const QString& suggestedFile);
+        void javaScriptAlert(QWebFrame* frame, const QString& msg);
+        bool javaScriptConfirm(QWebFrame* frame, const QString& msg);
+        void javaScriptConsoleMessage(const QString& message, int lineNumber, const QString& sourceID);
+        bool javaScriptPrompt(QWebFrame* frame, const QString& msg, const QString& defaultValue, QString* result);
+
 };
 
 #endif
