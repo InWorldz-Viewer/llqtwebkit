@@ -1,3 +1,36 @@
+Building the open source Qt snapshot with Visual Studio:
+
+ Start/All Programs/Microsoft Visual Studio 2005/Visual Studio Tools/Visual Studio 2005 Command Prompt
+ mkdir C:\Qt
+ cd C:\Qt
+ git clone git://labs.trolltech.com/qt-snapshot
+ cd qt-snapshot
+ configure -no-qt3support -prefix C:\Qt\qt-snapshot
+ If you accept the license agreement type 'yes' and enter
+ run 'nmake sub-src' which will build Qt, but not the demos.
+
+ After building Qt the release and debug libaries will be in C:\Qt\qt-snapshot\lib
+
+ Create the file C:\Qt\qt-snapshot\bin\qt-vars.bat and put the following in it
+
+@echo off
+echo Setting up a Qt environment...
+set QTDIR=C:\Qt\qt-snapshot
+set PATH=C:\Qt\qt-snapshot\bin;%PATH%
+set QMAKESPEC=win32-msvc2005
+#call "C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\vsvars32.bat"
+
+Copy a Command prompt shortcut and modify the target and start in
+Target: %COMSPEC% /k "C:\Qt\qt-snapshto\bin\qt-vars.bat"
+Start in: C:\Qt\qt-snapshot
+
+Rename the command prompt shortcut to "Qt Snapshot Command Prompt.
+
+You can test it by opening the prompt and typeing qmake --version.
+
+
+
+
 0) Acquire llmozlib
  a. Download and install Git windows package from http://code.google.com/p/msysgit/
  b. From a console run 'git clone git://code.staikos.net/llmozlib'
