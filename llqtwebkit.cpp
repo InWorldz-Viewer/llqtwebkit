@@ -126,7 +126,7 @@ const std::string LLMozLib::getVersion()
     codec << minorVersion << ".";
     codec << std::setw(5) << std::setfill('0');
     codec << magicNumber;
-    codec << " (Mozilla GRE version ";
+    codec << " (QtWebKit version ";
     codec << LLEmbeddedBrowser::getInstance()->getGREVersion();
     codec << ")";
 
