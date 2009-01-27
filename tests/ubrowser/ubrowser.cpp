@@ -40,7 +40,6 @@
 
 #ifdef _WINDOWS
 #include <windows.h>
-#include <Qt/qapplication.h>
 #elif defined(__APPLE__)
     // Grr... glui.h #defines Byte for some reason, which conflicts with the Carbon headers.
     #ifdef Byte
@@ -51,9 +50,6 @@
 extern "C" {
 #include <gtk/gtk.h>
 }
-#endif
-#ifdef LL_LINUX
-#include <Qt/qapplication.h>
 #endif
 
 #include <iostream>
@@ -719,19 +715,7 @@ void uBrowser::display()
 //
 void uBrowser::idle()
 {
-#ifdef _WINDOWS
-	qApp->processEvents();
-#elif defined(LL_LINUX)
-	qApp->processEvents();
-    // pump the GTK+Gecko event queue for a (limited) while.  this should
-    // be done so that the Gecko event queue doesn't starve, and done
-    // *here* so that mNeedsUpdate[] can be populated by callbacks
-    // from Gecko.
-    gtk_main_iteration_do(0);
-    for (int iter=0; iter<10; ++iter)
-        if (gtk_events_pending())
-            gtk_main_iteration();
-#endif // LL_LINUX
+    LLMozLib::getInstance()->pump(100);
     // we need to grab the contents of the rendered page
     for( int i = 0; i < mNumBrowserWindows; ++i )
     {

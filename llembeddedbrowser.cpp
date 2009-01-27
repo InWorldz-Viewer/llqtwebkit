@@ -212,6 +212,11 @@ int LLEmbeddedBrowser::getWindowCount() const
     return d->windows.size();
 }
 
+void LLEmbeddedBrowser::pump(int max_milliseconds)
+{
+    qApp->processEvents(QEventLoop::AllEvents, max_milliseconds);
+}
+
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent)
     : NetworkCookieJar(parent)
     , mAllowCookies(true)
@@ -261,4 +266,5 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
         }
     }
 }
+
 

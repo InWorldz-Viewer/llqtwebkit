@@ -77,6 +77,7 @@ class LLEmbeddedBrowser
         void clearLastError();
         int getLastError();
         int getWindowCount() const;
+        void pump(int max_milliseconds);
 
     private:
         friend class LLEmbeddedBrowserWindow;

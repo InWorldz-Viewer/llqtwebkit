@@ -246,6 +246,8 @@ class LLMozLib
 		void setNoFollowScheme(int browser_window_id, std::string scheme);
 		std::string getNoFollowScheme(int browser_window_id);
 
+                void pump(int max_milliseconds);
+
 	private:
 		LLMozLib();
 		LLEmbeddedBrowserWindow* getBrowserWindowFromWindowId(int browser_window_id);

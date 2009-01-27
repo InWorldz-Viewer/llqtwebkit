@@ -596,6 +596,13 @@ std::string LLMozLib::getNoFollowScheme(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+void LLMozLib::pump(int max_milliseconds)
+{
+    LLEmbeddedBrowser::getInstance()->pump(max_milliseconds);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
 bool LLMozLib::enableCookies(bool enabled)
 {
     return LLEmbeddedBrowser::getInstance()->enableCookies(enabled);

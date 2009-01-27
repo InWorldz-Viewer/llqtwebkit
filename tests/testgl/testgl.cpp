@@ -36,8 +36,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include <Qt/qapplication.h>
-
 #ifdef _WINDOWS
 #include <windows.h>
 #endif
@@ -169,7 +167,7 @@ class testGL :
 		//
 		void idle()
 		{
-			qApp->processEvents();
+			LLMozLib::getInstance()->pump(100);
 			// onPageChanged event sets this
 			if ( mNeedsUpdate )
 				// grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
