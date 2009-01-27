@@ -4,7 +4,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 CONFIG += qtestlib
-QT += webkit opengl
+QT += webkit opengl network
 
 include(../../llmozlib2.pri)
 DEFINES += AUTOTEST
