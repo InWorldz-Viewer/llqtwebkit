@@ -207,7 +207,7 @@ void tst_LLEmbeddedBrowserWindow::llembeddedbrowserwindow()
     window.focusBrowser(false);
     QCOMPARE(window.getBrowserDepth(), (int16_t)4);
     QCOMPARE(window.getBrowserHeight(), (int16_t)0);
-    QCOMPARE(window.getBrowserRowSpan(), 0);
+    QCOMPARE(window.getBrowserRowSpan(), (int32_t)0);
     QCOMPARE(window.getBrowserWidth(), (int16_t)0);
     QCOMPARE(window.getClickLinkHref(), std::string());
     QCOMPARE(window.getClickLinkTarget(), std::string());
@@ -1061,7 +1061,7 @@ void tst_LLEmbeddedBrowserWindow::setSize()
 
     QCOMPARE(window.getBrowserWidth(), width);
     QCOMPARE(window.getBrowserHeight(), height);
-    QCOMPARE(window.getBrowserRowSpan(),width * 4);
+    QCOMPARE(window.getBrowserRowSpan(), (int32_t)width * 4);
 }
 
 void tst_LLEmbeddedBrowserWindow::setWindowId_data()
