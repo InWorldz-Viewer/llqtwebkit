@@ -18,7 +18,7 @@ echo Setting up a Qt environment...
 set QTDIR=C:\Qt\qt-snapshot
 set PATH=C:\Qt\qt-snapshot\bin;%PATH%
 set QMAKESPEC=win32-msvc2005
-#call "C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\vsvars32.bat"
+call "C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\vsvars32.bat"
 
 Copy a Command prompt shortcut and modify the target and start in
 Target: %COMSPEC% /k "C:\Qt\qt-snapshto\bin\qt-vars.bat"
@@ -48,7 +48,7 @@ You can test it by opening the prompt and typeing qmake --version.
 '
  cd C:\llmozlib\llmozlib2
  qmake
- make
+ nmake
 '
 
 4) Build testgl and run it
