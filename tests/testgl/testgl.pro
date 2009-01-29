@@ -30,7 +30,7 @@ mac {
 win32{
     DEFINES += _WINDOWS
     INCLUDEPATH += ../
-    LIBS += -L../GL $$PWD/../../Debug/llmozlib2.lib
+    LIBS += -L../GL $$PWD/../../Release/llmozlib2.lib
     DESTDIR=../GL
 }
 
