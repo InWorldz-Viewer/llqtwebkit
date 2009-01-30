@@ -21,7 +21,7 @@ set QMAKESPEC=win32-msvc2005
 call "C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\vsvars32.bat"
 
 Copy a Command prompt shortcut and modify the target and start in
-Target: %COMSPEC% /k "C:\Qt\qt-snapshto\bin\qt-vars.bat"
+Target: %COMSPEC% /k "C:\Qt\qt-snapshot\bin\qt-vars.bat"
 Start in: C:\Qt\qt-snapshot
 
 Rename the command prompt shortcut to "Qt Snapshot Command Prompt.
