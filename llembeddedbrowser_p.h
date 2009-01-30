@@ -48,12 +48,16 @@ class LLNetworkCookieJar : public NetworkCookieJar
 {
 public:
     LLNetworkCookieJar(QObject *parent = 0);
+    ~LLNetworkCookieJar();
 
+    void load(const QString &filename);
+    void save();
 
     QList<QNetworkCookie> cookiesForUrl(const QUrl& url) const;
     bool setCookiesFromUrl(const QList<QNetworkCookie> &cookie_list, const QUrl& url);
     void clear();
 
+    QString mCookieStorageFileName;
     bool mAllowCookies;
 };
 
@@ -117,7 +121,7 @@ class LLEmbeddedBrowserPrivate
     LLNetworkCookieJar *mNetworkCookieJar;
     QString mUserAgentString;
 
-    QString mApplicationDirectory;
+    QString mStorageDirectory;
     QList<LLEmbeddedBrowserWindow*> windows;
 };
 

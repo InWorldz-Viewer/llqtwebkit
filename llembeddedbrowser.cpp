@@ -94,16 +94,16 @@ bool LLEmbeddedBrowser::init(std::string application_directory,
                              std::string profile_directory,
                              void* native_window_handle)
 {
+    Q_UNUSED(application_directory);
     Q_UNUSED(component_directory);
-    Q_UNUSED(profile_directory);
     Q_UNUSED(native_window_handle);
-    QWebSettings::setIconDatabasePath(QString::fromStdString(application_directory));
+    d->mStorageDirectory = QString::fromStdString(profile_directory);
+    QWebSettings::setIconDatabasePath(d->mStorageDirectory);
 
     // Until QtWebkit defaults to 16
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFixedFontSize, 16);
 
-    d->mApplicationDirectory = QString::fromStdString(application_directory);
     return reset();
 }
 
@@ -116,12 +116,11 @@ bool LLEmbeddedBrowser::reset()
     d->mNetworkAccessManager = new LLNetworkAccessManager(d);
 #if QT_VERSION >= 0x040500
     d->mDiskCache = new QNetworkDiskCache(d->mNetworkAccessManager);
-    QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation)
-                            + QLatin1String("/browser");
-    d->mDiskCache->setCacheDirectory(location);
+    d->mDiskCache->setCacheDirectory(d->mStorageDirectory + "/cache");
     d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
     d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager);
+    d->mNetworkCookieJar->load(d->mStorageDirectory + "/cookies");
     d->mNetworkAccessManager->setCookieJar(d->mNetworkCookieJar);
     clearLastError();
     return true;
@@ -221,6 +220,32 @@ LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent)
     : NetworkCookieJar(parent)
     , mAllowCookies(true)
 {
+}
+
+LLNetworkCookieJar::~LLNetworkCookieJar()
+{
+    save();
+}
+
+void LLNetworkCookieJar::load(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly))
+        return;
+    QByteArray state = file.readAll();
+    restoreState(state);
+    mCookieStorageFileName = fileName;
+}
+
+void LLNetworkCookieJar::save()
+{
+    if (mCookieStorageFileName.isEmpty())
+        return;
+    QFile file(mCookieStorageFileName);
+    if (!file.open(QFile::WriteOnly))
+        return;
+    QByteArray state = saveState();
+    file.write(state);
 }
 
 QList<QNetworkCookie> LLNetworkCookieJar::cookiesForUrl(const QUrl& url) const
