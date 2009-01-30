@@ -51,13 +51,7 @@
 #include <QtGui/QtGui>
 #include <QtWebKit/QtWebKit>
 #include <QtOpenGL/QtOpenGL>
-/*
-Q_IMPORT_PLUGIN(qgif)
-Q_IMPORT_PLUGIN(qjpeg)
-Q_IMPORT_PLUGIN(qsvg)
-Q_IMPORT_PLUGIN(qtiff)
-Q_IMPORT_PLUGIN(qico)
-*/
+
 //#define LLEMBEDDEDBROWSER_DEBUG
 
 QString LLEmbeddedBrowserWindowPrivate::userAgent() const
