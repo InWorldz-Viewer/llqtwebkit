@@ -31,7 +31,7 @@ You can test it by opening the prompt and typeing qmake --version.
 
 1) Acquire llmozlib
  a. Download and install Git windows package from http://code.google.com/p/msysgit/
- b. From a console run 'git clone git://code.staikos.net/llmozlib'
+ b. From a console goto C:\ and run 'git clone git://code.staikos.net/llmozlib'
  c. Checkout the qtwebkit branch by doing 'git checkout -b qtwebkit origin/qtwebkit'
 
 2) Acquire dependencies
