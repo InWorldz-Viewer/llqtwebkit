@@ -33,7 +33,7 @@ You can test it by opening the prompt and typeing qmake --version.
  a. Download and install Git windows package from http://code.google.com/p/msysgit/
  b. From a console goto C:\ and run 'git clone git://code.staikos.net/llmozlib'
  c. cd C:\llmozlib
- d. Checkout the qtwebkit branch by running 'git checkout -b qtwebkit origin/qtwebkit'
+ d. Checkout the qtwebkit branch by running 'git checkout -f -b qtwebkit origin/qtwebkit'
 
 2) Acquire dependencies
  a. Glut: http://www.xmission.com/~nate/glut.html  Grab the library and header zip.
