@@ -39,7 +39,7 @@ You can test it by opening the prompt and typeing qmake --version.
  a. Glut: http://www.xmission.com/~nate/glut.html  Grab the library and header zip.
  a1. Extract the contents of the zip to a c:\llmozlib\llmozlib2\tests\GL
  b. Glui32: http://glui.sourceforge.net/
- b1. Extract the zip and follow the instructions to compile the library
+ b1. Extract the zip and follow the instructions in the readme.txt to compile the library
      Make sure to build a debug library
  b2. Copy glui.h and from the include into C:\llmozlib\llmozlib2\tests\GL
  b3. Copy glui32.lib from msvc/lib into C:\llmozlib\llmozlib2\tests\GL
