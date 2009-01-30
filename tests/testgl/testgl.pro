@@ -34,6 +34,5 @@ win32{
     DESTDIR=../GL
 }
 
-QTPLUGIN += qgif
 # Input
 SOURCES += testgl.cpp
