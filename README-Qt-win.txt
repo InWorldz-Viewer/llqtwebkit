@@ -37,7 +37,7 @@ You can test it by opening the prompt and typeing qmake --version.
 
 2) Acquire dependencies
  a. Glut: http://www.xmission.com/~nate/glut.html  Grab the library and header zip.
- a1. Rename the downloaded directory to C:\llmozlib\llmozlib2\tests\GL
+ a1. Extract the contents of the zip to a c:\llmozlib\llmozlib2\tests\GL
  b. Glui32: http://glui.sourceforge.net/
  b1. Extract the zip and follow the instructions to compile the library
      Make sure to build a debug library
