@@ -35,7 +35,15 @@ You can test it by opening the prompt and typeing qmake --version.
  c. cd C:\llmozlib
  d. Checkout the qtwebkit branch by running 'git checkout -f -b qtwebkit origin/qtwebkit'
 
-2) Acquire dependencies
+2) Build llmozlib.a
+ a. Launch the Qt command prompt
+'
+ cd C:\llmozlib\llmozlib2
+ qmake
+ nmake
+'
+
+3) Acquire test dependencies
  a. Glut: http://www.xmission.com/~nate/glut.html  Grab the library and header zip.
  a1. Extract the contents of the zip to a c:\llmozlib\llmozlib2\tests\GL
  b. Glui32: http://glui.sourceforge.net/
@@ -43,14 +51,6 @@ You can test it by opening the prompt and typeing qmake --version.
      Make sure to build a debug library
  b2. Copy glui.h and from the include into C:\llmozlib\llmozlib2\tests\GL
  b3. Copy glui32.lib from msvc/lib into C:\llmozlib\llmozlib2\tests\GL
-
-3) Build llmozlib.a
- a. Launch the Qt command prompt
-'
- cd C:\llmozlib\llmozlib2
- qmake
- nmake
-'
 
 4) Build testgl and run it
  cd C:\llmozlib\llmozlib2\tests\testgl
