@@ -405,7 +405,6 @@ void LLEmbeddedBrowserWindow::keyPress(int16_t key_code)
 		case LL_DOM_VK_PAUSE:			key = Qt::Key_Pause;		break;
 		case LL_DOM_VK_CAPS_LOCK:		key = Qt::Key_CapsLock;		break;
 		case LL_DOM_VK_ESCAPE:			key = Qt::Key_Escape;		break;
-		case LL_DOM_VK_SPACE:			key = Qt::Key_Space;		break;
 		case LL_DOM_VK_PAGE_UP:			key = Qt::Key_PageUp;		break;
 		case LL_DOM_VK_PAGE_DOWN:		key = Qt::Key_PageDown;		break;
 		case LL_DOM_VK_END:			key = Qt::Key_End;		break;
