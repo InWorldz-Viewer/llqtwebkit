@@ -9,7 +9,7 @@
  If you accept the license agreement type 'yes' and enter
  run 'nmake sub-src' which will build Qt, but not the demos.
 
- After building Qt the release and debug libaries will be in C:\Qt\qt-snapshot\lib
+ After building Qt the release and debug libraries will be in C:\Qt\qt-snapshot\lib
 
  Create the file C:\Qt\qt-snapshot\bin\qt-vars.bat and put the following in it
 
@@ -48,7 +48,7 @@ You can test it by opening the prompt and typeing qmake --version.
  a1. Extract the contents of the zip to a c:\llmozlib\llmozlib2\tests\GL
  b. Glui32: http://glui.sourceforge.net/
  b1. Extract the zip and follow the instructions in the readme.txt to compile the library
-     Make sure to build a debug library
+     Make sure to build a release library
  b2. Copy glui.h and from the include into C:\llmozlib\llmozlib2\tests\GL
  b3. Copy glui32.lib from msvc/lib into C:\llmozlib\llmozlib2\tests\GL
 
