@@ -67,10 +67,10 @@ class testGL :
 			mAppTextureWidth( -1 ),						// dimensions of the texture that the browser is rendered into
 			mAppTextureHeight( -1 ),					// calculated at initialization
 			mAppTexture( 0 ),
-			mNeedsUpdate( true ),						// flag to indicate if browser texture needs an update
 			mBrowserWindowId( 0 ),
 			mAppWindowName( "testGL" ),
-			mHomeUrl( "http://www.google.com" )
+			mHomeUrl( "http://www.google.com" ),
+			mNeedsUpdate( true )						// flag to indicate if browser texture needs an update
 		{
 			std::cout << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
 		};
@@ -299,7 +299,7 @@ class testGL :
 
 		////////////////////////////////////////////////////////////////////////////////
 		//
-		void keyboard( unsigned char keyIn, int xIn, int yIn )
+		void keyboard( unsigned char keyIn, int /*xIn*/, int /*yIn*/ )
 		{
 			// ESC key exits
 			if ( keyIn == 27 )
@@ -315,7 +315,7 @@ class testGL :
 
 		////////////////////////////////////////////////////////////////////////////////
 		// virtual
-		void onPageChanged( const EventType& eventIn )
+		void onPageChanged( const EventType& /*eventIn*/ )
 		{
 			// flag that an update is required - page grab happens in idle() so we don't stall
 			mNeedsUpdate = true;
@@ -390,13 +390,15 @@ class testGL :
 		{
 			// My implementation of the embedded browser needs a native window handle
 			// Can't get this via GLUT so had to use this hack
-			#ifdef _WINDOWS
+	    #ifdef _WINDOWS
 			return FindWindow( NULL, (LPCWSTR)mAppWindowName.c_str() );
-			#else
+		#else
                 #ifdef LL_OSX
-                    // not needed on osx
+                        // not needed on osx
+                        return 0;
                 #else
-                    //#error "You will need an implementation of this method"
+                        //#error "You will need an implementation of this method"
+                        return 0;
                 #endif
             #endif
 		};
