@@ -47,6 +47,7 @@ class LLWebPage : public QWebPage
     public:
         LLWebPage(QObject *parent = 0);
         LLEmbeddedBrowserWindow *window;
+        bool event(QEvent *event);
 
     protected:
         QString userAgentForUrl(const QUrl& url) const;
@@ -66,6 +67,8 @@ class LLWebPage : public QWebPage
         bool javaScriptConfirm(QWebFrame* frame, const QString& msg);
         bool javaScriptPrompt(QWebFrame* frame, const QString& msg, const QString& defaultValue, QString* result);
 
+    private:
+        QPoint currentPoint;
 };
 
 #endif

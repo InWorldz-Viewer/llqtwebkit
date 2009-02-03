@@ -39,6 +39,8 @@
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowserwindow_p.h"
 
+//#define LINKTARGETPATCH
+
 LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
 {
@@ -106,6 +108,14 @@ void LLWebPage::scrollRequestedSlot(int dx, int dy, const QRect& rect_to_scroll)
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
 }
 
+bool LLWebPage::event(QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress)
+        currentPoint = ((QMouseEvent*)event)->pos();
+    else if (event->type() == QEvent::MouseButtonRelease)
+        currentPoint = QPoint();
+    return QWebPage::event(event);
+}
 
 bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type)
 {
@@ -120,8 +130,12 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
     if (accepted && type == QWebPage::NavigationTypeLinkClicked) {
         QUrl url = request.url();
         window->d->mClickHref = QString(url.toEncoded()).toStdString();
-        // TODO Enhance QWebHistTestResult to provide a way to get the DOM path at x,y
+#ifdef LINKTARGETPATCH
+        QWebHitTestResult hitTest = mainFrame()->hitTestContent(currentPoint);
+        window->d->mClickTarget = hitTest.linkTarget().toStdString();
+#else
         window->d->mClickTarget = std::string();
+#endif
         LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
                                            window->getCurrentUri(),
                                            window->d->mClickHref,
