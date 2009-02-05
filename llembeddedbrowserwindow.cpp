@@ -52,8 +52,8 @@
 #include <QtWebKit/QtWebKit>
 #include <QtOpenGL/QtOpenGL>
 
-#if LL_DARWIN
-	// Enable gif and jpeg plugins on the mac, since web pages look pretty bleak without gifs or jpegs.
+#if LL_DARWIN || LL_LINUX
+	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
 	Q_IMPORT_PLUGIN(qgif)
 	Q_IMPORT_PLUGIN(qjpeg)
 #endif
