@@ -152,6 +152,7 @@ class LLEmbeddedBrowserWindowEvent
 
 ////////////////////////////////////////////////////////////////////////////////
 // derrive from this class and override these methods to observe these events
+#pragma GCC visibility push(default)
 class LLEmbeddedBrowserWindowObserver
 {
 	public:
@@ -167,6 +168,7 @@ class LLEmbeddedBrowserWindowObserver
 		virtual void onClickLinkHref(const EventType& event);
 		virtual void onClickLinkNoFollow(const EventType& event);
 };
+#pragma GCC visibility pop
 
 ////////////////////////////////////////////////////////////////////////////////
 // main library class
