@@ -268,7 +268,10 @@ bool LLEmbeddedBrowserWindow::navigateTo(const std::string uri)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(uri);
 #endif
-    QUrl url = QUrl::fromEncoded((QString::fromStdString(uri).toLocal8Bit()));
+    QString string = QString::fromStdString(uri);
+    QUrl url = QUrl::fromEncoded(string.toLocal8Bit());
+    if (url.scheme().isEmpty())
+        url = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
     navigateStop();
     d->mPage->mainFrame()->load(url);
     return true;
