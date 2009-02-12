@@ -41,6 +41,7 @@
 #endif
 
 #include <iostream>
+#include <stdlib.h>
 
 #ifdef LL_OSX
 #include <QtPlugin>
