@@ -1,0 +1,83 @@
+From 48cd752850e0eeacbd20c51fd8c6b26906e25c62 Mon Sep 17 00:00:00 2001
+From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
+Date: Fri, 13 Feb 2009 13:02:41 -0500
+Subject: Backport webkit trunk patch that add's the ability to get the link target string in a hit test
+
+---
+ src/3rdparty/webkit/WebKit/qt/Api/qwebframe.cpp |   17 +++++++++++++++++
+ src/3rdparty/webkit/WebKit/qt/Api/qwebframe.h   |    3 +++
+ src/3rdparty/webkit/WebKit/qt/Api/qwebframe_p.h |    1 +
+ 3 files changed, 21 insertions(+), 0 deletions(-)
+
+diff --git a/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.cpp b/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.cpp
+index ae71356..814e001 100644
+--- a/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.cpp
++++ b/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.cpp
+@@ -1116,6 +1116,9 @@ QWebHitTestResultPrivate::QWebHitTestResultPrivate(const WebCore::HitTestResult
+     WebCore::Frame *wframe = hitTest.targetFrame();
+     if (wframe)
+         linkTargetFrame = QWebFramePrivate::kit(wframe);
++    Element* urlElement = hitTest.URLElement();
++    if (urlElement)
++        linkTarget = urlElement->target();
+ 
+     isContentEditable = hitTest.isContentEditable();
+     isContentSelected = hitTest.isSelected();
+@@ -1239,7 +1242,21 @@ QUrl QWebHitTestResult::linkTitle() const
+ }
+ 
+ /*!
++    Returns the name of the target frame that will load the link if it is activated.
++
++    \sa linkTargetFrame
++*/
++QString QWebHitTestResult::linkTarget() const
++{
++    if (!d)
++        return 0;
++    return d->linkTarget;
++}
++
++/*!
+     Returns the frame that will load the link if it is activated.
++
++    \sa linkTarget
+ */
+ QWebFrame *QWebHitTestResult::linkTargetFrame() const
+ {
+diff --git a/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.h b/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.h
+index 18ae697..771f312 100644
+--- a/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.h
++++ b/src/3rdparty/webkit/WebKit/qt/Api/qwebframe.h
+@@ -31,6 +31,8 @@
+ #endif
+ #include "qwebkitglobal.h"
+ 
++#define LINKTARGETPATCH
++
+ QT_BEGIN_NAMESPACE
+ class QRect;
+ class QPoint;
+@@ -77,6 +79,7 @@ public:
+     QUrl linkUrl() const;
+     QUrl linkTitle() const;
+     QWebFrame *linkTargetFrame() const;
++    QString linkTarget() const;
+ 
+     QString alternateText() const; // for img, area, input and applet
+ 
+diff --git a/src/3rdparty/webkit/WebKit/qt/Api/qwebframe_p.h b/src/3rdparty/webkit/WebKit/qt/Api/qwebframe_p.h
+index 14f69cd..f475df7 100644
+--- a/src/3rdparty/webkit/WebKit/qt/Api/qwebframe_p.h
++++ b/src/3rdparty/webkit/WebKit/qt/Api/qwebframe_p.h
+@@ -104,6 +104,7 @@ public:
+     QUrl linkUrl;
+     QString linkTitle;
+     QPointer<QWebFrame> linkTargetFrame;
++    QString linkTarget;
+     QString alternateText;
+     QUrl imageUrl;
+     QPixmap pixmap;
+-- 
+1.5.6.3
+
