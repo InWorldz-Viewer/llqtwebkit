@@ -99,6 +99,8 @@ bool LLEmbeddedBrowser::init(std::string application_directory,
     Q_UNUSED(native_window_handle);
     d->mStorageDirectory = QString::fromStdString(profile_directory);
     QWebSettings::setIconDatabasePath(d->mStorageDirectory);
+	// The gif and jpeg libraries should be installed in component_directory/imageformats/
+	QCoreApplication::addLibraryPath(QString::fromStdString(component_directory));
 
     // Until QtWebkit defaults to 16
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
