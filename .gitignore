@@ -1,4 +1,12 @@
-Makefile
+Makefile*
 *.o
 *.moc
 libllmozlib2.a
+.obj/
+release/
+debug/
+*.vcproj.*.user
+tests/GL
+*.ncb
+*.pdb
+*.suo
