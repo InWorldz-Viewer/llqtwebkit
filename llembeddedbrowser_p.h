@@ -99,9 +99,6 @@ class LLEmbeddedBrowserPrivate
 #if defined(__APPLE__)
         qApp->setStyle("windows");
 #endif
-        QCoreApplication::setOrganizationDomain(QLatin1String("lindenlab.com"));
-        QCoreApplication::setApplicationName(QLatin1String("SecondLife"));
-        QCoreApplication::setApplicationVersion(QT_VERSION_STR);
         mNetworkAccessManager = new LLNetworkAccessManager(this);
     }
 
@@ -119,7 +116,6 @@ class LLEmbeddedBrowserPrivate
     QNetworkDiskCache *mDiskCache;
 #endif
     LLNetworkCookieJar *mNetworkCookieJar;
-    QString mUserAgentString;
 
     QString mStorageDirectory;
     QList<LLEmbeddedBrowserWindow*> windows;

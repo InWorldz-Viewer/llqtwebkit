@@ -50,7 +50,6 @@ class LLWebPage : public QWebPage
         bool event(QEvent *event);
 
     protected:
-        QString userAgentForUrl(const QUrl& url) const;
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);
 
     public slots:

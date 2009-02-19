@@ -67,15 +67,6 @@ Q_IMPORT_PLUGIN(qico)
 */
 //#define LLEMBEDDEDBROWSER_DEBUG
 
-QString LLEmbeddedBrowserWindowPrivate::userAgent() const
-{
-    if (mParent)
-    {
-        return mParent->d->mUserAgentString;
-    }
-    return QString();
-}
-
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
 {
     d = new LLEmbeddedBrowserWindowPrivate();

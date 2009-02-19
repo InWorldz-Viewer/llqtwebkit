@@ -72,16 +72,6 @@ void LLWebPage::statusBarMessageSlot(const QString& text)
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onStatusTextChange, event);
 }
 
-QString LLWebPage::userAgentForUrl(const QUrl &url) const
-{
-    QString setAgent = window->d->userAgent();
-    if (setAgent.isEmpty())
-    {
-        return QWebPage::userAgentForUrl(url);
-    }
-    return setAgent;
-}
-
 void LLWebPage::urlChangedSlot(const QUrl& url)
 {
     Q_UNUSED(url);

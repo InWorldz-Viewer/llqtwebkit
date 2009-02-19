@@ -131,8 +131,6 @@ class LLEmbeddedBrowserWindowPrivate
         delete mPage;
     }
 
-    QString userAgent() const;
-
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
     LLEmbeddedBrowser *mParent;
     LLWebPage *mPage;

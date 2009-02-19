@@ -177,9 +177,12 @@ bool LLEmbeddedBrowser::enablePlugins(bool enabled)
     return true;
 }
 
+/*
+	Sets a string that should be addded to the user agent to identify the application
+*/
 void LLEmbeddedBrowser::setBrowserAgentId(std::string id)
 {
-    d->mUserAgentString = QString::fromStdString(id);
+    QCoreApplication::setApplicationName(QString::fromStdString(id));
 }
 
 LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height)
