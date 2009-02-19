@@ -821,8 +821,17 @@ void uBrowser::makeChrome()
 
     mBottomGLUIWindow->set_main_gfx_window( mAppWindow );
 
+#if __APPLE__
+	// the Apple GLUT implementation doesn't seem to set the graphic offset of subwindows correctly when they overlap in certain ways.
+	// Use a separate controls window in this case.
+	// GLUI window at right containing manipulation controls and other buttons
+	int x = glutGet(GLUT_WINDOW_X) + glutGet(GLUT_WINDOW_WIDTH) + 4;
+	int y = glutGet(GLUT_WINDOW_Y);
+	mRightGLUIWindow = GLUI_Master.create_glui( "", 0, x, y );
+#else
     // right side UI bar
     mRightGLUIWindow = GLUI_Master.create_glui_subwindow( mAppWindow, GLUI_SUBWINDOW_RIGHT );
+#endif
 
     // object selector
     GLUI_Listbox* objTypelist = mRightGLUIWindow->add_listbox( "Type ", &mCurObjType );
