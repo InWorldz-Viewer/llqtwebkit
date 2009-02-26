@@ -144,23 +144,33 @@ void LLWebPage::loadFinished(bool)
 
 QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFile)
 {
+    Q_UNUSED(parentFrame);
+    Q_UNUSED(suggestedFile);
     qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << "Returning empty string";
     return QString();
 }
 
 void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
 {
+    Q_UNUSED(frame);
+    Q_UNUSED(msg);
     qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg;
 }
 
 bool LLWebPage::javaScriptConfirm(QWebFrame* frame, const QString& msg)
 {
+    Q_UNUSED(frame);
+    Q_UNUSED(msg);
     qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg << "returning true";
     return true;
 }
 
 bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QString& defaultValue, QString* result)
 {
+    Q_UNUSED(frame);
+    Q_UNUSED(msg);
+    Q_UNUSED(defaultValue);
+    Q_UNUSED(result);
     qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg << defaultValue << "returning false";
     return false;
 }
