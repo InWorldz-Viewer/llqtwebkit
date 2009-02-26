@@ -193,13 +193,19 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
         return 0;
 
     d->mImage = QImage(d->mPage->viewportSize(), QImage::Format_RGB32);
-    QPainter painter(&d->mImage);
-    QRegion clip(x, y, width, height);
-    d->mPage->mainFrame()->render(&painter, clip);
-    painter.end();
-    if (!d->mFlipBitmap)
+    if (!d->mPage->mainFrame()->url().isValid())
     {
-        d->mImage = d->mImage.mirrored();
+        d->mImage.fill(d->backgroundColor.value());
+    } else
+    {
+        QPainter painter(&d->mImage);
+        QRegion clip(x, y, width, height);
+        d->mPage->mainFrame()->render(&painter, clip);
+        painter.end();
+        if (!d->mFlipBitmap)
+        {
+            d->mImage = d->mImage.mirrored();
+        }
     }
     d->mImage = QGLWidget::convertToGLFormat(d->mImage);
     d->mPageBuffer = d->mImage.bits();
