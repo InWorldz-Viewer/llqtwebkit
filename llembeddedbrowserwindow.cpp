@@ -58,13 +58,6 @@
 	Q_IMPORT_PLUGIN(qjpeg)
 #endif
 
-/*
-Q_IMPORT_PLUGIN(qgif)
-Q_IMPORT_PLUGIN(qjpeg)
-Q_IMPORT_PLUGIN(qsvg)
-Q_IMPORT_PLUGIN(qtiff)
-Q_IMPORT_PLUGIN(qico)
-*/
 //#define LLEMBEDDEDBROWSER_DEBUG
 
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
