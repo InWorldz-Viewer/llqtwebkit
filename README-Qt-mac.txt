@@ -15,10 +15,12 @@ cd $HOME/dev
 git://code.staikos.net/llmozlib
 git checkout -b qtwebkit origin/qtwebkit
 
-3) Apply locally maintained Qt patch
+3) Apply locally maintained Qt patches
 
 cd $QTDIR
 patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_target.patch
+patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_nocookies.patch
+patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_cookieexpiration.patch
 
 4) Compile Qt
 
