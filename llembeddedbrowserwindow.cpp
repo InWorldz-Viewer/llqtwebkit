@@ -333,7 +333,6 @@ bool LLEmbeddedBrowserWindow::setSize(int16_t width, int16_t height)
 #endif
     d->mPageBuffer = NULL;
     d->mImage = QImage(QSize(width, height), QImage::Format_RGB32);
-    d->mGraphicsScene->setSceneRect(0, 0, width, height);
     d->mGraphicsView->resize(width, height);
     d->mView->resize(width, height);
     d->mImage.fill(d->backgroundColor.rgb());
