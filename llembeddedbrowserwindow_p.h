@@ -161,6 +161,7 @@ class LLEmbeddedBrowserWindowPrivate
     QWebView *mView;
     GraphicsScene *mGraphicsScene;
     QGraphicsView *mGraphicsView;
+    Qt::MouseButton mCurrentMouseDown;
 
     int16_t mPercentComplete;
     std::string mStatusText;

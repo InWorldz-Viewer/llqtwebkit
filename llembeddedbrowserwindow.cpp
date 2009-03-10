@@ -361,7 +361,8 @@ void LLEmbeddedBrowserWindow::mouseDown(int16_t x, int16_t y)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << d->mPage->mainFrame()->geometry();
 #endif
-    QMouseEvent event(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
+    QMouseEvent event(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, 0, 0);
+    d->mCurrentMouseDown = Qt::LeftButton;
     qApp->sendEvent(d->mGraphicsView->viewport(), &event);
 }
 
@@ -372,6 +373,7 @@ void LLEmbeddedBrowserWindow::mouseUp(int16_t x, int16_t y)
 #endif
     QMouseEvent event(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, 0, 0);
     qApp->sendEvent(d->mGraphicsView->viewport(), &event);
+    d->mCurrentMouseDown = Qt::NoButton;
 }
 
 void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
@@ -383,7 +385,7 @@ void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
     {
         return;
     }
-    QMouseEvent event(QEvent::MouseMove, QPoint(x, y), Qt::NoButton, 0, 0);
+    QMouseEvent event(QEvent::MouseMove, QPoint(x, y), d->mCurrentMouseDown, 0, 0);
     qApp->sendEvent(d->mGraphicsView->viewport(), &event);
 }
 
