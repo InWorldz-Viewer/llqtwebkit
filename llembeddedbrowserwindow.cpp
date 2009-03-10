@@ -54,8 +54,8 @@
 
 #if LL_DARWIN || LL_LINUX
 	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
-	//Q_IMPORT_PLUGIN(qgif)
-	//Q_IMPORT_PLUGIN(qjpeg)
+	Q_IMPORT_PLUGIN(qgif)
+	Q_IMPORT_PLUGIN(qjpeg)
 #endif
 
 //#define LLEMBEDDEDBROWSER_DEBUG
