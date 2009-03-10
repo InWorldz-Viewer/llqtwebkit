@@ -143,7 +143,7 @@ void LLWebPage::loadFinished(bool)
             window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateComplete, event);
 }
-/*
+
 QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFile)
 {
     Q_UNUSED(parentFrame);
@@ -154,9 +154,11 @@ QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFi
 
 void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
 {
-    Q_UNUSED(frame);
-    Q_UNUSED(msg);
-    qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg;
+    QMessageBox *msgBox = new QMessageBox(view());
+    msgBox->setWindowTitle(tr("JavaScript Alert - %1").arg(mainFrame()->url().host()));
+    msgBox->setText(msg);
+    msgBox->addButton(QMessageBox::Ok);
+    msgBox->show();
 }
 
 bool LLWebPage::javaScriptConfirm(QWebFrame* frame, const QString& msg)
@@ -176,4 +178,4 @@ bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QSt
     qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg << defaultValue << "returning false";
     return false;
 }
-*/
+
