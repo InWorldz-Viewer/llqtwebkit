@@ -148,6 +148,9 @@ class testGL :
 			if ( heightIn == 0 )
 				heightIn = 1;
 
+			LLMozLib::getInstance()->setSize(mBrowserWindowId, widthIn, heightIn );
+                        mNeedsUpdate = true;
+
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
 
@@ -157,6 +160,8 @@ class testGL :
 			// we use these elsewhere so save
 			mAppWindowWidth = widthIn;
 			mAppWindowHeight = heightIn;
+                        mBrowserWindowWidth = widthIn;
+                        mBrowserWindowHeight = heightIn;
 
 			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();
