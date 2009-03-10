@@ -50,10 +50,6 @@ LLWebPage::LLWebPage(QObject *parent)
             this, SLOT(statusBarMessageSlot(const QString &)));
     connect(mainFrame(), SIGNAL(urlChanged(const QUrl&)),
             this, SLOT(urlChangedSlot(const QUrl&)));
-    connect(this, SIGNAL(repaintRequested(const QRect &)),
-            this, SLOT(repaintRequestedSlot(const QRect &)));
-    connect(this, SIGNAL(scrollRequested(int, int, const QRect &)),
-            this, SLOT(scrollRequestedSlot(int, int, const QRect &)));
     connect(this, SIGNAL(loadFinished(bool)),
             this, SLOT(loadFinished(bool)));
 }
@@ -77,27 +73,6 @@ void LLWebPage::urlChangedSlot(const QUrl& url)
     Q_UNUSED(url);
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLocationChange, event);
-}
-
-void LLWebPage::repaintRequestedSlot(const QRect& dirty_rect)
-{
-    return;
-    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
-            dirty_rect.x(), dirty_rect.y(), dirty_rect.width(), dirty_rect.height());
-
-    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
-}
-
-void LLWebPage::scrollRequestedSlot(int dx, int dy, const QRect& rect_to_scroll)
-{
-    return;
-    Q_UNUSED(dx);
-    Q_UNUSED(dy);
-    Q_UNUSED(rect_to_scroll);
-    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
-            0, 0, window->getBrowserWidth(), window->getBrowserHeight());
-            //dx, dy, rect_to_scroll.width(), rect_to_scroll.height());
-    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
 }
 
 bool LLWebPage::event(QEvent *event)
