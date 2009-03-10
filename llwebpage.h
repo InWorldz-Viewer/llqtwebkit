@@ -61,10 +61,12 @@ class LLWebPage : public QWebPage
         void loadFinished(bool ok);
 
     protected:
+        /*
         QString chooseFile(QWebFrame* parentFrame, const QString& suggestedFile);
         void javaScriptAlert(QWebFrame* frame, const QString& msg);
         bool javaScriptConfirm(QWebFrame* frame, const QString& msg);
         bool javaScriptPrompt(QWebFrame* frame, const QString& msg, const QString& defaultValue, QString* result);
+        */
 
     private:
         QPoint currentPoint;

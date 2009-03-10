@@ -81,6 +81,7 @@ void LLWebPage::urlChangedSlot(const QUrl& url)
 
 void LLWebPage::repaintRequestedSlot(const QRect& dirty_rect)
 {
+    return;
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
             dirty_rect.x(), dirty_rect.y(), dirty_rect.width(), dirty_rect.height());
 
@@ -89,6 +90,7 @@ void LLWebPage::repaintRequestedSlot(const QRect& dirty_rect)
 
 void LLWebPage::scrollRequestedSlot(int dx, int dy, const QRect& rect_to_scroll)
 {
+    return;
     Q_UNUSED(dx);
     Q_UNUSED(dy);
     Q_UNUSED(rect_to_scroll);
@@ -141,7 +143,7 @@ void LLWebPage::loadFinished(bool)
             window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateComplete, event);
 }
-
+/*
 QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFile)
 {
     Q_UNUSED(parentFrame);
@@ -174,3 +176,4 @@ bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QSt
     qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << msg << defaultValue << "returning false";
     return false;
 }
+*/

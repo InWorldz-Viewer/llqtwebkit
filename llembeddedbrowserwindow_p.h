@@ -106,6 +106,24 @@ class LLEmbeddedBrowserWindowEmitter
         ObserverContainer observers;
 };
 
+#include "llmozlib2.h"
+#include "llembeddedbrowserwindow.h"
+
+class GraphicsScene : public QGraphicsScene
+{
+    Q_OBJECT
+
+public:
+    GraphicsScene();
+    LLEmbeddedBrowserWindow *window;
+
+private slots:
+    void repaintRequestedSlot(const QList<QRectF> &);
+    friend class LLEmbeddedBrowserWindow;
+};
+
+
+
 class LLEmbeddedBrowserWindowPrivate
 {
     public:
@@ -129,6 +147,8 @@ class LLEmbeddedBrowserWindowPrivate
     ~LLEmbeddedBrowserWindowPrivate()
     {
         delete mPage;
+        delete mView;
+        delete mGraphicsScene;
     }
 
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
@@ -136,6 +156,9 @@ class LLEmbeddedBrowserWindowPrivate
     LLWebPage *mPage;
     QImage mImage;
 
+    QWebView *mView;
+    GraphicsScene *mGraphicsScene;
+    QGraphicsView *mGraphicsView;
 
     int16_t mPercentComplete;
     std::string mStatusText;
@@ -150,6 +173,7 @@ class LLEmbeddedBrowserWindowPrivate
     unsigned char* mPageBuffer;
     QColor backgroundColor;
 };
+
 
 #endif
 

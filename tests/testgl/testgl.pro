@@ -36,6 +36,6 @@ win32{
     }
 }
 
-QTPLUGIN += qgif
+#QTPLUGIN += qgif
 # Input
 SOURCES += testgl.cpp

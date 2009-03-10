@@ -54,8 +54,8 @@
 
 #if LL_DARWIN || LL_LINUX
 	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
-	Q_IMPORT_PLUGIN(qgif)
-	Q_IMPORT_PLUGIN(qjpeg)
+	//Q_IMPORT_PLUGIN(qgif)
+	//Q_IMPORT_PLUGIN(qjpeg)
 #endif
 
 //#define LLEMBEDDEDBROWSER_DEBUG
@@ -64,6 +64,16 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
 {
     d = new LLEmbeddedBrowserWindowPrivate();
     d->mPage->window = this;
+
+    d->mView = new QWebView;
+    d->mView->setPage(d->mPage);
+    d->mGraphicsScene = new GraphicsScene;
+    d->mGraphicsScene->window = this;
+    d->mGraphicsView = new QGraphicsView;
+    d->mGraphicsScene->addWidget(d->mView);
+    d->mView->show();
+    d->mGraphicsView->setScene(d->mGraphicsScene);
+    d->mGraphicsView->show();
 }
 
 LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
@@ -199,8 +209,14 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     } else
     {
         QPainter painter(&d->mImage);
-        QRegion clip(x, y, width, height);
-        d->mPage->mainFrame()->render(&painter, clip);
+
+        //QRectF r(x, y, width, height);
+        QRectF r(0, 0, 800, 600);
+        d->mGraphicsScene->render(&painter, r, r);
+        //const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio )
+
+        //QRegion clip(x, y, width, height);
+        //d->mPage->mainFrame()->render(&painter, clip);
         painter.end();
         if (!d->mFlipBitmap)
         {
@@ -336,17 +352,30 @@ void LLEmbeddedBrowserWindow::mouseLeftDoubleClick(int16_t x, int16_t y)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
 #endif
-    QMouseEvent event(QEvent::MouseButtonDblClick, QPoint(x, y), Qt::LeftButton, 0, 0);
-    qApp->sendEvent(d->mPage, &event);
+//    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick, QPoint(x, y), Qt::LeftButton, 0, 0);
+//    qApp->sendEvent(d->mGraphicsScene, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseDown(int16_t x, int16_t y)
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+//#ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << d->mPage->mainFrame()->geometry();
-#endif
-    QMouseEvent event(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, 0, 0);
-    qApp->sendEvent(d->mPage, &event);
+//#endif
+    QMouseEvent mevent(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
+    qApp->sendEvent(d->mGraphicsView->viewport(), &mevent);
+    return;
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
+
+    event.setButtonDownScenePos(Qt::LeftButton, QPointF(x, y));
+    event.setButtonDownScreenPos(Qt::LeftButton, QPoint(x, y));
+    event.setScenePos(QPointF(x, y));
+    event.setScreenPos(QPoint(x, y));
+    event.setButtons(Qt::LeftButton);
+    event.setButton(Qt::LeftButton);
+    event.setAccepted(false);
+    d->mGraphicsScene->mousePressEvent(&event);
+    //qApp->sendEvent(d->mGraphicsScene, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseUp(int16_t x, int16_t y)
@@ -354,8 +383,19 @@ void LLEmbeddedBrowserWindow::mouseUp(int16_t x, int16_t y)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
 #endif
-    QMouseEvent event(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, 0, 0);
-    qApp->sendEvent(d->mPage, &event);
+    QMouseEvent mevent(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
+    qApp->sendEvent(d->mGraphicsView->viewport(), &mevent);
+    return;
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
+    event.setButtonDownScenePos(Qt::LeftButton, QPointF(x, y));
+    event.setButtonDownScreenPos(Qt::LeftButton, QPoint(x, y));
+    event.setScenePos(QPointF(x, y));
+    event.setScreenPos(QPoint(x, y));
+    event.setButtons(Qt::LeftButton);
+    event.setButton(Qt::LeftButton);
+    event.setAccepted(false);
+    d->mGraphicsScene->mousePressEvent(&event);
+    //qApp->sendEvent(d->mGraphicsScene, &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
@@ -367,8 +407,13 @@ void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
     {
         return;
     }
-    QMouseEvent event(QEvent::MouseMove, QPoint(x, y), Qt::NoButton, 0, 0);
-    qApp->sendEvent(d->mPage, &event);
+    QMouseEvent mevent(QEvent::MouseMove, QPoint(x, y), Qt::NoButton, 0, 0);
+    qApp->sendEvent(d->mGraphicsView->viewport(), &mevent);
+    return;
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
+    event.setScenePos(QPointF(x, y));
+    //event, Qt::NoButton, 0, 0);
+    qApp->sendEvent(d->mGraphicsScene, &event);
 }
 
 // utility methods to set an error message so something else can look at it
@@ -425,9 +470,9 @@ void LLEmbeddedBrowserWindow::keyPress(int16_t key_code)
     }
 
     QKeyEvent press_event(QEvent::KeyPress, key, Qt::NoModifier, text);
-    qApp->sendEvent(d->mPage, &press_event);
+    qApp->sendEvent(d->mGraphicsScene, &press_event);
     QKeyEvent release_event(QEvent::KeyRelease, key, Qt::NoModifier, text);
-    qApp->sendEvent(d->mPage, &release_event);
+    qApp->sendEvent(d->mGraphicsScene, &release_event);
 }
 
 // accept keyboard input that's already been translated into a unicode char.
@@ -440,9 +485,9 @@ void LLEmbeddedBrowserWindow::unicodeInput(uint32_t unicode_char)
     QChar input((uint)unicode_char);
 
     QKeyEvent press_event(QEvent::KeyPress, key, Qt::NoModifier, input);
-    qApp->sendEvent(d->mPage, &press_event);
+    qApp->sendEvent(d->mGraphicsScene, &press_event);
     QKeyEvent release_event(QEvent::KeyRelease, key, Qt::NoModifier, input);
-    qApp->sendEvent(d->mPage, &release_event);
+    qApp->sendEvent(d->mGraphicsScene, &release_event);
 }
 
 // give focus to the browser so that input keyboard events work
@@ -522,5 +567,23 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     return d->mNoFollowScheme.toStdString();
+}
+
+GraphicsScene::GraphicsScene()
+    : QGraphicsScene()
+{
+    connect(this, SIGNAL(changed(const QList<QRectF> &)),
+            this, SLOT(repaintRequestedSlot(const QList<QRectF> &)));
+}
+
+void GraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
+{
+    qDebug() << regions;
+    for (int i = 0; i < regions.count(); ++i) {
+        LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
+                regions[i].x(), regions[i].y(), regions[i].width(), regions[i].height());
+
+        window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
+    }
 }
 
