@@ -71,9 +71,9 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d->mGraphicsScene->window = this;
     d->mGraphicsView = new QGraphicsView;
     d->mGraphicsScene->addWidget(d->mView);
-    d->mView->show();
     d->mGraphicsView->setScene(d->mGraphicsScene);
-    d->mGraphicsView->show();
+    d->mGraphicsScene->setStickyFocus(true);
+    d->mGraphicsView->viewport()->setParent(0);
 }
 
 LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
@@ -209,14 +209,14 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     } else
     {
         QPainter painter(&d->mImage);
-
-        //QRectF r(x, y, width, height);
-        QRectF r(0, 0, 800, 600);
-        d->mGraphicsScene->render(&painter, r, r);
-        //const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio )
-
-        //QRegion clip(x, y, width, height);
-        //d->mPage->mainFrame()->render(&painter, clip);
+#if 1   // Paint from the graphics view
+        QRectF r(x, y, width, height);
+        QRect g(0, 0, 800, 600);
+        d->mGraphicsView->render(&painter, r, g);
+#else   // Paint straight from the web page
+        QRegion clip(x, y, width, height);
+        d->mPage->mainFrame()->render(&painter, clip);
+#endif
         painter.end();
         if (!d->mFlipBitmap)
         {
@@ -331,9 +331,9 @@ bool LLEmbeddedBrowserWindow::setSize(int16_t width, int16_t height)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << width << height;
 #endif
-    d->mPage->setViewportSize(QSize(width, height));
     d->mPageBuffer = NULL;
     d->mImage = QImage(d->mPage->viewportSize(), QImage::Format_RGB32);
+    d->mGraphicsScene->setSceneRect(0, 0, width, height);
     d->mImage.fill(d->backgroundColor.rgb());
     return true;
 }
@@ -352,30 +352,17 @@ void LLEmbeddedBrowserWindow::mouseLeftDoubleClick(int16_t x, int16_t y)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
 #endif
-//    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick, QPoint(x, y), Qt::LeftButton, 0, 0);
-//    qApp->sendEvent(d->mGraphicsScene, &event);
+    QMouseEvent event(QEvent::MouseButtonDblClick, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
+    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseDown(int16_t x, int16_t y)
 {
-//#ifdef LLEMBEDDEDBROWSER_DEBUG
+#ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << d->mPage->mainFrame()->geometry();
-//#endif
-    QMouseEvent mevent(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
-    qApp->sendEvent(d->mGraphicsView->viewport(), &mevent);
-    return;
-
-    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
-
-    event.setButtonDownScenePos(Qt::LeftButton, QPointF(x, y));
-    event.setButtonDownScreenPos(Qt::LeftButton, QPoint(x, y));
-    event.setScenePos(QPointF(x, y));
-    event.setScreenPos(QPoint(x, y));
-    event.setButtons(Qt::LeftButton);
-    event.setButton(Qt::LeftButton);
-    event.setAccepted(false);
-    d->mGraphicsScene->mousePressEvent(&event);
-    //qApp->sendEvent(d->mGraphicsScene, &event);
+#endif
+    QMouseEvent event(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
+    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseUp(int16_t x, int16_t y)
@@ -383,19 +370,8 @@ void LLEmbeddedBrowserWindow::mouseUp(int16_t x, int16_t y)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
 #endif
-    QMouseEvent mevent(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
-    qApp->sendEvent(d->mGraphicsView->viewport(), &mevent);
-    return;
-    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
-    event.setButtonDownScenePos(Qt::LeftButton, QPointF(x, y));
-    event.setButtonDownScreenPos(Qt::LeftButton, QPoint(x, y));
-    event.setScenePos(QPointF(x, y));
-    event.setScreenPos(QPoint(x, y));
-    event.setButtons(Qt::LeftButton);
-    event.setButton(Qt::LeftButton);
-    event.setAccepted(false);
-    d->mGraphicsScene->mousePressEvent(&event);
-    //qApp->sendEvent(d->mGraphicsScene, &event);
+    QMouseEvent event(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, 0, 0);
+    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
 }
 
 void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
@@ -407,13 +383,8 @@ void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
     {
         return;
     }
-    QMouseEvent mevent(QEvent::MouseMove, QPoint(x, y), Qt::NoButton, 0, 0);
-    qApp->sendEvent(d->mGraphicsView->viewport(), &mevent);
-    return;
-    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
-    event.setScenePos(QPointF(x, y));
-    //event, Qt::NoButton, 0, 0);
-    qApp->sendEvent(d->mGraphicsScene, &event);
+    QMouseEvent event(QEvent::MouseMove, QPoint(x, y), Qt::NoButton, 0, 0);
+    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
 }
 
 // utility methods to set an error message so something else can look at it
@@ -578,7 +549,6 @@ GraphicsScene::GraphicsScene()
 
 void GraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
 {
-    qDebug() << regions;
     for (int i = 0; i < regions.count(); ++i) {
         LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
                 regions[i].x(), regions[i].y(), regions[i].width(), regions[i].height());

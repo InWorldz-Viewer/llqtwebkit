@@ -149,6 +149,8 @@ class LLEmbeddedBrowserWindowPrivate
         delete mPage;
         delete mView;
         delete mGraphicsScene;
+        mGraphicsView->viewport()->setParent(mGraphicsView);
+        delete mGraphicsView;
     }
 
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
