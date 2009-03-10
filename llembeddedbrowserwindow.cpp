@@ -202,7 +202,8 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     if (!d->mEnabled)
         return 0;
 
-    d->mImage = QImage(d->mPage->viewportSize(), QImage::Format_RGB32);
+    QRect sr = d->mGraphicsScene->sceneRect().toRect();
+    d->mImage = QImage(QSize(sr.width(), sr.height()), QImage::Format_RGB32);
     if (!d->mPage->mainFrame()->url().isValid())
     {
         d->mImage.fill(d->backgroundColor.value());
@@ -332,7 +333,7 @@ bool LLEmbeddedBrowserWindow::setSize(int16_t width, int16_t height)
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << width << height;
 #endif
     d->mPageBuffer = NULL;
-    d->mImage = QImage(d->mPage->viewportSize(), QImage::Format_RGB32);
+    d->mImage = QImage(QSize(width, height), QImage::Format_RGB32);
     d->mGraphicsScene->setSceneRect(0, 0, width, height);
     d->mImage.fill(d->backgroundColor.rgb());
     return true;
