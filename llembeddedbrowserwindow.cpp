@@ -202,8 +202,7 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     if (!d->mEnabled)
         return 0;
 
-    QRect sr = d->mGraphicsScene->sceneRect().toRect();
-    d->mImage = QImage(QSize(sr.width(), sr.height()), QImage::Format_RGB32);
+    d->mImage = QImage(QSize(d->mView->width(), d->mView->height()), QImage::Format_RGB32);
     if (!d->mPage->mainFrame()->url().isValid())
     {
         d->mImage.fill(d->backgroundColor.value());
@@ -212,7 +211,7 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
         QPainter painter(&d->mImage);
 #if 1   // Paint from the graphics view
         QRectF r(x, y, width, height);
-        QRect g(0, 0, 800, 600);
+        QRect g(0, 0, d->mView->width(), d->mView->height());
         d->mGraphicsView->render(&painter, r, g);
 #else   // Paint straight from the web page
         QRegion clip(x, y, width, height);
@@ -335,6 +334,8 @@ bool LLEmbeddedBrowserWindow::setSize(int16_t width, int16_t height)
     d->mPageBuffer = NULL;
     d->mImage = QImage(QSize(width, height), QImage::Format_RGB32);
     d->mGraphicsScene->setSceneRect(0, 0, width, height);
+    d->mGraphicsView->resize(width, height);
+    d->mView->resize(width, height);
     d->mImage.fill(d->backgroundColor.rgb());
     return true;
 }
