@@ -49,7 +49,6 @@
 
 #include <qwebframe.h>
 #include <qwebhistory.h>
-#include <qwebview.h>
 #include <qpainter.h>
 #include <qevent.h>
 #include <QGLWidget>

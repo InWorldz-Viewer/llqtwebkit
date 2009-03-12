@@ -41,6 +41,7 @@
 
 #include <qgraphicsscene.h>
 #include <qgraphicsview.h>
+#include <qwebview.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // manages the process of storing and emitting events that the consumer

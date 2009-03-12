@@ -136,6 +136,7 @@ QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFi
 
 void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
 {
+	Q_UNUSED(frame);
     QMessageBox *msgBox = new QMessageBox(view());
     msgBox->setWindowTitle(tr("JavaScript Alert - %1").arg(mainFrame()->url().host()));
     msgBox->setText(msg);
