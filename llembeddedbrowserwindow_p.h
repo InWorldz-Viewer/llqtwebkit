@@ -39,6 +39,9 @@
 
 #include "llwebpage.h"
 
+#include <qgraphicsscene.h>
+#include <qgraphicsview.h>
+
 ///////////////////////////////////////////////////////////////////////////////
 // manages the process of storing and emitting events that the consumer
 // of the embedding class can observe

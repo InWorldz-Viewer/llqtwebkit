@@ -40,6 +40,7 @@
 #include <qwebframe.h>
 #include <qevent.h>
 #include <qdebug.h>
+#include <qmessagebox.h>
 
 #include "llmozlib2.h"
 #include "llembeddedbrowserwindow.h"
