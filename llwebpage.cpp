@@ -35,6 +35,12 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "llwebpage.h"
+
+#include <qnetworkrequest.h>
+#include <qwebframe.h>
+#include <qevent.h>
+#include <qdebug.h>
+
 #include "llmozlib2.h"
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowserwindow_p.h"

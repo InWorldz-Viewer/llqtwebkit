@@ -37,9 +37,11 @@
 #ifndef LLEMBEDDEDBROWSER_P_H
 #define LLEMBEDDEDBROWSER_P_H
 
-#include <QtWebKit/QtWebKit>
-#include <QtGui/QtGui>
-#include <QtNetwork/QtNetwork>
+#include <qnetworkaccessmanager.h>
+#include <qapplication.h>
+#if QT_VERSION >= 0x040500
+#include <qnetworkdiskcache.h>
+#endif
 
 #include "networkcookiejar.h"
 #include "llembeddedbrowser.h"

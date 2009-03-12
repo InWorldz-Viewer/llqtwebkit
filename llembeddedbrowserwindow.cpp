@@ -42,15 +42,16 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "llembeddedbrowserwindow.h"
-#include "llembeddedbrowser_p.h"
 #include "llembeddedbrowserwindow_p.h"
 
 #include "llembeddedbrowser.h"
-#include "llwebpage.h"
+#include "llembeddedbrowser_p.h"
 
-#include <QtGui/QtGui>
-#include <QtWebKit/QtWebKit>
-#include <QtOpenGL/QtOpenGL>
+#include <qwebframe.h>
+#include <qwebhistory.h>
+#include <qpainter.h>
+#include <qevent.h>
+#include <QGLWidget>
 
 #if LL_DARWIN || LL_LINUX
 	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
@@ -59,6 +60,10 @@
 #endif
 
 //#define LLEMBEDDEDBROWSER_DEBUG
+
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+#include <qdebug.h>
+#endif
 
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
 {

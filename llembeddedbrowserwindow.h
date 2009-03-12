@@ -44,8 +44,6 @@
 #ifndef LLEMBEDDEDBROWSERWINDOW_H
 #define LLEMBEDDEDBROWSERWINDOW_H
 
-#include <QtGui/QtGui>
-
 #include <string>
 #include <list>
 #include <algorithm>
@@ -54,7 +52,6 @@
 #else
 #include <stdint.h>        // Use the C99 official header
 #endif
-
 
 #include "llmozlib2.h"
 
@@ -140,7 +137,6 @@ private:
     friend class LLWebPage;
     friend class GraphicsScene;
     LLEmbeddedBrowserWindowPrivate *d;
-
 
 };
 #endif // LLEMBEDEDDBROWSERWINDOW_H

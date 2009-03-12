@@ -39,10 +39,6 @@
 
 #include "llwebpage.h"
 
-#include <QtGui/QtGui>
-#include <QtNetwork/QtNetwork>
-#include <QtWebKit/QtWebKit>
-
 ///////////////////////////////////////////////////////////////////////////////
 // manages the process of storing and emitting events that the consumer
 // of the embedding class can observe

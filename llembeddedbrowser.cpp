@@ -46,7 +46,11 @@
 #include "llembeddedbrowser_p.h"
 #include "llembeddedbrowserwindow.h"
 
-#include <QtCore/qvariant.h>
+#include <qvariant.h>
+#include <qwebsettings.h>
+#include <qnetworkproxy.h>
+#include <qnetworkreply.h>
+#include <qfile.h>
 
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;

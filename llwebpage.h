@@ -37,7 +37,7 @@
 #ifndef LLWEBPAGE_H
 #define LLWEBPAGE_H
 
-#include <QtWebKit/QtWebKit>
+#include <qwebpage.h>
 
 class LLEmbeddedBrowserWindow;
 class LLWebPage : public QWebPage
