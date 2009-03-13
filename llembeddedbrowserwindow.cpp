@@ -54,6 +54,8 @@
 #include <QGLWidget>
 
 #if LL_DARWIN || LL_LINUX
+	#include <qplugin.h>
+	
 	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
 	Q_IMPORT_PLUGIN(qgif)
 	Q_IMPORT_PLUGIN(qjpeg)
