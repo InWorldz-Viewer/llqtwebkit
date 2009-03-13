@@ -207,8 +207,16 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/llwebpage.h",
+				"$(SRCROOT)/qtwebkit_cookiejar/networkcookiejar.h",
+				"$(SRCROOT)/llembeddedbrowser_p.h",
+				"$(SRCROOT)/llembeddedbrowserwindow_p.h",
 			);
 			outputPaths = (
+				"$(SRCROOT)/moc_llwebpage.cpp",
+				"$(SRCROOT)/qtwebkit_cookiejar/moc_networkcookiejar.cpp",
+				"$(SRCROOT)/moc_llembeddedbrowser_p.cpp",
+				"$(SRCROOT)/moc_llembeddedbrowserwindow_p.cpp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
