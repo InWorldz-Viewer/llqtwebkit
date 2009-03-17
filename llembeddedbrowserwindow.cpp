@@ -51,6 +51,7 @@
 #include <qwebhistory.h>
 #include <qpainter.h>
 #include <qevent.h>
+#include <qfile.h>
 #include <QGLWidget>
 
 #if LL_DARWIN || LL_LINUX
@@ -282,8 +283,11 @@ bool LLEmbeddedBrowserWindow::navigateTo(const std::string uri)
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(uri);
 #endif
     QString string = QString::fromStdString(uri);
-    QUrl url = QUrl::fromEncoded(string.toLocal8Bit());
-    if (url.scheme().isEmpty())
+    QUrl url;
+	url = QUrl::fromEncoded(string.toLocal8Bit());
+	if (QFile::exists(string))
+		url = QUrl::fromLocalFile(string);
+	if (url.scheme().isEmpty())
         url = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
     navigateStop();
     d->mPage->mainFrame()->load(url);
