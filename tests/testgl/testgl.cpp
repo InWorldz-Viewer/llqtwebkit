@@ -43,9 +43,12 @@
 #include <iostream>
 #include <stdlib.h>
 
-#ifdef LL_OSX
+#ifdef STATIC_QT
 #include <QtPlugin>
 Q_IMPORT_PLUGIN(qgif)
+#endif
+
+#ifdef LL_OSX
 #include "GLUT/glut.h"
 #else
 #include "GL/glut.h"

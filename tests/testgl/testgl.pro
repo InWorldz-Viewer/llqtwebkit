@@ -4,8 +4,6 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../../
 
-CONFIG += static
-
 QT += webkit opengl network
 
 !mac {
@@ -36,6 +34,7 @@ win32{
     }
 }
 
-#QTPLUGIN += qgif
+include(../../static.pri)
+
 # Input
 SOURCES += testgl.cpp
