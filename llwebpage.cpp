@@ -57,6 +57,8 @@ LLWebPage::LLWebPage(QObject *parent)
             this, SLOT(statusBarMessageSlot(const QString &)));
     connect(mainFrame(), SIGNAL(urlChanged(const QUrl&)),
             this, SLOT(urlChangedSlot(const QUrl&)));
+    connect(this, SIGNAL(loadStarted()),
+            this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)),
             this, SLOT(loadFinished(bool)));
 }
@@ -117,6 +119,12 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
         window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkHref, event);
     }
     return accepted;
+}
+
+void LLWebPage::loadStarted()
+{
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri());
+    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateBegin, event);
 }
 
 void LLWebPage::loadFinished(bool)
