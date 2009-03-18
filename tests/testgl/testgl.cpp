@@ -310,7 +310,15 @@ class testGL :
 		//
 		void keyboard( unsigned char keyIn, int /*xIn*/, int /*yIn*/ )
 		{
-			// ESC key exits
+			int modifiers = glutGetModifiers();
+                        /*
+                            For future improvements
+                            GLUT_ACTIVE_SHIFT
+                            GLUT_ACTIVE_CTRL
+                            GLUT_ACTIVE_ALT
+                        */
+
+                        // ESC key exits
 			if ( keyIn == 27 )
 			{
 				reset();
