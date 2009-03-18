@@ -298,6 +298,25 @@ bool LLEmbeddedBrowserWindow::canNavigateBack()
     return d->mPage->history()->canGoBack();
 }
 
+bool LLEmbeddedBrowserWindow::userAction(LLMozLib::UserAction action)
+{
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
+#endif
+    switch(action) {
+    case LLMozLib::Cut:
+        d->mPage->triggerAction(QWebPage::Cut);
+        break;
+    case LLMozLib::Copy:
+        d->mPage->triggerAction(QWebPage::Copy);
+        break;
+    case LLMozLib::Paste:
+        d->mPage->triggerAction(QWebPage::Paste);
+        break;
+    }
+    return true;
+}
+
 void LLEmbeddedBrowserWindow::navigateStop()
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG

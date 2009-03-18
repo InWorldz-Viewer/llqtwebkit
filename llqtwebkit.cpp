@@ -300,6 +300,16 @@ bool LLMozLib::navigateTo(int browser_window_id, const std::string uri)
     return false;
 }
 
+bool LLMozLib::userAction(int browser_window_id, UserAction action)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        return browser_window->userAction(action);
+    }
+    return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLMozLib::navigateStop(int browser_window_id)

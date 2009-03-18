@@ -100,6 +100,7 @@ public:
     void setEnabled(bool enabledIn);
 
     // navigation
+    bool userAction(LLMozLib::UserAction action);
     void navigateStop();
     bool navigateTo(const std::string uri);
     bool canNavigateBack();
