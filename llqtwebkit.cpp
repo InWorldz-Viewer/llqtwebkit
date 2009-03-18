@@ -110,7 +110,7 @@ bool LLMozLib::clearCache()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const std::string LLMozLib::getVersion()
+std::string LLMozLib::getVersion()
 {
     const int majorVersion = 2;
     const int minorVersion = 1;
@@ -410,7 +410,7 @@ const unsigned char* LLMozLib::getBrowserWindowPixels(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const bool LLMozLib::flipWindow(int browser_window_id, bool flip)
+bool LLMozLib::flipWindow(int browser_window_id, bool flip)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -424,7 +424,7 @@ const bool LLMozLib::flipWindow(int browser_window_id, bool flip)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserWidth(int browser_window_id)
+int LLMozLib::getBrowserWidth(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -437,7 +437,7 @@ const int LLMozLib::getBrowserWidth(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserHeight(int browser_window_id)
+int LLMozLib::getBrowserHeight(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -450,7 +450,7 @@ const int LLMozLib::getBrowserHeight(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserDepth(int browser_window_id)
+int LLMozLib::getBrowserDepth(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -463,7 +463,7 @@ const int LLMozLib::getBrowserDepth(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const int LLMozLib::getBrowserRowSpan(int browser_window_id)
+int LLMozLib::getBrowserRowSpan(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)

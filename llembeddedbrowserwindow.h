@@ -75,11 +75,11 @@ public:
     int getWindowId();
 
     // random accessors
-    const int16_t getPercentComplete();
-    const std::string& getStatusMsg();
-    const std::string& getCurrentUri();
-    const std::string& getClickLinkHref();
-    const std::string& getClickLinkTarget();
+    int16_t getPercentComplete();
+    std::string& getStatusMsg();
+    std::string& getCurrentUri();
+    std::string& getClickLinkHref();
+    std::string& getClickLinkTarget();
 
     // memory buffer management
     unsigned char* grabWindow(int x, int y, int width, int height);

@@ -80,35 +80,9 @@ private:
 
 class LLEmbeddedBrowserPrivate
 {
-    public:
-    LLEmbeddedBrowserPrivate()
-        : mErrorNum(0)
-        , mNativeWindowHandle(0)
-        , mNetworkAccessManager(0)
-        , mApplication(0)
-#if QT_VERSION >= 0x040500
-        , mDiskCache(0)
-#endif
-        , mNetworkCookieJar(0)
-    {
-        if (!qApp)
-        {
-            static int argc = 0;
-            static char* argv[] = {""};
-            mApplication = new QApplication(argc, (char **)argv);
-            mApplication->addLibraryPath(qApp->applicationDirPath());
-        }
-#if defined(__APPLE__)
-        qApp->setStyle("windows");
-#endif
-        mNetworkAccessManager = new LLNetworkAccessManager(this);
-    }
-
-    ~LLEmbeddedBrowserPrivate()
-    {
-        delete mApplication;
-        delete mNetworkAccessManager;
-    }
+public:
+    LLEmbeddedBrowserPrivate();
+    ~LLEmbeddedBrowserPrivate();
 
     int mErrorNum;
     void* mNativeWindowHandle;

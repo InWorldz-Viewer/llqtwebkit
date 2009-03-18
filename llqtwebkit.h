@@ -190,7 +190,7 @@ class LLMozLib
 		bool reset();
 		bool clearCache();
 		int getLastError();
-		const std::string getVersion();
+		std::string getVersion();
 		void setBrowserAgentId(std::string id);
 		bool enableProxy(bool enabled, std::string host_name, int port);
 		bool enableCookies(bool enabled);
@@ -229,11 +229,11 @@ class LLMozLib
 		// access to rendered bitmap data
 		const unsigned char* grabBrowserWindow(int browser_window_id);		// renders page to memory and returns pixels
 		const unsigned char* getBrowserWindowPixels(int browser_window_id);	// just returns pixels - no render
-		const bool flipWindow(int browser_window_id, bool flip);			// optionally flip window (pixels) you get back
-		const int getBrowserWidth(int browser_window_id);						// current browser width (can vary slightly after page is rendered)
-		const int getBrowserHeight(int browser_window_id);					// current height
-		const int getBrowserDepth(int browser_window_id);						// depth in bytes
-		const int getBrowserRowSpan(int browser_window_id);					// width in pixels * depth in bytes
+		bool flipWindow(int browser_window_id, bool flip);			// optionally flip window (pixels) you get back
+		int getBrowserWidth(int browser_window_id);						// current browser width (can vary slightly after page is rendered)
+		int getBrowserHeight(int browser_window_id);					// current height
+		int getBrowserDepth(int browser_window_id);						// depth in bytes
+		int getBrowserRowSpan(int browser_window_id);					// width in pixels * depth in bytes
 
 		// mouse/keyboard interaction
 		bool mouseDown(int browser_window_id, int x, int y);			// send a mouse down event to a browser window at given XY in browser space
