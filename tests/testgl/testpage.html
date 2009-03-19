@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>WebKit test</title>
+<script language="javascript" type="text/javascript">
+function setColor(x)
+{
+	colors = new Array(16)
+	colors[0]="0"
+	colors[1]="1"
+	colors[2]="2"
+	colors[3]="3"
+	colors[4]="4"
+	colors[5]="5"
+	colors[6]="6"
+	colors[7]="7"
+	colors[8]="8"
+	colors[9]="9"
+	colors[10]="a"
+	colors[11]="b"
+	colors[12]="c"
+	colors[13]="d"
+	colors[14]="e"
+	colors[15]="f"
+
+	digit = new Array(5)
+	color=""
+	for ( i = 0; i < 6; i++ )
+	{
+		digit[ i ]= colors[ Math.round( Math.random() * 15 ) ]
+		color = color + digit[ i ];
+	}
+
+	x.style.backgroundColor = color;
+}
+</script>
+</head>
+<body>
+
+<p ondblclick="setColor(this);"><tt>Double click here - line color changes</tt></p>
+<ul>
+<li><a href="http://google.com/">Test redirect from http://google.com</a></li>
+<li><a href="secondlife:///app/teleport/Ahern/128/128/0/">Teleport to Ahern</a></li>
+<li><a href="secondlife:///app/agent/69bfa8f2-ce10-46fe-b742-490e077d4c08/about">Callum Linden bio</a></li>
+<li><a target="_external" href="http://www.google.com/">Always open external browser</a></li>
+<li><a target="_blank" href="http://www.yahoo.com/">Open with target = _blank</a></li>
+</body>
+</html>

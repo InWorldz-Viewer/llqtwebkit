@@ -35,7 +35,9 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-
+extern "C" {
+#include <unistd.h>
+}
 #ifdef _WINDOWS
 #include <windows.h>
 #endif
@@ -73,10 +75,14 @@ class testGL :
 			mAppTexture( 0 ),
 			mBrowserWindowId( 0 ),
 			mAppWindowName( "testGL" ),
-			mHomeUrl( "http://www.google.com" ),
+			mHomeUrl(),
 			mNeedsUpdate( true )						// flag to indicate if browser texture needs an update
 		{
-			std::cout << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
+                        char tempPath[255];
+                        char *cwd = getcwd(tempPath, 255);
+                        mHomeUrl = cwd;
+                        mHomeUrl.append("/testpage.html");
+                        std::cout << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
