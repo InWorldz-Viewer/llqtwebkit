@@ -86,11 +86,12 @@ void LLWebPage::urlChangedSlot(const QUrl& url)
 
 bool LLWebPage::event(QEvent *event)
 {
+    bool result = QWebPage::event(event);
     if (event->type() == QEvent::MouseButtonPress)
         currentPoint = ((QMouseEvent*)event)->pos();
     else if (event->type() == QEvent::MouseButtonRelease)
         currentPoint = QPoint();
-    return QWebPage::event(event);
+    return result;
 }
 
 bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type)
