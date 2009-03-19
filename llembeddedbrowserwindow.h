@@ -101,6 +101,7 @@ public:
 
     // navigation
     bool userAction(LLMozLib::UserAction action);
+    bool userActionIsEnabled(LLMozLib::UserAction action);
     void navigateStop();
     bool navigateTo(const std::string uri);
     bool canNavigateBack();

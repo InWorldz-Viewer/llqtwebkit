@@ -47,6 +47,7 @@
 #include "llembeddedbrowser.h"
 #include "llembeddedbrowser_p.h"
 
+#include <qaction.h>
 #include <qwebframe.h>
 #include <qwebhistory.h>
 #include <qpainter.h>
@@ -315,6 +316,22 @@ bool LLEmbeddedBrowserWindow::userAction(LLMozLib::UserAction action)
         break;
     }
     return true;
+}
+
+bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLMozLib::UserAction action)
+{
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
+#endif
+    switch(action) {
+    case LLMozLib::Cut:
+        return d->mPage->action(QWebPage::Cut)->isEnabled();
+    case LLMozLib::Copy:
+        return d->mPage->action(QWebPage::Copy)->isEnabled();
+    case LLMozLib::Paste:
+        return d->mPage->action(QWebPage::Paste)->isEnabled();
+    }
+    return false;
 }
 
 void LLEmbeddedBrowserWindow::navigateStop()

@@ -310,6 +310,17 @@ bool LLMozLib::userAction(int browser_window_id, UserAction action)
     return false;
 }
 
+bool LLMozLib::userActionIsEnabled(int browser_window_id, UserAction action)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        return browser_window->userActionIsEnabled(action);
+    }
+    return false;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLMozLib::navigateStop(int browser_window_id)

@@ -225,6 +225,7 @@ class LLMozLib
 		// navigation - self explanatory
 		bool navigateTo(int browser_window_id, const std::string uri);
                 bool userAction(int browser_window_id, UserAction action);
+                bool userActionIsEnabled(int browser_window_id, UserAction action);
 		bool navigateStop(int browser_window_id);
 		bool canNavigateBack(int browser_window_id);
 		bool navigateBack(int browser_window_id);
