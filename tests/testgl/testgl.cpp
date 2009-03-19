@@ -118,8 +118,13 @@ class testGL :
 
 			// create a single browser window and set things up.
 			std::string applicationDir = std::string( arg0 ).substr( 0, std::string( arg0 ).find_last_of("\\/") );
-			std::string componentDir = applicationDir;
+
+                        std::string componentDir = applicationDir;
+#if defined(LL_LINUX)
+			std::string profileDir = applicationDir + "/" + "testGL_profile";
+#else
 			std::string profileDir = applicationDir + "\\" + "testGL_profile";
+#endif
 			LLMozLib::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
 			mBrowserWindowId = LLMozLib::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
 
