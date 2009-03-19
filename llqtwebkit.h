@@ -152,7 +152,9 @@ class LLEmbeddedBrowserWindowEvent
 
 ////////////////////////////////////////////////////////////////////////////////
 // derrive from this class and override these methods to observe these events
+#ifdef __GNUC__
 #pragma GCC visibility push(default)
+#endif
 class LLEmbeddedBrowserWindowObserver
 {
 	public:
@@ -168,12 +170,16 @@ class LLEmbeddedBrowserWindowObserver
 		virtual void onClickLinkHref(const EventType& event);
 		virtual void onClickLinkNoFollow(const EventType& event);
 };
+#ifdef __GNUC__
 #pragma GCC visibility pop
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // main library class
 
+#ifdef __GNUC__
 #pragma GCC visibility push(default)
+#endif
 class LLMozLib
 {
 	public:
@@ -267,7 +273,9 @@ class LLMozLib
 		BrowserWindowMap mBrowserWindowMap;
 };
 
+#ifdef __GNUC__
 #pragma GCC visibility pop
+#endif
 
 // Mozilla virtual keycodes.
 // We don't want to suck in Mozilla headers so we copy these consts
