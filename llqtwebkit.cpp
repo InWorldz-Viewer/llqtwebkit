@@ -300,7 +300,9 @@ bool LLMozLib::navigateTo(int browser_window_id, const std::string uri)
     return false;
 }
 
-bool LLMozLib::userAction(int browser_window_id, UserAction action)
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLMozLib::userAction(int browser_window_id, EUserAction action)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -310,96 +312,15 @@ bool LLMozLib::userAction(int browser_window_id, UserAction action)
     return false;
 }
 
-bool LLMozLib::userActionIsEnabled(int browser_window_id, UserAction action)
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLMozLib::userActionIsEnabled(int browser_window_id, EUserAction action)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
         return browser_window->userActionIsEnabled(action);
     }
-    return false;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLMozLib::navigateStop(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->navigateStop();
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLMozLib::canNavigateBack(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        return browser_window->canNavigateBack() ? true : false;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLMozLib::navigateBack(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->navigateBack();
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLMozLib::canNavigateForward(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        return browser_window->canNavigateForward() ? true : false;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLMozLib::navigateForward(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->navigateForward();
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLMozLib::navigateReload(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->navigateReload();
-        return true;
-    }
-
     return false;
 }
 

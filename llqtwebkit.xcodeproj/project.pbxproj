@@ -20,12 +20,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		9922B46C0F3A34170035C84F /* networkcookiejar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = networkcookiejar.cpp; path = qtwebkit_cookiejar/networkcookiejar.cpp; sourceTree = SOURCE_ROOT; };
-		9922B46D0F3A34170035C84F /* networkcookiejar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = networkcookiejar.h; path = qtwebkit_cookiejar/networkcookiejar.h; sourceTree = SOURCE_ROOT; };
-		9922B46E0F3A34170035C84F /* networkcookiejar_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = networkcookiejar_p.h; path = qtwebkit_cookiejar/networkcookiejar_p.h; sourceTree = SOURCE_ROOT; };
-		9922B4700F3A34170035C84F /* trie_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trie_p.h; path = qtwebkit_cookiejar/trie_p.h; sourceTree = SOURCE_ROOT; };
-		9922B4710F3A34170035C84F /* twoleveldomains_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = twoleveldomains_p.h; path = qtwebkit_cookiejar/twoleveldomains_p.h; sourceTree = SOURCE_ROOT; };
-		9922B4DE0F3A3A7C0035C84F /* moc_networkcookiejar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_networkcookiejar.cpp; path = qtwebkit_cookiejar/moc_networkcookiejar.cpp; sourceTree = SOURCE_ROOT; };
+		9922B46C0F3A34170035C84F /* networkcookiejar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = networkcookiejar.cpp; path = src/networkcookiejar.cpp; sourceTree = "<group>"; };
+		9922B46D0F3A34170035C84F /* networkcookiejar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = networkcookiejar.h; path = src/networkcookiejar.h; sourceTree = "<group>"; };
+		9922B46E0F3A34170035C84F /* networkcookiejar_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = networkcookiejar_p.h; path = src/networkcookiejar_p.h; sourceTree = "<group>"; };
+		9922B4700F3A34170035C84F /* trie_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trie_p.h; path = src/trie_p.h; sourceTree = "<group>"; };
+		9922B4710F3A34170035C84F /* twoleveldomains_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = twoleveldomains_p.h; path = src/twoleveldomains_p.h; sourceTree = "<group>"; };
+		9922B4DE0F3A3A7C0035C84F /* moc_networkcookiejar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_networkcookiejar.cpp; path = src/moc_networkcookiejar.cpp; sourceTree = "<group>"; };
 		9922B4F00F3A3AE50035C84F /* moc_llembeddedbrowser_p.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = moc_llembeddedbrowser_p.cpp; sourceTree = SOURCE_ROOT; };
 		994ACE690A7FEDAF00061DFB /* llmozlib2.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; path = llmozlib2.exp; sourceTree = SOURCE_ROOT; };
 		994AD6B30A80123C00061DFB /* libllmozlib2.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libllmozlib2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +102,14 @@
 		9922B46B0F3A34170035C84F /* qtwebkit_cookiejar */ = {
 			isa = PBXGroup;
 			children = (
+				996D2AD60F73101C00105335 /* src */,
+			);
+			path = qtwebkit_cookiejar;
+			sourceTree = SOURCE_ROOT;
+		};
+		996D2AD60F73101C00105335 /* src */ = {
+			isa = PBXGroup;
+			children = (
 				9922B46C0F3A34170035C84F /* networkcookiejar.cpp */,
 				9922B46D0F3A34170035C84F /* networkcookiejar.h */,
 				9922B4DE0F3A3A7C0035C84F /* moc_networkcookiejar.cpp */,
@@ -109,8 +117,8 @@
 				9922B4700F3A34170035C84F /* trie_p.h */,
 				9922B4710F3A34170035C84F /* twoleveldomains_p.h */,
 			);
-			path = qtwebkit_cookiejar;
-			sourceTree = SOURCE_ROOT;
+			name = src;
+			sourceTree = "<group>";
 		};
 		99CCFCA80A76AD4500ED39DE /* External Libraries */ = {
 			isa = PBXGroup;
@@ -208,19 +216,19 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/llwebpage.h",
-				"$(SRCROOT)/qtwebkit_cookiejar/networkcookiejar.h",
+				"$(SRCROOT)/qtwebkit_cookiejar/src/networkcookiejar.h",
 				"$(SRCROOT)/llembeddedbrowser_p.h",
 				"$(SRCROOT)/llembeddedbrowserwindow_p.h",
 			);
 			outputPaths = (
 				"$(SRCROOT)/moc_llwebpage.cpp",
-				"$(SRCROOT)/qtwebkit_cookiejar/moc_networkcookiejar.cpp",
+				"$(SRCROOT)/qtwebkit_cookiejar/src/moc_networkcookiejar.cpp",
 				"$(SRCROOT)/moc_llembeddedbrowser_p.cpp",
 				"$(SRCROOT)/moc_llembeddedbrowserwindow_p.cpp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "QTDIR/bin/moc llwebpage.h -o moc_llwebpage.cpp\nQTDIR/bin/moc qtwebkit_cookiejar/networkcookiejar.h -o qtwebkit_cookiejar/moc_networkcookiejar.cpp\n\nQTDIR/bin/moc llembeddedbrowser_p.h -o moc_llembeddedbrowser_p.cpp\nQTDIR/bin/moc llembeddedbrowserwindow_p.h -o moc_llembeddedbrowserwindow_p.cpp\n\n";
+			shellScript = "QTDIR/bin/moc llwebpage.h -o moc_llwebpage.cpp\nQTDIR/bin/moc qtwebkit_cookiejar/src/networkcookiejar.h -o qtwebkit_cookiejar/src/moc_networkcookiejar.cpp\n\nQTDIR/bin/moc llembeddedbrowser_p.h -o moc_llembeddedbrowser_p.cpp\nQTDIR/bin/moc llembeddedbrowserwindow_p.h -o moc_llembeddedbrowserwindow_p.cpp\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

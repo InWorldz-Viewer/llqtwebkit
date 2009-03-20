@@ -100,15 +100,9 @@ public:
     void setEnabled(bool enabledIn);
 
     // navigation
-    bool userAction(LLMozLib::UserAction action);
-    bool userActionIsEnabled(LLMozLib::UserAction action);
-    void navigateStop();
+    bool userAction(LLMozLib::EUserAction action);
+    bool userActionIsEnabled(LLMozLib::EUserAction action);
     bool navigateTo(const std::string uri);
-    bool canNavigateBack();
-    void navigateBack();
-    bool canNavigateForward();
-    void navigateForward();
-    void navigateReload();
 
     // javascript access/control
     std::string evaluateJavascript(std::string script);

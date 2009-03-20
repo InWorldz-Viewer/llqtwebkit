@@ -183,11 +183,16 @@ class LLEmbeddedBrowserWindowObserver
 class LLMozLib
 {
 	public:
-                enum UserAction {
-                    Cut,
-                    Copy,
-                    Paste,
-                };
+		typedef enum e_user_action 
+		{
+			UA_EDIT_CUT,
+			UA_EDIT_COPY,
+			UA_EDIT_PASTE,
+			UA_NAVIGATE_STOP,
+			UA_NAVIGATE_BACK,
+			UA_NAVIGATE_FORWARD,
+			UA_NAVIGATE_RELOAD
+		} EUserAction;
 
 		virtual ~LLMozLib();
 
@@ -224,14 +229,8 @@ class LLMozLib
 
 		// navigation - self explanatory
 		bool navigateTo(int browser_window_id, const std::string uri);
-                bool userAction(int browser_window_id, UserAction action);
-                bool userActionIsEnabled(int browser_window_id, UserAction action);
-		bool navigateStop(int browser_window_id);
-		bool canNavigateBack(int browser_window_id);
-		bool navigateBack(int browser_window_id);
-		bool canNavigateForward(int browser_window_id);
-		bool navigateForward(int browser_window_id);
-		bool navigateReload(int browser_window_id);
+		bool userAction(int browser_window_id, EUserAction action);
+		bool userActionIsEnabled(int browser_window_id, EUserAction action);
 
 		// javascript access/control
 		std::string evaluateJavascript(int browser_window_id, const std::string script);

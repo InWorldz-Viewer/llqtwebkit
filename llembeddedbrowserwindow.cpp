@@ -289,86 +289,85 @@ bool LLEmbeddedBrowserWindow::navigateTo(const std::string uri)
 		url = QUrl::fromLocalFile(string);
 	if (url.scheme().isEmpty())
         url = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
-    navigateStop();
+	d->mPage->triggerAction(QWebPage::Stop);
     d->mPage->mainFrame()->load(url);
     return true;
 }
 
-bool LLEmbeddedBrowserWindow::canNavigateBack()
-{
-    return d->mPage->history()->canGoBack();
-}
-
-bool LLEmbeddedBrowserWindow::userAction(LLMozLib::UserAction action)
+bool LLEmbeddedBrowserWindow::userAction(LLMozLib::EUserAction action)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
 #endif
-    switch(action) {
-    case LLMozLib::Cut:
-        d->mPage->triggerAction(QWebPage::Cut);
-        break;
-    case LLMozLib::Copy:
-        d->mPage->triggerAction(QWebPage::Copy);
-        break;
-    case LLMozLib::Paste:
-        d->mPage->triggerAction(QWebPage::Paste);
-        break;
-    }
-    return true;
+	bool result = true;
+	
+	switch(action) 
+	{
+		case LLMozLib::UA_EDIT_CUT:
+			d->mPage->triggerAction(QWebPage::Cut);
+		break;
+		case LLMozLib::UA_EDIT_COPY:
+			d->mPage->triggerAction(QWebPage::Copy);
+		break;
+		case LLMozLib::UA_EDIT_PASTE:
+			d->mPage->triggerAction(QWebPage::Paste);
+		break;
+		case LLMozLib::UA_NAVIGATE_STOP:
+			d->mPage->triggerAction(QWebPage::Stop);
+		break;
+		case LLMozLib::UA_NAVIGATE_BACK:
+			d->mPage->triggerAction(QWebPage::Back);
+		break;
+		case LLMozLib::UA_NAVIGATE_FORWARD:
+			d->mPage->triggerAction(QWebPage::Forward);
+		break;
+		case LLMozLib::UA_NAVIGATE_RELOAD:
+			d->mPage->triggerAction(QWebPage::Reload);
+		break;
+		default:
+			result = false;
+		break;
+	}
+
+	return result;
 }
 
-bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLMozLib::UserAction action)
+bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLMozLib::EUserAction action)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
 #endif
-    switch(action) {
-    case LLMozLib::Cut:
-        return d->mPage->action(QWebPage::Cut)->isEnabled();
-    case LLMozLib::Copy:
-        return d->mPage->action(QWebPage::Copy)->isEnabled();
-    case LLMozLib::Paste:
-        return d->mPage->action(QWebPage::Paste)->isEnabled();
-    }
-    return false;
-}
 
-void LLEmbeddedBrowserWindow::navigateStop()
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    d->mPage->triggerAction(QWebPage::Stop);
-}
+	bool result;
 
-void LLEmbeddedBrowserWindow::navigateBack()
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    d->mPage->triggerAction(QWebPage::Back);
-}
-
-bool LLEmbeddedBrowserWindow::canNavigateForward()
-{
-    return d->mPage->history()->canGoForward();
-}
-
-void LLEmbeddedBrowserWindow::navigateForward()
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    d->mPage->triggerAction(QWebPage::Forward);
-}
-
-void LLEmbeddedBrowserWindow::navigateReload()
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    d->mPage->triggerAction(QWebPage::Reload);
+	switch(action) 
+	{
+		case LLMozLib::UA_EDIT_CUT:
+			result = d->mPage->action(QWebPage::Cut)->isEnabled();
+		break;
+		case LLMozLib::UA_EDIT_COPY:
+			result = d->mPage->action(QWebPage::Copy)->isEnabled();
+		break;
+		case LLMozLib::UA_EDIT_PASTE:
+			result = d->mPage->action(QWebPage::Paste)->isEnabled();
+		break;
+		case LLMozLib::UA_NAVIGATE_STOP:
+			result = true;
+		break;
+		case LLMozLib::UA_NAVIGATE_BACK:
+			result = d->mPage->history()->canGoBack();
+ 		break;
+		case LLMozLib::UA_NAVIGATE_FORWARD:
+			result = d->mPage->history()->canGoForward();
+		break;
+		case LLMozLib::UA_NAVIGATE_RELOAD:
+			result = true;
+		break;
+		default:
+			result = false;
+		break;
+	}
+	return result;
 }
 
 // set the size of the browser window
@@ -567,7 +566,7 @@ void LLEmbeddedBrowserWindow::load404RedirectUrl()
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
-    navigateStop();
+	d->mPage->triggerAction(QWebPage::Stop);
     d->mPage->mainFrame()->load(url);
 }
 
