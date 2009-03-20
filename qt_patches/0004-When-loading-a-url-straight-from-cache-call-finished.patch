@@ -1,0 +1,29 @@
+From e94037c7cf3de7557ff6153eabc83c6a7122390a Mon Sep 17 00:00:00 2001
+From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
+Date: Fri, 20 Mar 2009 15:11:06 -0400
+Subject: [PATCH] When loading a url straight from cache call finished so the QNetworkReply::finished() signal is emited.
+Manualtest: Pull up the source viewer in Arora.
+
+---
+ src/network/access/qnetworkaccesshttpbackend.cpp |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/src/network/access/qnetworkaccesshttpbackend.cpp b/src/network/access/qnetworkaccesshttpbackend.cpp
+index 31a9f90..904109b 100644
+--- a/src/network/access/qnetworkaccesshttpbackend.cpp
++++ b/src/network/access/qnetworkaccesshttpbackend.cpp
+@@ -522,8 +522,10 @@ void QNetworkAccessHttpBackend::postRequest()
+     foreach (const QByteArray &header, headers)
+         httpRequest.setHeaderField(header, request().rawHeader(header));
+ 
+-    if (loadedFromCache)
++    if (loadedFromCache) {
++        QNetworkAccessBackend::finished();
+         return;    // no need to send the request! :)
++    }
+ 
+     httpReply = http->sendRequest(httpRequest);
+     httpReply->setParent(this);
+-- 
+1.6.0.4
+

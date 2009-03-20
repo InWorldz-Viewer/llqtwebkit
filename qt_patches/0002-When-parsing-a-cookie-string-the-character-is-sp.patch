@@ -1,7 +1,7 @@
-From 076a94d77b72ee1436883d79cb6867c7a89726d3 Mon Sep 17 00:00:00 2001
-From: Benjamin C Meyer <ben@meyerhome.net>
+From 316e6f5287e3eab090f01e4b064f310492abb28f Mon Sep 17 00:00:00 2001
+From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
 Date: Mon, 16 Mar 2009 14:05:22 -0400
-Subject: When parsing a cookie string the ',' character is special because
+Subject: [PATCH] When parsing a cookie string the ',' character is special because
  it is used in the date and to differentiate between multiple cookies.
  When there are multiple set-cookie headers rather then combining them
  with ', ' use '\n' like Firefox because we are 100% sure that we have
@@ -27,12 +27,12 @@ Also when parsing multiple cookies when we have an error
 don't return an empty list of cookies, but return the list of
 cookies we were able to parse successfully so far.
 ---
- src/network/access/qnetworkaccesshttpbackend.cpp |    8 +++++-
- src/network/access/qnetworkcookie.cpp            |   23 ++++++++++++++++-----
- 2 files changed, 23 insertions(+), 8 deletions(-)
+ src/network/access/qnetworkaccesshttpbackend.cpp |    8 ++++++--
+ src/network/access/qnetworkcookie.cpp            |   10 +++++++++-
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
 diff --git a/src/network/access/qnetworkaccesshttpbackend.cpp b/src/network/access/qnetworkaccesshttpbackend.cpp
-index f364162..d273cba 100644
+index dbc7b17..b1fce11 100644
 --- a/src/network/access/qnetworkaccesshttpbackend.cpp
 +++ b/src/network/access/qnetworkaccesshttpbackend.cpp
 @@ -762,8 +762,12 @@ void QNetworkAccessHttpBackend::replyHeaderChanged()
@@ -51,37 +51,10 @@ index f364162..d273cba 100644
          setRawHeader(it->first, value);
      }
 diff --git a/src/network/access/qnetworkcookie.cpp b/src/network/access/qnetworkcookie.cpp
-index 4b52b6b..1656714 100644
+index 6890a72..281e613 100644
 --- a/src/network/access/qnetworkcookie.cpp
 +++ b/src/network/access/qnetworkcookie.cpp
-@@ -725,10 +725,13 @@ static QDateTime parseDateString(const QByteArray &dateString)
-                 && isNumber(dateString[at + 1]))
-                 ++length;
-             int x = atoi(dateString.mid(at, length).constData());
--            if ((x > 31 || x == 0) && year == -1) year = x;
--            else if (unknown[0] == -1) unknown[0] = x;
--            else if (unknown[1] == -1) unknown[1] = x;
--            else if (unknown[2] == -1) unknown[2] = x;
-+            if ((x > 31 || x == 0) && year == -1) {
-+                year = x;
-+            } else {
-+                if (unknown[0] == -1) unknown[0] = x;
-+                else if (unknown[1] == -1) unknown[1] = x;
-+                else if (unknown[2] == -1) unknown[2] = x;
-+            }
-             at += length;
- #ifdef PARSEDATESTRINGDEBUG
-             qDebug() << "Saving" << x;
-@@ -736,7 +739,7 @@ static QDateTime parseDateString(const QByteArray &dateString)
-             continue;
-         }
- 
--        // Unknown character
-+        // Unknown character, typically a weekday such as 'Mon'
-         ++at;
-     }
- 
-@@ -914,11 +917,17 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
+@@ -918,11 +918,17 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
      while (position < length) {
          QNetworkCookie cookie;
  
@@ -100,7 +73,7 @@ index 4b52b6b..1656714 100644
          cookie.setName(field.first);
          cookie.setValue(field.second);
  
-@@ -986,6 +995,8 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
+@@ -990,6 +996,8 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
                  }
  
                  position = nextNonWhitespace(cookieString, position);

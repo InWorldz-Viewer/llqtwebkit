@@ -1,7 +1,7 @@
-From f3896a5d7691c6f07d691381a54bfe1f6e98e443 Mon Sep 17 00:00:00 2001
+From 89676dd61235a811f5cd45112be440267ffde422 Mon Sep 17 00:00:00 2001
 From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
 Date: Thu, 19 Feb 2009 13:16:41 -0500
-Subject: Check for a redirection after setting the headers.  If there is a
+Subject: [PATCH] Check for a redirection after setting the headers.  If there is a
  redirection the location header will be used to determine where to go.
 
 ---
@@ -9,10 +9,10 @@ Subject: Check for a redirection after setting the headers.  If there is a
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/network/access/qnetworkaccesshttpbackend.cpp b/src/network/access/qnetworkaccesshttpbackend.cpp
-index dbc7b17..4693f9c 100644
+index 904109b..60e419b 100644
 --- a/src/network/access/qnetworkaccesshttpbackend.cpp
 +++ b/src/network/access/qnetworkaccesshttpbackend.cpp
-@@ -881,8 +881,6 @@ bool QNetworkAccessHttpBackend::sendCacheContents(const QNetworkCacheMetaData &m
+@@ -887,8 +887,6 @@ bool QNetworkAccessHttpBackend::sendCacheContents(const QNetworkCacheMetaData &m
      if (status < 100)
          status = 200;           // fake it
  
@@ -21,7 +21,7 @@ index dbc7b17..4693f9c 100644
      setAttribute(QNetworkRequest::HttpStatusCodeAttribute, status);
      setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, attributes.value(QNetworkRequest::HttpReasonPhraseAttribute));
      setAttribute(QNetworkRequest::SourceIsFromCacheAttribute, true);
-@@ -893,6 +891,8 @@ bool QNetworkAccessHttpBackend::sendCacheContents(const QNetworkCacheMetaData &m
+@@ -899,6 +897,8 @@ bool QNetworkAccessHttpBackend::sendCacheContents(const QNetworkCacheMetaData &m
      for ( ; it != end; ++it)
          setRawHeader(it->first, it->second);
  
@@ -31,5 +31,5 @@ index dbc7b17..4693f9c 100644
  #if defined(QNETWORKACCESSHTTPBACKEND_DEBUG)
      qDebug() << "Successfully sent cache:" << url() << contents->size() << "bytes";
 -- 
-1.5.6.3
+1.6.0.4
 

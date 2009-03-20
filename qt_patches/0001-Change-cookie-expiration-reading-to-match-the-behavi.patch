@@ -1,19 +1,29 @@
-From aac7f56bf96844d7478c705bbd1c8013e0e8c1d7 Mon Sep 17 00:00:00 2001
+From 2d38b08ae67382e4c4e353d427e9ec195e5109da Mon Sep 17 00:00:00 2001
 From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
 Date: Thu, 26 Feb 2009 12:21:37 -0500
-Subject: Change cookie expiration reading to match the behavior of Firefox.
- Allow for non-standard cookies and don't make a bad expiration date
- loose the cookie.
+Subject: [PATCH] Change cookie expiration reading to match the behavior of Firefox.
+ Rather then only allowing the three date formats that are in the rfc allow a
+ much wider set of date strings.  Because many browsers support this
+ many websites send dates strings that are not in the rfc format.
 
+See documentation in parseDateString for more details about the implementation.
 ---
- src/network/access/qnetworkcookie.cpp |  433 +++++++++++++++++++++++++++++----
- 1 files changed, 380 insertions(+), 53 deletions(-)
+ src/network/access/qnetworkcookie.cpp |  437 +++++++++++++++++++++++++++++----
+ 1 files changed, 384 insertions(+), 53 deletions(-)
 
 diff --git a/src/network/access/qnetworkcookie.cpp b/src/network/access/qnetworkcookie.cpp
-index b076bbe..4b52b6b 100644
+index b076bbe..6890a72 100644
 --- a/src/network/access/qnetworkcookie.cpp
 +++ b/src/network/access/qnetworkcookie.cpp
-@@ -508,6 +508,382 @@ QByteArray QNetworkCookie::toRawForm(RawForm form) const
+@@ -44,6 +44,7 @@
+ #include "QtCore/qlist.h"
+ #include "QtCore/qlocale.h"
+ #include "QtCore/qstring.h"
++#include "QtCore/qstringlist.h"
+ #include "QtCore/qurl.h"
+ #include "private/qobject_p.h"
+ 
+@@ -508,6 +509,385 @@ QByteArray QNetworkCookie::toRawForm(RawForm form) const
      return result;
  }
  
@@ -234,10 +244,13 @@ index b076bbe..4b52b6b 100644
 +                && isNumber(dateString[at + 1]))
 +                ++length;
 +            int x = atoi(dateString.mid(at, length).constData());
-+            if ((x > 31 || x == 0) && year == -1) year = x;
-+            else if (unknown[0] == -1) unknown[0] = x;
-+            else if (unknown[1] == -1) unknown[1] = x;
-+            else if (unknown[2] == -1) unknown[2] = x;
++            if (year == -1 && (x > 31 || x == 0)) {
++                year = x;
++            } else {
++                if (unknown[0] == -1) unknown[0] = x;
++                else if (unknown[1] == -1) unknown[1] = x;
++                else if (unknown[2] == -1) unknown[2] = x;
++            }
 +            at += length;
 +#ifdef PARSEDATESTRINGDEBUG
 +            qDebug() << "Saving" << x;
@@ -245,7 +258,7 @@ index b076bbe..4b52b6b 100644
 +            continue;
 +        }
 +
-+        // Unknown character
++        // Unknown character, typically a weekday such as 'Mon'
 +        ++at;
 +    }
 +
@@ -396,7 +409,7 @@ index b076bbe..4b52b6b 100644
  /*!
      Parses the cookie string \a cookieString as received from a server
      response in the "Set-Cookie:" header. If there's a parsing error,
-@@ -561,64 +937,15 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
+@@ -561,64 +941,15 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
                  field.first = field.first.toLower(); // everything but the NAME=VALUE is case-insensitive
  
                  if (field.first == "expires") {
@@ -466,5 +479,5 @@ index b076bbe..4b52b6b 100644
                  } else if (field.first == "domain") {
                      QByteArray rawDomain = field.second;
 -- 
-1.5.6.3
+1.6.0.4
 

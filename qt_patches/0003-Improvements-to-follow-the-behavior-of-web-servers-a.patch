@@ -1,0 +1,66 @@
+From b955a4654d7e2e06daa69a1699b09a749ea88bce Mon Sep 17 00:00:00 2001
+From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
+Date: Thu, 5 Mar 2009 17:34:21 -0500
+Subject: [PATCH] Improvements to follow the behavior of web servers and other browsers,
+ specifically match the behavior of Firefox which servers test against.
+ - When updating the cache metadata don't update content-* headers
+ - Don't lowercase headers names when updating them
+ - Fixed a typo in QNETWORKACCESSHTTPBACKEND_DEBUG code
+
+Originally seen on http://www.bibelbund.de/htm/99-4-306.htm where on
+refresh the 304 will set the content type of text/plain.
+---
+ src/network/access/qnetworkaccesshttpbackend.cpp |   20 +++++++++++++++++---
+ 1 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/src/network/access/qnetworkaccesshttpbackend.cpp b/src/network/access/qnetworkaccesshttpbackend.cpp
+index b1fce11..31a9f90 100644
+--- a/src/network/access/qnetworkaccesshttpbackend.cpp
++++ b/src/network/access/qnetworkaccesshttpbackend.cpp
+@@ -950,6 +950,7 @@ QNetworkCacheMetaData QNetworkAccessHttpBackend::fetchCacheMetaData(const QNetwo
+ 
+     QList<QByteArray> newHeaders = rawHeaderList();
+     foreach (QByteArray header, newHeaders) {
++        QByteArray originalHeader = header;
+         header = header.toLower();
+         bool hop_by_hop =
+             (header == "connection"
+@@ -973,19 +974,32 @@ QNetworkCacheMetaData QNetworkAccessHttpBackend::fetchCacheMetaData(const QNetwo
+                 continue;
+         }
+ 
++        it = cacheHeaders.findRawHeader(header);
++        if (it != cacheHeaders.rawHeaders.constEnd()) {
++            // Match the behavior of Firefox and assume Cache-Control: "no-transform"
++            if (header == "content-encoding"
++                || header == "content-range"
++                || header == "content-type")
++                continue;
++
++            // For MS servers that send "Content-Length: 0" on 304 responses
++            // ignore this too
++            if (header == "content-length")
++                continue;
++        }
++
+ #if defined(QNETWORKACCESSHTTPBACKEND_DEBUG)
+         QByteArray n = rawHeader(header);
+         QByteArray o;
+-        it = cacheHeaders.findRawHeader(header);
+         if (it != cacheHeaders.rawHeaders.constEnd())
+             o = (*it).second;
+-        if (n != o && header != "Date") {
++        if (n != o && header != "date") {
+             qDebug() << "replacing" << header;
+             qDebug() << "new" << n;
+             qDebug() << "old" << o;
+         }
+ #endif
+-        cacheHeaders.setRawHeader(header, rawHeader(header));
++        cacheHeaders.setRawHeader(originalHeader, rawHeader(header));
+     }
+     metaData.setRawHeaders(cacheHeaders.rawHeaders);
+ 
+-- 
+1.6.0.4
+
