@@ -590,6 +590,7 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
 
 GraphicsScene::GraphicsScene()
     : QGraphicsScene()
+    , window(0)
 {
     connect(this, SIGNAL(changed(const QList<QRectF> &)),
             this, SLOT(repaintRequestedSlot(const QList<QRectF> &)));
@@ -597,6 +598,8 @@ GraphicsScene::GraphicsScene()
 
 void GraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
 {
+    if (!window)
+        return;
     for (int i = 0; i < regions.count(); ++i) {
         LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
                 regions[i].x(), regions[i].y(), regions[i].width(), regions[i].height());

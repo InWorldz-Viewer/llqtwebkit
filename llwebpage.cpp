@@ -50,6 +50,7 @@
 
 LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
+    , window(0)
 {
     connect(this, SIGNAL(loadProgress(int)),
             this, SLOT(loadProgressSlot(int)));
@@ -65,6 +66,8 @@ LLWebPage::LLWebPage(QObject *parent)
 
 void LLWebPage::loadProgressSlot(int progress)
 {
+    if (!window)
+        return;
     window->d->mPercentComplete = progress;
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(), progress);
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onUpdateProgress, event);
@@ -72,6 +75,8 @@ void LLWebPage::loadProgressSlot(int progress)
 
 void LLWebPage::statusBarMessageSlot(const QString& text)
 {
+    if (!window)
+        return;
     window->d->mStatusText = text.toStdString();
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(), window->d->mStatusText);
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onStatusTextChange, event);
@@ -80,6 +85,8 @@ void LLWebPage::statusBarMessageSlot(const QString& text)
 void LLWebPage::urlChangedSlot(const QUrl& url)
 {
     Q_UNUSED(url);
+    if (!window)
+        return;
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLocationChange, event);
 }
@@ -96,6 +103,8 @@ bool LLWebPage::event(QEvent *event)
 
 bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type)
 {
+    if (!window)
+        return false;
     if (request.url().scheme() == window->d->mNoFollowScheme)
     {
         QString encodedUrl = request.url().toEncoded();
@@ -131,12 +140,16 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 
 void LLWebPage::loadStarted()
 {
+    if (!window)
+        return;
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateBegin, event);
 }
 
 void LLWebPage::loadFinished(bool)
 {
+    if (!window)
+        return;
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
             window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateComplete, event);
@@ -152,7 +165,7 @@ QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFi
 
 void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
 {
-	Q_UNUSED(frame);
+    Q_UNUSED(frame);
     QMessageBox *msgBox = new QMessageBox(view());
     msgBox->setWindowTitle(tr("JavaScript Alert - %1").arg(mainFrame()->url().host()));
     msgBox->setText(msg);

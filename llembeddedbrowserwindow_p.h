@@ -146,6 +146,8 @@ class LLEmbeddedBrowserWindowPrivate
 
     ~LLEmbeddedBrowserWindowPrivate()
     {
+        mGraphicsScene->window = 0;
+        mPage->window = 0;
         mView->deleteLater();
         mGraphicsScene->deleteLater();
         mGraphicsView->viewport()->setParent(mGraphicsView);
