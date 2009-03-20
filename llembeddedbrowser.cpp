@@ -72,9 +72,7 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
         mApplication = new QApplication(argc, (char **)argv);
         mApplication->addLibraryPath(qApp->applicationDirPath());
     }
-#if defined(__APPLE__)
-    qApp->setStyle("windows");
-#endif
+    qApp->setStyle("plastique");
     mNetworkAccessManager = new LLNetworkAccessManager(this);
 }
 
