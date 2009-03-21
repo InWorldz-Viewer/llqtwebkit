@@ -74,6 +74,14 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
     }
     qApp->setStyle("plastique");
     mNetworkAccessManager = new LLNetworkAccessManager(this);
+#if LL_DARWIN
+	// HACK: Qt installs CarbonEvent handlers that steal events from our main event loop.
+	// This uninstalls them.
+	// It's not clear whether calling this internal function is really a good idea.  It's probably not.
+	// It does, however, seem to fix at least one problem ( https://jira.secondlife.com/browse/MOZ-12 ).
+	extern void qt_release_app_proc_handler();
+	qt_release_app_proc_handler();
+#endif
 }
 
 LLEmbeddedBrowserPrivate::~LLEmbeddedBrowserPrivate()
@@ -251,7 +259,14 @@ int LLEmbeddedBrowser::getWindowCount() const
 
 void LLEmbeddedBrowser::pump(int max_milliseconds)
 {
-    qApp->processEvents(QEventLoop::AllEvents, max_milliseconds);
+#if LL_DARWIN
+	// On the Mac, calling processEvents hangs the viewer.
+	// I'm not entirely sure this does everything we need, but it seems to work better, and allows things like animated gifs to work.
+	qApp->sendPostedEvents();
+	qApp->sendPostedEvents(0, QEvent::DeferredDelete);
+#else
+	qApp->processEvents(QEventLoop::AllEvents, max_milliseconds);
+#endif
 }
 
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent)
