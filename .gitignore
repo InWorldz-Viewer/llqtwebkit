@@ -10,3 +10,4 @@ tests/GL
 *.ncb
 *.pdb
 *.suo
+libllmozlib2.so*
