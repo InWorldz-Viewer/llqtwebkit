@@ -1,7 +1,3 @@
-/*
-   Copyright (C) 2008 Torch Mobile Inc. http://www.torchmobile.com/
-*/
-
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
