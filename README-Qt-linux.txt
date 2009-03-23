@@ -12,8 +12,7 @@ export PATH=$PATH:$QTDIR/bin
 2) Compile Qt
 
 cd $QTDIR
-./configure -no-framework -fast -no-qt3support -prefix $PWD -static -release -no-xmlpatterns -no-phonon -universal -sdk /Developer/SDKs/MacOSX10.4u.sdk/
-make
+./configure -no-qt3support -prefix $PWD -qt-libjpeg -qt-libpng -no-xmlpatterns -no-phonon -optimized-qmake -DQT_NO_DRAGANDDROP
 
 3) Get llmozlib and checkout the qtwebkit branch
 
