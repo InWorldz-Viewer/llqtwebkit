@@ -119,6 +119,20 @@ private slots:
 };
 
 
+class WebView : public QWebView
+{
+    Q_OBJECT
+
+public:
+    WebView(QWidget *parent = 0);
+    LLEmbeddedBrowserWindow *window;
+
+protected:
+    bool event(QEvent *event);
+
+    Qt::CursorShape currentShape;
+};
+
 
 class LLEmbeddedBrowserWindowPrivate
 {
@@ -155,7 +169,7 @@ class LLEmbeddedBrowserWindowPrivate
     LLWebPage *mPage;
     QImage mImage;
 
-    QWebView *mView;
+    WebView *mView;
     GraphicsScene *mGraphicsScene;
     QGraphicsView *mGraphicsView;
     Qt::MouseButton mCurrentMouseDown;

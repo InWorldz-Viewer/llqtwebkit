@@ -128,6 +128,7 @@ public:
 private:
     friend class LLWebPage;
     friend class GraphicsScene;
+    friend class WebView;
     LLEmbeddedBrowserWindowPrivate *d;
 
 };

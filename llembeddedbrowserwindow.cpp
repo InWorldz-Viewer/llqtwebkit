@@ -69,7 +69,8 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d = new LLEmbeddedBrowserWindowPrivate();
     d->mPage->window = this;
 
-    d->mView = new QWebView;
+    d->mView = new WebView;
+    d->mView->window = this;
     d->mView->setPage(d->mPage);
     d->mGraphicsScene = new GraphicsScene;
     d->mGraphicsScene->window = this;
@@ -296,8 +297,8 @@ bool LLEmbeddedBrowserWindow::userAction(LLMozLib::EUserAction action)
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
 #endif
 	bool result = true;
-	
-	switch(action) 
+
+	switch(action)
 	{
 		case LLMozLib::UA_EDIT_CUT:
 			d->mPage->triggerAction(QWebPage::Cut);
@@ -336,7 +337,7 @@ bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLMozLib::EUserAction action)
 
 	bool result;
 
-	switch(action) 
+	switch(action)
 	{
 		case LLMozLib::UA_EDIT_CUT:
 			result = d->mPage->action(QWebPage::Cut)->isEnabled();
@@ -602,5 +603,49 @@ void GraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
 
         window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
     }
+}
+
+#include <qcursor.h>
+WebView::WebView(QWidget *parent)
+    : QWebView(parent)
+    , window(0)
+{
+}
+
+bool WebView::event(QEvent *event)
+{
+    if (event->type() == QEvent::CursorChange
+        && window
+        && currentShape != cursor().shape()) {
+        currentShape = cursor().shape();
+        LLMozLib::ECursor llcursor;
+        switch(currentShape)
+        {
+            case Qt::ArrowCursor:
+                llcursor = LLMozLib::C_ARROW;
+            break;
+            case Qt::PointingHandCursor:
+                llcursor = LLMozLib::C_POINTINGHAND;
+            break;
+            case Qt::IBeamCursor:
+                llcursor = LLMozLib::C_IBEAM;
+            break;
+            case Qt::SplitVCursor:
+                llcursor = LLMozLib::C_SPLITV;
+            break;
+            case Qt::SplitHCursor:
+                llcursor = LLMozLib::C_SPLITH;
+            break;
+            default:
+                qWarning() << "Unhandled cursor shape:" << currentShape;
+        }
+
+        LLEmbeddedBrowserWindowEvent event(
+                window->getWindowId(),
+                window->getCurrentUri(),
+                ((int)llcursor));
+        window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCursorChanged, event);
+    }
+    return QWebView::event(event);
 }
 

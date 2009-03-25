@@ -161,6 +161,7 @@ class LLEmbeddedBrowserWindowObserver
 		virtual ~LLEmbeddedBrowserWindowObserver();
 		typedef LLEmbeddedBrowserWindowEvent EventType;
 
+		virtual void onCursorChanged(const EventType& event);
 		virtual void onPageChanged(const EventType& event);
 		virtual void onNavigateBegin(const EventType& event);
 		virtual void onNavigateComplete(const EventType& event);
@@ -183,7 +184,16 @@ class LLEmbeddedBrowserWindowObserver
 class LLMozLib
 {
 	public:
-		typedef enum e_user_action 
+		typedef enum e_cursor
+                {
+                    C_ARROW,
+                    C_IBEAM,
+                    C_SPLITV,
+                    C_SPLITH,
+                    C_POINTINGHAND
+                } ECursor;
+
+		typedef enum e_user_action
 		{
 			UA_EDIT_CUT,
 			UA_EDIT_COPY,

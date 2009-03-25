@@ -621,6 +621,10 @@ LLEmbeddedBrowserWindowObserver::~LLEmbeddedBrowserWindowObserver()
 {
 }
 
+void LLEmbeddedBrowserWindowObserver::onCursorChanged(const EventType&)
+{
+}
+
 void LLEmbeddedBrowserWindowObserver::onPageChanged(const EventType&)
 {
 }
