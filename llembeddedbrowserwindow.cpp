@@ -69,10 +69,10 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d = new LLEmbeddedBrowserWindowPrivate();
     d->mPage->window = this;
 
-    d->mView = new WebView;
+    d->mView = new LLWebView;
     d->mView->window = this;
     d->mView->setPage(d->mPage);
-    d->mGraphicsScene = new GraphicsScene;
+    d->mGraphicsScene = new LLGraphicsScene;
     d->mGraphicsScene->window = this;
     d->mGraphicsView = new QGraphicsView;
     d->mGraphicsScene->addWidget(d->mView);
@@ -585,7 +585,7 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
     return d->mNoFollowScheme.toStdString();
 }
 
-GraphicsScene::GraphicsScene()
+LLGraphicsScene::LLGraphicsScene()
     : QGraphicsScene()
     , window(0)
 {
@@ -593,7 +593,7 @@ GraphicsScene::GraphicsScene()
             this, SLOT(repaintRequestedSlot(const QList<QRectF> &)));
 }
 
-void GraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
+void LLGraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
 {
     if (!window)
         return;
@@ -605,14 +605,15 @@ void GraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
     }
 }
 
+#include <qdebug.h>
 #include <qcursor.h>
-WebView::WebView(QWidget *parent)
+LLWebView::LLWebView(QWidget *parent)
     : QWebView(parent)
     , window(0)
 {
 }
 
-bool WebView::event(QEvent *event)
+bool LLWebView::event(QEvent *event)
 {
     if (event->type() == QEvent::CursorChange
         && window

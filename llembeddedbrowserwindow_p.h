@@ -105,12 +105,12 @@ class LLEmbeddedBrowserWindowEmitter
 #include "llmozlib2.h"
 #include "llembeddedbrowserwindow.h"
 
-class GraphicsScene : public QGraphicsScene
+class LLGraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    GraphicsScene();
+    LLGraphicsScene();
     LLEmbeddedBrowserWindow *window;
 
 private slots:
@@ -119,12 +119,12 @@ private slots:
 };
 
 
-class WebView : public QWebView
+class LLWebView : public QWebView
 {
     Q_OBJECT
 
 public:
-    WebView(QWidget *parent = 0);
+    LLWebView(QWidget *parent = 0);
     LLEmbeddedBrowserWindow *window;
 
 protected:
@@ -169,8 +169,8 @@ class LLEmbeddedBrowserWindowPrivate
     LLWebPage *mPage;
     QImage mImage;
 
-    WebView *mView;
-    GraphicsScene *mGraphicsScene;
+    LLWebView *mView;
+    LLGraphicsScene *mGraphicsScene;
     QGraphicsView *mGraphicsView;
     Qt::MouseButton mCurrentMouseDown;
 
