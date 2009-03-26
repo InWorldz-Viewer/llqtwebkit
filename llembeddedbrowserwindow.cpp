@@ -613,12 +613,29 @@ LLWebView::LLWebView(QWidget *parent)
 {
 }
 
+// XxX
+// START copy from qwebpage_p.h
+// I will propose making this class public in QtWebKit
+class SetCursorEvent : public QEvent {
+public:
+    static const int EventType = 724;
+    SetCursorEvent(const QCursor&);
+
+    QCursor cursor() const { return m_cursor; } ;
+private:
+    QCursor m_cursor;
+};
+// END
+// XxX
+
 bool LLWebView::event(QEvent *event)
 {
-    if (event->type() == QEvent::CursorChange
-        && window
-        && currentShape != cursor().shape()) {
-        currentShape = cursor().shape();
+    if (window
+        && event->type() == static_cast<QEvent::Type>(SetCursorEvent::EventType)) {
+
+        QCursor cursor = static_cast<SetCursorEvent*>(event)->cursor();
+        if (currentShape != cursor.shape()) {
+        currentShape = cursor.shape();
         LLMozLib::ECursor llcursor;
         switch(currentShape)
         {
@@ -641,11 +658,14 @@ bool LLWebView::event(QEvent *event)
                 qWarning() << "Unhandled cursor shape:" << currentShape;
         }
 
-        LLEmbeddedBrowserWindowEvent event(
+        LLEmbeddedBrowserWindowEvent llevent(
                 window->getWindowId(),
                 window->getCurrentUri(),
                 ((int)llcursor));
-        window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCursorChanged, event);
+        window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCursorChanged, llevent);
+        event->accept();
+        return true;
+        }
     }
     return QWebView::event(event);
 }
