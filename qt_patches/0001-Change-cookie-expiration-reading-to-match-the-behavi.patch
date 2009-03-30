@@ -1,4 +1,4 @@
-From 2d38b08ae67382e4c4e353d427e9ec195e5109da Mon Sep 17 00:00:00 2001
+From 17d3efe4650f2ea61cc0166710dc4eaf38a8c50e Mon Sep 17 00:00:00 2001
 From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
 Date: Thu, 26 Feb 2009 12:21:37 -0500
 Subject: [PATCH] Change cookie expiration reading to match the behavior of Firefox.
@@ -8,11 +8,11 @@ Subject: [PATCH] Change cookie expiration reading to match the behavior of Firef
 
 See documentation in parseDateString for more details about the implementation.
 ---
- src/network/access/qnetworkcookie.cpp |  437 +++++++++++++++++++++++++++++----
- 1 files changed, 384 insertions(+), 53 deletions(-)
+ src/network/access/qnetworkcookie.cpp |  439 +++++++++++++++++++++++++++++----
+ 1 files changed, 386 insertions(+), 53 deletions(-)
 
 diff --git a/src/network/access/qnetworkcookie.cpp b/src/network/access/qnetworkcookie.cpp
-index b076bbe..6890a72 100644
+index b076bbe..9a467fd 100644
 --- a/src/network/access/qnetworkcookie.cpp
 +++ b/src/network/access/qnetworkcookie.cpp
 @@ -44,6 +44,7 @@
@@ -23,7 +23,7 @@ index b076bbe..6890a72 100644
  #include "QtCore/qurl.h"
  #include "private/qobject_p.h"
  
-@@ -508,6 +509,385 @@ QByteArray QNetworkCookie::toRawForm(RawForm form) const
+@@ -508,6 +509,387 @@ QByteArray QNetworkCookie::toRawForm(RawForm form) const
      return result;
  }
  
@@ -162,11 +162,13 @@ index b076bbe..6890a72 100644
 +            && (at == 0
 +                || isWhitespace(dateString[at - 1])
 +                || dateString[at - 1] == ','
-+                || (dateString[at - 1] == 't'))) {
++                || (at >= 3
++                    && (dateString[at - 3] == 'g')
++                    && (dateString[at - 2] == 'm')
++                    && (dateString[at - 1] == 't')))) {
 +
 +            int end = 1;
-+            while (dateString[at + end] >= '0' && dateString[at + end] <= '9'
-+                   && end < 5)
++            while (end < 5 && dateString[at + end] >= '0' && dateString[at + end] <= '9')
 +                ++end;
 +            int minutes = 0;
 +            int hours = 0;
@@ -240,7 +242,7 @@ index b076bbe..6890a72 100644
 +        // Could be month, day or year
 +        if (isNum) {
 +            int length = 1;
-+            if (dateString.length() >= at + 1
++            if (dateString.length() > at + 1
 +                && isNumber(dateString[at + 1]))
 +                ++length;
 +            int x = atoi(dateString.mid(at, length).constData());
@@ -409,7 +411,7 @@ index b076bbe..6890a72 100644
  /*!
      Parses the cookie string \a cookieString as received from a server
      response in the "Set-Cookie:" header. If there's a parsing error,
-@@ -561,64 +941,15 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
+@@ -561,64 +943,15 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
                  field.first = field.first.toLower(); // everything but the NAME=VALUE is case-insensitive
  
                  if (field.first == "expires") {

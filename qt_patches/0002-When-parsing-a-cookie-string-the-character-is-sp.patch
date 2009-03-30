@@ -1,4 +1,4 @@
-From 316e6f5287e3eab090f01e4b064f310492abb28f Mon Sep 17 00:00:00 2001
+From b37c6846bead3b3493a64606867f1876765f9963 Mon Sep 17 00:00:00 2001
 From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
 Date: Mon, 16 Mar 2009 14:05:22 -0400
 Subject: [PATCH] When parsing a cookie string the ',' character is special because
@@ -51,16 +51,16 @@ index dbc7b17..b1fce11 100644
          setRawHeader(it->first, value);
      }
 diff --git a/src/network/access/qnetworkcookie.cpp b/src/network/access/qnetworkcookie.cpp
-index 6890a72..281e613 100644
+index 9a467fd..e57b85b 100644
 --- a/src/network/access/qnetworkcookie.cpp
 +++ b/src/network/access/qnetworkcookie.cpp
-@@ -918,11 +918,17 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
+@@ -920,11 +920,17 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
      while (position < length) {
          QNetworkCookie cookie;
  
 +        // When there are multiple SetCookie headers they are join with a new line
 +        // \n will always be the start of a new cookie
-+        int endOfSetCookie = cookieString.indexOf('\n');
++        int endOfSetCookie = cookieString.indexOf('\n', position);
 +        if (endOfSetCookie == -1)
 +            endOfSetCookie = length;
 +
@@ -73,7 +73,7 @@ index 6890a72..281e613 100644
          cookie.setName(field.first);
          cookie.setValue(field.second);
  
-@@ -990,6 +996,8 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
+@@ -992,6 +998,8 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
                  }
  
                  position = nextNonWhitespace(cookieString, position);
