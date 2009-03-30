@@ -20,11 +20,11 @@ git checkout -b qtwebkit origin/qtwebkit
 
 cd $QTDIR
 
-patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_00-target.patch
-patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_01-qtwebkit-cookie-url.patch
-patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_02-cookieexpiration.patch
-patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_03-multiplecookies.patch
-patch -p1 </path/to/llmozlib/llmozlib2/qt-snapshot_04-redirect.patch
+# the patch files are numbered in the order they should be applied, so this should do the right thing
+for patchfile in /path/to/llmozlib/llmozlib2/qt_patches/[0-9]* /path/to/llmozlib/llmozlib2/qt_patches/qtwebkit-[0-9]* ; do
+	echo applying "$patchfile"
+	patch -p1 <"$patchfile"
+done
 
 4) Compile Qt
 
