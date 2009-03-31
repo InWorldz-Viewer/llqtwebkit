@@ -422,7 +422,7 @@ void LLEmbeddedBrowserWindow::mouseUp(int16_t x, int16_t y)
 void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << d->mCurrentMouseDown;
 #endif
     if (x == 0 && y == 0)
     {

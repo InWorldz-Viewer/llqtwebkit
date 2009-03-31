@@ -104,6 +104,7 @@ class LLEmbeddedBrowserWindowEmitter
 
 #include "llmozlib2.h"
 #include "llembeddedbrowserwindow.h"
+#include <qgraphicssceneevent.h>
 
 class LLGraphicsScene : public QGraphicsScene
 {
@@ -112,6 +113,12 @@ class LLGraphicsScene : public QGraphicsScene
 public:
     LLGraphicsScene();
     LLEmbeddedBrowserWindow *window;
+
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+        QGraphicsScene::mouseMoveEvent(mouseEvent);
+        mouseEvent->setAccepted(true);
+        mouseEvent->setButtons(Qt::LeftButton);
+    }
 
 private slots:
     void repaintRequestedSlot(const QList<QRectF> &);
@@ -133,13 +140,16 @@ protected:
     Qt::CursorShape currentShape;
 };
 
-
 class LLEmbeddedBrowserWindowPrivate
 {
     public:
     LLEmbeddedBrowserWindowPrivate()
         : mParent(0)
         , mPage(new LLWebPage)
+        , mView(0)
+        , mGraphicsScene(0)
+        , mGraphicsView(0)
+        , mCurrentMouseDown(Qt::NoButton)
         , mPercentComplete(0)
         , mStatusText("")
         , mCurrentUri("")
@@ -165,9 +175,9 @@ class LLEmbeddedBrowserWindowPrivate
     }
 
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
+    QImage mImage;
     LLEmbeddedBrowser *mParent;
     LLWebPage *mPage;
-    QImage mImage;
 
     LLWebView *mView;
     LLGraphicsScene *mGraphicsScene;
