@@ -91,10 +91,11 @@ WebPage::WebPage(QWidget *parent)
     LLMozLib::getInstance()->setBrowserAgentId("testqtapp");
 
     // don't flip bitmap
-    LLMozLib::getInstance()->flipWindow( mBrowserWindowId, true );
+    LLMozLib::getInstance()->flipWindow(mBrowserWindowId, false);
 
     // go to the "home page"
-    LLMozLib::getInstance()->navigateTo( mBrowserWindowId, "http://www.google.com" );
+    QString url = QUrl::fromLocalFile(QDir::currentPath() + "/../testgl/testpage.html").toString();
+    LLMozLib::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
 }
 
 WebPage::~WebPage()
@@ -201,17 +202,17 @@ void WebPage::keyReleaseEvent(QKeyEvent *event)
 
 void WebPage::goBack()
 {
-    LLMozLib::getInstance()->navigateBack(mBrowserWindowId);
+    LLMozLib::getInstance()->userAction(mBrowserWindowId, LLMozLib::UA_NAVIGATE_BACK);
 }
 
 void WebPage::goForward()
 {
-    LLMozLib::getInstance()->navigateForward(mBrowserWindowId);
+    LLMozLib::getInstance()->userAction(mBrowserWindowId, LLMozLib::UA_NAVIGATE_FORWARD);
 }
 
 void WebPage::reload()
 {
-    LLMozLib::getInstance()->navigateReload(mBrowserWindowId);
+    LLMozLib::getInstance()->userAction(mBrowserWindowId, LLMozLib::UA_NAVIGATE_RELOAD);
 }
 
 void WebPage::loadUrl(const QString &url)
