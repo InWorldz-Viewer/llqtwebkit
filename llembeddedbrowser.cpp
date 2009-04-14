@@ -41,6 +41,7 @@
 
 #include "llembeddedbrowser_p.h"
 #include "llembeddedbrowserwindow.h"
+#include "llstyle.h"
 
 #include <qvariant.h>
 #include <qwebsettings.h>
@@ -68,7 +69,7 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
         mApplication = new QApplication(argc, (char **)argv);
         mApplication->addLibraryPath(qApp->applicationDirPath());
     }
-    qApp->setStyle("plastique");
+    qApp->setStyle(new LLStyle()));
     mNetworkAccessManager = new LLNetworkAccessManager(this);
 #if LL_DARWIN
 	// HACK: Qt installs CarbonEvent handlers that steal events from our main event loop.
