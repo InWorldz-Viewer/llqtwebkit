@@ -226,13 +226,19 @@ bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList
 
         if (cookie.path().isEmpty()) {
             cookie.setPath(defaultPath);
-        } else if (!d->matchingPath(cookie, urlPath)) {
+        }
+        // Matching the behavior of Firefox, no path checking is done when setting cookies
+        // Safari does something even odder, when that paths don't match it keeps
+        // the cookie, but changes the paths to the default path
+#if 0
+        else if (!d->matchingPath(cookie, urlPath)) {
 #ifdef NETWORKCOOKIEJAR_LOGREJECTEDCOOKIES
             qDebug() << "NetworkCookieJar::" << __FUNCTION__
                      << "Blocked cookie because: path doesn't match: " << cookie << url;
 #endif
             continue;
         }
+#endif
 
         if (cookie.domain().isEmpty()) {
             QString host = url.host().toLower();
