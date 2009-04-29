@@ -202,6 +202,8 @@ void NetworkCookieJar::endSession()
     }
 }
 
+static const int maxCookiePathLength = 1024;
+
 bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url)
 {
 #if defined(NETWORKCOOKIEJAR_DEBUG)
@@ -217,6 +219,9 @@ bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList
 
     QString urlPath = d->urlPath(url);
     foreach (QNetworkCookie cookie, cookieList) {
+        if (cookie.path().length() > maxCookiePathLength)
+            continue;
+
         bool alreadyDead = !cookie.isSessionCookie() && cookie.expirationDate() < now;
 
         if (cookie.path().isEmpty()) {
