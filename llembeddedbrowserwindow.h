@@ -125,6 +125,12 @@ public:
     void setNoFollowScheme(std::string scheme);
     std::string getNoFollowScheme();
 
+	// prepend the current history with the given url
+	void prependHistoryUrl(std::string url);
+	// clear the URL history
+	void clearHistory();
+	std::string dumpHistory();
+
 private:
     friend class LLWebPage;
     friend class LLGraphicsScene;

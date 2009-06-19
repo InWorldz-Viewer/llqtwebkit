@@ -37,6 +37,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include <sstream>
+
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowserwindow_p.h"
 
@@ -583,6 +585,32 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     return d->mNoFollowScheme.toStdString();
+}
+
+void LLEmbeddedBrowserWindow::prependHistoryUrl(std::string url)
+{
+    // *HACK: we only have a URL here, we set a "" title and "current time" as 
+    // last visited time.
+    d->mPage->history()->prependItem(QString::fromStdString(url), 
+									 QString::fromAscii(""), 
+									 QDateTime::currentDateTime());
+}
+
+void LLEmbeddedBrowserWindow::clearHistory()
+{
+	d->mPage->history()->clear();
+}
+
+std::string LLEmbeddedBrowserWindow::dumpHistory()
+{
+	std::ostringstream oss;
+	const QList<QWebHistoryItem> &items = d->mPage->history()->backItems(9999);
+    oss << "cur: " << d->mPage->history()->currentItemIndex() << ":" 
+        << d->mPage->history()->currentItem().url().toString().toAscii().data() << "\n";
+	for (int i=0; i< items.count(); i++) {
+		oss << items[i].url().toString().toAscii().data() << "\n";
+	}
+	return oss.str();
 }
 
 LLGraphicsScene::LLGraphicsScene()

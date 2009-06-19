@@ -1,0 +1,108 @@
+From: Rick Linden (rick@lindenlab.com)
+Date: Tue Jun 16 15:53:38 PDT 2009
+Subject: Add API for prepending URLs to history
+
+This patch adds a new API to WebKit to add a "prepend URL" API, to facilitate
+adding history items so that the browser history can be pre-loaded upon startup.
+
+See https://jira.lindenlab.com/jira/browse/DEV-33640
+and https://bugs.webkit.org/show_bug.cgi?id=26452
+for more info
+
+diff -rup a/src/3rdparty/webkit/WebCore/history/BackForwardList.cpp b/src/3rdparty/webkit/WebCore/history/BackForwardList.cpp
+--- a/src/3rdparty/webkit/WebCore/history/BackForwardList.cpp	2009-02-25 12:32:34.000000000 -0800
++++ b/src/3rdparty/webkit/WebCore/history/BackForwardList.cpp	2009-06-16 14:39:22.007250000 -0700
+@@ -52,9 +52,9 @@ BackForwardList::~BackForwardList()
+     ASSERT(m_closed);
+ }
+ 
+-void BackForwardList::addItem(PassRefPtr<HistoryItem> prpItem)
++void BackForwardList::addItem(PassRefPtr<HistoryItem> newItem)
+ {
+-    ASSERT(prpItem);
++    ASSERT(newItem);
+     if (m_capacity == 0 || !m_enabled)
+         return;
+     
+@@ -79,10 +79,31 @@ void BackForwardList::addItem(PassRefPtr
+         m_current--;
+     }
+     
+-    m_entries.append(prpItem);
++    m_entries.append(newItem);
+     m_entryHash.add(m_entries.last());
+     m_current++;
+ }
++    
++void BackForwardList::prependItem(PassRefPtr<HistoryItem> newItem)
++{
++    ASSERT(newItem);
++    if (m_capacity == 0 || !m_enabled)
++        return;
++
++    // Toss the first item if the list is getting too big, as long as we're not using it
++    // (or even if we are, if we only want 1 entry).
++    if (m_entries.size() == m_capacity && (m_current != 0 || m_capacity == 1)) {
++        RefPtr<HistoryItem> item = m_entries[0];
++        m_entries.remove(0);
++        m_entryHash.remove(item);
++        pageCache()->remove(item.get());
++        m_current--;
++    }
++
++    m_entries.prepend(newItem);
++    m_entryHash.add(newItem);
++    m_current++;
++}
+ 
+ void BackForwardList::goBack()
+ {
+diff -rup a/src/3rdparty/webkit/WebCore/history/BackForwardList.h b/src/3rdparty/webkit/WebCore/history/BackForwardList.h
+--- a/src/3rdparty/webkit/WebCore/history/BackForwardList.h	2009-02-25 12:32:34.000000000 -0800
++++ b/src/3rdparty/webkit/WebCore/history/BackForwardList.h	2009-06-11 13:31:12.078125000 -0700
+@@ -48,6 +48,7 @@ public: 
+     Page* page() { return m_page; }
+     
+     void addItem(PassRefPtr<HistoryItem>);
++    void prependItem(PassRefPtr<HistoryItem>);
+     void goBack();
+     void goForward();
+     void goToItem(HistoryItem*);
+diff -rup a/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.cpp b/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.cpp
+--- a/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.cpp	2009-02-25 12:32:34.000000000 -0800
++++ b/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.cpp	2009-06-12 10:23:42.890625000 -0700
+@@ -248,6 +248,22 @@ void QWebHistory::clear()
+ }
+ 
+ /*!
++  Prepends history item given url, title, and lastVisited time
++
++  \sa count(), clear()
++*/
++void QWebHistory::prependItem(const QString &urlString, const QString &title, 
++							  const QDateTime &lastVisited)
++{
++    RefPtr<WebCore::HistoryItem> item =
++      WebCore::HistoryItem::create(WebCore::String(urlString), WebCore::String(title), 
++				   (double)lastVisited.toTime_t());
++
++    d->lst->prependItem(item);
++}
++
++
++/*!
+   Returns a list of all items currently in the history.
+ 
+   \sa count(), clear()
+diff -rup a/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.h b/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.h
+--- a/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.h	2009-02-25 12:32:34.000000000 -0800
++++ b/src/3rdparty/webkit/WebKit/qt/Api/qwebhistory.h	2009-06-12 10:23:29.218750000 -0700
+@@ -69,6 +69,8 @@ class QWEBKIT_EXPORT QWebHistory
+ public:
+     void clear();
+ 
++    void prependItem(const QString &urlString, const QString &title, const QDateTime &lastVisited);
++
+     QList<QWebHistoryItem> items() const;
+     QList<QWebHistoryItem> backItems(int maxItems) const;
+     QList<QWebHistoryItem> forwardItems(int maxItems) const;

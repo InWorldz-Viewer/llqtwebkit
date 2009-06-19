@@ -133,6 +133,7 @@ class uBrowser :
 		GLUI_Button* mNavForwardButton;
 		GLUI* mTop2GLUIWindow;
 		GLUI_EditText* mUrlEdit;
+		GLUI_EditText* mUrlAddToHistoryEdit;
 		GLUI_String mNavUrl;
 		GLUI* mRightGLUIWindow;
 		GLUI_Rotation* mViewRotationCtrl;
@@ -156,6 +157,7 @@ class uBrowser :
 		const int mIdNavHome;
 		const int mIdNavForward;
 		const int mIdNavReload;
+		const int mIdNavAddToHistory;
 		const int mIdBrowserSmall;
 		const int mIdBrowserMedium;
 		const int mIdBrowserLarge;

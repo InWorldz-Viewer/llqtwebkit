@@ -88,6 +88,7 @@ uBrowser::uBrowser() :
     mIdNavHome( 0x0016 ),
     mIdNavForward( 0x0017 ),
     mIdNavReload( 0x001b ),
+	mIdNavAddToHistory( 0x001c ),
     mIdBrowserSmall( 0x0018 ),
     mIdBrowserMedium( 0x0019 ),
     mIdBrowserLarge( 0x001a ),
@@ -310,6 +311,7 @@ void uBrowser::reshape( int widthIn, int heightIn )
 
     // just a rough calculation
     mUrlEdit->set_w( mWindowWidth - 400 );
+	mUrlAddToHistoryEdit->set_w( mWindowWidth - 500 );
     mStatusText->set_w( mWindowWidth - 100 );
 
     // update viewport (the active window inside the chrome stuff)
@@ -725,13 +727,13 @@ void uBrowser::idle()
         }
 
     // enable/disable back button depending on whether we can go back or not
-    if ( LLMozLib::getInstance()->canNavigateBack( mCurWindowId ) )
+	if ( LLMozLib::getInstance()->userActionIsEnabled( mCurWindowId, LLMozLib::UA_NAVIGATE_BACK ) )
         mNavBackButton->enable();
     else
         mNavBackButton->disable();
 
     // enable/disable back button depending on whether we can go back or not
-    if ( LLMozLib::getInstance()->canNavigateForward( mCurWindowId ) )
+    if ( LLMozLib::getInstance()->userActionIsEnabled( mCurWindowId, LLMozLib::UA_NAVIGATE_FORWARD ) )
         mNavForwardButton->enable();
     else
         mNavForwardButton->disable();
@@ -808,6 +810,14 @@ void uBrowser::makeChrome()
     {
         bookmarkList->add_item( each, const_cast< char* >( mBookmarks[ each ].first.c_str() ) );
     };
+
+	mTop2GLUIWindow->add_column( false );
+#ifdef LL_NEWER_GLUI
+	mUrlAddToHistoryEdit = mTop2GLUIWindow->add_edittext( "Add Url History item:", GLUI_EDITTEXT_TEXT, mNavUrl, mIdNavAddToHistory, gluiCallbackWrapper );
+#else // LL_NEWER_GLUI
+	// Friendly to older GLUI versions.
+	mUrlAddToHistoryEdit = mTop2GLUIWindow->add_edittext( "Add Url History item:", mNavUrl, mIdNavAddToHistory, gluiCallbackWrapper );
+#endif // LL_NEWER_GLU
     mTop2GLUIWindow->set_main_gfx_window( mAppWindow );
 
     // bottom UI bar
@@ -1095,12 +1105,12 @@ void uBrowser::gluiCallback( int controlIdIn )
     else
     if ( controlIdIn == mIdNavBack )
     {
-        LLMozLib::getInstance()->navigateBack( mCurWindowId );
+		LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_BACK );
     }
     else
     if ( controlIdIn == mIdNavStop )
     {
-        LLMozLib::getInstance()->navigateStop( mCurWindowId );
+        LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_STOP );
     }
     else
     if ( controlIdIn == mIdNavHome )
@@ -1110,12 +1120,20 @@ void uBrowser::gluiCallback( int controlIdIn )
     else
     if ( controlIdIn == mIdNavForward )
     {
-        LLMozLib::getInstance()->navigateForward( mCurWindowId );
+        LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_FORWARD );
     }
     else
     if ( controlIdIn == mIdNavReload )
     {
-        LLMozLib::getInstance()->navigateReload( mCurWindowId );
+        LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_RELOAD );
+    }
+	else
+	if ( controlIdIn == mIdNavAddToHistory )
+	{
+		LLMozLib::getInstance()->prependHistoryUrl( mCurWindowId, mUrlAddToHistoryEdit->get_text() );
+		mUrlAddToHistoryEdit->set_text("");
+		const std::string &foo = LLMozLib::getInstance()->dumpHistory(mCurWindowId);
+		std::cout << foo << "\n";
     }
     else
     if ( controlIdIn == mIdUrlEdit )

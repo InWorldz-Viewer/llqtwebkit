@@ -606,6 +606,40 @@ bool LLMozLib::clr404RedirectUrl(int browser_window_in)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+void LLMozLib::prependHistoryUrl(int browser_window_id, std::string url)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        browser_window->prependHistoryUrl(url);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void LLMozLib::clearHistory(int browser_window_id)
+{
+	LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+	if (browser_window)
+	{
+		browser_window->clearHistory();
+	}
+}
+
+std::string LLMozLib::dumpHistory(int browser_window_id)
+{
+	LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+	if (browser_window)
+	{
+		return browser_window->dumpHistory();
+	}
+
+	return NULL;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // utility method to get an LLEmbeddedBrowserWindow* from a window id (int)
 LLEmbeddedBrowserWindow* LLMozLib::getBrowserWindowFromWindowId(int browser_window_id)
 {

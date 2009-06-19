@@ -273,6 +273,10 @@ class LLMozLib
 
                 void pump(int max_milliseconds);
 
+		void prependHistoryUrl(int browser_window_id, std::string url);
+		void clearHistory(int browser_window_id);
+		std::string dumpHistory(int browser_window_id);
+
 	private:
 		LLMozLib();
 		LLEmbeddedBrowserWindow* getBrowserWindowFromWindowId(int browser_window_id);
