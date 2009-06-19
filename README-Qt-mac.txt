@@ -13,7 +13,9 @@ export PATH=$PATH:$QTDIR/bin
 2) Get llmozlib and checkout the qtwebkit branch
 
 cd $HOME/dev
-git://code.staikos.net/llmozlib
+# note if you hasve write access and want to make changes, 
+# use git+ssh://git@code.staikos.net/srv/git/llmozlib
+git clone git://code.staikos.net/llmozlib
 git checkout -b qtwebkit origin/qtwebkit
 
 3) Apply locally maintained Qt patches
@@ -47,11 +49,25 @@ Create a symlink to QTDIR in the same directory as llmozlib2.xcodeproj (this all
 
 ln -s $QTDIR QTDIR
 
+build the "llwebkitlib" configuration of the "llmozlib2" target
+(note especially: the default configuration is "Release".  Be sure
+to specify "llwebkitlib" as the configuration):
+
+xcodebuild -project llmozlib2.xcodeproj -target llmozlib2 -configuration llwebkitlib
+
+6) build ubrowser with xcode:
+
+Get the GLUI Framework (the one tested to work is at http://lukecyca.com/wp-content/uploads/2008/12/GLUI-Framework-2.35.tgz)
+
+run "update-mac-symbols.sh"
+
+./update-mac-symbols.sh
+
 build the "Release" configuration of the "llmozlib2" target:
 
 xcodebuild -project llmozlib2.xcodeproj -target llmozlib2 -configuration Release
 
-6) build ubrowser with xcode:
+now build ubrowser
 
 cd tests/ubrowser
 xcodebuild -project ubrowser.xcodeproj -target ubrowser -configuration Release
