@@ -32,6 +32,8 @@ SOURCES += llembeddedbrowser.cpp \
            llwebpage.cpp \
 	   llstyle.cpp
 
+FORMS +=   passworddialog.ui
+
 RCC_DIR     = .rcc
 UI_DIR      = .ui
 MOC_DIR     = .moc

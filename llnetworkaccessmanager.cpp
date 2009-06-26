@@ -37,10 +37,14 @@
 
 #include "llnetworkaccessmanager.h"
 
+#include <qauthenticator.h>
 #include <qnetworkreply.h>
+#include <qtextdocument.h>
 
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowser_p.h"
+
+#include "ui_passworddialog.h"
 
 LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser,QObject* parent)
     : QNetworkAccessManager(parent)
@@ -48,6 +52,8 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
 {
     connect(this, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(finishLoading(QNetworkReply*)));
+    connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
+            SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
 }
 
 void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
@@ -64,6 +70,24 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
                     window->load404RedirectUrl();
             }
         }
+    }
+}
+
+void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
+{
+    QDialog dialog;
+    Ui::PasswordDialog passwordDialog;
+    passwordDialog.setupUi(&dialog);
+    passwordDialog.icon->setText(QString());
+    passwordDialog.icon->setPixmap(qApp->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, 0).pixmap(32, 32));
+
+    QString message = tr("<qt>Enter username and password for \"%1\" at %2</qt>")
+        .arg(Qt::escape(authenticator->realm()))
+        .arg(Qt::escape(reply->url().toString()));
+    passwordDialog.message->setText(message);
+    if (dialog.exec() == QDialog::Accepted) {
+        authenticator->setUser(passwordDialog.userName->text());
+        authenticator->setPassword(passwordDialog.password->text());
     }
 }
 

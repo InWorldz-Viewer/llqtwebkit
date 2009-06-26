@@ -47,8 +47,9 @@ class LLNetworkAccessManager: public QNetworkAccessManager
 public:
     LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser, QObject* parent = 0);
 
-public slots:
+private slots:
     void finishLoading(QNetworkReply* reply);
+    void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
 private:
     LLEmbeddedBrowserPrivate* mBrowser;
