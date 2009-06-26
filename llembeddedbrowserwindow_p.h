@@ -134,6 +134,8 @@ public:
     LLWebView(QWidget *parent = 0);
     LLEmbeddedBrowserWindow *window;
 
+    static QUrl guessUrlFromString(const QString &string);
+
 protected:
     bool event(QEvent *event);
 

@@ -280,19 +280,48 @@ int32_t LLEmbeddedBrowserWindow::getBrowserRowSpan()
     return 4 * getBrowserWidth();
 }
 
+#if 1 // soon to be #if QT_VERSION <= 0x040600 as it is in webkit trunk now
+#include <qdir.h>
+QUrl LLWebView::guessUrlFromString(const QString &string)
+{
+    QString trimmedString = string.trimmed();
+
+    // Check the most common case of a valid url with scheme and host first
+    QUrl url = QUrl::fromEncoded(trimmedString.toUtf8(), QUrl::TolerantMode);
+    if (url.isValid() && !url.scheme().isEmpty() && !url.host().isEmpty())
+        return url;
+
+    // Absolute files that exists
+    if (QDir::isAbsolutePath(trimmedString) && QFile::exists(trimmedString))
+        return QUrl::fromLocalFile(trimmedString);
+
+    // If the string is missing the scheme or the scheme is not valid prepend a scheme
+    QString scheme = url.scheme();
+    if (scheme.isEmpty() || scheme.contains(QLatin1Char('.')) || scheme == QLatin1String("localhost")) {
+        // Do not do anything for strings such as "foo", only "foo.com"
+        int dotIndex = trimmedString.indexOf(QLatin1Char('.'));
+        if (dotIndex != -1 || trimmedString.startsWith(QLatin1String("localhost"))) {
+            const QString hostscheme = trimmedString.left(dotIndex).toLower();
+            QByteArray scheme = (hostscheme == QLatin1String("ftp")) ? "ftp" : "http";
+            trimmedString = QLatin1String(scheme) + QLatin1String("://") + trimmedString;
+        }
+        url = QUrl::fromEncoded(trimmedString.toUtf8(), QUrl::TolerantMode);
+    }
+
+    if (url.isValid())
+        return url;
+
+    return QUrl();
+}
+#endif
+
 bool LLEmbeddedBrowserWindow::navigateTo(const std::string uri)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(uri);
 #endif
-    QString string = QString::fromStdString(uri);
-    QUrl url;
-	url = QUrl::fromEncoded(string.toLocal8Bit());
-	if (QFile::exists(string))
-		url = QUrl::fromLocalFile(string);
-	if (url.scheme().isEmpty())
-        url = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
-	d->mPage->triggerAction(QWebPage::Stop);
+    QUrl url = LLWebView::guessUrlFromString(QString::fromStdString(uri));
+    d->mPage->triggerAction(QWebPage::Stop);
     d->mPage->mainFrame()->load(url);
     return true;
 }
