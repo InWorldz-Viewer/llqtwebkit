@@ -157,7 +157,8 @@ bool LLEmbeddedBrowser::reset()
 #if QT_VERSION >= 0x040500
     d->mDiskCache = new QNetworkDiskCache(d->mNetworkAccessManager);
     d->mDiskCache->setCacheDirectory(d->mStorageDirectory + "/cache");
-    d->mNetworkAccessManager->setCache(d->mDiskCache);
+    if (QLatin1String(qVersion()) != QLatin1String("4.5.1"))
+        d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
     d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager);
     d->mNetworkCookieJar->load(d->mStorageDirectory + "/cookies");
