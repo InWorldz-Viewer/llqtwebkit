@@ -20,12 +20,14 @@ HEADERS += llembeddedbrowser.h \
            llembeddedbrowser_p.h \
            llembeddedbrowserwindow.h \
            llembeddedbrowserwindow_p.h \
+           llnetworkaccessmanager.h \
            llmozlib2.h \
            llwebpage.h \
  	   llstyle.h
 
 SOURCES += llembeddedbrowser.cpp \
            llembeddedbrowserwindow.cpp \
+           llnetworkaccessmanager.cpp \
            llmozlib2.cpp \
            llwebpage.cpp \
 	   llstyle.cpp

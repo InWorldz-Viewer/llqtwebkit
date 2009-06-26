@@ -59,21 +59,7 @@ public:
     bool mAllowCookies;
 };
 
-class LLEmbeddedBrowserPrivate;
-class LLNetworkAccessManager: public QNetworkAccessManager
-{
-    Q_OBJECT
-public:
-    LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser, QObject* parent = 0);
-
-public slots:
-    void finishLoading(QNetworkReply* reply);
-
-private:
-    LLEmbeddedBrowserPrivate* mBrowser;
-
-};
-
+class LLNetworkAccessManager;
 class LLEmbeddedBrowserPrivate
 {
 public:

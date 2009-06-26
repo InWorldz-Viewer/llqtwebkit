@@ -44,6 +44,8 @@
 
 #include "llembeddedbrowser.h"
 #include "llembeddedbrowser_p.h"
+#include "llnetworkaccessmanager.h"
+
 
 #include <qaction.h>
 #include <qwebframe.h>

@@ -41,12 +41,12 @@
 
 #include "llembeddedbrowser_p.h"
 #include "llembeddedbrowserwindow.h"
+#include "llnetworkaccessmanager.h"
 #include "llstyle.h"
 
 #include <qvariant.h>
 #include <qwebsettings.h>
 #include <qnetworkproxy.h>
-#include <qnetworkreply.h>
 #include <qfile.h>
 
 // singleton pattern - initialization
@@ -316,30 +316,4 @@ void LLNetworkCookieJar::clear()
 {
     setAllCookies(QList<QNetworkCookie>());
 }
-
-LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser,QObject* parent)
-    : QNetworkAccessManager(parent)
-    , mBrowser(browser)
-{
-    connect(this, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(finishLoading(QNetworkReply*)));
-}
-
-void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
-{
-    if (reply->error() == QNetworkReply::ContentNotFoundError)
-    {
-        QString url = QString(reply->url().toEncoded());
-        if (mBrowser)
-        {
-            std::string current_url = url.toStdString();
-            foreach (LLEmbeddedBrowserWindow *window, mBrowser->windows)
-            {
-                if (window->getCurrentUri() == current_url)
-                    window->load404RedirectUrl();
-            }
-        }
-    }
-}
-
 
