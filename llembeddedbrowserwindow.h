@@ -135,6 +135,7 @@ private:
     friend class LLWebPage;
     friend class LLGraphicsScene;
     friend class LLWebView;
+    friend class LLEmbeddedBrowserPrivate;
     LLEmbeddedBrowserWindowPrivate *d;
 
 };

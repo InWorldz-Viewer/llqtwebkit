@@ -75,19 +75,39 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
 
 void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
-    QDialog dialog;
-    Ui::PasswordDialog passwordDialog;
-    passwordDialog.setupUi(&dialog);
-    passwordDialog.icon->setText(QString());
-    passwordDialog.icon->setPixmap(qApp->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, 0).pixmap(32, 32));
+    authenticator->tryAgainLater = true;
+    AuthDialog authDialog;
+    int i;
+    for (i = 0; i < authDialogs.count(); ++i) {
+        AuthDialog a = authDialogs[i];
+        if (a.realm == authenticator->realm()) {
+            authDialog = a;
+            break;
+        }
+    }
 
-    QString message = tr("<qt>Enter username and password for \"%1\" at %2</qt>")
-        .arg(Qt::escape(authenticator->realm()))
-        .arg(Qt::escape(reply->url().toString()));
-    passwordDialog.message->setText(message);
-    if (dialog.exec() == QDialog::Accepted) {
-        authenticator->setUser(passwordDialog.userName->text());
-        authenticator->setPassword(passwordDialog.password->text());
+    if (authDialog.realm.isEmpty()) {
+        authDialog.realm = authenticator->realm();
+        authDialog.authenticationDialog = new QDialog(mBrowser->findWindow(reply));
+        authDialog.passwordDialog = new Ui::PasswordDialog;
+        authDialog.passwordDialog->setupUi(authDialog.authenticationDialog);
+        authDialog.passwordDialog->icon->setText(QString());
+        authDialog.passwordDialog->icon->setPixmap(qApp->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, 0).pixmap(32, 32));
+
+        QString message = tr("<qt>Enter username and password for \"%1\" at %2</qt>")
+            .arg(Qt::escape(authenticator->realm()))
+            .arg(Qt::escape(reply->url().toString()));
+        authDialog.passwordDialog->message->setText(message);
+        authDialog.authenticationDialog->show();
+        authDialogs.append(authDialog);
+    } else if (authDialog.authenticationDialog->result() == QDialog::Accepted) {
+        authenticator->setUser(authDialog.passwordDialog->userName->text());
+        authenticator->setPassword(authDialog.passwordDialog->password->text());
+        delete authDialog.passwordDialog;
+        authDialog.authenticationDialog->deleteLater();
+        authDialog.authenticationDialog = 0;
+        authDialogs.removeAt(i);
+        authenticator->tryAgainLater = false;
     }
 }
 

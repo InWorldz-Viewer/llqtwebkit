@@ -1,0 +1,199 @@
+From 452dc05df2d2b84c8a393b56500931a26ffc7731 Mon Sep 17 00:00:00 2001
+From: Benjamin C Meyer <benjamin.meyer@torchmobile.com>
+Date: Mon, 29 Jun 2009 18:49:00 -0400
+Subject: [PATCH] Add a flag to QAuthenticator (tryAgainLater) that when set causes
+ the QHttpNetworkConnection to not do anything, wait 100ms and then try
+ to get the authentication again latter.
+
+Note: While this patch should be made open this patch should only ever
+be applied to SecondLife's Qt and never be sent upstream to get merged
+into Qt or asked to go in a public Qt build such as Debian's.
+---
+ src/network/access/qhttpnetworkconnection.cpp |   37 +++++++++++++++++++++---
+ src/network/access/qhttpnetworkconnection_p.h |   10 +++++-
+ src/network/kernel/qauthenticator.cpp         |    1 +
+ src/network/kernel/qauthenticator.h           |    2 +
+ 4 files changed, 43 insertions(+), 7 deletions(-)
+
+diff --git a/src/network/access/qhttpnetworkconnection.cpp b/src/network/access/qhttpnetworkconnection.cpp
+index f0c694d..7ef4960 100644
+--- a/src/network/access/qhttpnetworkconnection.cpp
++++ b/src/network/access/qhttpnetworkconnection.cpp
+@@ -51,6 +51,7 @@
+ #include <qpair.h>
+ #include <qhttp.h>
+ #include <qdebug.h>
++#include <qtimer.h>
+ 
+ #ifndef QT_NO_HTTP
+ 
+@@ -675,8 +676,16 @@ void QHttpNetworkConnectionPrivate::receiveReply(QAbstractSocket *socket, QHttpN
+     }
+ }
+ 
++void QHttpNetworkConnectionPrivate::_q_allDoneNext()
++{
++    Q_ASSERT(allDoneStack.count() > 0);
++    QPair<QAbstractSocket*, QHttpNetworkReply*> next = allDoneStack.pop();
++    allDone(next.first, next.second);
++}
++
+ void QHttpNetworkConnectionPrivate::allDone(QAbstractSocket *socket, QHttpNetworkReply *reply)
+ {
++    Q_Q(QHttpNetworkConnection);
+ #ifndef QT_NO_COMPRESS
+     // expand the whole data.
+     if (expectContent(reply) && reply->d_func()->autoDecompress && !reply->d_func()->streamEnd)
+@@ -684,7 +693,12 @@ void QHttpNetworkConnectionPrivate::allDone(QAbstractSocket *socket, QHttpNetwor
+ #endif
+     // while handling 401 & 407, we might reset the status code, so save this.
+     bool emitFinished = shouldEmitSignals(reply);
+-    handleStatus(socket, reply);
++    if (!handleStatus(socket, reply)) {
++        allDoneStack.push(QPair<QAbstractSocket*, QHttpNetworkReply*>(socket, reply));
++        QTimer::singleShot(100, q, SLOT(_q_allDoneNext()));
++        return;
++    }
++
+     // ### at this point there should be no more data on the socket
+     // close if server requested
+     int i = indexOf(socket);
+@@ -700,7 +714,7 @@ void QHttpNetworkConnectionPrivate::allDone(QAbstractSocket *socket, QHttpNetwor
+     channels[i].reconnectAttempts = 2;
+ }
+ 
+-void QHttpNetworkConnectionPrivate::handleStatus(QAbstractSocket *socket, QHttpNetworkReply *reply)
++bool QHttpNetworkConnectionPrivate::handleStatus(QAbstractSocket *socket, QHttpNetworkReply *reply)
+ {
+     Q_ASSERT(socket);
+     Q_ASSERT(reply);
+@@ -709,12 +723,13 @@ void QHttpNetworkConnectionPrivate::handleStatus(QAbstractSocket *socket, QHttpN
+ 
+     int statusCode = reply->statusCode();
+     bool resend = false;
++    bool tryAgainLater = false;
+ 
+     switch (statusCode) {
+     case 401:
+     case 407:
+-        if (handleAuthenticateChallenge(socket, reply, (statusCode == 407), resend)) {
+-            if (resend) {
++        if (handleAuthenticateChallenge(socket, reply, (statusCode == 407), resend, tryAgainLater)) {
++            if (resend && !tryAgainLater) {
+                 int i = indexOf(socket);
+ 
+                 QNonContiguousByteDevice* uploadByteDevice = channels[i].request.uploadByteDevice();
+@@ -735,6 +750,8 @@ void QHttpNetworkConnectionPrivate::handleStatus(QAbstractSocket *socket, QHttpN
+                 QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+             }
+         } else {
++            if (tryAgainLater)
++                return false;
+             int i = indexOf(socket);
+             emit channels[i].reply->headerChanged();
+             emit channels[i].reply->readyRead();
+@@ -749,6 +766,9 @@ void QHttpNetworkConnectionPrivate::handleStatus(QAbstractSocket *socket, QHttpN
+     default:
+         QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+     }
++    if (tryAgainLater)
++        return false;
++    return true;
+ }
+ 
+ void QHttpNetworkConnectionPrivate::copyCredentials(int fromChannel, QAuthenticator *auth, bool isProxy)
+@@ -774,7 +794,7 @@ void QHttpNetworkConnectionPrivate::copyCredentials(int fromChannel, QAuthentica
+ 
+ 
+ bool QHttpNetworkConnectionPrivate::handleAuthenticateChallenge(QAbstractSocket *socket, QHttpNetworkReply *reply,
+-                                                                bool isProxy, bool &resend)
++                                                                bool isProxy, bool &resend, bool &tryAgainLater)
+ {
+     Q_ASSERT(socket);
+     Q_ASSERT(reply);
+@@ -824,7 +844,14 @@ bool QHttpNetworkConnectionPrivate::handleAuthenticateChallenge(QAbstractSocket
+             if (!isProxy) {
+                 pendingAuthSignal = true;
+                 emit q->authenticationRequired(reply->request(), auth, q);
++                tryAgainLater = auth->tryAgainLater;
+                 pendingAuthSignal = false;
++
++                if (tryAgainLater) {
++                    channels[i].state = IdleState;
++                    socket->blockSignals(false);
++                    return false;
++                }
+ #ifndef QT_NO_NETWORKPROXY
+             } else {
+                 pendingProxyAuthSignal = true;
+diff --git a/src/network/access/qhttpnetworkconnection_p.h b/src/network/access/qhttpnetworkconnection_p.h
+index 64a6faa..f0a9233 100644
+--- a/src/network/access/qhttpnetworkconnection_p.h
++++ b/src/network/access/qhttpnetworkconnection_p.h
+@@ -60,6 +60,7 @@
+ #include <qauthenticator.h>
+ #include <qnetworkproxy.h>
+ #include <qbuffer.h>
++#include <qstack.h>
+ 
+ #include <private/qhttpnetworkheader_p.h>
+ #include <private/qhttpnetworkrequest_p.h>
+@@ -152,6 +153,7 @@ private:
+     Q_PRIVATE_SLOT(d_func(), void _q_encrypted())
+     Q_PRIVATE_SLOT(d_func(), void _q_sslErrors(const QList<QSslError>&))
+ #endif
++    Q_PRIVATE_SLOT(d_func(), void _q_allDoneNext())
+ };
+ 
+ 
+@@ -258,9 +260,9 @@ public:
+     qint64 bytesAvailable(const QHttpNetworkReply &reply, bool compressed = false) const;
+     qint64 read(QHttpNetworkReply &reply, QByteArray &data, qint64 maxSize, bool compressed);
+     void emitReplyError(QAbstractSocket *socket, QHttpNetworkReply *reply, QNetworkReply::NetworkError errorCode);
+-    bool handleAuthenticateChallenge(QAbstractSocket *socket, QHttpNetworkReply *reply, bool isProxy, bool &resend);
++    bool handleAuthenticateChallenge(QAbstractSocket *socket, QHttpNetworkReply *reply, bool isProxy, bool &resend, bool &tryAgainLater);
+     void allDone(QAbstractSocket *socket, QHttpNetworkReply *reply);
+-    void handleStatus(QAbstractSocket *socket, QHttpNetworkReply *reply);
++    bool handleStatus(QAbstractSocket *socket, QHttpNetworkReply *reply);
+     inline bool shouldEmitSignals(QHttpNetworkReply *reply);
+     inline bool expectContent(QHttpNetworkReply *reply);
+ 
+@@ -277,6 +279,10 @@ public:
+     //The request queues
+     QList<HttpMessagePair> highPriorityQueue;
+     QList<HttpMessagePair> lowPriorityQueue;
++
++    void _q_allDoneNext();
++
++    QStack<QPair<QAbstractSocket*, QHttpNetworkReply*> > allDoneStack;
+ };
+ 
+ 
+diff --git a/src/network/kernel/qauthenticator.cpp b/src/network/kernel/qauthenticator.cpp
+index a26a1fc..7c5a034 100644
+--- a/src/network/kernel/qauthenticator.cpp
++++ b/src/network/kernel/qauthenticator.cpp
+@@ -92,6 +92,7 @@ static QByteArray qNtlmPhase3(QAuthenticatorPrivate *ctx, const QByteArray& phas
+ */
+ QAuthenticator::QAuthenticator()
+     : d(0)
++    , tryAgainLater(false)
+ {
+ }
+ 
+diff --git a/src/network/kernel/qauthenticator.h b/src/network/kernel/qauthenticator.h
+index feea26b..5b5c1ed 100644
+--- a/src/network/kernel/qauthenticator.h
++++ b/src/network/kernel/qauthenticator.h
+@@ -75,6 +75,8 @@ public:
+ 
+     bool isNull() const;
+     void detach();
++
++    bool tryAgainLater;
+ private:
+     friend class QAuthenticatorPrivate;
+     QAuthenticatorPrivate *d;
+-- 
+1.6.0.4
+

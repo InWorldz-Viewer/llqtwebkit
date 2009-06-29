@@ -75,6 +75,8 @@ public:
 #endif
     LLNetworkCookieJar *mNetworkCookieJar;
 
+    QWidget *findWindow(QNetworkReply *);
+
     QString mStorageDirectory;
     QList<LLEmbeddedBrowserWindow*> windows;
 };

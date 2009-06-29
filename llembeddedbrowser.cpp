@@ -318,3 +318,15 @@ void LLNetworkCookieJar::clear()
     setAllCookies(QList<QNetworkCookie>());
 }
 
+#include "llembeddedbrowserwindow_p.h"
+#include <qnetworkreply.h>
+
+QWidget *LLEmbeddedBrowserPrivate::findWindow(QNetworkReply *reply)
+{
+    for (int i = 0; i < windows.count(); ++i)
+        if (windows[i]->d->mView->url() == reply->url())
+            return windows[i]->d->mView;
+    return windows[0]->d->mView;
+}
+
+

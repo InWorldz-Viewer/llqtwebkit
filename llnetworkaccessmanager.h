@@ -40,6 +40,17 @@
 
 #include <qnetworkaccessmanager.h>
 
+#include "ui_passworddialog.h"
+
+class AuthDialog
+{
+public:
+    AuthDialog() : authenticationDialog(0), passwordDialog(0) {}
+    QDialog *authenticationDialog;
+    Ui::PasswordDialog *passwordDialog;
+    QString realm;
+};
+
 class LLEmbeddedBrowserPrivate;
 class LLNetworkAccessManager: public QNetworkAccessManager
 {
@@ -53,6 +64,8 @@ private slots:
 
 private:
     LLEmbeddedBrowserPrivate* mBrowser;
+
+    QList<AuthDialog> authDialogs;
 
 };
 
