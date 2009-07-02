@@ -1,12 +1,3 @@
-4.5.2
-0001-Change-cookie-expiration-reading-to-match-the-behavi.patch
-0002-When-parsing-a-cookie-string-the-character-is-sp.patch
-0003-Improvements-to-follow-the-behavior-of-web-servers-a.patch
-0004-When-loading-a-url-straight-from-cache-call-finished.patch
-0005-Check-for-a-redirection-after-setting-the-headers.patch
-0006-When-expiring-cache-files-use-a-QMultiMap-when-usin.patch
-qtwebkit-001-cookie-url.patch
-
 4.6
 qtwebkit-000-target.patch
 qtwebkit-003-update-action-in-frame.patch
