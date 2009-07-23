@@ -21,16 +21,16 @@ HEADERS += llembeddedbrowser.h \
            llembeddedbrowserwindow.h \
            llembeddedbrowserwindow_p.h \
            llnetworkaccessmanager.h \
-           llmozlib2.h \
+           llqtwebkit.h \
            llwebpage.h \
- 	   llstyle.h
+ 	       llstyle.h
 
 SOURCES += llembeddedbrowser.cpp \
            llembeddedbrowserwindow.cpp \
            llnetworkaccessmanager.cpp \
-           llmozlib2.cpp \
+           llqtwebkit.cpp \
            llwebpage.cpp \
-	   llstyle.cpp
+	       llstyle.cpp
 
 FORMS +=   passworddialog.ui
 

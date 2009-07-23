@@ -35,11 +35,16 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+
+#ifndef _WINDOWS
 extern "C" {
 #include <unistd.h>
 }
+#endif
+
 #ifdef _WINDOWS
 #include <windows.h>
+#include <direct.h>	// for local file access
 #endif
 
 #include <iostream>
@@ -55,11 +60,11 @@ Q_IMPORT_PLUGIN(qgif)
 #else
 #include "GL/glut.h"
 #endif
-#include "llmozlib2.h"
+#include "llqtwebkit.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation of the test app - implemented as a class and derrives from
-// the observer so we can catch events emitted by LLMozLib
+// the observer so we can catch events emitted by LLQtWebKit
 //
 class testGL :
 	public LLEmbeddedBrowserWindowObserver
@@ -82,7 +87,7 @@ class testGL :
                         char *cwd = getcwd(tempPath, 255);
                         mHomeUrl = cwd;
                         mHomeUrl.append("/testpage.html");
-                        std::cout << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
+                        std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -125,23 +130,23 @@ class testGL :
 #else
 			std::string profileDir = applicationDir + "\\" + "testGL_profile";
 #endif
-			LLMozLib::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
-			mBrowserWindowId = LLMozLib::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
+			LLQtWebKit::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
+			mBrowserWindowId = LLQtWebKit::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
 
-			// tell LLMozLib about the size of the browser window
-			LLMozLib::getInstance()->setSize( mBrowserWindowId, mBrowserWindowWidth, mBrowserWindowHeight );
+			// tell LLQtWebKit about the size of the browser window
+			LLQtWebKit::getInstance()->setSize( mBrowserWindowId, mBrowserWindowWidth, mBrowserWindowHeight );
 
-			// observer events that LLMozLib emits
-			LLMozLib::getInstance()->addObserver( mBrowserWindowId, this );
+			// observer events that LLQtWebKit emits
+			LLQtWebKit::getInstance()->addObserver( mBrowserWindowId, this );
 
 			// append details to agent string
-			LLMozLib::getInstance()->setBrowserAgentId( mAppWindowName );
+			LLQtWebKit::getInstance()->setBrowserAgentId( mAppWindowName );
 
 			// don't flip bitmap
-			LLMozLib::getInstance()->flipWindow( mBrowserWindowId, false );
+			LLQtWebKit::getInstance()->flipWindow( mBrowserWindowId, false );
 
 			// go to the "home page"
-			LLMozLib::getInstance()->navigateTo( mBrowserWindowId, mHomeUrl );
+			LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, mHomeUrl );
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -149,10 +154,10 @@ class testGL :
 		void reset( void )
 		{
 			// unhook observer
-			LLMozLib::getInstance()->remObserver( mBrowserWindowId, this );
+			LLQtWebKit::getInstance()->remObserver( mBrowserWindowId, this );
 
 			// clean up
-			LLMozLib::getInstance()->reset();
+			LLQtWebKit::getInstance()->reset();
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +167,7 @@ class testGL :
 			if ( heightIn == 0 )
 				heightIn = 1;
 
-			LLMozLib::getInstance()->setSize(mBrowserWindowId, widthIn, heightIn );
+			LLQtWebKit::getInstance()->setSize(mBrowserWindowId, widthIn, heightIn );
                         mNeedsUpdate = true;
 
 			glMatrixMode( GL_PROJECTION );
@@ -187,11 +192,11 @@ class testGL :
 		//
 		void idle()
 		{
-			LLMozLib::getInstance()->pump(100);
+			LLQtWebKit::getInstance()->pump(100);
 			// onPageChanged event sets this
 			if ( mNeedsUpdate )
 				// grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
-				LLMozLib::getInstance()->grabBrowserWindow( mBrowserWindowId );
+				LLQtWebKit::getInstance()->grabBrowserWindow( mBrowserWindowId );
 
 			// lots of updates for smooth motion
 			glutPostRedisplay();
@@ -216,17 +221,17 @@ class testGL :
 				if ( mNeedsUpdate )
 				{
 					// grab the page
-					const unsigned char* pixels = LLMozLib::getInstance()->getBrowserWindowPixels( mBrowserWindowId );
+					const unsigned char* pixels = LLQtWebKit::getInstance()->getBrowserWindowPixels( mBrowserWindowId );
 					if ( pixels )
 					{
 						// write them into the texture
 						glTexSubImage2D( GL_TEXTURE_2D, 0,
 							0, 0,
 								// because sometimes the rowspan != width * bytes per pixel (mBrowserWindowWidth)
-								LLMozLib::getInstance()->getBrowserRowSpan( mBrowserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( mBrowserWindowId ),
+								LLQtWebKit::getInstance()->getBrowserRowSpan( mBrowserWindowId ) / LLQtWebKit::getInstance()->getBrowserDepth( mBrowserWindowId ),
 									mBrowserWindowHeight,
 #ifdef _WINDOWS
-                                    LLMozLib::getInstance()->getBrowserDepth(mBrowserWindowId ) == 3 ? GL_RGBA : GL_RGBA,
+                                    LLQtWebKit::getInstance()->getBrowserDepth(mBrowserWindowId ) == 3 ? GL_RGBA : GL_RGBA,
 #elif defined(__APPLE__)
                                     GL_RGBA,
 #elif defined(LL_LINUX)
@@ -284,17 +289,17 @@ class testGL :
 			{
 				if ( state == GLUT_DOWN )
 				{
-					// send event to LLMozLib
-					LLMozLib::getInstance()->mouseDown( mBrowserWindowId, xIn, yIn );
+					// send event to LLQtWebKit
+					LLQtWebKit::getInstance()->mouseDown( mBrowserWindowId, xIn, yIn );
 				}
 				else
 				if ( state == GLUT_UP )
 				{
-					// send event to LLMozLib
-					LLMozLib::getInstance()->mouseUp( mBrowserWindowId, xIn, yIn );
+					// send event to LLQtWebKit
+					LLQtWebKit::getInstance()->mouseUp( mBrowserWindowId, xIn, yIn );
 
 					// this seems better than sending focus on mouse down (still need to improve this)
-					LLMozLib::getInstance()->focusBrowser( mBrowserWindowId, true );
+					LLQtWebKit::getInstance()->focusBrowser( mBrowserWindowId, true );
 				};
 			};
 
@@ -310,8 +315,8 @@ class testGL :
 			xIn = ( xIn * mBrowserWindowWidth ) / mAppWindowWidth;
 			yIn = ( yIn * mBrowserWindowHeight ) / mAppWindowHeight;
 
-			// send event to LLMozLib
-			LLMozLib::getInstance()->mouseMove( mBrowserWindowId, xIn, yIn );
+			// send event to LLQtWebKit
+			LLQtWebKit::getInstance()->mouseMove( mBrowserWindowId, xIn, yIn );
 
 			// force a GLUT  update
 			glutPostRedisplay();
@@ -337,8 +342,8 @@ class testGL :
 				exit( 0 );
 			};
 
-			// send event to LLMozLib
-			LLMozLib::getInstance()->keyPress( mBrowserWindowId, keyIn );
+			// send event to LLQtWebKit
+			LLQtWebKit::getInstance()->keyPress( mBrowserWindowId, keyIn );
 		};
 
 		////////////////////////////////////////////////////////////////////////////////

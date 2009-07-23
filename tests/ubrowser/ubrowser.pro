@@ -31,10 +31,10 @@ win32 {
     DESTDIR=../GL
     LIBS += -L../GL
     debug {
-      LIBS += $$PWD/../../Debug/llmozlib2d.lib
+      LIBS += $$PWD/../../Debug/llqtwebkitd.lib
     }
     release {
-      LIBS += $$PWD/../../Release/llmozlib2.lib
+      LIBS += $$PWD/../../Release/llqtwebkit.lib
     }
 }
 

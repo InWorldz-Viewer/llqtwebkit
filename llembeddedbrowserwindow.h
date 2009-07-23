@@ -49,7 +49,7 @@
 #include <stdint.h>        // Use the C99 official header
 #endif
 
-#include "llmozlib2.h"
+#include "llqtwebkit.h"
 
 class LLEmbeddedBrowser;
 
@@ -96,8 +96,8 @@ public:
     void setEnabled(bool enabledIn);
 
     // navigation
-    bool userAction(LLMozLib::EUserAction action);
-    bool userActionIsEnabled(LLMozLib::EUserAction action);
+    bool userAction(LLQtWebKit::EUserAction action);
+    bool userActionIsEnabled(LLQtWebKit::EUserAction action);
     bool navigateTo(const std::string uri);
 
     // javascript access/control

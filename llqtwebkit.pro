@@ -4,12 +4,12 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 
-include(llmozlib2.pri)
+include(llqtwebkit.pri)
 
 QT += webkit opengl network gui
 
 win32:debug {
-  TARGET = llmozlib2d
+  TARGET = llqtwebkitd
 }
 
 RCC_DIR     = $$PWD/.rcc

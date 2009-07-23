@@ -153,10 +153,10 @@ uBrowser::uBrowser() :
     mBookmarks.push_back( std::pair< std::string, std::string >( "Skrbl shared whiteboard (non-flash)", "http://skrbl.com" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "404 test page", "http://www.us-japan.org/www.ita.doc.gov" ) );
 
-    std::cout << std::endl << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
-    std::cout << std::endl << "    GLUT version: " << "3.7.6" << std::endl;    // no way to get real version from GLUT ???
-    std::cout << std::endl << "    GLUI version: " << GLUI_Master.get_version() << std::endl;
-    std::cout << std::endl << "uBrowser version: " << mVersionMajor << "." << mVersionMinor << "." << mVersionPatch << std::endl << std::endl;
+    std::cout << std::endl << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
+    std::cout << std::endl << "      GLUT version: " << "3.7.6" << std::endl;    // no way to get real version from GLUT ???
+    std::cout << std::endl << "      GLUI version: " << GLUI_Master.get_version() << std::endl;
+    std::cout << std::endl << "  uBrowser version: " << mVersionMajor << "." << mVersionMinor << "." << mVersionPatch << std::endl << std::endl;
 
     mNeedsUpdate[ 0 ] = false;
     mNeedsUpdate[ 1 ] = false;
@@ -173,10 +173,10 @@ uBrowser::~uBrowser()
     // clean up - don't generally get here since we quit from a GLUT app with exit..!!
     for( int i = 0; i < mNumBrowserWindows; ++i )
     {
-        LLMozLib::getInstance()->remObserver( mWindowId[ i ], this );
+        LLQtWebKit::getInstance()->remObserver( mWindowId[ i ], this );
     };
 
-    LLMozLib::getInstance()->reset();
+    LLQtWebKit::getInstance()->reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,23 +248,23 @@ bool uBrowser::init( const char* arg0, int appWindowIn )
     std::string profileDir( applicationDir + "/" + "ubrowserprofile" );
 #endif // LL_LINUX
 
-    LLMozLib::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
+    LLQtWebKit::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
 
     // append details to agent string
     std::ostringstream codec;
     codec << "(uBrowser " << mVersionMajor << "." << mVersionMinor << "." << mVersionPatch << ")";
-    LLMozLib::getInstance()->setBrowserAgentId( codec.str() );
+    LLQtWebKit::getInstance()->setBrowserAgentId( codec.str() );
 
     // enable cookies
-    LLMozLib::getInstance()->enableCookies( true );
+    LLQtWebKit::getInstance()->enableCookies( true );
 
     // turn proxy off
-    LLMozLib::getInstance()->enableProxy( false, "", 0 );
+    LLQtWebKit::getInstance()->enableProxy( false, "", 0 );
 
     // create and set up browser windows
     for( int i = 0; i < mNumBrowserWindows; ++i )
     {
-        mWindowId[ i ] = LLMozLib::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
+        mWindowId[ i ] = LLQtWebKit::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
 
         if ( i == 0 )
             mCurWindowId = mWindowId[ i ];
@@ -272,23 +272,23 @@ bool uBrowser::init( const char* arg0, int appWindowIn )
         setSize( i, mBrowserWindowWidth, mBrowserWindowHeight );
 
         // this is the default color - just here to show that it can be done
-        LLMozLib::getInstance()->setBackgroundColor( mWindowId[ i ], 0xff, 0xff, 0xff );
+        LLQtWebKit::getInstance()->setBackgroundColor( mWindowId[ i ], 0xff, 0xff, 0xff );
 
         // this is the default color - just here to show that it can be done
-        LLMozLib::getInstance()->setCaretColor( mWindowId[ i ], 0x00, 0x00, 0x00 );
+        LLQtWebKit::getInstance()->setCaretColor( mWindowId[ i ], 0x00, 0x00, 0x00 );
 
         // don't flip bitmap
-        LLMozLib::getInstance()->flipWindow( mWindowId[ i ], false );
+        LLQtWebKit::getInstance()->flipWindow( mWindowId[ i ], false );
 
         // test the 404 page
-        LLMozLib::getInstance()->set404RedirectUrl( mWindowId[ i ], "http://google.com/search?q=404" );
+        LLQtWebKit::getInstance()->set404RedirectUrl( mWindowId[ i ], "http://google.com/search?q=404" );
     };
 
     for( int i = 0; i < mNumBrowserWindows; ++i )
     {
-        LLMozLib::getInstance()->addObserver( mWindowId[ i ], this );
+        LLQtWebKit::getInstance()->addObserver( mWindowId[ i ], this );
 
-        LLMozLib::getInstance()->navigateTo( mWindowId[ i ], mHomeUrl[ i ] );
+        LLQtWebKit::getInstance()->navigateTo( mWindowId[ i ], mHomeUrl[ i ] );
     };
 
     return true;
@@ -677,13 +677,13 @@ void uBrowser::display()
         {
             if ( mNeedsUpdate[ i ] == 1)
             {
-                const unsigned char* pixels = LLMozLib::getInstance()->getBrowserWindowPixels( mWindowId[ i ] );
+                const unsigned char* pixels = LLQtWebKit::getInstance()->getBrowserWindowPixels( mWindowId[ i ] );
                 if ( pixels )
                 {
                     glBindTexture( GL_TEXTURE_2D, mAppTexture[ i ] );
-                    int rowSpan = LLMozLib::getInstance()->getBrowserRowSpan( mWindowId[ i ] );
-                    int depth = LLMozLib::getInstance()->getBrowserDepth( mWindowId[ i ] );
-                    int mBrowserWindowWidth = LLMozLib::getInstance()->getBrowserWidth( mWindowId[ i ] );
+                    int rowSpan = LLQtWebKit::getInstance()->getBrowserRowSpan( mWindowId[ i ] );
+                    int depth = LLQtWebKit::getInstance()->getBrowserDepth( mWindowId[ i ] );
+                    int mBrowserWindowWidth = LLQtWebKit::getInstance()->getBrowserWidth( mWindowId[ i ] );
                     glTexSubImage2D( GL_TEXTURE_2D, 0,
                         0, 0,
                             // because sometimes the rowspan != width * bytes per pixel (mBrowserWindowWidth)
@@ -717,23 +717,23 @@ void uBrowser::display()
 //
 void uBrowser::idle()
 {
-    LLMozLib::getInstance()->pump(100);
+    LLQtWebKit::getInstance()->pump(100);
     // we need to grab the contents of the rendered page
     for( int i = 0; i < mNumBrowserWindows; ++i )
     {
         if ( mNeedsUpdate[ i ] == 2)
-            LLMozLib::getInstance()->grabBrowserWindow( mWindowId[ i ] );
+            LLQtWebKit::getInstance()->grabBrowserWindow( mWindowId[ i ] );
 	    mNeedsUpdate[ i ] = 1;
         }
 
     // enable/disable back button depending on whether we can go back or not
-	if ( LLMozLib::getInstance()->userActionIsEnabled( mCurWindowId, LLMozLib::UA_NAVIGATE_BACK ) )
+	if ( LLQtWebKit::getInstance()->userActionIsEnabled( mCurWindowId, LLQtWebKit::UA_NAVIGATE_BACK ) )
         mNavBackButton->enable();
     else
         mNavBackButton->disable();
 
     // enable/disable back button depending on whether we can go back or not
-    if ( LLMozLib::getInstance()->userActionIsEnabled( mCurWindowId, LLMozLib::UA_NAVIGATE_FORWARD ) )
+    if ( LLQtWebKit::getInstance()->userActionIsEnabled( mCurWindowId, LLQtWebKit::UA_NAVIGATE_FORWARD ) )
         mNavForwardButton->enable();
     else
         mNavForwardButton->disable();
@@ -929,7 +929,7 @@ void uBrowser::windowPosToTexturePos( int winXIn, int winYIn, int& texXOut, int&
 void uBrowser::keyboard( unsigned char keyIn, int xIn, int yIn )
 {
     // pass on the keypress to Mozilla - will need something more sophisticated here one day
-    LLMozLib::getInstance()->keyPress( mCurWindowId, keyIn );
+    LLQtWebKit::getInstance()->keyPress( mCurWindowId, keyIn );
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -940,7 +940,7 @@ void uBrowser::passiveMouse( int xIn, int yIn )
     int x, y, face;
     windowPosToTexturePos( xIn, yIn, x, y, face );
 
-    LLMozLib::getInstance()->mouseMove( mCurWindowId, x, y );
+    LLQtWebKit::getInstance()->mouseMove( mCurWindowId, x, y );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -955,7 +955,7 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
         if ( state == GLUT_DOWN )
         {
             // send event to mozilla
-            LLMozLib::getInstance()->mouseDown( mCurWindowId, x, y );
+            LLQtWebKit::getInstance()->mouseDown( mCurWindowId, x, y );
         }
         else
         if ( state == GLUT_UP )
@@ -966,16 +966,16 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
             mCurFace = face;
 
             // send event to mozilla
-            LLMozLib::getInstance()->mouseUp( mCurWindowId, x, y );
+            LLQtWebKit::getInstance()->mouseUp( mCurWindowId, x, y );
 
             // this seems better than sending focus on mouse down (still need to improve this)
-            LLMozLib::getInstance()->focusBrowser( mCurWindowId, true );
+            LLQtWebKit::getInstance()->focusBrowser( mCurWindowId, true );
         };
     }
     else
     if ( button == GLUT_RIGHT_BUTTON )
     {
-        LLMozLib::getInstance()->mouseLeftDoubleClick( mCurWindowId, x, y );
+        LLQtWebKit::getInstance()->mouseLeftDoubleClick( mCurWindowId, x, y );
     };
 }
 
@@ -989,7 +989,7 @@ void uBrowser::mouseMove( int xIn , int yIn )
 
     mCurWindowId = mWindowId[ face ];
 
-    LLMozLib::getInstance()->mouseMove( mCurWindowId, x, y );
+    LLQtWebKit::getInstance()->mouseMove( mCurWindowId, x, y );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -997,7 +997,7 @@ void uBrowser::mouseMove( int xIn , int yIn )
 void uBrowser::setSize( int indexIn, int widthIn , int heightIn )
 {
     // tell the embedded browser that things changed
-    LLMozLib::getInstance()->setSize( mWindowId[ indexIn ], widthIn, heightIn );
+    LLQtWebKit::getInstance()->setSize( mWindowId[ indexIn ], widthIn, heightIn );
 
     // calculate the next power of 2 bigger than reqquested size for width and height
     for ( mTextureWidth = 1; mTextureWidth < widthIn; mTextureWidth <<= 1 )
@@ -1036,9 +1036,9 @@ void uBrowser::gluiCallback( int controlIdIn )
         // to make sure it works (deleting the browser instance was a major problem before)
         for( int i = 0; i < mNumBrowserWindows; ++i )
         {
-            LLMozLib::getInstance()->remObserver( mWindowId[ i ], this );
+            LLQtWebKit::getInstance()->remObserver( mWindowId[ i ], this );
         };
-        LLMozLib::getInstance()->reset();
+        LLQtWebKit::getInstance()->reset();
 
         // write something out to the GLUT console to indicate we're all done
         std::cout << "Application finished. Buh-bye!" << std::endl;
@@ -1059,7 +1059,7 @@ void uBrowser::gluiCallback( int controlIdIn )
     else
     if ( controlIdIn == mIdClearCookies )
     {
-        LLMozLib::getInstance()->clearAllCookies();
+        LLQtWebKit::getInstance()->clearAllCookies();
 
         glutPostRedisplay();
     }
@@ -1105,45 +1105,45 @@ void uBrowser::gluiCallback( int controlIdIn )
     else
     if ( controlIdIn == mIdNavBack )
     {
-		LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_BACK );
+		LLQtWebKit::getInstance()->userAction( mCurWindowId, LLQtWebKit::UA_NAVIGATE_BACK );
     }
     else
     if ( controlIdIn == mIdNavStop )
     {
-        LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_STOP );
+        LLQtWebKit::getInstance()->userAction( mCurWindowId, LLQtWebKit::UA_NAVIGATE_STOP );
     }
     else
     if ( controlIdIn == mIdNavHome )
     {
-        LLMozLib::getInstance()->navigateTo( mCurWindowId, mHomeUrl[ mCurFace ].c_str() );
+        LLQtWebKit::getInstance()->navigateTo( mCurWindowId, mHomeUrl[ mCurFace ].c_str() );
     }
     else
     if ( controlIdIn == mIdNavForward )
     {
-        LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_FORWARD );
+        LLQtWebKit::getInstance()->userAction( mCurWindowId, LLQtWebKit::UA_NAVIGATE_FORWARD );
     }
     else
     if ( controlIdIn == mIdNavReload )
     {
-        LLMozLib::getInstance()->userAction( mCurWindowId, LLMozLib::UA_NAVIGATE_RELOAD );
+        LLQtWebKit::getInstance()->userAction( mCurWindowId, LLQtWebKit::UA_NAVIGATE_RELOAD );
     }
 	else
 	if ( controlIdIn == mIdNavAddToHistory )
 	{
-		LLMozLib::getInstance()->prependHistoryUrl( mCurWindowId, mUrlAddToHistoryEdit->get_text() );
+		LLQtWebKit::getInstance()->prependHistoryUrl( mCurWindowId, mUrlAddToHistoryEdit->get_text() );
 		mUrlAddToHistoryEdit->set_text("");
-		const std::string &foo = LLMozLib::getInstance()->dumpHistory(mCurWindowId);
+		const std::string &foo = LLQtWebKit::getInstance()->dumpHistory(mCurWindowId);
 		std::cout << foo << "\n";
     }
     else
     if ( controlIdIn == mIdUrlEdit )
     {
-        LLMozLib::getInstance()->navigateTo( mCurWindowId, mUrlEdit->get_text() );
+        LLQtWebKit::getInstance()->navigateTo( mCurWindowId, mUrlEdit->get_text() );
     }
     else
     if ( controlIdIn == mIdBookmarks )
     {
-        LLMozLib::getInstance()->navigateTo( mCurWindowId, mBookmarks[ mSelBookmark ].second.c_str() );
+        LLQtWebKit::getInstance()->navigateTo( mCurWindowId, mBookmarks[ mSelBookmark ].second.c_str() );
     }
     else
     // implies the ids are sequential.... ;)
@@ -1189,7 +1189,7 @@ void uBrowser::onNavigateComplete( const EventType& eventIn )
 {
     // this test calls a Javascript function in the page contents
     //std::string myScript = "hello();";
-    //std::string elementContent = LLMozLib::getInstance()->evaluateJavascript( mCurWindowId, myScript );
+    //std::string elementContent = LLQtWebKit::getInstance()->evaluateJavascript( mCurWindowId, myScript );
     //std::cout << "navigate complete: elemnent content = " << elementContent << std::endl;
 }
 

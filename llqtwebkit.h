@@ -36,8 +36,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef LLMOZLIB_H
-#define LLMOZLIB_H
+#ifndef LLQTWEBKIT_H
+#define LLQTWEBKIT_H
 
 #include <string>
 #include <map>
@@ -181,7 +181,7 @@ class LLEmbeddedBrowserWindowObserver
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
 #endif
-class LLMozLib
+class LLQtWebKit
 {
 	public:
 		typedef enum e_cursor
@@ -204,10 +204,10 @@ class LLMozLib
 			UA_NAVIGATE_RELOAD
 		} EUserAction;
 
-		virtual ~LLMozLib();
+		virtual ~LLQtWebKit();
 
 		// singleton access
-		static LLMozLib* getInstance();
+		static LLQtWebKit* getInstance();
 
 		// housekeeping
 		bool init(std::string application_directory,
@@ -278,9 +278,9 @@ class LLMozLib
 		std::string dumpHistory(int browser_window_id);
 
 	private:
-		LLMozLib();
+		LLQtWebKit();
 		LLEmbeddedBrowserWindow* getBrowserWindowFromWindowId(int browser_window_id);
-		static LLMozLib* sInstance;
+		static LLQtWebKit* sInstance;
 		const int mMaxBrowserWindows;
 		typedef std::map< int, LLEmbeddedBrowserWindow* > BrowserWindowMap;
 		typedef std::map< int, LLEmbeddedBrowserWindow* >::iterator BrowserWindowMapIter;
@@ -291,8 +291,8 @@ class LLMozLib
 #pragma GCC visibility pop
 #endif
 
-// Mozilla virtual keycodes.
-// We don't want to suck in Mozilla headers so we copy these consts
+// virtual keycodes.
+// We don't want to suck in app headers so we copy these consts
 // from nsIDOMKeyEvent.idl.
 
 const unsigned long LL_DOM_VK_CANCEL         = 0x03;
@@ -421,4 +421,4 @@ const unsigned long LL_DOM_VK_QUOTE          = 0xDE;
 
 const unsigned long LL_DOM_VK_META           = 0xE0;
 
-#endif // LLMOZLIB_H
+#endif // LLQTWEBKIT_H

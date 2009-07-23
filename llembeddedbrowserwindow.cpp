@@ -326,7 +326,7 @@ bool LLEmbeddedBrowserWindow::navigateTo(const std::string uri)
     return true;
 }
 
-bool LLEmbeddedBrowserWindow::userAction(LLMozLib::EUserAction action)
+bool LLEmbeddedBrowserWindow::userAction(LLQtWebKit::EUserAction action)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
@@ -335,25 +335,25 @@ bool LLEmbeddedBrowserWindow::userAction(LLMozLib::EUserAction action)
 
 	switch(action)
 	{
-		case LLMozLib::UA_EDIT_CUT:
+		case LLQtWebKit::UA_EDIT_CUT:
 			d->mPage->triggerAction(QWebPage::Cut);
 		break;
-		case LLMozLib::UA_EDIT_COPY:
+		case LLQtWebKit::UA_EDIT_COPY:
 			d->mPage->triggerAction(QWebPage::Copy);
 		break;
-		case LLMozLib::UA_EDIT_PASTE:
+		case LLQtWebKit::UA_EDIT_PASTE:
 			d->mPage->triggerAction(QWebPage::Paste);
 		break;
-		case LLMozLib::UA_NAVIGATE_STOP:
+		case LLQtWebKit::UA_NAVIGATE_STOP:
 			d->mPage->triggerAction(QWebPage::Stop);
 		break;
-		case LLMozLib::UA_NAVIGATE_BACK:
+		case LLQtWebKit::UA_NAVIGATE_BACK:
 			d->mPage->triggerAction(QWebPage::Back);
 		break;
-		case LLMozLib::UA_NAVIGATE_FORWARD:
+		case LLQtWebKit::UA_NAVIGATE_FORWARD:
 			d->mPage->triggerAction(QWebPage::Forward);
 		break;
-		case LLMozLib::UA_NAVIGATE_RELOAD:
+		case LLQtWebKit::UA_NAVIGATE_RELOAD:
 			d->mPage->triggerAction(QWebPage::Reload);
 		break;
 		default:
@@ -364,7 +364,7 @@ bool LLEmbeddedBrowserWindow::userAction(LLMozLib::EUserAction action)
 	return result;
 }
 
-bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLMozLib::EUserAction action)
+bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLQtWebKit::EUserAction action)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
@@ -374,25 +374,25 @@ bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLMozLib::EUserAction action)
 
 	switch(action)
 	{
-		case LLMozLib::UA_EDIT_CUT:
+		case LLQtWebKit::UA_EDIT_CUT:
 			result = d->mPage->action(QWebPage::Cut)->isEnabled();
 		break;
-		case LLMozLib::UA_EDIT_COPY:
+		case LLQtWebKit::UA_EDIT_COPY:
 			result = d->mPage->action(QWebPage::Copy)->isEnabled();
 		break;
-		case LLMozLib::UA_EDIT_PASTE:
+		case LLQtWebKit::UA_EDIT_PASTE:
 			result = d->mPage->action(QWebPage::Paste)->isEnabled();
 		break;
-		case LLMozLib::UA_NAVIGATE_STOP:
+		case LLQtWebKit::UA_NAVIGATE_STOP:
 			result = true;
 		break;
-		case LLMozLib::UA_NAVIGATE_BACK:
+		case LLQtWebKit::UA_NAVIGATE_BACK:
 			result = d->mPage->history()->canGoBack();
 		break;
-		case LLMozLib::UA_NAVIGATE_FORWARD:
+		case LLQtWebKit::UA_NAVIGATE_FORWARD:
 			result = d->mPage->history()->canGoForward();
 		break;
-		case LLMozLib::UA_NAVIGATE_RELOAD:
+		case LLQtWebKit::UA_NAVIGATE_RELOAD:
 			result = true;
 		break;
 		default:
@@ -699,23 +699,23 @@ bool LLWebView::event(QEvent *event)
         QCursor cursor = static_cast<SetCursorEvent*>(event)->cursor();
         if (currentShape != cursor.shape()) {
             currentShape = cursor.shape();
-            LLMozLib::ECursor llcursor;
+            LLQtWebKit::ECursor llcursor;
             switch(currentShape)
             {
                 case Qt::ArrowCursor:
-                    llcursor = LLMozLib::C_ARROW;
+                    llcursor = LLQtWebKit::C_ARROW;
                 break;
                 case Qt::PointingHandCursor:
-                    llcursor = LLMozLib::C_POINTINGHAND;
+                    llcursor = LLQtWebKit::C_POINTINGHAND;
                 break;
                 case Qt::IBeamCursor:
-                    llcursor = LLMozLib::C_IBEAM;
+                    llcursor = LLQtWebKit::C_IBEAM;
                 break;
                 case Qt::SplitVCursor:
-                    llcursor = LLMozLib::C_SPLITV;
+                    llcursor = LLQtWebKit::C_SPLITV;
                 break;
                 case Qt::SplitHCursor:
-                    llcursor = LLMozLib::C_SPLITH;
+                    llcursor = LLQtWebKit::C_SPLITH;
                 break;
                 default:
                     qWarning() << "Unhandled cursor shape:" << currentShape;

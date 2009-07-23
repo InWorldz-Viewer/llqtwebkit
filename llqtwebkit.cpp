@@ -41,27 +41,27 @@
 #include <iomanip>
 #include <time.h>
 
-#include "llmozlib2.h"
+#include "llqtwebkit.h"
 
 #include "llembeddedbrowser.h"
 #include "llembeddedbrowserwindow.h"
 
-LLMozLib* LLMozLib::sInstance = 0;
+LLQtWebKit* LLQtWebKit::sInstance = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-LLMozLib::LLMozLib() :
+LLQtWebKit::LLQtWebKit() :
     mMaxBrowserWindows(16)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-LLMozLib* LLMozLib::getInstance()
+LLQtWebKit* LLQtWebKit::getInstance()
 {
     if (! sInstance)
     {
-        sInstance = new LLMozLib;
+        sInstance = new LLQtWebKit;
     }
 
     return sInstance;
@@ -69,13 +69,13 @@ LLMozLib* LLMozLib::getInstance()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-LLMozLib::~LLMozLib()
+LLQtWebKit::~LLQtWebKit()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::init(std::string application_directory,
+bool LLQtWebKit::init(std::string application_directory,
                           std::string component_directory,
                           std::string profile_directory,
                           void* native_window_handle)
@@ -88,14 +88,14 @@ bool LLMozLib::init(std::string application_directory,
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLMozLib::getLastError()
+int LLQtWebKit::getLastError()
 {
     return LLEmbeddedBrowser::getInstance()->getLastError();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::reset()
+bool LLQtWebKit::reset()
 {
     mBrowserWindowMap.clear();
     return LLEmbeddedBrowser::getInstance()->reset();
@@ -103,14 +103,14 @@ bool LLMozLib::reset()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::clearCache()
+bool LLQtWebKit::clearCache()
 {
     return LLEmbeddedBrowser::getInstance()->clearCache();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-std::string LLMozLib::getVersion()
+std::string LLQtWebKit::getVersion()
 {
     const int majorVersion = 2;
     const int minorVersion = 1;
@@ -135,21 +135,21 @@ std::string LLMozLib::getVersion()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLMozLib::setBrowserAgentId(std::string id)
+void LLQtWebKit::setBrowserAgentId(std::string id)
 {
     LLEmbeddedBrowser::getInstance()->setBrowserAgentId(id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::enableProxy(bool enabled, std::string host_name, int port)
+bool LLQtWebKit::enableProxy(bool enabled, std::string host_name, int port)
 {
     return LLEmbeddedBrowser::getInstance()->enableProxy(enabled, host_name, port);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLMozLib::createBrowserWindow(int width, int height)
+int LLQtWebKit::createBrowserWindow(int width, int height)
 {
     LLEmbeddedBrowserWindow* browser_window = LLEmbeddedBrowser::getInstance()->createBrowserWindow(width, height);
 
@@ -175,7 +175,7 @@ int LLMozLib::createBrowserWindow(int width, int height)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::destroyBrowserWindow(int browser_window_id)
+bool LLQtWebKit::destroyBrowserWindow(int browser_window_id)
 {
     // don't use the utility method here since we need the iteratorator to remove the entry from the map
     BrowserWindowMapIter iterator = mBrowserWindowMap.find(browser_window_id);
@@ -193,7 +193,7 @@ bool LLMozLib::destroyBrowserWindow(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setBackgroundColor(int browser_window_id, const int red, const int green, const int blue)
+bool LLQtWebKit::setBackgroundColor(int browser_window_id, const int red, const int green, const int blue)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -207,7 +207,7 @@ bool LLMozLib::setBackgroundColor(int browser_window_id, const int red, const in
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setCaretColor(int browser_window_id, const int red, const int green, const int blue)
+bool LLQtWebKit::setCaretColor(int browser_window_id, const int red, const int green, const int blue)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -221,7 +221,7 @@ bool LLMozLib::setCaretColor(int browser_window_id, const int red, const int gre
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setEnabled(int browser_window_id, bool enabled)
+bool LLQtWebKit::setEnabled(int browser_window_id, bool enabled)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -235,7 +235,7 @@ bool LLMozLib::setEnabled(int browser_window_id, bool enabled)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::setSize(int browser_window_id, int width, int height)
+bool LLQtWebKit::setSize(int browser_window_id, int width, int height)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -249,7 +249,7 @@ bool LLMozLib::setSize(int browser_window_id, int width, int height)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::scrollByLines(int browser_window_id, int lines)
+bool LLQtWebKit::scrollByLines(int browser_window_id, int lines)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -263,7 +263,7 @@ bool LLMozLib::scrollByLines(int browser_window_id, int lines)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::addObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject)
+bool LLQtWebKit::addObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -276,7 +276,7 @@ bool LLMozLib::addObserver(int browser_window_id, LLEmbeddedBrowserWindowObserve
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::remObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject)
+bool LLQtWebKit::remObserver(int browser_window_id, LLEmbeddedBrowserWindowObserver* subject)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -289,7 +289,7 @@ bool LLMozLib::remObserver(int browser_window_id, LLEmbeddedBrowserWindowObserve
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::navigateTo(int browser_window_id, const std::string uri)
+bool LLQtWebKit::navigateTo(int browser_window_id, const std::string uri)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -302,7 +302,7 @@ bool LLMozLib::navigateTo(int browser_window_id, const std::string uri)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::userAction(int browser_window_id, EUserAction action)
+bool LLQtWebKit::userAction(int browser_window_id, EUserAction action)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -314,7 +314,7 @@ bool LLMozLib::userAction(int browser_window_id, EUserAction action)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::userActionIsEnabled(int browser_window_id, EUserAction action)
+bool LLQtWebKit::userActionIsEnabled(int browser_window_id, EUserAction action)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -326,7 +326,7 @@ bool LLMozLib::userActionIsEnabled(int browser_window_id, EUserAction action)
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-const unsigned char* LLMozLib::grabBrowserWindow(int browser_window_id)
+const unsigned char* LLQtWebKit::grabBrowserWindow(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -339,7 +339,7 @@ const unsigned char* LLMozLib::grabBrowserWindow(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-const unsigned char* LLMozLib::getBrowserWindowPixels(int browser_window_id)
+const unsigned char* LLQtWebKit::getBrowserWindowPixels(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -352,7 +352,7 @@ const unsigned char* LLMozLib::getBrowserWindowPixels(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::flipWindow(int browser_window_id, bool flip)
+bool LLQtWebKit::flipWindow(int browser_window_id, bool flip)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -366,7 +366,7 @@ bool LLMozLib::flipWindow(int browser_window_id, bool flip)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLMozLib::getBrowserWidth(int browser_window_id)
+int LLQtWebKit::getBrowserWidth(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -379,7 +379,7 @@ int LLMozLib::getBrowserWidth(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLMozLib::getBrowserHeight(int browser_window_id)
+int LLQtWebKit::getBrowserHeight(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -392,7 +392,7 @@ int LLMozLib::getBrowserHeight(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLMozLib::getBrowserDepth(int browser_window_id)
+int LLQtWebKit::getBrowserDepth(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -405,7 +405,7 @@ int LLMozLib::getBrowserDepth(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLMozLib::getBrowserRowSpan(int browser_window_id)
+int LLQtWebKit::getBrowserRowSpan(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -418,7 +418,7 @@ int LLMozLib::getBrowserRowSpan(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseDown(int browser_window_id, int x, int y)
+bool LLQtWebKit::mouseDown(int browser_window_id, int x, int y)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -432,7 +432,7 @@ bool LLMozLib::mouseDown(int browser_window_id, int x, int y)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseUp(int browser_window_id, int x, int y)
+bool LLQtWebKit::mouseUp(int browser_window_id, int x, int y)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -446,7 +446,7 @@ bool LLMozLib::mouseUp(int browser_window_id, int x, int y)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseMove(int browser_window_id, int x, int y)
+bool LLQtWebKit::mouseMove(int browser_window_id, int x, int y)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -460,7 +460,7 @@ bool LLMozLib::mouseMove(int browser_window_id, int x, int y)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::mouseLeftDoubleClick(int browser_window_id, int x, int y)
+bool LLQtWebKit::mouseLeftDoubleClick(int browser_window_id, int x, int y)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -474,7 +474,7 @@ bool LLMozLib::mouseLeftDoubleClick(int browser_window_id, int x, int y)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::keyPress(int browser_window_id, int key_code)
+bool LLQtWebKit::keyPress(int browser_window_id, int key_code)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -486,7 +486,7 @@ bool LLMozLib::keyPress(int browser_window_id, int key_code)
     return false;
 }
 
-bool LLMozLib::unicodeInput(int browser_window_id, unsigned long uni_char)
+bool LLQtWebKit::unicodeInput(int browser_window_id, unsigned long uni_char)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -500,7 +500,7 @@ bool LLMozLib::unicodeInput(int browser_window_id, unsigned long uni_char)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::focusBrowser(int browser_window_id, bool focus_browser)
+bool LLQtWebKit::focusBrowser(int browser_window_id, bool focus_browser)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -514,7 +514,7 @@ bool LLMozLib::focusBrowser(int browser_window_id, bool focus_browser)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLMozLib::setNoFollowScheme(int browser_window_id, std::string scheme)
+void LLQtWebKit::setNoFollowScheme(int browser_window_id, std::string scheme)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -525,7 +525,7 @@ void LLMozLib::setNoFollowScheme(int browser_window_id, std::string scheme)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-std::string LLMozLib::getNoFollowScheme(int browser_window_id)
+std::string LLQtWebKit::getNoFollowScheme(int browser_window_id)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -538,35 +538,35 @@ std::string LLMozLib::getNoFollowScheme(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLMozLib::pump(int max_milliseconds)
+void LLQtWebKit::pump(int max_milliseconds)
 {
     LLEmbeddedBrowser::getInstance()->pump(max_milliseconds);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::enableCookies(bool enabled)
+bool LLQtWebKit::enableCookies(bool enabled)
 {
     return LLEmbeddedBrowser::getInstance()->enableCookies(enabled);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::clearAllCookies()
+bool LLQtWebKit::clearAllCookies()
 {
     return LLEmbeddedBrowser::getInstance()->clearAllCookies();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::enablePlugins(bool enabled)
+bool LLQtWebKit::enablePlugins(bool enabled)
 {
     return LLEmbeddedBrowser::getInstance()->enablePlugins(enabled);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-std::string LLMozLib::evaluateJavascript(int browser_window_id, const std::string script)
+std::string LLQtWebKit::evaluateJavascript(int browser_window_id, const std::string script)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -579,7 +579,7 @@ std::string LLMozLib::evaluateJavascript(int browser_window_id, const std::strin
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::set404RedirectUrl(int browser_window_in, std::string redirect_url)
+bool LLQtWebKit::set404RedirectUrl(int browser_window_in, std::string redirect_url)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_in);
     if (browser_window)
@@ -593,7 +593,7 @@ bool LLMozLib::set404RedirectUrl(int browser_window_in, std::string redirect_url
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLMozLib::clr404RedirectUrl(int browser_window_in)
+bool LLQtWebKit::clr404RedirectUrl(int browser_window_in)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_in);
     if (browser_window)
@@ -607,7 +607,7 @@ bool LLMozLib::clr404RedirectUrl(int browser_window_in)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLMozLib::prependHistoryUrl(int browser_window_id, std::string url)
+void LLQtWebKit::prependHistoryUrl(int browser_window_id, std::string url)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
@@ -618,7 +618,7 @@ void LLMozLib::prependHistoryUrl(int browser_window_id, std::string url)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLMozLib::clearHistory(int browser_window_id)
+void LLQtWebKit::clearHistory(int browser_window_id)
 {
 	LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
 	if (browser_window)
@@ -627,7 +627,7 @@ void LLMozLib::clearHistory(int browser_window_id)
 	}
 }
 
-std::string LLMozLib::dumpHistory(int browser_window_id)
+std::string LLQtWebKit::dumpHistory(int browser_window_id)
 {
 	LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
 	if (browser_window)
@@ -641,7 +641,7 @@ std::string LLMozLib::dumpHistory(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 // utility method to get an LLEmbeddedBrowserWindow* from a window id (int)
-LLEmbeddedBrowserWindow* LLMozLib::getBrowserWindowFromWindowId(int browser_window_id)
+LLEmbeddedBrowserWindow* LLQtWebKit::getBrowserWindowFromWindowId(int browser_window_id)
 {
     BrowserWindowMapIter iterator = mBrowserWindowMap.find(browser_window_id);
 

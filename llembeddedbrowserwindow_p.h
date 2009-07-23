@@ -102,7 +102,7 @@ class LLEmbeddedBrowserWindowEmitter
         ObserverContainer observers;
 };
 
-#include "llmozlib2.h"
+#include "llqtwebkit.h"
 #include "llembeddedbrowserwindow.h"
 #include <qgraphicssceneevent.h>
 

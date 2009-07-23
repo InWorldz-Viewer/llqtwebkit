@@ -38,7 +38,7 @@
 #include <qdebug.h>
 #include <qmessagebox.h>
 
-#include "llmozlib2.h"
+#include "llqtwebkit.h"
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowserwindow_p.h"
 

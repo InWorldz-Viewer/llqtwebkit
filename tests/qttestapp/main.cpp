@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include <QtGui/QtGui>
-#include <llmozlib2.h>
+#include <llqtwebkit.h>
 
 class WebPage : public QWidget, LLEmbeddedBrowserWindowObserver
 {
@@ -80,36 +80,36 @@ WebPage::WebPage(QWidget *parent)
     std::string applicationDir = std::string();
     std::string componentDir = applicationDir;
     std::string profileDir = applicationDir + "\\" + "testGL_profile";
-    LLMozLib::getInstance()->init(applicationDir, componentDir, profileDir, 0);
+    LLQtWebKit::getInstance()->init(applicationDir, componentDir, profileDir, 0);
 
-    mBrowserWindowId = LLMozLib::getInstance()->createBrowserWindow(width(), height());
+    mBrowserWindowId = LLQtWebKit::getInstance()->createBrowserWindow(width(), height());
 
-    // observer events that LLMozLib emits
-    LLMozLib::getInstance()->addObserver( mBrowserWindowId, this );
+    // observer events that LLQtWebKit emits
+    LLQtWebKit::getInstance()->addObserver( mBrowserWindowId, this );
 
     // append details to agent string
-    LLMozLib::getInstance()->setBrowserAgentId("testqtapp");
+    LLQtWebKit::getInstance()->setBrowserAgentId("testqtapp");
 
     // don't flip bitmap
-    LLMozLib::getInstance()->flipWindow(mBrowserWindowId, false);
+    LLQtWebKit::getInstance()->flipWindow(mBrowserWindowId, false);
 
     // go to the "home page"
     QString url = QUrl::fromLocalFile(QDir::currentPath() + "/../testgl/testpage.html").toString();
-    LLMozLib::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
+    LLQtWebKit::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
 }
 
 WebPage::~WebPage()
 {
     // unhook observer
-    LLMozLib::getInstance()->remObserver( mBrowserWindowId, this );
+    LLQtWebKit::getInstance()->remObserver( mBrowserWindowId, this );
 
     // clean up
-    LLMozLib::getInstance()->reset();
+    LLQtWebKit::getInstance()->reset();
 }
 
 void WebPage::onPageChanged(const EventType& event)
 {
-    LLMozLib::getInstance()->grabBrowserWindow( mBrowserWindowId );
+    LLQtWebKit::getInstance()->grabBrowserWindow( mBrowserWindowId );
     qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
     update();
 }
@@ -155,15 +155,15 @@ void WebPage::onClickLinkNoFollow(const EventType& event)
 
 void WebPage::resizeEvent(QResizeEvent *event)
 {
-    LLMozLib::getInstance()->setSize(mBrowserWindowId, event->size().width(), event->size().height());
+    LLQtWebKit::getInstance()->setSize(mBrowserWindowId, event->size().width(), event->size().height());
     QWidget::resizeEvent(event);
 }
 
 void WebPage::paintEvent(QPaintEvent *event)
 {
-    int width = LLMozLib::getInstance()->getBrowserWidth(mBrowserWindowId);
-    int height = LLMozLib::getInstance()->getBrowserHeight(mBrowserWindowId);
-    const unsigned char* pixels = LLMozLib::getInstance()->getBrowserWindowPixels(mBrowserWindowId);
+    int width = LLQtWebKit::getInstance()->getBrowserWidth(mBrowserWindowId);
+    int height = LLQtWebKit::getInstance()->getBrowserHeight(mBrowserWindowId);
+    const unsigned char* pixels = LLQtWebKit::getInstance()->getBrowserWindowPixels(mBrowserWindowId);
     QImage image(pixels, width, height, QImage::Format_RGB32);
     qDebug() << "paint" << width << height << pixels << image.isNull();
     QPainter painter(this);
@@ -172,23 +172,23 @@ void WebPage::paintEvent(QPaintEvent *event)
 
 void WebPage::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    LLMozLib::getInstance()->mouseLeftDoubleClick(mBrowserWindowId, event->x(), event->y());
+    LLQtWebKit::getInstance()->mouseLeftDoubleClick(mBrowserWindowId, event->x(), event->y());
 }
 
 void WebPage::mouseMoveEvent(QMouseEvent *event)
 {
-    LLMozLib::getInstance()->mouseMove(mBrowserWindowId, event->x(), event->y());
+    LLQtWebKit::getInstance()->mouseMove(mBrowserWindowId, event->x(), event->y());
 }
 
 void WebPage::mousePressEvent(QMouseEvent *event)
 {
-    LLMozLib::getInstance()->mouseDown(mBrowserWindowId, event->x(), event->y());
+    LLQtWebKit::getInstance()->mouseDown(mBrowserWindowId, event->x(), event->y());
 }
 
 void WebPage::mouseReleaseEvent(QMouseEvent *event)
 {
-    LLMozLib::getInstance()->mouseUp(mBrowserWindowId, event->x(), event->y());
-    LLMozLib::getInstance()->focusBrowser(mBrowserWindowId, true);
+    LLQtWebKit::getInstance()->mouseUp(mBrowserWindowId, event->x(), event->y());
+    LLQtWebKit::getInstance()->focusBrowser(mBrowserWindowId, true);
 }
 
 void WebPage::keyPressEvent(QKeyEvent *event)
@@ -197,27 +197,27 @@ void WebPage::keyPressEvent(QKeyEvent *event)
 
 void WebPage::keyReleaseEvent(QKeyEvent *event)
 {
-    LLMozLib::getInstance()->unicodeInput(mBrowserWindowId, event->text().at(0).unicode());
+    LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, event->text().at(0).unicode());
 }
 
 void WebPage::goBack()
 {
-    LLMozLib::getInstance()->userAction(mBrowserWindowId, LLMozLib::UA_NAVIGATE_BACK);
+    LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_BACK);
 }
 
 void WebPage::goForward()
 {
-    LLMozLib::getInstance()->userAction(mBrowserWindowId, LLMozLib::UA_NAVIGATE_FORWARD);
+    LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_FORWARD);
 }
 
 void WebPage::reload()
 {
-    LLMozLib::getInstance()->userAction(mBrowserWindowId, LLMozLib::UA_NAVIGATE_RELOAD);
+    LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_RELOAD);
 }
 
 void WebPage::loadUrl(const QString &url)
 {
-    LLMozLib::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
+    LLQtWebKit::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
 }
 
 #include "ui_window.h"

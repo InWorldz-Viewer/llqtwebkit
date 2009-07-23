@@ -50,7 +50,7 @@
 #include "GL/glut.h"
 #include "glui.h"
 #endif
-#include "llmozlib2.h"
+#include "llqtwebkit.h"
 
 static void gluiCallbackWrapper( int controlIdIn );
 
