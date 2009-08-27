@@ -9,14 +9,14 @@
 /* Begin PBXBuildFile section */
 		9922B4720F3A34170035C84F /* networkcookiejar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9922B46C0F3A34170035C84F /* networkcookiejar.cpp */; };
 		9922B4DF0F3A3A7C0035C84F /* moc_networkcookiejar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9922B4DE0F3A3A7C0035C84F /* moc_networkcookiejar.cpp */; };
-		9922B4F10F3A3AE50035C84F /* moc_llembeddedbrowser_p.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9922B4F00F3A3AE50035C84F /* moc_llembeddedbrowser_p.cpp */; };
+		992EFFA31045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 992EFFA21045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp */; };
 		993150730F952054000609D0 /* llstyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 993150720F952054000609D0 /* llstyle.cpp */; };
-		994AD6C10A8013E800061DFB /* llmozlib2_stub.c in Sources */ = {isa = PBXBuildFile; fileRef = 994AD6C00A8013E800061DFB /* llmozlib2_stub.c */; };
 		9951589B0EE8BA030040F5E4 /* llwebpage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9951589A0EE8BA030040F5E4 /* llwebpage.cpp */; };
 		9951589E0EE8BA130040F5E4 /* moc_llwebpage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9951589D0EE8BA130040F5E4 /* moc_llwebpage.cpp */; };
 		99693D040F6B12B3001DC1EB /* moc_llembeddedbrowserwindow_p.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99693D030F6B12B3001DC1EB /* moc_llembeddedbrowserwindow_p.cpp */; };
+		9999856D1045F33B00417AF3 /* llnetworkaccessmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9999856C1045F33B00417AF3 /* llnetworkaccessmanager.cpp */; };
 		99CCFC840A76AC7500ED39DE /* llembeddedbrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */; };
-		99CCFC870A76AC7500ED39DE /* llmozlib2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC810A76AC7500ED39DE /* llmozlib2.cpp */; };
+		99CCFC870A76AC7500ED39DE /* llqtwebkit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC810A76AC7500ED39DE /* llqtwebkit.cpp */; };
 		99CCFC880A76AC7500ED39DE /* llembeddedbrowserwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */; };
 /* End PBXBuildFile section */
 
@@ -27,32 +27,25 @@
 		9922B4700F3A34170035C84F /* trie_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trie_p.h; path = src/trie_p.h; sourceTree = "<group>"; };
 		9922B4710F3A34170035C84F /* twoleveldomains_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = twoleveldomains_p.h; path = src/twoleveldomains_p.h; sourceTree = "<group>"; };
 		9922B4DE0F3A3A7C0035C84F /* moc_networkcookiejar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_networkcookiejar.cpp; path = src/moc_networkcookiejar.cpp; sourceTree = "<group>"; };
-		9922B4F00F3A3AE50035C84F /* moc_llembeddedbrowser_p.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = moc_llembeddedbrowser_p.cpp; sourceTree = SOURCE_ROOT; };
+		992EFFA21045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = moc_llnetworkaccessmanager.cpp; sourceTree = "<group>"; };
 		993150710F952054000609D0 /* llstyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = llstyle.h; sourceTree = SOURCE_ROOT; };
 		993150720F952054000609D0 /* llstyle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = llstyle.cpp; sourceTree = SOURCE_ROOT; };
-		994ACE690A7FEDAF00061DFB /* llmozlib2.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; path = llmozlib2.exp; sourceTree = SOURCE_ROOT; };
-		994AD6B30A80123C00061DFB /* libllmozlib2.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libllmozlib2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		994AD6C00A8013E800061DFB /* llmozlib2_stub.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = llmozlib2_stub.c; sourceTree = "<group>"; };
+		994ACE690A7FEDAF00061DFB /* llqtwebkit.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; path = llqtwebkit.exp; sourceTree = SOURCE_ROOT; };
 		9951589A0EE8BA030040F5E4 /* llwebpage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = llwebpage.cpp; sourceTree = SOURCE_ROOT; };
 		9951589D0EE8BA130040F5E4 /* moc_llwebpage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = moc_llwebpage.cpp; sourceTree = SOURCE_ROOT; };
 		99693D030F6B12B3001DC1EB /* moc_llembeddedbrowserwindow_p.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = moc_llembeddedbrowserwindow_p.cpp; sourceTree = SOURCE_ROOT; };
+		9999856B1045F33B00417AF3 /* llnetworkaccessmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = llnetworkaccessmanager.h; sourceTree = SOURCE_ROOT; };
+		9999856C1045F33B00417AF3 /* llnetworkaccessmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = llnetworkaccessmanager.cpp; sourceTree = SOURCE_ROOT; };
 		99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llembeddedbrowser.cpp; sourceTree = SOURCE_ROOT; };
 		99CCFC7F0A76AC7500ED39DE /* llembeddedbrowser.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llembeddedbrowser.h; sourceTree = SOURCE_ROOT; };
 		99CCFC800A76AC7500ED39DE /* llembeddedbrowserwindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llembeddedbrowserwindow.h; sourceTree = SOURCE_ROOT; };
-		99CCFC810A76AC7500ED39DE /* llmozlib2.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llmozlib2.cpp; sourceTree = "<group>"; };
+		99CCFC810A76AC7500ED39DE /* llqtwebkit.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llqtwebkit.cpp; sourceTree = SOURCE_ROOT; };
 		99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llembeddedbrowserwindow.cpp; sourceTree = SOURCE_ROOT; };
-		99CCFC830A76AC7500ED39DE /* llmozlib2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llmozlib2.h; sourceTree = "<group>"; };
-		D2AAC0630554660B00DB518D /* libllwebkitlib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libllwebkitlib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		99CCFC830A76AC7500ED39DE /* llqtwebkit.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llqtwebkit.h; sourceTree = SOURCE_ROOT; };
+		D2AAC0630554660B00DB518D /* libllqtwebkit.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libllqtwebkit.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		994AD6B10A80123C00061DFB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D289988505E68E00004EDB86 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -67,7 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				08FB7795FE84155DC02AAC07 /* Source */,
-				994ACE690A7FEDAF00061DFB /* llmozlib2.exp */,
+				994ACE690A7FEDAF00061DFB /* llqtwebkit.exp */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				99CCFCA80A76AD4500ED39DE /* External Libraries */,
 			);
@@ -79,17 +72,18 @@
 			children = (
 				99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */,
 				99CCFC7F0A76AC7500ED39DE /* llembeddedbrowser.h */,
-				9922B4F00F3A3AE50035C84F /* moc_llembeddedbrowser_p.cpp */,
 				99CCFC800A76AC7500ED39DE /* llembeddedbrowserwindow.h */,
-				99CCFC810A76AC7500ED39DE /* llmozlib2.cpp */,
+				99CCFC810A76AC7500ED39DE /* llqtwebkit.cpp */,
 				99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */,
 				99693D030F6B12B3001DC1EB /* moc_llembeddedbrowserwindow_p.cpp */,
-				99CCFC830A76AC7500ED39DE /* llmozlib2.h */,
+				99CCFC830A76AC7500ED39DE /* llqtwebkit.h */,
 				9951589A0EE8BA030040F5E4 /* llwebpage.cpp */,
 				993150710F952054000609D0 /* llstyle.h */,
 				993150720F952054000609D0 /* llstyle.cpp */,
 				9951589D0EE8BA130040F5E4 /* moc_llwebpage.cpp */,
-				994AD6C00A8013E800061DFB /* llmozlib2_stub.c */,
+				9999856B1045F33B00417AF3 /* llnetworkaccessmanager.h */,
+				9999856C1045F33B00417AF3 /* llnetworkaccessmanager.cpp */,
+				992EFFA21045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp */,
 				9922B46B0F3A34170035C84F /* qtwebkit_cookiejar */,
 			);
 			name = Source;
@@ -98,8 +92,7 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC0630554660B00DB518D /* libllwebkitlib.dylib */,
-				994AD6B30A80123C00061DFB /* libllmozlib2.dylib */,
+				D2AAC0630554660B00DB518D /* libllqtwebkit.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,38 +127,10 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		994AD6AF0A80123C00061DFB /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
-		994AD6B20A80123C00061DFB /* llmozlib2_stub */ = {
+		D2AAC0620554660B00DB518D /* llqtwebkit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 994AD6B60A80125900061DFB /* Build configuration list for PBXNativeTarget "llmozlib2_stub" */;
-			buildPhases = (
-				994AD6BA0A8013AA00061DFB /* ShellScript */,
-				994AD6AF0A80123C00061DFB /* Headers */,
-				994AD6B00A80123C00061DFB /* Sources */,
-				994AD6B10A80123C00061DFB /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = llmozlib2_stub;
-			productName = llmozlib_stub;
-			productReference = 994AD6B30A80123C00061DFB /* libllmozlib2.dylib */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
-		D2AAC0620554660B00DB518D /* llmozlib2 */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "llmozlib2" */;
+			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "llqtwebkit" */;
 			buildPhases = (
 				99515FE60EEF3A480040F5E4 /* ShellScript */,
 				D2AAC0610554660B00DB518D /* Sources */,
@@ -175,9 +140,9 @@
 			);
 			dependencies = (
 			);
-			name = llmozlib2;
+			name = llqtwebkit;
 			productName = llmozlib;
-			productReference = D2AAC0630554660B00DB518D /* libllwebkitlib.dylib */;
+			productReference = D2AAC0630554660B00DB518D /* libllqtwebkit.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -185,81 +150,50 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "llmozlib2" */;
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "llqtwebkit" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* llmozlib */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2AAC0620554660B00DB518D /* llmozlib2 */,
-				994AD6B20A80123C00061DFB /* llmozlib2_stub */,
+				D2AAC0620554660B00DB518D /* llqtwebkit */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		994AD6BA0A8013AA00061DFB /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/llmozlib.exp",
-			);
-			outputPaths = (
-				"$(SRCROOT)/llmozlib_stub.c",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Create llmozlib_stub.c from the exports file\nsed -e 's/^_\\(.*\\)/void \\1 (void) {} /' -e 's/^\\(#.*\\)/\\/\\* \\1 \\*\\//' <llmozlib2.exp >llmozlib2_stub.c";
-		};
 		99515FE60EEF3A480040F5E4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/llwebpage.h",
-				"$(SRCROOT)/qtwebkit_cookiejar/src/networkcookiejar.h",
-				"$(SRCROOT)/llembeddedbrowser_p.h",
-				"$(SRCROOT)/llembeddedbrowserwindow_p.h",
 			);
 			outputPaths = (
-				"$(SRCROOT)/moc_llwebpage.cpp",
-				"$(SRCROOT)/qtwebkit_cookiejar/src/moc_networkcookiejar.cpp",
-				"$(SRCROOT)/moc_llembeddedbrowser_p.cpp",
-				"$(SRCROOT)/moc_llembeddedbrowserwindow_p.cpp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "QTDIR/bin/moc llwebpage.h -o moc_llwebpage.cpp\nQTDIR/bin/moc qtwebkit_cookiejar/src/networkcookiejar.h -o qtwebkit_cookiejar/src/moc_networkcookiejar.cpp\n\nQTDIR/bin/moc llembeddedbrowser_p.h -o moc_llembeddedbrowser_p.cpp\nQTDIR/bin/moc llembeddedbrowserwindow_p.h -o moc_llembeddedbrowserwindow_p.cpp\n\n";
+			shellScript = "QTDIR/bin/moc llwebpage.h -o moc_llwebpage.cpp\nQTDIR/bin/moc qtwebkit_cookiejar/src/networkcookiejar.h -o qtwebkit_cookiejar/src/moc_networkcookiejar.cpp\n\nQTDIR/bin/moc llembeddedbrowserwindow_p.h -o moc_llembeddedbrowserwindow_p.cpp\nQTDIR/bin/moc llnetworkaccessmanager.h -o moc_llnetworkaccessmanager.cpp\n\nQTDIR/bin/uic passworddialog.ui -o ui_passworddialog.h\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		994AD6B00A80123C00061DFB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				994AD6C10A8013E800061DFB /* llmozlib2_stub.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D2AAC0610554660B00DB518D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				99CCFC840A76AC7500ED39DE /* llembeddedbrowser.cpp in Sources */,
-				99CCFC870A76AC7500ED39DE /* llmozlib2.cpp in Sources */,
+				99CCFC870A76AC7500ED39DE /* llqtwebkit.cpp in Sources */,
 				99CCFC880A76AC7500ED39DE /* llembeddedbrowserwindow.cpp in Sources */,
 				9951589B0EE8BA030040F5E4 /* llwebpage.cpp in Sources */,
 				9951589E0EE8BA130040F5E4 /* moc_llwebpage.cpp in Sources */,
 				9922B4720F3A34170035C84F /* networkcookiejar.cpp in Sources */,
 				9922B4DF0F3A3A7C0035C84F /* moc_networkcookiejar.cpp in Sources */,
-				9922B4F10F3A3AE50035C84F /* moc_llembeddedbrowser_p.cpp in Sources */,
 				99693D040F6B12B3001DC1EB /* moc_llembeddedbrowserwindow_p.cpp in Sources */,
 				993150730F952054000609D0 /* llstyle.cpp in Sources */,
+				9999856D1045F33B00417AF3 /* llnetworkaccessmanager.cpp in Sources */,
+				992EFFA31045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,19 +205,18 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = lib;
-				EXPORTED_SYMBOLS_FILE = llmozlib2.exp;
+				EXPORTED_SYMBOLS_FILE = llqtwebkit.exp;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "MOZILLA_INTERNAL_API=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
 					"$(SRCROOT)/QTDIR/include//**",
 				);
-				INSTALL_PATH = "@executable_path/";
+				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(BUILT_PRODUCTS_DIR)",
 					"$(LIBRARY_SEARCH_PATHS)",
@@ -294,10 +227,6 @@
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
 				OTHER_LDFLAGS = (
-					"-lqico",
-					"-lqtiff",
-					"-lqsvg",
-					"-lQtSVG",
 					"-lqjpeg",
 					"-lqgif",
 					"-lQtWebKit",
@@ -319,7 +248,7 @@
 					"-lz",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_NAME = llmozlib2;
+				PRODUCT_NAME = llqtwebkit;
 				UNEXPORTED_SYMBOLS_FILE = "";
 				ZERO_LINK = YES;
 			};
@@ -329,152 +258,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
-				EXPORTED_SYMBOLS_FILE = llmozlib2.exp;
+				EXPORTED_SYMBOLS_FILE = llqtwebkit.exp;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PREPROCESSOR_DEFINITIONS = "MOZILLA_INTERNAL_API=1";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(HEADER_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/include//**",
-				);
-				INSTALL_PATH = "@executable_path/";
-				LIBRARY_SEARCH_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)",
-					"$(LIBRARY_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/lib/",
-					"$(SRCROOT)/QTDIR/plugins/imageformats/",
-					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
-				);
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
-				OTHER_LDFLAGS = (
-					"-lqjpeg",
-					"-lqgif",
-					"-lQtWebKit",
-					"-lQtNetwork",
-					"-lQtOpenGL",
-					"-lQtGui",
-					"-lQtCore",
-					"-lJavaScriptCore",
-					"-framework",
-					ApplicationServices,
-					"-framework",
-					AppKit,
-					"-framework",
-					Carbon,
-					"-framework",
-					OpenGL,
-					"-framework",
-					AGL,
-					"-lz",
-				);
-				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_NAME = llmozlib2;
-				UNEXPORTED_SYMBOLS_FILE = "";
-			};
-			name = Release;
-		};
-		1DEB914F08733D8E0010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				OTHER_CFLAGS = "-DLL_DARWIN=1";
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Debug;
-		};
-		1DEB915008733D8E0010E9CD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				OTHER_CFLAGS = (
-					"-DLL_DARWIN=1",
-					"-DSTATIC_QT=1",
-				);
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Release;
-		};
-		994AD6B70A80125900061DFB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)_stub";
-				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)_stub";
-				COPY_PHASE_STRIP = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
-				PRODUCT_NAME = llmozlib2;
-				SYMROOT = build;
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
-		994AD6B80A80125900061DFB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)_stub";
-				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)_stub";
-				COPY_PHASE_STRIP = YES;
-				EXECUTABLE_PREFIX = lib;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = "@executable_path/";
-				OTHER_LDFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = llmozlib2;
-				SYMROOT = build;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		9969FE620F9FB90A00738DB8 /* llwebkitlib */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				OTHER_CFLAGS = (
-					"-DLL_DARWIN=1",
-					"-DSTATIC_QT=1",
-				);
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = llwebkitlib;
-		};
-		9969FE630F9FB90A00738DB8 /* llwebkitlib */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				EXPORTED_SYMBOLS_FILE = llmozlib2.exp;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PREPROCESSOR_DEFINITIONS = "MOZILLA_INTERNAL_API=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
@@ -512,48 +299,43 @@
 					"-lz",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_NAME = llwebkitlib;
+				PRODUCT_NAME = llqtwebkit;
 				UNEXPORTED_SYMBOLS_FILE = "";
 			};
-			name = llwebkitlib;
+			name = Release;
 		};
-		9969FE640F9FB90A00738DB8 /* llwebkitlib */ = {
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)_stub";
-				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)_stub";
-				COPY_PHASE_STRIP = YES;
-				EXECUTABLE_PREFIX = lib;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = "@executable_path/";
-				OTHER_LDFLAGS = "";
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = "-DLL_DARWIN=1";
 				PREBINDING = NO;
-				PRODUCT_NAME = llmozlib2;
-				SYMROOT = build;
-				ZERO_LINK = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = llwebkitlib;
+			name = Debug;
 		};
-		997107800B4D802200395272 /* All Symbols */ = {
+		1DEB915008733D8E0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)_stub";
-				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)_stub";
-				COPY_PHASE_STRIP = YES;
-				EXECUTABLE_PREFIX = lib;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = "@executable_path/";
-				OTHER_LDFLAGS = "";
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = (
+					"-DLL_DARWIN=1",
+					"-DSTATIC_QT=1",
+				);
 				PREBINDING = NO;
-				PRODUCT_NAME = llmozlib2;
-				SYMROOT = build;
-				ZERO_LINK = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = "All Symbols";
+			name = Release;
 		};
 		997107810B4D802200395272 /* All Symbols */ = {
 			isa = XCBuildConfiguration;
@@ -563,13 +345,12 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PREPROCESSOR_DEFINITIONS = "MOZILLA_INTERNAL_API=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
 					"$(SRCROOT)/QTDIR/include//**",
 				);
-				INSTALL_PATH = "@executable_path/";
+				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(BUILT_PRODUCTS_DIR)",
 					"$(LIBRARY_SEARCH_PATHS)",
@@ -580,10 +361,6 @@
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
 				OTHER_LDFLAGS = (
-					"-lqico",
-					"-lqtiff",
-					"-lqsvg",
-					"-lQtSVG",
 					"-lqjpeg",
 					"-lqgif",
 					"-lQtWebKit",
@@ -605,7 +382,7 @@
 					"-lz",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_NAME = llmozlib2;
+				PRODUCT_NAME = llqtwebkit;
 				UNEXPORTED_SYMBOLS_FILE = "";
 			};
 			name = "All Symbols";
@@ -628,35 +405,22 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "llmozlib2" */ = {
+		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "llqtwebkit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB914B08733D8E0010E9CD /* Debug */,
 				1DEB914C08733D8E0010E9CD /* Release */,
-				9969FE630F9FB90A00738DB8 /* llwebkitlib */,
 				997107810B4D802200395272 /* All Symbols */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "llmozlib2" */ = {
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "llqtwebkit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB914F08733D8E0010E9CD /* Debug */,
 				1DEB915008733D8E0010E9CD /* Release */,
-				9969FE620F9FB90A00738DB8 /* llwebkitlib */,
 				997107820B4D802200395272 /* All Symbols */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		994AD6B60A80125900061DFB /* Build configuration list for PBXNativeTarget "llmozlib2_stub" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				994AD6B70A80125900061DFB /* Debug */,
-				994AD6B80A80125900061DFB /* Release */,
-				9969FE640F9FB90A00738DB8 /* llwebkitlib */,
-				997107800B4D802200395272 /* All Symbols */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
