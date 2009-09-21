@@ -9,32 +9,25 @@
 /* Begin PBXBuildFile section */
 		015B537E7F78A4C9282A0FE9 /* app.cpp in Build Sources */ = {isa = PBXBuildFile; fileRef = 4CBC2DC46671A9DD0A52A64C /* app.cpp */; settings = {ATTRIBUTES = (); }; };
 		0C6D4628EE0B0D1479A20551 /* AGL.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = C6766F86E49E9C8701C8E637 /* AGL.framework */; };
-		350D4AA9A035CBEABF9B29B4 /* GLUI.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 42D57C89BA87350F63663111 /* GLUI.framework */; };
 		41569C8A8920C770CF409E9A /* GLUT.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 998A1319FFA084ADB552E479 /* GLUT.framework */; };
 		51D4DBF7CB8537BE86EBD055 /* AppKit.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 821416211D63F190AAAD016A /* AppKit.framework */; };
 		57B33572D5FAAD856943E573 /* ubrowser.cpp in Build Sources */ = {isa = PBXBuildFile; fileRef = 9475521DFDC31464464E3F1B /* ubrowser.cpp */; settings = {ATTRIBUTES = (); }; };
+		9922AAA31068070A001E7C5C /* libllqtwebkit.dylib in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 9922AA39106804CE001E7C5C /* libllqtwebkit.dylib */; };
+		9922AAC3106809ED001E7C5C /* libllqtwebkit.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9922AA39106804CE001E7C5C /* libllqtwebkit.dylib */; };
+		9922AAFF10680C7A001E7C5C /* libglui.a in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 9922AAFE10680C7A001E7C5C /* libglui.a */; };
 		99515B0F0EEA020F0040F5E4 /* ubrowser.app in Project Copy */ = {isa = PBXBuildFile; fileRef = 99515B0C0EEA020F0040F5E4 /* ubrowser.app */; };
-		99515F900EEA04270040F5E4 /* libllmozlib2.dylib in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 99515F8C0EEA04190040F5E4 /* libllmozlib2.dylib */; };
-		99515F910EEA042B0040F5E4 /* libllmozlib2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 99515F8C0EEA04190040F5E4 /* libllmozlib2.dylib */; };
 		BCEF71E1EDFB18DA77DC750B /* OpenGL.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = DA18A6831232F53228631AD1 /* OpenGL.framework */; };
 		C8FD4A1AAA37CF2CA2824CCF /* Carbon.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = DA138F75C9F545CDAE7FB264 /* Carbon.framework */; };
 		F9E76E570E10AF14870553A7 /* ApplicationServices.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 27AE7A480FD6C52FCA80FECD /* ApplicationServices.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		99515F8B0EEA04190040F5E4 /* PBXContainerItemProxy */ = {
+		9922AA38106804CE001E7C5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 99515F830EEA04190040F5E4 /* llmozlib2.xcodeproj */;
+			containerPortal = 99515F830EEA04190040F5E4 /* llqtwebkit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC0630554660B00DB518D /* libllmozlib2.dylib */;
-			remoteInfo = llmozlib2;
-		};
-		99515F8D0EEA04190040F5E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99515F830EEA04190040F5E4 /* llmozlib2.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 994AD6B30A80123C00061DFB /* libllmozlib2.dylib */;
-			remoteInfo = llmozlib2_stub;
+			remoteGlobalIDString = D2AAC0630554660B00DB518D;
+			remoteInfo = llqtwebkit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -45,7 +38,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				99515F910EEA042B0040F5E4 /* libllmozlib2.dylib in CopyFiles */,
+				9922AAC3106809ED001E7C5C /* libllqtwebkit.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,13 +57,13 @@
 
 /* Begin PBXFileReference section */
 		27AE7A480FD6C52FCA80FECD /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
-		42D57C89BA87350F63663111 /* GLUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUI.framework; path = /Library/Frameworks/GLUI.framework; sourceTree = "<absolute>"; };
 		4CBC2DC46671A9DD0A52A64C /* app.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = app.cpp; sourceTree = "<group>"; };
 		5F10515168F4EB53C210985D /* ubrowser.pro */ = {isa = PBXFileReference; lastKnownFileType = text; path = ubrowser.pro; sourceTree = "<group>"; };
 		821416211D63F190AAAD016A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		9475521DFDC31464464E3F1B /* ubrowser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ubrowser.cpp; sourceTree = "<group>"; };
+		9922AAFE10680C7A001E7C5C /* libglui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglui.a; path = ../dependencies/lib/libglui.a; sourceTree = SOURCE_ROOT; };
 		99515B0C0EEA020F0040F5E4 /* ubrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ubrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		99515F830EEA04190040F5E4 /* llmozlib2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = llmozlib2.xcodeproj; path = ../../llmozlib2.xcodeproj; sourceTree = SOURCE_ROOT; };
+		99515F830EEA04190040F5E4 /* llqtwebkit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = llqtwebkit.xcodeproj; path = ../../llqtwebkit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		998A1319FFA084ADB552E479 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
 		C6766F86E49E9C8701C8E637 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		DA138F75C9F545CDAE7FB264 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -83,14 +76,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9922AAA31068070A001E7C5C /* libllqtwebkit.dylib in Frameworks & Libraries */,
 				41569C8A8920C770CF409E9A /* GLUT.framework in Frameworks & Libraries */,
-				350D4AA9A035CBEABF9B29B4 /* GLUI.framework in Frameworks & Libraries */,
 				C8FD4A1AAA37CF2CA2824CCF /* Carbon.framework in Frameworks & Libraries */,
 				51D4DBF7CB8537BE86EBD055 /* AppKit.framework in Frameworks & Libraries */,
 				F9E76E570E10AF14870553A7 /* ApplicationServices.framework in Frameworks & Libraries */,
 				BCEF71E1EDFB18DA77DC750B /* OpenGL.framework in Frameworks & Libraries */,
 				0C6D4628EE0B0D1479A20551 /* AGL.framework in Frameworks & Libraries */,
-				99515F900EEA04270040F5E4 /* libllmozlib2.dylib in Frameworks & Libraries */,
+				9922AAFF10680C7A001E7C5C /* libglui.a in Frameworks & Libraries */,
 			);
 			name = "Frameworks & Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -126,6 +119,14 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
+		9922AA35106804CE001E7C5C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9922AA39106804CE001E7C5C /* libllqtwebkit.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		99515B0D0EEA020F0040F5E4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -134,21 +135,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		99515F840EEA04190040F5E4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				99515F8C0EEA04190040F5E4 /* libllmozlib2.dylib */,
-				99515F8E0EEA04190040F5E4 /* libllmozlib2.dylib */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		ED1E82605DD74B483AF3C982 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				99515F830EEA04190040F5E4 /* llmozlib2.xcodeproj */,
+				9922AAFE10680C7A001E7C5C /* libglui.a */,
+				99515F830EEA04190040F5E4 /* llqtwebkit.xcodeproj */,
 				998A1319FFA084ADB552E479 /* GLUT.framework */,
-				42D57C89BA87350F63663111 /* GLUI.framework */,
 				DA138F75C9F545CDAE7FB264 /* Carbon.framework */,
 				821416211D63F190AAAD016A /* AppKit.framework */,
 				27AE7A480FD6C52FCA80FECD /* ApplicationServices.framework */,
@@ -202,8 +194,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 99515F840EEA04190040F5E4 /* Products */;
-					ProjectRef = 99515F830EEA04190040F5E4 /* llmozlib2.xcodeproj */;
+					ProductGroup = 9922AA35106804CE001E7C5C /* Products */;
+					ProjectRef = 99515F830EEA04190040F5E4 /* llqtwebkit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -214,18 +206,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		99515F8C0EEA04190040F5E4 /* libllmozlib2.dylib */ = {
+		9922AA39106804CE001E7C5C /* libllqtwebkit.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libllmozlib2.dylib;
-			remoteRef = 99515F8B0EEA04190040F5E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		99515F8E0EEA04190040F5E4 /* libllmozlib2.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libllmozlib2.dylib;
-			remoteRef = 99515F8D0EEA04190040F5E4 /* PBXContainerItemProxy */;
+			path = libllqtwebkit.dylib;
+			remoteRef = 9922AA38106804CE001E7C5C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -261,6 +246,8 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = 4.0;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Debug;
 		};
@@ -269,6 +256,8 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_VERSION = 4.0;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Release;
 		};
@@ -309,8 +298,10 @@
 					"/Users/monroe/projects/linden/torch-webkit/git/llmozlib/llmozlib2",
 					/Developer/Applications/Qt/plugins/imageformats,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../dependencies/lib\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-pipe",
@@ -391,8 +382,10 @@
 					"/Users/monroe/projects/linden/torch-webkit/git/llmozlib/llmozlib2",
 					/Developer/Applications/Qt/plugins/imageformats,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../dependencies/lib\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-pipe",
@@ -471,8 +464,10 @@
 					"/Users/monroe/projects/linden/torch-webkit/git/llmozlib/llmozlib2",
 					/Developer/Applications/Qt/plugins/imageformats,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../dependencies/lib\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-pipe",
