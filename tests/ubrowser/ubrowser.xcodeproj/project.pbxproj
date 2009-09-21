@@ -62,6 +62,7 @@
 		821416211D63F190AAAD016A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		9475521DFDC31464464E3F1B /* ubrowser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ubrowser.cpp; sourceTree = "<group>"; };
 		9922AAFE10680C7A001E7C5C /* libglui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglui.a; path = ../dependencies/lib/libglui.a; sourceTree = SOURCE_ROOT; };
+		9922AB40106825E8001E7C5C /* glui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glui.h; path = ../dependencies/include/glui.h; sourceTree = SOURCE_ROOT; };
 		99515B0C0EEA020F0040F5E4 /* ubrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ubrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99515F830EEA04190040F5E4 /* llqtwebkit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = llqtwebkit.xcodeproj; path = ../../llqtwebkit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		998A1319FFA084ADB552E479 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
@@ -115,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				F10548C8D0773876F0B0615A /* ubrowser.h */,
+				9922AB40106825E8001E7C5C /* glui.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
