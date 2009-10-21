@@ -40,7 +40,7 @@
 
 #ifdef LL_OSX
 #include "GLUT/glut.h"
-#include "GLUI/glui.h"
+#include "glui.h"
 #else
 #include "GL/glut.h"
 #include "glui.h"
