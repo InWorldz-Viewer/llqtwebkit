@@ -51,6 +51,7 @@ class LLWebPage : public QWebPage
     public slots:
         void loadProgressSlot(int progress);
         void statusBarMessageSlot(const QString &);
+        void titleChangedSlot(const QString &);
         void urlChangedSlot(const QUrl& url);
         void loadStarted();
         void loadFinished(bool ok);

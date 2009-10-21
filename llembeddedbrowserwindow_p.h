@@ -154,6 +154,7 @@ class LLEmbeddedBrowserWindowPrivate
         , mCurrentMouseDown(Qt::NoButton)
         , mPercentComplete(0)
         , mStatusText("")
+        , mTitle("")
         , mCurrentUri("")
         , mClickHref("")
         , mClickTarget("")
@@ -188,6 +189,7 @@ class LLEmbeddedBrowserWindowPrivate
 
     int16_t mPercentComplete;
     std::string mStatusText;
+    std::string mTitle;
     std::string mCurrentUri;
     std::string mClickHref;
     std::string mClickTarget;

@@ -58,6 +58,8 @@ LLWebPage::LLWebPage(QObject *parent)
             this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)),
             this, SLOT(loadFinished(bool)));
+    connect(mainFrame(), SIGNAL(titleChanged(const QString&)),
+            this, SLOT(titleChangedSlot(const QString&)));
 }
 
 void LLWebPage::loadProgressSlot(int progress)
@@ -78,11 +80,20 @@ void LLWebPage::statusBarMessageSlot(const QString& text)
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onStatusTextChange, event);
 }
 
-void LLWebPage::urlChangedSlot(const QUrl& url)
+void LLWebPage::titleChangedSlot(const QString& text)
 {
-    Q_UNUSED(url);
     if (!window)
         return;
+    window->d->mTitle = text.toStdString();
+	LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(), window->d->mTitle);
+	window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onTitleChange, event);
+}
+
+void LLWebPage::urlChangedSlot(const QUrl& url)
+{
+    if (!window)
+        return;
+
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLocationChange, event);
 }

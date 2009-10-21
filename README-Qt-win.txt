@@ -1,3 +1,3 @@
-Windows build instructions have moved to:
+Build instructions can be found here:
 
-https://wiki.secondlife.com/wiki/Qt_Webkit_Win32_Build_Instructions
+https://wiki.secondlife.com/wiki/LLQtWebKit

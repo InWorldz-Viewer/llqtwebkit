@@ -384,6 +384,14 @@ class testGL :
 
 		////////////////////////////////////////////////////////////////////////////////
 		// virtual
+		void onTitleChange( const EventType& eventIn )
+		{
+			std::cout << "Event: title changed to  " << eventIn.getStringValue() << std::endl;
+			glutSetWindowTitle( eventIn.getStringValue().c_str() );
+		};
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
 		void onLocationChange( const EventType& eventIn )
 		{
 			std::cout << "Event: location changed to " << eventIn.getStringValue() << std::endl;

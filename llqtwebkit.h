@@ -167,6 +167,7 @@ class LLEmbeddedBrowserWindowObserver
 		virtual void onNavigateComplete(const EventType& event);
 		virtual void onUpdateProgress(const EventType& event);
 		virtual void onStatusTextChange(const EventType& event);
+		virtual void onTitleChange(const EventType& event);
 		virtual void onLocationChange(const EventType& event);
 		virtual void onClickLinkHref(const EventType& event);
 		virtual void onClickLinkNoFollow(const EventType& event);

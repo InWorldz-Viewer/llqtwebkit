@@ -679,6 +679,10 @@ void LLEmbeddedBrowserWindowObserver::onStatusTextChange(const EventType&)
 {
 }
 
+void LLEmbeddedBrowserWindowObserver::onTitleChange(const EventType&)
+{
+}
+
 void LLEmbeddedBrowserWindowObserver::onLocationChange(const EventType&)
 {
 }
