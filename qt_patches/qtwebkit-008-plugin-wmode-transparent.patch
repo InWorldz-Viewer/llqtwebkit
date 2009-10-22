@@ -1,0 +1,23 @@
+diff -u -w a/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp b/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp
+--- a/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp
++++ b/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp
+@@ -519,8 +519,8 @@
+     unsigned size = paramNames.size();
+     unsigned paramCount = 0;
+ 
+-    m_paramNames = reinterpret_cast<char**>(fastMalloc(sizeof(char*) * size));
+-    m_paramValues = reinterpret_cast<char**>(fastMalloc(sizeof(char*) * size));
++    m_paramNames = reinterpret_cast<char**>(fastMalloc(sizeof(char*) * (size+strlen("wmode"))));
++    m_paramValues = reinterpret_cast<char**>(fastMalloc(sizeof(char*) * (size+strlen("transparent"))));
+ 
+     for (unsigned i = 0; i < size; i++) {
+         if (m_plugin->quirks().contains(PluginQuirkRemoveWindowlessVideoParam) && equalIgnoringCase(paramNames[i], "windowlessvideo"))
+@@ -532,6 +532,9 @@
+         paramCount++;
+     }
+ 
++	m_paramNames[paramCount] = createUTF8String("wmode");
++	m_paramValues[paramCount++] = createUTF8String("transparent");
++
+     m_paramCount = paramCount;
+ }
