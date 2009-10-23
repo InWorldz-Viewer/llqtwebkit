@@ -168,7 +168,7 @@ class testGL :
 				heightIn = 1;
 
 			LLQtWebKit::getInstance()->setSize(mBrowserWindowId, widthIn, heightIn );
-                        mNeedsUpdate = true;
+			mNeedsUpdate = true;
 
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
@@ -185,6 +185,9 @@ class testGL :
 			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();
 
+			mNeedsUpdate = true;
+			idle();
+
 			glutPostRedisplay();
 		};
 
@@ -193,6 +196,7 @@ class testGL :
 		void idle()
 		{
 			LLQtWebKit::getInstance()->pump(100);
+
 			// onPageChanged event sets this
 			if ( mNeedsUpdate )
 				// grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
@@ -278,6 +282,25 @@ class testGL :
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
+		// convert a GLUT keyboard modifier to an LLQtWebKit one
+		// (only valid in mouse and keyboard callbacks
+		LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode()
+		{
+			int modifiers = glutGetModifiers();
+
+			if ( GLUT_ACTIVE_SHIFT == modifiers )
+				return LLQtWebKit::KM_MODIFIER_SHIFT;
+
+			if ( GLUT_ACTIVE_CTRL == modifiers )
+				return LLQtWebKit::KM_MODIFIER_CONTROL;
+
+			if ( GLUT_ACTIVE_ALT == modifiers )
+				return LLQtWebKit::KM_MODIFIER_ALT;
+
+			return LLQtWebKit::KM_MODIFIER_NONE;
+		};
+
+		////////////////////////////////////////////////////////////////////////////////
 		//
 		void mouseButton( int button, int state, int xIn, int yIn )
 		{
@@ -290,13 +313,22 @@ class testGL :
 				if ( state == GLUT_DOWN )
 				{
 					// send event to LLQtWebKit
-					LLQtWebKit::getInstance()->mouseDown( mBrowserWindowId, xIn, yIn );
+					LLQtWebKit::getInstance()->mouseEvent( mBrowserWindowId,
+															LLQtWebKit::ME_MOUSE_DOWN,
+																LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+																	xIn, yIn,
+																		LLQtWebKit::KM_MODIFIER_NONE );
 				}
 				else
 				if ( state == GLUT_UP )
 				{
 					// send event to LLQtWebKit
-					LLQtWebKit::getInstance()->mouseUp( mBrowserWindowId, xIn, yIn );
+					LLQtWebKit::getInstance()->mouseEvent( mBrowserWindowId,
+															LLQtWebKit::ME_MOUSE_UP,
+																LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+																	xIn, yIn,
+																		LLQtWebKit::KM_MODIFIER_NONE );
+
 
 					// this seems better than sending focus on mouse down (still need to improve this)
 					LLQtWebKit::getInstance()->focusBrowser( mBrowserWindowId, true );
@@ -316,7 +348,12 @@ class testGL :
 			yIn = ( yIn * mBrowserWindowHeight ) / mAppWindowHeight;
 
 			// send event to LLQtWebKit
-			LLQtWebKit::getInstance()->mouseMove( mBrowserWindowId, xIn, yIn );
+			LLQtWebKit::getInstance()->mouseEvent( mBrowserWindowId,
+													LLQtWebKit::ME_MOUSE_MOVE,
+														LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+															xIn, yIn,
+																LLQtWebKit::KM_MODIFIER_NONE );
+
 
 			// force a GLUT  update
 			glutPostRedisplay();
@@ -326,15 +363,7 @@ class testGL :
 		//
 		void keyboard( unsigned char keyIn, int /*xIn*/, int /*yIn*/ )
 		{
-			int modifiers = glutGetModifiers();
-                        /*
-                            For future improvements
-                            GLUT_ACTIVE_SHIFT
-                            GLUT_ACTIVE_CTRL
-                            GLUT_ACTIVE_ALT
-                        */
-
-                        // ESC key exits
+			// ESC key exits
 			if ( keyIn == 27 )
 			{
 				reset();
@@ -342,8 +371,10 @@ class testGL :
 				exit( 0 );
 			};
 
+			LLQtWebKit::EKeyboardModifier modifier = LLQtWebKit::KM_MODIFIER_NONE; //getLLQtWebKitKeyboardModifierCode();
+
 			// send event to LLQtWebKit
-			LLQtWebKit::getInstance()->keyPress( mBrowserWindowId, keyIn );
+			LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, keyIn, modifier );
 		};
 
 		////////////////////////////////////////////////////////////////////////////////

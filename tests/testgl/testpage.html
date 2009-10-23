@@ -1,51 +1,41 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-<title>WebKit test</title>
-<script language="javascript" type="text/javascript">
-function setColor(x)
-{
-	colors = new Array(16)
-	colors[0]="0"
-	colors[1]="1"
-	colors[2]="2"
-	colors[3]="3"
-	colors[4]="4"
-	colors[5]="5"
-	colors[6]="6"
-	colors[7]="7"
-	colors[8]="8"
-	colors[9]="9"
-	colors[10]="a"
-	colors[11]="b"
-	colors[12]="c"
-	colors[13]="d"
-	colors[14]="e"
-	colors[15]="f"
-
-	digit = new Array(5)
-	color=""
-	for ( i = 0; i < 6; i++ )
-	{
-		digit[ i ]= colors[ Math.round( Math.random() * 15 ) ]
-		color = color + digit[ i ];
-	}
-
-	x.style.backgroundColor = color;
-}
-</script>
+<title>Browser test</title>
+<style type="text/css">
+body { font: normal 14px auto "Verdana", Verdana, Arial, Helvetica, sans-serif; color: #000; background: #6699bb; }
+a {	color: #c75f3e; 	text-decoration: none; }
+#mytable { padding: 0; margin: 0; }
+td { font: 12px Verdana, Verdana, Arial, Helvetica, sans-serif; border-right: 1px solid #c1dad7; border-bottom: 1px solid #c1dad7; background: #fff; padding: 6px 16px 6px 12px; color: #4f6b72; }
+</style>
 </head>
 <body>
+<table id="mytable" width="100%" width="100%">
+<tr>
+<td width="50%"><a href="http://google.com/">Google Search</a></td>
+<td width="50%"><a href="http://news.google.com">Google News</a></td>
+</tr>
+<tr>
+<td width="50%"><a href="http://google.com/">Test redirect from http://google.com</a></td>
+<td width="50%"><a href="secondlife:///app/teleport/Ahern/128/128/0/">SL URL - Teleport</a></td>
+</tr>
+<tr>
+<td width="50%"><a href="secondlife:///app/agent/69bfa8f2-ce10-46fe-b742-490e077d4c08/about">SL URL - Bio page</a></td>
+<td width="50%"><a href="http://secondlife.com/app/login/">SL Login page</a></td>
+</tr>
+<tr>
+<td width="50%"><a href="https://support.secondlife.com">HTTPS - Support.secondlife.com</a></td>
+<td width="50%"><a href="http://secondlife.com/app/login/?lang=en&channel=Second%20Life%20Release&version=1.23.0%20(0)&grid=Agni">Login url</a></td>
+</tr>
+<tr>
+<td width="50%"><a href="http://youtube.com">You Tube (Flash)</a></td>
+<td width="50%"><a href="http://imaginationcubed.com">Whiteboard (Flash)</a></td>
+</tr>
+<tr>
+<td width="50%"><a href="http://yvern.com/fMAME/fMAME.html">Flash MAME</a></td>
+<td width="50%"><a href="http://colorillo.com/ac79?1l0q6cp">Shared paint app (non Flash)</a></td>
+</tr>
 
-<p ondblclick="setColor(this);"><tt>Double click here - line color changes</tt></p>
-<ul>
-<li><a href="http://google.com/">Test redirect from http://google.com</a></li>
-<li><a href="secondlife:///app/teleport/Ahern/128/128/0/">Teleport to Ahern</a></li>
-<li><a href="secondlife:///app/agent/69bfa8f2-ce10-46fe-b742-490e077d4c08/about">Callum Linden bio</a></li>
-<li><a target="_external" href="http://www.google.com/">Always open external browser</a></li>
-<li><a target="_blank" href="http://www.yahoo.com/">Open with target = _blank</a></li>
-<li><a href="http://www.elizium.nu/scripts/lemmings/">Lemmings</a></li>
-<li><a href="https://support.secondlife.com/ics/support/default.asp?deptID=4417&task=knowledge&folderID=208">Support.secondlife.com</a></li>
-<li><a href="http://secondlife.com/app/login/?lang=en&channel=Second%20Life%20Release&version=1.23.0%20(0)&grid=Agni">Login url</a></li>
+<a href=">click</a>
 </body>
 </html>

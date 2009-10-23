@@ -1,5 +1,5 @@
 @rem ===== source/destination dirs that may change =====
-@set QT_SRC_DIR=C:\qt\qt-all-opensource-src-4.5.2
+@set QT_SRC_DIR=F:\qt\qt-all-opensource-src-4.5.2
 @set OPENSSL_SRC_DIR=F:\openssl-0.9.8k
 @set LLQTWEBKIT_SRC_DIR=F:\checkouts\llqtwebkit
 @set SL_DEST_DIR="C:\Documents and Settings\callum\Desktop"

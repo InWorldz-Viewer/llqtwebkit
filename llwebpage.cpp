@@ -91,6 +91,8 @@ void LLWebPage::titleChangedSlot(const QString& text)
 
 void LLWebPage::urlChangedSlot(const QUrl& url)
 {
+    Q_UNUSED(url);
+
     if (!window)
         return;
 

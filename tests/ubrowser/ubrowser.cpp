@@ -118,7 +118,7 @@ uBrowser::uBrowser() :
     // build list of home urls - first used for most things, rest used on a cube
     mHomeUrl[ 0 ] = "http://secondlife.com";
     mHomeUrl[ 1 ] = "http://google.com";
-    mHomeUrl[ 2 ] = "http://mozilla.org";
+    mHomeUrl[ 2 ] = "http://news.google.com";
     mHomeUrl[ 3 ] = "http://yahoo.com";
     mHomeUrl[ 4 ] = "http://ubrowser.com";
     mHomeUrl[ 5 ] = "http://maps.google.com";
@@ -138,7 +138,6 @@ uBrowser::uBrowser() :
     mBookmarks.push_back( std::pair< std::string, std::string >( "Google Home", "http://www.google.com" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Google Maps", "http://maps.google.com" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Mah-jongg", "http://www.mah-jongg.ch" ) );
-    mBookmarks.push_back( std::pair< std::string, std::string >( "Mozilla Home Page", "http://www.mozilla.org" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "SVG Opacity & Hover", "http://www.croczilla.com/svg/samples/opacity1/opacity1.xml" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "SVG Tetris (arrow keys and spacebar)", "http://www.croczilla.com/svg/samples/svgtetris/svgtetris.svg" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "SVG interactive Map", "http://www.carto.net/papers/svg/navigationTools/index.svg" ) );
@@ -146,8 +145,6 @@ uBrowser::uBrowser() :
     mBookmarks.push_back( std::pair< std::string, std::string >( "SVG interactive shapes", "http://www.croczilla.com/svg/samples/xbl1/xbl1.xml" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "SVG: Pilat's Draw", "http://pilat.free.fr/dessin_loc/draw.svg" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Sudoku", "http://www.mah-jongg.ch/sudoku" ) );
-    mBookmarks.push_back( std::pair< std::string, std::string >( "XUL Mozilla Amazon Browser (MAB)", "http://www.faser.net/mab/chrome/content/mab.xul" ) );
-    mBookmarks.push_back( std::pair< std::string, std::string >( "XUL Widgets", "http://www.hevanet.com/acorbin/xul/top.xul" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Yahoo! User Interface Library slider", "http://developer.yahoo.com/yui/examples/slider/rgb2.html?mode=dist" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Canvas Annimation Kit Experiment", "http://glimr.rubyforge.org/cake/canvas.html#DesignSketching" ) );
     mBookmarks.push_back( std::pair< std::string, std::string >( "Skrbl shared whiteboard (non-flash)", "http://skrbl.com" ) );
@@ -928,8 +925,8 @@ void uBrowser::windowPosToTexturePos( int winXIn, int winYIn, int& texXOut, int&
 //
 void uBrowser::keyboard( unsigned char keyIn, int xIn, int yIn )
 {
-    // pass on the keypress to Mozilla - will need something more sophisticated here one day
-    LLQtWebKit::getInstance()->keyPress( mCurWindowId, keyIn );
+    // pass on the keypress to Qt - will need something more sophisticated here one day
+	LLQtWebKit::getInstance()->unicodeInput(mCurWindowId, keyIn, LLQtWebKit::KM_MODIFIER_NONE );
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -940,7 +937,12 @@ void uBrowser::passiveMouse( int xIn, int yIn )
     int x, y, face;
     windowPosToTexturePos( xIn, yIn, x, y, face );
 
-    LLQtWebKit::getInstance()->mouseMove( mCurWindowId, x, y );
+	// send event to LLQtWebKit
+	LLQtWebKit::getInstance()->mouseEvent( mCurWindowId,
+											LLQtWebKit::ME_MOUSE_MOVE,
+												LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+													x, y,
+														LLQtWebKit::KM_MODIFIER_NONE );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -954,8 +956,12 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
     {
         if ( state == GLUT_DOWN )
         {
-            // send event to mozilla
-            LLQtWebKit::getInstance()->mouseDown( mCurWindowId, x, y );
+			// send event to LLQtWebKit
+			LLQtWebKit::getInstance()->mouseEvent( mCurWindowId,
+													LLQtWebKit::ME_MOUSE_DOWN,
+														LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+															x, y,
+																LLQtWebKit::KM_MODIFIER_NONE );
         }
         else
         if ( state == GLUT_UP )
@@ -965,8 +971,12 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
             // record which face was clicked on
             mCurFace = face;
 
-            // send event to mozilla
-            LLQtWebKit::getInstance()->mouseUp( mCurWindowId, x, y );
+			// send event to LLQtWebKit
+			LLQtWebKit::getInstance()->mouseEvent( mCurWindowId,
+													LLQtWebKit::ME_MOUSE_UP,
+														LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+															x, y,
+																LLQtWebKit::KM_MODIFIER_NONE );
 
             // this seems better than sending focus on mouse down (still need to improve this)
             LLQtWebKit::getInstance()->focusBrowser( mCurWindowId, true );
@@ -975,7 +985,26 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
     else
     if ( button == GLUT_RIGHT_BUTTON )
     {
-        LLQtWebKit::getInstance()->mouseLeftDoubleClick( mCurWindowId, x, y );
+        if ( state == GLUT_DOWN )
+        {
+			// send event to LLQtWebKit
+			LLQtWebKit::getInstance()->mouseEvent( mCurWindowId,
+													LLQtWebKit::ME_MOUSE_DOWN,
+														LLQtWebKit::MB_MOUSE_BUTTON_RIGHT,
+															x, y,
+																LLQtWebKit::KM_MODIFIER_NONE );
+        }
+        else
+        if ( state == GLUT_UP )
+        {
+			// send event to LLQtWebKit
+			LLQtWebKit::getInstance()->mouseEvent( mCurWindowId,
+													LLQtWebKit::ME_MOUSE_UP,
+														LLQtWebKit::MB_MOUSE_BUTTON_RIGHT,
+															x, y,
+																LLQtWebKit::KM_MODIFIER_NONE );
+        };
+
     };
 }
 
@@ -989,7 +1018,12 @@ void uBrowser::mouseMove( int xIn , int yIn )
 
     mCurWindowId = mWindowId[ face ];
 
-    LLQtWebKit::getInstance()->mouseMove( mCurWindowId, x, y );
+	// send event to LLQtWebKit
+	LLQtWebKit::getInstance()->mouseEvent( mCurWindowId,
+											LLQtWebKit::ME_MOUSE_MOVE,
+												LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+													x, y,
+														LLQtWebKit::KM_MODIFIER_NONE );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1261,9 +1295,9 @@ void* uBrowser::getNativeWindowHandle()
     return FindWindow( NULL, (LPCWSTR)mName.c_str() );
 
 #elif defined(__APPLE__)
-    // The Mozilla libraries need a "native window ref" for some reason.  They don't care which window it is, though.
+    // The libraries need a "native window ref" for some reason.  They don't care which window it is, though.
     // The GLUT window doesn't have a Carbon WindowRef, because it's a Cocoa window.  This code will create a window just to pacify
-    // the mozilla libraries.
+    // the libraries.
     static WindowRef dummyWindow = NULL;
     if(dummyWindow == NULL)
     {
@@ -1288,7 +1322,7 @@ void* uBrowser::getNativeWindowHandle()
 
     GtkWidget *win = gtk_window_new(GTK_WINDOW_POPUP);
     // Why a layout widget?  A MozContainer would be ideal, but
-    // it involves exposing Mozilla headers to mozlib-using apps.
+    // it involves exposing headers to mozlib-using apps.
     // A layout widget with a GtkWindow parent has the desired
     // properties of being plain GTK, having a window, and being
     // derived from a GtkContainer.

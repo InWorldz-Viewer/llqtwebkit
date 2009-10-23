@@ -126,12 +126,12 @@ void WebPage::onNavigateComplete(const EventType& event)
 
 void WebPage::onUpdateProgress(const EventType& event)
 {
-    qDebug() << __FUNCTION__ << event.getIntValue();
+    Q_UNUSED(event);
 }
 
 void WebPage::onStatusTextChange(const EventType& event)
 {
-    qDebug() << __FUNCTION__;
+    Q_UNUSED(event);
 }
 
 void WebPage::onLocationChange(const EventType& event)
@@ -144,14 +144,13 @@ void WebPage::onLocationChange(const EventType& event)
 
 void WebPage::onClickLinkHref(const EventType& event)
 {
-    qDebug() << __FUNCTION__;
+    Q_UNUSED(event);
 }
 
 void WebPage::onClickLinkNoFollow(const EventType& event)
 {
-    qDebug() << __FUNCTION__;
+    Q_UNUSED(event);
 }
-
 
 void WebPage::resizeEvent(QResizeEvent *event)
 {
@@ -161,6 +160,8 @@ void WebPage::resizeEvent(QResizeEvent *event)
 
 void WebPage::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
+
     int width = LLQtWebKit::getInstance()->getBrowserWidth(mBrowserWindowId);
     int height = LLQtWebKit::getInstance()->getBrowserHeight(mBrowserWindowId);
     const unsigned char* pixels = LLQtWebKit::getInstance()->getBrowserWindowPixels(mBrowserWindowId);
@@ -172,32 +173,50 @@ void WebPage::paintEvent(QPaintEvent *event)
 
 void WebPage::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    LLQtWebKit::getInstance()->mouseLeftDoubleClick(mBrowserWindowId, event->x(), event->y());
+	LLQtWebKit::getInstance()->mouseEvent( mBrowserWindowId,
+											LLQtWebKit::ME_MOUSE_DOUBLE_CLICK,
+												LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+													event->x(), event->y(),
+														LLQtWebKit::KM_MODIFIER_NONE );
 }
 
 void WebPage::mouseMoveEvent(QMouseEvent *event)
 {
-    LLQtWebKit::getInstance()->mouseMove(mBrowserWindowId, event->x(), event->y());
+	LLQtWebKit::getInstance()->mouseEvent( mBrowserWindowId,
+											LLQtWebKit::ME_MOUSE_MOVE,
+												LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+													event->x(), event->y(),
+														LLQtWebKit::KM_MODIFIER_NONE );
 }
 
 void WebPage::mousePressEvent(QMouseEvent *event)
 {
-    LLQtWebKit::getInstance()->mouseDown(mBrowserWindowId, event->x(), event->y());
+	LLQtWebKit::getInstance()->mouseEvent( mBrowserWindowId,
+											LLQtWebKit::ME_MOUSE_DOWN,
+												LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+													event->x(), event->y(),
+														LLQtWebKit::KM_MODIFIER_NONE );
 }
 
 void WebPage::mouseReleaseEvent(QMouseEvent *event)
 {
-    LLQtWebKit::getInstance()->mouseUp(mBrowserWindowId, event->x(), event->y());
+	LLQtWebKit::getInstance()->mouseEvent( mBrowserWindowId,
+											LLQtWebKit::ME_MOUSE_UP,
+												LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+													event->x(), event->y(),
+														LLQtWebKit::KM_MODIFIER_NONE );
+
     LLQtWebKit::getInstance()->focusBrowser(mBrowserWindowId, true);
 }
 
 void WebPage::keyPressEvent(QKeyEvent *event)
 {
+	Q_UNUSED(event);
 }
 
 void WebPage::keyReleaseEvent(QKeyEvent *event)
 {
-    LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, event->text().at(0).unicode());
+    LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, event->text().at(0).unicode(),LLQtWebKit::KM_MODIFIER_NONE);
 }
 
 void WebPage::goBack()

@@ -204,7 +204,7 @@ class LLQtWebKit
 			UA_NAVIGATE_FORWARD,
 			UA_NAVIGATE_RELOAD
 		} EUserAction;
-		
+
 		typedef enum e_key_event
 		{
 			KE_KEY_DOWN,
@@ -220,14 +220,24 @@ class LLQtWebKit
 			ME_MOUSE_DOUBLE_CLICK
 		}EMouseEvent;
 
+		typedef enum e_mouse_button
+		{
+			MB_MOUSE_BUTTON_LEFT,
+			MB_MOUSE_BUTTON_RIGHT,
+			MB_MOUSE_BUTTON_MIDDLE,
+			MB_MOUSE_BUTTON_EXTRA_1,
+			MB_MOUSE_BUTTON_EXTRA_2,
+		}EMouseButton;
+
 		typedef enum e_keyboard_modifier
 		{
+			KM_MODIFIER_NONE = 0x00,
 			KM_MODIFIER_SHIFT = 0x01,
 			KM_MODIFIER_CONTROL = 0x02,
 			KM_MODIFIER_ALT = 0x04,
 			KM_MODIFIER_META = 0x08
 		}EKeyboardModifier;
-		
+
 		virtual ~LLQtWebKit();
 
 		// singleton access
