@@ -418,12 +418,12 @@ int LLQtWebKit::getBrowserRowSpan(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLQtWebKit::mouseDown(int browser_window_id, int x, int y)
+bool LLQtWebKit::mouseEvent(int browser_window_id, EMouseEvent mouse_event, int button, int x, int y, EKeyboardModifier modifiers)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        browser_window->mouseDown(x, y);
+        browser_window->mouseEvent(mouse_event, button, x, y, modifiers);
         return true;
     }
 
@@ -432,12 +432,12 @@ bool LLQtWebKit::mouseDown(int browser_window_id, int x, int y)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLQtWebKit::mouseUp(int browser_window_id, int x, int y)
+bool LLQtWebKit::scrollWheelEvent(int browser_window_id, int x, int y, int scroll_x, int scroll_y, EKeyboardModifier modifiers)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        browser_window->mouseUp(x, y);
+        browser_window->scrollWheelEvent(x, y, scroll_x, scroll_y, modifiers);
         return true;
     }
 
@@ -446,12 +446,12 @@ bool LLQtWebKit::mouseUp(int browser_window_id, int x, int y)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLQtWebKit::mouseMove(int browser_window_id, int x, int y)
+bool LLQtWebKit::keyEvent(int browser_window_id, EKeyEvent key_event, int key_code, EKeyboardModifier modifiers)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        browser_window->mouseMove(x, y);
+        browser_window->keyEvent(key_event, key_code, modifiers);
         return true;
     }
 
@@ -460,38 +460,12 @@ bool LLQtWebKit::mouseMove(int browser_window_id, int x, int y)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLQtWebKit::mouseLeftDoubleClick(int browser_window_id, int x, int y)
+bool LLQtWebKit::unicodeInput(int browser_window_id, unsigned long uni_char, EKeyboardModifier modifiers)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        browser_window->mouseLeftDoubleClick(x, y);
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLQtWebKit::keyPress(int browser_window_id, int key_code)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->keyPress(key_code);
-        return true;
-    }
-
-    return false;
-}
-
-bool LLQtWebKit::unicodeInput(int browser_window_id, unsigned long uni_char)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->unicodeInput(uni_char);
+        browser_window->unicodeInput(uni_char, modifiers);
         return true;
     }
 

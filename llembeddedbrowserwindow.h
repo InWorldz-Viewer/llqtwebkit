@@ -109,12 +109,10 @@ public:
     void load404RedirectUrl();
 
     // mouse & keyboard events
-    void mouseDown(int16_t x, int16_t y);
-    void mouseUp(int16_t x, int16_t y);
-    void mouseMove(int16_t x, int16_t y);
-    void mouseLeftDoubleClick(int16_t x, int16_t y);
-    void keyPress(int16_t key_code);
-    void unicodeInput(uint32_t unicode_char);
+    void mouseEvent(LLQtWebKit::EMouseEvent mouse_event, int16_t button, int16_t x, int16_t y, LLQtWebKit::EKeyboardModifier modifiers);
+    void scrollWheelEvent(int16_t x, int16_t y, int16_t scroll_x, int16_t scroll_y, LLQtWebKit::EKeyboardModifier modifiers);
+    void keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t key_code, LLQtWebKit::EKeyboardModifier modifiers);
+    void unicodeInput(uint32_t unicode_char, LLQtWebKit::EKeyboardModifier modifiers);
 
     // allow consumers of this class and to observe browser events
     bool addObserver(LLEmbeddedBrowserWindowObserver* observer);

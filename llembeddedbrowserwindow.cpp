@@ -425,47 +425,153 @@ bool LLEmbeddedBrowserWindow::flipWindow(bool flip)
     return true;
 }
 
-void LLEmbeddedBrowserWindow::mouseLeftDoubleClick(int16_t x, int16_t y)
+static Qt::KeyboardModifiers convert_modifiers(LLQtWebKit::EKeyboardModifier modifiers)
+{
+	Qt::KeyboardModifiers result = Qt::NoModifier;
+	
+	if(modifiers & LLQtWebKit::KM_MODIFIER_SHIFT)
+		result |= Qt::ShiftModifier;
+
+	if(modifiers & LLQtWebKit::KM_MODIFIER_CONTROL)
+		result |= Qt::ControlModifier;
+
+	if(modifiers & LLQtWebKit::KM_MODIFIER_ALT)
+		result |= Qt::AltModifier;
+
+	if(modifiers & LLQtWebKit::KM_MODIFIER_META)
+		result |= Qt::MetaModifier;
+		
+	return result;
+}
+
+static Qt::MouseButton qt_button_from_button_number(int button)
+{
+	Qt::MouseButton result;
+	
+	switch(button)
+	{	
+		default:	result = Qt::NoButton;			break;
+		case 0:		result = Qt::LeftButton;		break;
+		case 1:		result = Qt::RightButton;		break;
+		case 2:		result = Qt::MidButton;			break;
+		case 3:		result = Qt::XButton1;			break;
+		case 4:		result = Qt::XButton2;			break;
+	}
+	
+	return result;
+}
+
+static QEvent::Type event_from_mouse_event(LLQtWebKit::EMouseEvent mouse_event)
+{
+	QEvent::Type result;
+	
+	switch(mouse_event)
+	{	
+		default:
+			result = QEvent::None;
+		break;
+		
+		case LLQtWebKit::ME_MOUSE_MOVE:
+			result = QEvent::MouseMove;
+		break;
+		
+		case LLQtWebKit::ME_MOUSE_DOWN:
+			result = QEvent::MouseButtonPress;
+		break;
+
+		case LLQtWebKit::ME_MOUSE_UP:
+			result = QEvent::MouseButtonRelease;
+		break;
+
+		case LLQtWebKit::ME_MOUSE_DOUBLE_CLICK:
+			result = QEvent::MouseButtonDblClick;
+		break;		
+	}
+	
+	return result;
+}
+
+static QEvent::Type event_from_keyboard_event(LLQtWebKit::EKeyEvent keyboard_event)
+{
+	QEvent::Type result;
+	
+	switch(keyboard_event)
+	{	
+		default:
+			result = QEvent::None;
+		break;
+		
+		case LLQtWebKit::KE_KEY_DOWN:
+		case LLQtWebKit::KE_KEY_REPEAT:
+			result = QEvent::KeyPress;
+		break;
+
+		case LLQtWebKit::KE_KEY_UP:
+			result = QEvent::KeyRelease;
+		break;
+	}
+	
+	return result;
+}
+
+void LLEmbeddedBrowserWindow::mouseEvent(LLQtWebKit::EMouseEvent mouse_event, int16_t button, int16_t x, int16_t y, LLQtWebKit::EKeyboardModifier modifiers)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
 #endif
-    QMouseEvent event(QEvent::MouseButtonDblClick, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, 0);
-    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
+
+	QEvent::Type type = event_from_mouse_event(mouse_event);
+	Qt::MouseButton qt_button = qt_button_from_button_number(button);
+	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
+	
+	if(type == QEvent::MouseMove)
+	{
+		// Mouse move events should always use "no button".
+		qt_button = Qt::NoButton;
+	}
+	
+	// FIXME: should the current button state be updated before or after constructing the event?
+	switch(type)
+	{
+		case QEvent::MouseButtonPress:
+		case QEvent::MouseButtonDblClick:
+			d->mCurrentMouseButtonState |= qt_button;
+		break;
+		
+		case QEvent::MouseButtonRelease:
+			d->mCurrentMouseButtonState &= ~qt_button;
+		break;
+		
+		default:
+		break;
+	}
+
+    QMouseEvent event(type, QPoint(x, y), qt_button, d->mCurrentMouseButtonState, qt_modifiers);
+		
+    qApp->sendEvent(d->mGraphicsView->viewport(), &event);	
 }
 
-void LLEmbeddedBrowserWindow::mouseDown(int16_t x, int16_t y)
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << d->mPage->mainFrame()->geometry();
-#endif
-    QMouseEvent event(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, 0, 0);
-    d->mCurrentMouseDown = Qt::LeftButton;
-    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
-}
-
-void LLEmbeddedBrowserWindow::mouseUp(int16_t x, int16_t y)
+void LLEmbeddedBrowserWindow::scrollWheelEvent(int16_t x, int16_t y, int16_t scroll_x, int16_t scroll_y, LLQtWebKit::EKeyboardModifier modifiers)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
 #endif
-    QMouseEvent event(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, 0, 0);
-    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
-    d->mCurrentMouseDown = Qt::NoButton;
+
+	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
+	
+	if(scroll_y != 0)
+	{
+	    QWheelEvent event(QPoint(x, y), scroll_y, d->mCurrentMouseButtonState, qt_modifiers, Qt::Vertical);
+	    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
+	}
+
+	if(scroll_x != 0)
+	{
+	    QWheelEvent event(QPoint(x, y), scroll_x, d->mCurrentMouseButtonState, qt_modifiers, Qt::Horizontal);
+	    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
+	}
 }
 
-void LLEmbeddedBrowserWindow::mouseMove(int16_t x, int16_t y)
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << d->mCurrentMouseDown;
-#endif
-    if (x == 0 && y == 0)
-    {
-        return;
-    }
-    QMouseEvent event(QEvent::MouseMove, QPoint(x, y), d->mCurrentMouseDown, 0, 0);
-    qApp->sendEvent(d->mGraphicsView->viewport(), &event);
-}
 
 // utility methods to set an error message so something else can look at it
 void LLEmbeddedBrowserWindow::scrollByLines(int16_t lines)
@@ -478,56 +584,58 @@ void LLEmbeddedBrowserWindow::scrollByLines(int16_t lines)
 }
 
 // accept a (mozilla-style) keycode
-void LLEmbeddedBrowserWindow::keyPress(int16_t key_code)
+void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t key_code, LLQtWebKit::EKeyboardModifier modifiers)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << key_code;
 #endif
     Qt::Key key;
     QChar text;
+	QEvent::Type type = event_from_keyboard_event(key_event);
+	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
+	bool auto_repeat = (key_event == LLQtWebKit::KE_KEY_REPEAT);
 
     switch (key_code)
 	{
 		case LL_DOM_VK_CANCEL:			key = Qt::Key_Cancel;		break;
-		case LL_DOM_VK_HELP:			key = Qt::Key_Help;		break;
+		case LL_DOM_VK_HELP:			key = Qt::Key_Help;			break;
 		case LL_DOM_VK_BACK_SPACE:		key = Qt::Key_Backspace;	break;
-		case LL_DOM_VK_TAB:			key = Qt::Key_Tab;		break;
+		case LL_DOM_VK_TAB:				key = Qt::Key_Tab;			break;
 		case LL_DOM_VK_CLEAR:			key = Qt::Key_Clear;		break;
 		case LL_DOM_VK_RETURN:			key = Qt::Key_Return;		break;
 		case LL_DOM_VK_ENTER:			key = Qt::Key_Enter;		break;
 		case LL_DOM_VK_SHIFT:			key = Qt::Key_Shift;		break;
 		case LL_DOM_VK_CONTROL:			key = Qt::Key_Control;		break;
-		case LL_DOM_VK_ALT:			key = Qt::Key_Alt;		break;
+		case LL_DOM_VK_ALT:				key = Qt::Key_Alt;			break;
 		case LL_DOM_VK_PAUSE:			key = Qt::Key_Pause;		break;
 		case LL_DOM_VK_CAPS_LOCK:		key = Qt::Key_CapsLock;		break;
 		case LL_DOM_VK_ESCAPE:			key = Qt::Key_Escape;		break;
 		case LL_DOM_VK_PAGE_UP:			key = Qt::Key_PageUp;		break;
 		case LL_DOM_VK_PAGE_DOWN:		key = Qt::Key_PageDown;		break;
-		case LL_DOM_VK_END:			key = Qt::Key_End;		break;
-		case LL_DOM_VK_HOME:			key = Qt::Key_Home;		break;
-		case LL_DOM_VK_LEFT:			key = Qt::Key_Left;		break;
-		case LL_DOM_VK_UP:			key = Qt::Key_Up;		break;
+		case LL_DOM_VK_END:				key = Qt::Key_End;			break;
+		case LL_DOM_VK_HOME:			key = Qt::Key_Home;			break;
+		case LL_DOM_VK_LEFT:			key = Qt::Key_Left;			break;
+		case LL_DOM_VK_UP:				key = Qt::Key_Up;			break;
 		case LL_DOM_VK_RIGHT:			key = Qt::Key_Right;		break;
-		case LL_DOM_VK_DOWN:			key = Qt::Key_Down;		break;
+		case LL_DOM_VK_DOWN:			key = Qt::Key_Down;			break;
 		case LL_DOM_VK_PRINTSCREEN:		key = Qt::Key_Print;		break;
 		case LL_DOM_VK_INSERT:			key = Qt::Key_Insert;		break;
 		case LL_DOM_VK_DELETE:			key = Qt::Key_Delete;		break;
-		case LL_DOM_VK_CONTEXT_MENU:	        key = Qt::Key_Menu;		break;
+		case LL_DOM_VK_CONTEXT_MENU:	key = Qt::Key_Menu;			break;
 
 		default:
 			key = (Qt::Key)key_code;
 			text = QChar(key_code);
 		break;
     }
+	
+	QKeyEvent event(type, key, qt_modifiers, text, auto_repeat);
 
-    QKeyEvent press_event(QEvent::KeyPress, key, Qt::NoModifier, text);
-    qApp->sendEvent(d->mGraphicsScene, &press_event);
-    QKeyEvent release_event(QEvent::KeyRelease, key, Qt::NoModifier, text);
-    qApp->sendEvent(d->mGraphicsScene, &release_event);
+	qApp->sendEvent(d->mGraphicsScene, &event);
 }
 
 // accept keyboard input that's already been translated into a unicode char.
-void LLEmbeddedBrowserWindow::unicodeInput(uint32_t unicode_char)
+void LLEmbeddedBrowserWindow::unicodeInput(uint32_t unicode_char, LLQtWebKit::EKeyboardModifier modifiers)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << unicode_char;
@@ -535,9 +643,11 @@ void LLEmbeddedBrowserWindow::unicodeInput(uint32_t unicode_char)
     Qt::Key key = Qt::Key_unknown;
     QChar input((uint)unicode_char);
 
-    QKeyEvent press_event(QEvent::KeyPress, key, Qt::NoModifier, input);
+	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
+
+    QKeyEvent press_event(QEvent::KeyPress, key, qt_modifiers, input);
     qApp->sendEvent(d->mGraphicsScene, &press_event);
-    QKeyEvent release_event(QEvent::KeyRelease, key, Qt::NoModifier, input);
+    QKeyEvent release_event(QEvent::KeyRelease, key, qt_modifiers, input);
     qApp->sendEvent(d->mGraphicsScene, &release_event);
 }
 
@@ -547,7 +657,7 @@ void LLEmbeddedBrowserWindow::focusBrowser(bool focus_browser)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << focus_browser;
 #endif
-    QFocusEvent event(focus_browser ? QEvent::FocusIn : QEvent::FocusOut, Qt::OtherFocusReason);
+    QFocusEvent event(focus_browser ? QEvent::FocusIn : QEvent::FocusOut, Qt::ActiveWindowFocusReason);
     qApp->sendEvent(d->mPage, &event);
 }
 

@@ -204,7 +204,30 @@ class LLQtWebKit
 			UA_NAVIGATE_FORWARD,
 			UA_NAVIGATE_RELOAD
 		} EUserAction;
+		
+		typedef enum e_key_event
+		{
+			KE_KEY_DOWN,
+			KE_KEY_REPEAT,
+			KE_KEY_UP
+		}EKeyEvent;
 
+		typedef enum e_mouse_event
+		{
+			ME_MOUSE_MOVE,
+			ME_MOUSE_DOWN,
+			ME_MOUSE_UP,
+			ME_MOUSE_DOUBLE_CLICK
+		}EMouseEvent;
+
+		typedef enum e_keyboard_modifier
+		{
+			KM_MODIFIER_SHIFT = 0x01,
+			KM_MODIFIER_CONTROL = 0x02,
+			KM_MODIFIER_ALT = 0x04,
+			KM_MODIFIER_META = 0x08
+		}EKeyboardModifier;
+		
 		virtual ~LLQtWebKit();
 
 		// singleton access
@@ -260,12 +283,10 @@ class LLQtWebKit
 		int getBrowserRowSpan(int browser_window_id);					// width in pixels * depth in bytes
 
 		// mouse/keyboard interaction
-		bool mouseDown(int browser_window_id, int x, int y);			// send a mouse down event to a browser window at given XY in browser space
-		bool mouseUp(int browser_window_id, int x, int y);				// send a mouse up event to a browser window at given XY in browser space
-		bool mouseMove(int browser_window_id, int x, int y);			// send a mouse move event to a browser window at given XY in browser space
-		bool mouseLeftDoubleClick(int browser_window_id, int x, int y);	// send a mouse left button double click to a browser window at given XY in browser space
-		bool keyPress(int browser_window_id, int key_code);						// send a key press event to a browser window
-		bool unicodeInput (int browser_window_id, unsigned long uni_char);		// send a unicode keypress event to a browser window
+		bool mouseEvent(int browser_window_id, EMouseEvent mouse_event, int button, int x, int y, EKeyboardModifier modifiers); // send a mouse event to a browser window at given XY in browser space
+		bool scrollWheelEvent(int browser_window_id, int x, int y, int scroll_x, int scroll_y, EKeyboardModifier modifiers);
+		bool keyEvent(int browser_window_id, EKeyEvent key_event, int key_code, EKeyboardModifier modifiers);	// send a key press event to a browser window
+		bool unicodeInput (int browser_window_id, unsigned long uni_char, EKeyboardModifier modifiers);		// send a unicode keypress event to a browser window
 		bool focusBrowser(int browser_window_id, bool focus_browser);			// set/remove focus to given browser window
 
 		// accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
