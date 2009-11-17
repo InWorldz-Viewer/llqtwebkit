@@ -25,6 +25,8 @@ $ patch -p1 < FILE
 * configure the build
 $ CXXFLAGS='-DQT_NO_INOTIFY' ./configure -v -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon -openssl-linked -no-3dnow -no-sse -no-sse2 -no-gtkstyle -no-xinput -no-sm -buildkey LL`date +%s` -no-sql-sqlite -no-scripttools -no-cups -no-dbus -no-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb -xrender -svg
 
+* Are you making a build for redistribution to other people and you are not specifically on Ubuntu Dapper?  Then please add '-fno-stack-protector' to the CXXFLAGS above.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
+
 * Accept the license, if you do.
 
 * Wait a few minutes while it churns and bootstraps.
@@ -48,6 +50,8 @@ $ export PATH=$PATH:$QTDIR/bin
 
 * configure llqtwebkit
 $ qmake CONFIG-=debug
+
+* Are you making a build for redistribution to other people and you are not specifically on Ubuntu Dapper?  Then please hack the resulting Makefile and add '-fno-stack-protector' to CXXFLAGS and CFLAGS.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
 
 * build it
 $ make
