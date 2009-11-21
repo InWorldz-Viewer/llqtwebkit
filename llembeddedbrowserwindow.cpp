@@ -590,7 +590,7 @@ void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t 
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << key_code;
 #endif
     Qt::Key key;
-    QChar text;
+    QString text; // default to an empty string
 	QEvent::Type type = event_from_keyboard_event(key_event);
 	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
 	bool auto_repeat = (key_event == LLQtWebKit::KE_KEY_REPEAT);
@@ -625,7 +625,7 @@ void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t 
 
 		default:
 			key = (Qt::Key)key_code;
-			text = QChar(key_code);
+			text = QString(QChar(key_code));
 		break;
     }
 	
