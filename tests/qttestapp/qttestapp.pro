@@ -4,22 +4,22 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../../
 
-CONFIG += static
+#CONFIG += static
 
-QT += webkit opengl network
+include(/Users/girish/webkit-git/WebKit.pri)
 
-unix {
-    LIBS += $$PWD/../../libllmozlib2.a
-}
+QT += opengl network
 
 !mac {
 unix {
     DEFINES += LL_LINUX
+    LIBS += $$PWD/../../libllqtwebkit.a
 }
 }
 
 mac {
     DEFINES += LL_OSX
+    LIBS += $$PWD/../../libllqtwebkit.dylib
 }
 
 
