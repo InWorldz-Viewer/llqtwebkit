@@ -85,6 +85,7 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d->mGraphicsView->setScene(d->mGraphicsScene);
     d->mGraphicsScene->setStickyFocus(true);
     d->mGraphicsView->viewport()->setParent(0);
+    d->m404RedirectUrl = std::string();
 }
 
 LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
@@ -707,9 +708,12 @@ void LLEmbeddedBrowserWindow::load404RedirectUrl()
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
-    QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
-	d->mPage->triggerAction(QWebPage::Stop);
-    d->mPage->mainFrame()->load(url);
+    if ( ! d->m404RedirectUrl.empty() )
+    {
+        QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
+    	d->mPage->triggerAction(QWebPage::Stop);
+        d->mPage->mainFrame()->load(url);
+    }
 }
 
 void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)
