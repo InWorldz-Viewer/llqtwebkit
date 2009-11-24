@@ -4,8 +4,9 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../../
 
-CONFIG += static
-QT += webkit opengl network
+#CONFIG += static
+QT += opengl network
+include(/Users/girish/webkit-git/WebKit.pri)
 
 !mac {
 unix {
@@ -21,7 +22,8 @@ unix {
 mac {
     LIBS += -framework GLUT -framework OpenGL -framework GLUI
     DEFINES += LL_OSX
-    QTPLUGIN += qgif
+	LIBS += $$PWD/../../libllqtwebkit.dylib
+    INCLUDEPATH += /Library/Frameworks/GLUI.framework/Headers
 }
 
 

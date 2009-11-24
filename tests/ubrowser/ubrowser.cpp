@@ -116,7 +116,7 @@ uBrowser::uBrowser() :
     gInstance = this;
 
     // build list of home urls - first used for most things, rest used on a cube
-    mHomeUrl[ 0 ] = "http://secondlife.com";
+    mHomeUrl[ 0 ] = "http://youtube.com";
     mHomeUrl[ 1 ] = "http://google.com";
     mHomeUrl[ 2 ] = "http://news.google.com";
     mHomeUrl[ 3 ] = "http://yahoo.com";
