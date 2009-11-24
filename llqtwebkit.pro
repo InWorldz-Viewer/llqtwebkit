@@ -1,12 +1,13 @@
-CONFIG += static
+#CONFIG += static
 TEMPLATE = lib
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
 
 include(llqtwebkit.pri)
+include(/Users/girish/webkit-git/WebKit.pri)
 
-QT += webkit opengl network gui
+QT += opengl network gui
 
 win32:debug {
   TARGET = llqtwebkitd
