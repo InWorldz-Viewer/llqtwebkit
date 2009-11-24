@@ -42,6 +42,8 @@
 #include "networkcookiejar.h"
 #include "llembeddedbrowser.h"
 
+#include <qgraphicswebview.h>
+
 class LLNetworkCookieJar : public NetworkCookieJar
 {
 public:
@@ -75,7 +77,7 @@ public:
 #endif
     LLNetworkCookieJar *mNetworkCookieJar;
 
-    QWidget *findWindow(QNetworkReply *);
+    QGraphicsWebView *findView(QNetworkReply *);
 
     QString mStorageDirectory;
     QList<LLEmbeddedBrowserWindow*> windows;

@@ -46,13 +46,11 @@ void LLStyle::drawComplexControl(ComplexControl control, const QStyleOptionCompl
 {
 #ifdef Q_WS_MAC
     if (control == QStyle::CC_ScrollBar) {
-        if (static_cast<const LLWebView*>(widget)) {
             QStyleOptionSlider* opt = (QStyleOptionSlider*)option;
             const QPoint topLeft = opt->rect.topLeft();
             painter->translate(topLeft);
             opt->rect.moveTo(QPoint(0, 0));
             painter->fillRect(opt->rect, opt->palette.background());
-        }
     }
 #endif
     QPlastiqueStyle::drawComplexControl(control, option, painter, widget);

@@ -324,7 +324,7 @@ void LLNetworkCookieJar::clear()
 #include "llembeddedbrowserwindow_p.h"
 #include <qnetworkreply.h>
 
-QWidget *LLEmbeddedBrowserPrivate::findWindow(QNetworkReply *reply)
+QGraphicsWebView *LLEmbeddedBrowserPrivate::findView(QNetworkReply *reply)
 {
     for (int i = 0; i < windows.count(); ++i)
         if (windows[i]->d->mView->url() == reply->url())
