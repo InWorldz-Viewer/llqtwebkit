@@ -77,7 +77,6 @@ private:
 WebPage::WebPage(QWidget *parent)
     : QWidget(parent)
 {
-    setMouseTracking(true);
     std::string applicationDir = std::string();
     std::string componentDir = applicationDir;
     std::string profileDir = applicationDir + "\\" + "testGL_profile";
