@@ -105,7 +105,6 @@ class LLEmbeddedBrowserWindowEmitter
 #include "llqtwebkit.h"
 #include "llembeddedbrowserwindow.h"
 #include <qgraphicssceneevent.h>
-#include <qgraphicswebview.h>
 
 class LLGraphicsScene : public QGraphicsScene
 {
@@ -127,21 +126,18 @@ private slots:
 };
 
 
-class LLWebView : public QGraphicsWebView
+class LLWebView : public QWebView
 {
     Q_OBJECT
 
 public:
-    LLWebView(QGraphicsItem *parent = 0);
+    LLWebView(QWidget *parent = 0);
     LLEmbeddedBrowserWindow *window;
 
     static QUrl guessUrlFromString(const QString &string);
 
-    int width() const { return boundingRect().width(); }
-    int height() const { return boundingRect().height(); }
-
 protected:
-    bool sceneEvent(QEvent *event);
+    bool event(QEvent *event);
 
     Qt::CursorShape currentShape;
 };
