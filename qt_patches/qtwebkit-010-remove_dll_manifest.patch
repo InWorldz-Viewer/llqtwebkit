@@ -1,3 +1,10 @@
+This patch disables embedding of Windows manifests into the output files because
+the Second Life build system embeds a different, custom manifest.
+
+It is specific to the Second Life build and only ever be applied for builds 
+that are to be used in the Second Life client.
+
+---
 diff -u a/mkspecs/win32-msvc2005/qmake.conf b/mkspecs/win32-msvc2005/qmake.conf
 --- a/mkspecs/win32-msvc2005/qmake.conf
 +++ b/mkspecs/win32-msvc2005/qmake.conf
