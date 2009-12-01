@@ -42,7 +42,7 @@
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowserwindow_p.h"
 
-//#define LINKTARGETPATCH
+#define LINKTARGETPATCH
 
 LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
@@ -138,6 +138,18 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 #else
         window->d->mClickTarget = std::string();
 #endif
+
+        // The "_external" target is specifically handled by the Second Life code
+        // and forces links to open in your system browser.
+        // We want to maintain that behavior but until we support
+        // opening a new "Window" for links with a target attribute,
+        // we will just open them in the same one
+        if ( ! window->d->mClickTarget.empty() &&
+        		window->d->mClickTarget != "_external" )
+        {
+            window->navigateTo( window->d->mClickHref );
+        };
+
         LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
                                            window->getCurrentUri(),
                                            window->d->mClickHref,
