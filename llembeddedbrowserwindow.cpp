@@ -85,6 +85,7 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d->mGraphicsView->setScene(d->mGraphicsScene);
     d->mGraphicsScene->setStickyFocus(true);
     d->mGraphicsView->viewport()->setParent(0);
+    d->m404RedirectUrl = std::string();
 }
 
 LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
@@ -590,7 +591,7 @@ void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t 
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << key_code;
 #endif
     Qt::Key key;
-    QChar text;
+    QString text; // default to an empty string
 	QEvent::Type type = event_from_keyboard_event(key_event);
 	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
 	bool auto_repeat = (key_event == LLQtWebKit::KE_KEY_REPEAT);
@@ -625,7 +626,7 @@ void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t 
 
 		default:
 			key = (Qt::Key)key_code;
-			text = QChar(key_code);
+			text = QString(QChar(key_code));
 		break;
     }
 	
@@ -707,9 +708,12 @@ void LLEmbeddedBrowserWindow::load404RedirectUrl()
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
-    QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
-	d->mPage->triggerAction(QWebPage::Stop);
-    d->mPage->mainFrame()->load(url);
+    if ( ! d->m404RedirectUrl.empty() )
+    {
+        QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
+    	d->mPage->triggerAction(QWebPage::Stop);
+        d->mPage->mainFrame()->load(url);
+    }
 }
 
 void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)

@@ -1,3 +1,11 @@
+This patch adds an extra parameter to the embedding instruction for plugins.
+It forces Flash plugins to be rendered in transparent mode so that they
+work correctly when the page is rendered to a memory buffer
+
+It is specific to the Second Life build and only ever be applied for builds 
+that are to be used in the Second Life client.
+
+---
 diff -u -w a/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp b/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp
 --- a/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp
 +++ b/src/3rdparty/webkit/WebCore/plugins/PluginView.cpp
