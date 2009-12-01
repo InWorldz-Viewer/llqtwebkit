@@ -1,0 +1,5 @@
+The pristine version of Qt corresponding to this build is available at:
+ftp://ftp.qtsoftware.com/qt/source/qt-all-opensource-src-4.6.0.tar.gz
+
+The patches we applied to the above package to get this build are available at:
+http://hg.secondlife.com/llqtwebkit/src/tip/qt_patches/
