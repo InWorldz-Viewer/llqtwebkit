@@ -1,4 +1,4 @@
 unix {
-#    DEFINES += STATIC_QT
-#    QTPLUGIN += qgif
+    DEFINES += STATIC_QT
+    QTPLUGIN += qgif
 }
