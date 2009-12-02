@@ -68,7 +68,7 @@
 #include <qdebug.h>
 #endif
 
-//#define WEBHISTORYPATCH
+#define WEBHISTORYPATCH
 
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
 {
