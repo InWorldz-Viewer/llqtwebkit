@@ -33,6 +33,7 @@
 #ifndef LLWEBPAGE_H
 #define LLWEBPAGE_H
 
+class QGraphicsWebView;
 #include <qwebpage.h>
 
 class LLEmbeddedBrowserWindow;
@@ -44,6 +45,8 @@ class LLWebPage : public QWebPage
         LLWebPage(QObject *parent = 0);
         LLEmbeddedBrowserWindow *window;
         bool event(QEvent *event);
+
+        QGraphicsWebView *webView;
 
     protected:
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);

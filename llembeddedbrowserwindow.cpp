@@ -76,6 +76,7 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d->mPage->window = this;
 
     d->mView = new LLWebView;
+    d->mPage->webView = d->mView;
     d->mView->window = this;
     d->mView->setPage(d->mPage);
     d->mGraphicsScene = new LLGraphicsScene;

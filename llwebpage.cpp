@@ -34,10 +34,12 @@
 
 #include <qnetworkrequest.h>
 #include <qwebframe.h>
+#include <qgraphicswebview.h>
 #include <qevent.h>
 #include <qdebug.h>
 #include <qmessagebox.h>
 #include <qwebelement.h>
+#include <qgraphicsproxywidget.h>
 
 #include "llqtwebkit.h"
 #include "llembeddedbrowserwindow.h"
@@ -188,11 +190,22 @@ QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFi
 void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
 {
     Q_UNUSED(frame);
-    QMessageBox *msgBox = new QMessageBox(view());
+    QMessageBox *msgBox = new QMessageBox;
     msgBox->setWindowTitle(tr("JavaScript Alert - %1").arg(mainFrame()->url().host()));
     msgBox->setText(msg);
     msgBox->addButton(QMessageBox::Ok);
+
+    QGraphicsProxyWidget *proxy = webView->scene()->addWidget(msgBox);
+    proxy->setWindowFlags(Qt::Window); // this makes the item a panel (and will make it get a window 'frame')
+    proxy->setPanelModality(QGraphicsItem::SceneModal);
+    proxy->setPos((webView->boundingRect().width() - msgBox->sizeHint().width())/2, 
+                  (webView->boundingRect().height() - msgBox->sizeHint().height())/2);
+    proxy->setActive(true); // make it the active item
+
+    connect(msgBox, SIGNAL(finished(int)), proxy, SLOT(deleteLater()));
     msgBox->show();
+
+    webView->scene()->setFocusItem(proxy);
 }
 
 bool LLWebPage::javaScriptConfirm(QWebFrame* frame, const QString& msg)
