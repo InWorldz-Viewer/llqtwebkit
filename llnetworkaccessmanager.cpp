@@ -40,6 +40,8 @@
 #include <qauthenticator.h>
 #include <qnetworkreply.h>
 #include <qtextdocument.h>
+#include <qgraphicsview.h>
+#include <qgraphicsscene.h>
 
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowser_p.h"
@@ -88,7 +90,7 @@ void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthe
 
     if (authDialog.realm.isEmpty()) {
         authDialog.realm = authenticator->realm();
-        authDialog.authenticationDialog = new QDialog(mBrowser->findWindow(reply));
+        authDialog.authenticationDialog = new QDialog(mBrowser->findView(reply)->scene()->views().first());
         authDialog.passwordDialog = new Ui::PasswordDialog;
         authDialog.passwordDialog->setupUi(authDialog.authenticationDialog);
         authDialog.passwordDialog->icon->setText(QString());

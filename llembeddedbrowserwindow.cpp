@@ -81,7 +81,7 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d->mGraphicsScene = new LLGraphicsScene;
     d->mGraphicsScene->window = this;
     d->mGraphicsView = new QGraphicsView;
-    d->mGraphicsScene->addWidget(d->mView);
+    d->mGraphicsScene->addItem(d->mView);
     d->mGraphicsView->setScene(d->mGraphicsScene);
     d->mGraphicsScene->setStickyFocus(true);
     d->mGraphicsView->viewport()->setParent(0);
@@ -784,8 +784,8 @@ void LLGraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
 
 #include <qdebug.h>
 #include <qcursor.h>
-LLWebView::LLWebView(QWidget *parent)
-    : QWebView(parent)
+LLWebView::LLWebView(QGraphicsItem *parent)
+    : QGraphicsWebView(parent)
     , window(0)
 {
 }
@@ -805,7 +805,7 @@ private:
 // END
 // XxX
 
-bool LLWebView::event(QEvent *event)
+bool LLWebView::sceneEvent(QEvent *event)
 {
     if (window
         && event->type() == static_cast<QEvent::Type>(SetCursorEvent::EventType)) {
@@ -848,6 +848,6 @@ bool LLWebView::event(QEvent *event)
         event->accept();
         return true;
     }
-    return QWebView::event(event);
+    return QGraphicsWebView::sceneEvent(event);
 }
 
