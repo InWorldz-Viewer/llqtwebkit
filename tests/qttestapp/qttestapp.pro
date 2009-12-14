@@ -9,7 +9,7 @@ CONFIG += static
 QT += webkit opengl network
 
 unix {
-    LIBS += $$PWD/../../libllmozlib2.a
+    LIBS += $$PWD/../../libllqtwebkit.so
 }
 
 !mac {
