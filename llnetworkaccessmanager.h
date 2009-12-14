@@ -42,13 +42,16 @@
 
 #include "ui_passworddialog.h"
 
+class QGraphicsProxyWidget;
+
 class AuthDialog
 {
 public:
-    AuthDialog() : authenticationDialog(0), passwordDialog(0) {}
+    AuthDialog() : authenticationDialog(0), passwordDialog(0), proxyWidget(0) {}
     QDialog *authenticationDialog;
     Ui::PasswordDialog *passwordDialog;
     QString realm;
+    QGraphicsProxyWidget *proxyWidget;
 };
 
 class LLEmbeddedBrowserPrivate;

@@ -68,6 +68,12 @@
 #include <qdebug.h>
 #endif
 
+#include <qcoreapplication.h>
+bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
+{
+    return QCoreApplication::sendSpontaneousEvent(receiver, event);
+}
+
 //#define WEBHISTORYPATCH
 
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
@@ -549,8 +555,8 @@ void LLEmbeddedBrowserWindow::mouseEvent(LLQtWebKit::EMouseEvent mouse_event, in
 	}
 
     QMouseEvent event(type, QPoint(x, y), qt_button, d->mCurrentMouseButtonState, qt_modifiers);
-		
-    qApp->sendEvent(d->mGraphicsView->viewport(), &event);	
+
+    qt_sendSpontaneousEvent(d->mGraphicsView->viewport(), &event);	
 }
 
 void LLEmbeddedBrowserWindow::scrollWheelEvent(int16_t x, int16_t y, int16_t scroll_x, int16_t scroll_y, LLQtWebKit::EKeyboardModifier modifiers)
@@ -659,6 +665,12 @@ void LLEmbeddedBrowserWindow::focusBrowser(bool focus_browser)
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << focus_browser;
 #endif
+    QEvent ev(QEvent::WindowActivate);
+    qApp->sendEvent(d->mGraphicsScene, &ev);
+
+    QEvent ev2(QEvent::ActivationChange);
+    qApp->sendEvent(d->mGraphicsScene, &ev2);
+
     QFocusEvent event(focus_browser ? QEvent::FocusIn : QEvent::FocusOut, Qt::ActiveWindowFocusReason);
     qApp->sendEvent(d->mPage, &event);
 }

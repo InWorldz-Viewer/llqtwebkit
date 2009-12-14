@@ -42,6 +42,8 @@
 #include <qtextdocument.h>
 #include <qgraphicsview.h>
 #include <qgraphicsscene.h>
+#include <qgraphicsproxywidget.h>
+#include <qdebug.h>
 
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowser_p.h"
@@ -90,23 +92,35 @@ void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthe
 
     if (authDialog.realm.isEmpty()) {
         authDialog.realm = authenticator->realm();
-        authDialog.authenticationDialog = new QDialog(mBrowser->findView(reply)->scene()->views().first());
+        QGraphicsWebView *webView = mBrowser->findView(reply);
+        QGraphicsScene *scene = webView->scene();
+        authDialog.authenticationDialog = new QDialog;
         authDialog.passwordDialog = new Ui::PasswordDialog;
         authDialog.passwordDialog->setupUi(authDialog.authenticationDialog);
         authDialog.passwordDialog->icon->setText(QString());
         authDialog.passwordDialog->icon->setPixmap(qApp->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, 0).pixmap(32, 32));
+        authDialog.passwordDialog->userName->setFocus();
 
         QString message = tr("<qt>Enter username and password for \"%1\" at %2</qt>")
             .arg(Qt::escape(authenticator->realm()))
             .arg(Qt::escape(reply->url().toString()));
         authDialog.passwordDialog->message->setText(message);
+
+        authDialog.proxyWidget = scene->addWidget(authDialog.authenticationDialog);
+        authDialog.proxyWidget->setWindowFlags(Qt::Window); // this makes the item a panel
+        authDialog.proxyWidget->setPanelModality(QGraphicsItem::SceneModal);
+        authDialog.proxyWidget->setPos((webView->boundingRect().width() - authDialog.authenticationDialog->sizeHint().width())/2, 
+                                       (webView->boundingRect().height() - authDialog.authenticationDialog->sizeHint().height())/2);
+        authDialog.proxyWidget->setActive(true);
+
         authDialog.authenticationDialog->show();
+        scene->setFocusItem(authDialog.proxyWidget);
         authDialogs.append(authDialog);
     } else if (authDialog.authenticationDialog->result() == QDialog::Accepted) {
         authenticator->setUser(authDialog.passwordDialog->userName->text());
         authenticator->setPassword(authDialog.passwordDialog->password->text());
-        delete authDialog.passwordDialog;
-        authDialog.authenticationDialog->deleteLater();
+        authDialog.proxyWidget->deleteLater();
+        authDialog.proxyWidget = 0;
         authDialog.authenticationDialog = 0;
         authDialogs.removeAt(i);
         authenticator->tryAgainLater = false;
