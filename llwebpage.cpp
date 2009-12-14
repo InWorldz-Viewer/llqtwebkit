@@ -37,6 +37,7 @@
 #include <qevent.h>
 #include <qdebug.h>
 #include <qmessagebox.h>
+#include <qwebelement.h>
 
 #include "llqtwebkit.h"
 #include "llembeddedbrowserwindow.h"
@@ -134,7 +135,7 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
         window->d->mClickHref = QString(url.toEncoded()).toStdString();
 #ifdef LINKTARGETPATCH
         QWebHitTestResult hitTest = mainFrame()->hitTestContent(currentPoint);
-        window->d->mClickTarget = hitTest.linkTarget().toStdString();
+        window->d->mClickTarget = hitTest.linkElement().attribute("target").toStdString();
 #else
         window->d->mClickTarget = std::string();
 #endif
