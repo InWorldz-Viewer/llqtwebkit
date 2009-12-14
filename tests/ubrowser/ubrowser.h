@@ -45,10 +45,10 @@
 
 #ifdef LL_OSX
 #include "GLUT/glut.h"
-#include "glui.h"
+#include "GL/glui.h"
 #else
 #include "GL/glut.h"
-#include "glui.h"
+#include "GL/glui.h"
 #endif
 #include "llqtwebkit.h"
 

@@ -43,7 +43,7 @@
 #include "glui.h"
 #else
 #include "GL/glut.h"
-#include "glui.h"
+#include "GL/glui.h"
 #endif
 
 uBrowser* theApp;
