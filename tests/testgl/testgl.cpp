@@ -432,6 +432,9 @@ class testGL :
 		// virtual
 		void onClickLinkHref( const EventType& eventIn )
 		{
+			if ( ! eventIn.getStringValue2().empty() )
+				std::cout << "Event: clicked on link to " << eventIn.getStringValue() << " with a target of " << eventIn.getStringValue2() << std::endl;
+			else
 			std::cout << "Event: clicked on link to " << eventIn.getStringValue() << std::endl;
 		};
 

@@ -39,5 +39,5 @@ UI_DIR      = .ui
 MOC_DIR     = .moc
 OBJECTS_DIR = .obj
 
-#include(static.pri)
+include(static.pri)
 include(qtwebkit_cookiejar/src/src.pri)

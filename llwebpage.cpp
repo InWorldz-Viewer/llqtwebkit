@@ -45,8 +45,6 @@
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowserwindow_p.h"
 
-#define LINKTARGETPATCH
-
 LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
     , window(0)
@@ -106,10 +104,13 @@ void LLWebPage::urlChangedSlot(const QUrl& url)
 bool LLWebPage::event(QEvent *event)
 {
     bool result = QWebPage::event(event);
-    if (event->type() == QEvent::MouseButtonPress)
-        currentPoint = ((QMouseEvent*)event)->pos();
-    else if (event->type() == QEvent::MouseButtonRelease)
+
+    if (event->type() == QEvent::GraphicsSceneMousePress)
+		currentPoint = ((QGraphicsSceneMouseEvent*)event)->pos().toPoint();
+    else
+    if (event->type() == QEvent::GraphicsSceneMouseRelease)
         currentPoint = QPoint();
+
     return result;
 }
 
@@ -132,15 +133,16 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
         return false;
     }
     bool accepted = QWebPage::acceptNavigationRequest(frame, request, type);
-    if (accepted && type == QWebPage::NavigationTypeLinkClicked) {
+    if (accepted && type == QWebPage::NavigationTypeLinkClicked)
+    {
+		// save URL
         QUrl url = request.url();
         window->d->mClickHref = QString(url.toEncoded()).toStdString();
-#ifdef LINKTARGETPATCH
-        QWebHitTestResult hitTest = mainFrame()->hitTestContent(currentPoint);
-        window->d->mClickTarget = hitTest.linkElement().attribute("target").toStdString();
-#else
-        window->d->mClickTarget = std::string();
-#endif
+
+		// save target attribute
+		QWebHitTestResult hitTest = mainFrame()->hitTestContent(currentPoint);
+		QString linkTarget = hitTest.linkElement().attribute("target");
+		window->d->mClickTarget = linkTarget.toStdString();
 
         // The "_external" target is specifically handled by the Second Life code
         // and forces links to open in your system browser.
@@ -198,7 +200,7 @@ void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
     QGraphicsProxyWidget *proxy = webView->scene()->addWidget(msgBox);
     proxy->setWindowFlags(Qt::Window); // this makes the item a panel (and will make it get a window 'frame')
     proxy->setPanelModality(QGraphicsItem::SceneModal);
-    proxy->setPos((webView->boundingRect().width() - msgBox->sizeHint().width())/2, 
+    proxy->setPos((webView->boundingRect().width() - msgBox->sizeHint().width())/2,
                   (webView->boundingRect().height() - msgBox->sizeHint().height())/2);
     proxy->setActive(true); // make it the active item
 

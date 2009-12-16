@@ -47,10 +47,10 @@
 class LLNetworkCookieJar : public NetworkCookieJar
 {
 public:
-    LLNetworkCookieJar(QObject *parent = 0);
+    LLNetworkCookieJar(QObject *parent, const QString &filename);
     ~LLNetworkCookieJar();
 
-    void load(const QString &filename);
+    void load();
     void save();
 
     QList<QNetworkCookie> cookiesForUrl(const QUrl& url) const;
