@@ -68,11 +68,15 @@
 #include <qdebug.h>
 #endif
 
-#include <qcoreapplication.h>
-bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
-{
-    return QCoreApplication::sendSpontaneousEvent(receiver, event);
-}
+#if LL_DARWIN
+	// Don't define qt_sendSpontaneousEvent on the mac -- it causes a multiply-defined symbol.
+#else
+	#include <qcoreapplication.h>
+	bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
+	{
+		return QCoreApplication::sendSpontaneousEvent(receiver, event);
+	}
+#endif
 
 //#define WEBHISTORYPATCH
 
