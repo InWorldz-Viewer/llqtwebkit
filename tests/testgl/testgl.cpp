@@ -50,13 +50,19 @@ extern "C" {
 #include <iostream>
 #include <stdlib.h>
 
+#ifdef LL_OSX
+// I'm not sure why STATIC_QT is getting defined, but the Q_IMPORT_PLUGIN thing doesn't seem to be necessary on the mac.
+#undef STATIC_QT
+#endif
+
 #ifdef STATIC_QT
 #include <QtPlugin>
 Q_IMPORT_PLUGIN(qgif)
 #endif
 
 #ifdef LL_OSX
-#include "GLUT/glut.h"
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
 #else
 #include "GL/glut.h"
 #endif
@@ -125,10 +131,10 @@ class testGL :
 			std::string applicationDir = std::string( arg0 ).substr( 0, std::string( arg0 ).find_last_of("\\/") );
 
                         std::string componentDir = applicationDir;
-#if defined(LL_LINUX)
-			std::string profileDir = applicationDir + "/" + "testGL_profile";
-#else
+#ifdef _WINDOWS
 			std::string profileDir = applicationDir + "\\" + "testGL_profile";
+#else
+			std::string profileDir = applicationDir + "/" + "testGL_profile";
 #endif
 			LLQtWebKit::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
 			mBrowserWindowId = LLQtWebKit::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
