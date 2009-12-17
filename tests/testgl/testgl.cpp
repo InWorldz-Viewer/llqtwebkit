@@ -376,11 +376,21 @@ class testGL :
 
 				exit( 0 );
 			};
+			
+			// control-R reloads
+			if ( keyIn == 18 )
+			{
+				
+				LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_RELOAD );
+			}
+			else
+			{
+				
+				LLQtWebKit::EKeyboardModifier modifier = LLQtWebKit::KM_MODIFIER_NONE; //getLLQtWebKitKeyboardModifierCode();
 
-			LLQtWebKit::EKeyboardModifier modifier = LLQtWebKit::KM_MODIFIER_NONE; //getLLQtWebKitKeyboardModifierCode();
-
-			// send event to LLQtWebKit
-			LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, keyIn, modifier );
+				// send event to LLQtWebKit
+				LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, keyIn, modifier );
+			}
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
