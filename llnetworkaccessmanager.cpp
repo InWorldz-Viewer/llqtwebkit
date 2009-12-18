@@ -103,7 +103,7 @@ void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthe
 
         QString message = tr("<qt>Enter username and password for \"%1\" at %2</qt>")
             .arg(Qt::escape(authenticator->realm()))
-            .arg(Qt::escape(reply->url().toString()));
+            .arg(Qt::escape(reply->url().host()));
         authDialog.passwordDialog->message->setText(message);
 
         authDialog.proxyWidget = scene->addWidget(authDialog.authenticationDialog);
