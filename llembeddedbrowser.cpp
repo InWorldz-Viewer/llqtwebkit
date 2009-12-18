@@ -148,6 +148,10 @@ bool LLEmbeddedBrowser::init(std::string application_directory,
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFixedFontSize, 16);
 
+	// use default text encoding - not sure how this helps right now so commenting out until we
+	// understand how to use it a little better.
+    //QWebSettings::globalSettings()->setDefaultTextEncoding ( "" );
+
     return reset();
 }
 
@@ -262,10 +266,10 @@ int LLEmbeddedBrowser::getWindowCount() const
 void LLEmbeddedBrowser::pump(int max_milliseconds)
 {
 #if 0
-	// This USED to be necessary on the mac, but with Qt 4.6 it seems to cause trouble loading some pages, 
+	// This USED to be necessary on the mac, but with Qt 4.6 it seems to cause trouble loading some pages,
 	// and using processEvents() seems to work properly now.
 	// Leaving this here in case these issues ever come back.
-	
+
 	// On the Mac, calling processEvents hangs the viewer.
 	// I'm not entirely sure this does everything we need, but it seems to work better, and allows things like animated gifs to work.
 	qApp->sendPostedEvents();
