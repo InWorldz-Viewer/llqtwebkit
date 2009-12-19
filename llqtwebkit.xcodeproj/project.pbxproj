@@ -222,6 +222,7 @@
 					"$(LIBRARY_SEARCH_PATHS)",
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
+					"$(SRCROOT)/QTDIR/plugins/codecs/",
 					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
@@ -229,6 +230,10 @@
 				OTHER_LDFLAGS = (
 					"-lqjpeg",
 					"-lqgif",
+					"-lqcncodecs",
+					"-lqjpcodecs",
+					"-lqkrcodecs",
+					"-lqtwcodecs",
 					"-lQtWebKit",
 					"-lQtNetwork",
 					"-lQtOpenGL",
@@ -273,6 +278,7 @@
 					"$(LIBRARY_SEARCH_PATHS)",
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
+					"$(SRCROOT)/QTDIR/plugins/codecs/",
 					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
@@ -280,6 +286,10 @@
 				OTHER_LDFLAGS = (
 					"-lqjpeg",
 					"-lqgif",
+					"-lqcncodecs",
+					"-lqjpcodecs",
+					"-lqkrcodecs",
+					"-lqtwcodecs",
 					"-lQtWebKit",
 					"-lQtNetwork",
 					"-lQtOpenGL",
@@ -358,6 +368,7 @@
 					"$(LIBRARY_SEARCH_PATHS)",
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
+					"$(SRCROOT)/QTDIR/plugins/codecs/",
 					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
@@ -365,6 +376,10 @@
 				OTHER_LDFLAGS = (
 					"-lqjpeg",
 					"-lqgif",
+					"-lqcncodecs",
+					"-lqjpcodecs",
+					"-lqkrcodecs",
+					"-lqtwcodecs",
 					"-lQtWebKit",
 					"-lQtNetwork",
 					"-lQtOpenGL",
