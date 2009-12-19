@@ -1,12 +1,12 @@
 @rem ===== source/destination dirs that may change =====
 @set QT_SRC_DIR=C:\Work\qt\qt-girishs-qt
 @set OPENSSL_SRC_DIR=c:\work\qt\openssl-0.9.8l
-@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit-4-6.monroe
-@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit-4-6.monroe\licenses
+@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit-4.6
+@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit-4.6\licenses
 @set SL_DEST_DIR="C:\Documents and Settings\callum\Desktop"
 
 @rem ===== library filename =====
-@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-20091215.tar.bz2"
+@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-20091218.tar.bz2"
 
 @rem =============== instructions ===============
 @echo This batch file copies the Qt, OpenSSL and LLQtWebKit files required 
@@ -52,7 +52,7 @@
 @if exist %QT_SRC_DIR%\lib\qtmain.lib          (xcopy %QT_SRC_DIR%\lib\qtmain.lib          %SL_DEST_DIR%\libraries\i686-win32\lib\release\ /y)   else echo ****** MISSING: %QT_SRC_DIR%\lib\qtmain.lib
 @if exist %QT_SRC_DIR%\lib\qtmaind.lib         (xcopy %QT_SRC_DIR%\lib\qtmaind.lib         %SL_DEST_DIR%\libraries\i686-win32\lib\debug\ /y)     else echo ****** MISSING: %QT_SRC_DIR%\lib\qtmaind.lib
 
-@rem =============== Qt plugin dlls for debug and release ===============
+@rem =============== Qt imageformat plugin dlls for debug and release ===============
 @if exist %QT_SRC_DIR%\plugins\imageformats\qgifd4.dll  (xcopy %QT_SRC_DIR%\plugins\imageformats\qgifd4.dll  %SL_DEST_DIR%\libraries\i686-win32\lib\debug\imageformats\ /y)   else echo ****** MISSING: %QT_SRC_DIR%\plugins\imageformats\qgifd4.dll
 @if exist %QT_SRC_DIR%\plugins\imageformats\qicod4.dll  (xcopy %QT_SRC_DIR%\plugins\imageformats\qicod4.dll  %SL_DEST_DIR%\libraries\i686-win32\lib\debug\imageformats\ /y)   else echo ****** MISSING: %QT_SRC_DIR%\plugins\imageformats\qicod4.dll
 @if exist %QT_SRC_DIR%\plugins\imageformats\qjpegd4.dll (xcopy %QT_SRC_DIR%\plugins\imageformats\qjpegd4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\debug\imageformats\ /y)   else echo ****** MISSING: %QT_SRC_DIR%\plugins\imageformats\qjpegd4.dll
@@ -65,6 +65,16 @@
 @if exist %QT_SRC_DIR%\plugins\imageformats\qmng4.dll   (xcopy %QT_SRC_DIR%\plugins\imageformats\qmng4.dll   %SL_DEST_DIR%\libraries\i686-win32\lib\release\imageformats\ /y) else echo ****** MISSING: %QT_SRC_DIR%\plugins\imageformats\qmng4.dll
 @if exist %QT_SRC_DIR%\plugins\imageformats\qsvg4.dll   (xcopy %QT_SRC_DIR%\plugins\imageformats\qsvg4.dll   %SL_DEST_DIR%\libraries\i686-win32\lib\release\imageformats\ /y) else echo ****** MISSING: %QT_SRC_DIR%\plugins\imageformats\qsvg4.dll
 @if exist %QT_SRC_DIR%\plugins\imageformats\qtiff4.dll  (xcopy %QT_SRC_DIR%\plugins\imageformats\qtiff4.dll  %SL_DEST_DIR%\libraries\i686-win32\lib\release\imageformats\ /y) else echo ****** MISSING: %QT_SRC_DIR%\plugins\imageformats\qtiff4.dll
+
+@rem =============== Qt codec plugin dlls for debug and release ===============
+@if exist %QT_SRC_DIR%\plugins\codecs\qcncodecs4.dll  (xcopy %QT_SRC_DIR%\plugins\codecs\qcncodecs4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\release\codecs\ /y)  else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qcncodecs4.dll
+@if exist %QT_SRC_DIR%\plugins\codecs\qcncodecsd4.dll (xcopy %QT_SRC_DIR%\plugins\codecs\qcncodecsd4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\debug\codecs\ /y) else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qcncodecsd4.dll
+@if exist %QT_SRC_DIR%\plugins\codecs\qjpcodecs4.dll  (xcopy %QT_SRC_DIR%\plugins\codecs\qjpcodecs4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\release\codecs\ /y)  else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qjpcodecs4.dll
+@if exist %QT_SRC_DIR%\plugins\codecs\qjpcodecsd4.dll (xcopy %QT_SRC_DIR%\plugins\codecs\qjpcodecsd4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\debug\codecs\ /y) else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qjpcodecsd4.dll
+@if exist %QT_SRC_DIR%\plugins\codecs\qkrcodecs4.dll  (xcopy %QT_SRC_DIR%\plugins\codecs\qkrcodecs4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\release\codecs\ /y)  else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qkrcodecs4.dll
+@if exist %QT_SRC_DIR%\plugins\codecs\qkrcodecsd4.dll (xcopy %QT_SRC_DIR%\plugins\codecs\qkrcodecsd4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\debug\codecs\ /y) else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qkrcodecsd4.dll
+@if exist %QT_SRC_DIR%\plugins\codecs\qtwcodecs4.dll  (xcopy %QT_SRC_DIR%\plugins\codecs\qtwcodecs4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\release\codecs\ /y)  else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qtwcodecs4.dll
+@if exist %QT_SRC_DIR%\plugins\codecs\qtwcodecsd4.dll (xcopy %QT_SRC_DIR%\plugins\codecs\qtwcodecsd4.dll %SL_DEST_DIR%\libraries\i686-win32\lib\debug\codecs\ /y) else echo ****** MISSING: %QT_SRC_DIR%\plugins\codecs\qtwcodecsd4.dll
 
 @rem =============== OpenSSL dlls ===============
 @if exist %OPENSSL_SRC_DIR%\out32dll\ssleay32.dll (xcopy %OPENSSL_SRC_DIR%\out32dll\ssleay32.dll %SL_DEST_DIR%\libraries\i686-win32\lib\debug\ /y)   else echo ****** MISSING: %OPENSSL_SRC_DIR%\out32dll\ssleay32.dll
