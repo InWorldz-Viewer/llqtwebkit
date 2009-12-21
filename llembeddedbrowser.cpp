@@ -85,6 +85,7 @@ LLEmbeddedBrowserPrivate::~LLEmbeddedBrowserPrivate()
 {
     delete mApplication;
     delete mNetworkAccessManager;
+    delete mNetworkCookieJar;
 }
 
 
@@ -139,13 +140,17 @@ bool LLEmbeddedBrowser::init(std::string application_directory,
     QWebSettings::setIconDatabasePath(d->mStorageDirectory);
 	// The gif and jpeg libraries should be installed in component_directory/imageformats/
 	QCoreApplication::addLibraryPath(QString::fromStdString(component_directory));
-	
+
 	// turn on plugins by default
 	enablePlugins( true );
 
     // Until QtWebkit defaults to 16
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFixedFontSize, 16);
+
+	// use default text encoding - not sure how this helps right now so commenting out until we
+	// understand how to use it a little better.
+    //QWebSettings::globalSettings()->setDefaultTextEncoding ( "" );
 
     return reset();
 }
@@ -163,8 +168,8 @@ bool LLEmbeddedBrowser::reset()
     if (QLatin1String(qVersion()) != QLatin1String("4.5.1"))
         d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
-    d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager);
-    d->mNetworkCookieJar->load(d->mStorageDirectory + "/cookies");
+    d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager, d->mStorageDirectory + "/cookies");
+    d->mNetworkCookieJar->load();
     d->mNetworkAccessManager->setCookieJar(d->mNetworkCookieJar);
     clearLastError();
     return true;
@@ -260,7 +265,11 @@ int LLEmbeddedBrowser::getWindowCount() const
 
 void LLEmbeddedBrowser::pump(int max_milliseconds)
 {
-#if LL_DARWIN
+#if 0
+	// This USED to be necessary on the mac, but with Qt 4.6 it seems to cause trouble loading some pages,
+	// and using processEvents() seems to work properly now.
+	// Leaving this here in case these issues ever come back.
+
 	// On the Mac, calling processEvents hangs the viewer.
 	// I'm not entirely sure this does everything we need, but it seems to work better, and allows things like animated gifs to work.
 	qApp->sendPostedEvents();
@@ -270,9 +279,10 @@ void LLEmbeddedBrowser::pump(int max_milliseconds)
 #endif
 }
 
-LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent)
+LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent, const QString& cookie_filename)
     : NetworkCookieJar(parent)
     , mAllowCookies(true)
+    , mCookieStorageFileName(cookie_filename)
 {
 }
 
@@ -281,25 +291,26 @@ LLNetworkCookieJar::~LLNetworkCookieJar()
     save();
 }
 
-void LLNetworkCookieJar::load(const QString &fileName)
+void LLNetworkCookieJar::load()
 {
-    QFile file(fileName);
+    QFile file(mCookieStorageFileName);
     if (!file.open(QFile::ReadOnly))
         return;
     QByteArray state = file.readAll();
     restoreState(state);
-    mCookieStorageFileName = fileName;
+    file.close();
 }
 
 void LLNetworkCookieJar::save()
 {
     if (mCookieStorageFileName.isEmpty())
         return;
+
     QFile file(mCookieStorageFileName);
-    if (!file.open(QFile::WriteOnly))
-        return;
+    file.open(QFile::ReadWrite);
     QByteArray state = saveState();
     file.write(state);
+    file.close();
 }
 
 QList<QNetworkCookie> LLNetworkCookieJar::cookiesForUrl(const QUrl& url) const

@@ -50,13 +50,19 @@ extern "C" {
 #include <iostream>
 #include <stdlib.h>
 
+#ifdef LL_OSX
+// I'm not sure why STATIC_QT is getting defined, but the Q_IMPORT_PLUGIN thing doesn't seem to be necessary on the mac.
+#undef STATIC_QT
+#endif
+
 #ifdef STATIC_QT
 #include <QtPlugin>
 Q_IMPORT_PLUGIN(qgif)
 #endif
 
 #ifdef LL_OSX
-#include "GLUT/glut.h"
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
 #else
 #include "GL/glut.h"
 #endif
@@ -92,7 +98,7 @@ class testGL :
 
 		////////////////////////////////////////////////////////////////////////////////
 		//
-		void init( char* arg0 )
+		void init( const std::string argv0, const std::string argv1 )
 		{
 			// OpenGL initialization
 			glClearColor( 0.0f, 0.0f, 0.0f, 0.5f);
@@ -122,13 +128,13 @@ class testGL :
 						0, GL_RGB, GL_UNSIGNED_BYTE, 0 );
 
 			// create a single browser window and set things up.
-			std::string applicationDir = std::string( arg0 ).substr( 0, std::string( arg0 ).find_last_of("\\/") );
+			std::string applicationDir = argv0.substr( 0, argv0.find_last_of("\\/") );
 
-                        std::string componentDir = applicationDir;
-#if defined(LL_LINUX)
-			std::string profileDir = applicationDir + "/" + "testGL_profile";
-#else
+            std::string componentDir = applicationDir;
+#ifdef _WINDOWS
 			std::string profileDir = applicationDir + "\\" + "testGL_profile";
+#else
+			std::string profileDir = applicationDir + "/" + "testGL_profile";
 #endif
 			LLQtWebKit::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
 			mBrowserWindowId = LLQtWebKit::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
@@ -145,8 +151,11 @@ class testGL :
 			// don't flip bitmap
 			LLQtWebKit::getInstance()->flipWindow( mBrowserWindowId, false );
 
-			// go to the "home page"
-			LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, mHomeUrl );
+			// go to the "home page" or URL passed in via command line
+			if ( ! argv1.empty() )
+				LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, argv1 );
+			else
+				LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, mHomeUrl );
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -371,10 +380,20 @@ class testGL :
 				exit( 0 );
 			};
 
-			LLQtWebKit::EKeyboardModifier modifier = LLQtWebKit::KM_MODIFIER_NONE; //getLLQtWebKitKeyboardModifierCode();
+			// control-R reloads
+			if ( keyIn == 18 )
+			{
 
-			// send event to LLQtWebKit
-			LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, keyIn, modifier );
+				LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_RELOAD );
+			}
+			else
+			{
+
+				LLQtWebKit::EKeyboardModifier modifier = LLQtWebKit::KM_MODIFIER_NONE; //getLLQtWebKitKeyboardModifierCode();
+
+				// send event to LLQtWebKit
+				LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, keyIn, modifier );
+			}
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -432,6 +451,9 @@ class testGL :
 		// virtual
 		void onClickLinkHref( const EventType& eventIn )
 		{
+			if ( ! eventIn.getStringValue2().empty() )
+				std::cout << "Event: clicked on link to " << eventIn.getStringValue() << " with a target of " << eventIn.getStringValue2() << std::endl;
+			else
 			std::cout << "Event: clicked on link to " << eventIn.getStringValue() << std::endl;
 		};
 
@@ -565,7 +587,11 @@ int main( int argc, char* argv[] )
 
 		glutCreateWindow( theApp->getAppWindowName().c_str() );
 
-		theApp->init( argv[ 0 ] );
+		std::string url = "";
+		if ( 2 == argc )
+			url = std::string( argv[ 1 ] );
+
+		theApp->init( std::string( argv[ 0 ] ), url );
 
 		glutKeyboardFunc( glutKeyboard );
 

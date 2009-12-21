@@ -18,6 +18,12 @@ unix {
 mac {
     DEFINES += LL_OSX
     LIBS += -framework GLUT -framework OpenGL
+    debug {
+      LIBS += $$PWD/../../build/Debug/libllqtwebkit.dylib
+    }
+    release {
+      LIBS += $$PWD/../../build/Release/libllqtwebkit.dylib
+    }
 }
 
 

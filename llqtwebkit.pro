@@ -1,3 +1,4 @@
+CONFIG += static
 TEMPLATE = lib
 TARGET = 
 DEPENDPATH += .
