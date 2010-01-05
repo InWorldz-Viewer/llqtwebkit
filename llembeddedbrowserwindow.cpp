@@ -620,7 +620,11 @@ void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t 
 		case LL_DOM_VK_BACK_SPACE:		key = Qt::Key_Backspace;	break;
 		case LL_DOM_VK_TAB:				key = Qt::Key_Tab;			break;
 		case LL_DOM_VK_CLEAR:			key = Qt::Key_Clear;		break;
-		case LL_DOM_VK_RETURN:			key = Qt::Key_Return;		break;
+		case LL_DOM_VK_RETURN:
+			key = Qt::Key_Return;		
+			// Special case to fix return key not working.
+			text = QString(QChar('\x0d'));
+		break;
 		case LL_DOM_VK_ENTER:			key = Qt::Key_Enter;		break;
 		case LL_DOM_VK_SHIFT:			key = Qt::Key_Shift;		break;
 		case LL_DOM_VK_CONTROL:			key = Qt::Key_Control;		break;
