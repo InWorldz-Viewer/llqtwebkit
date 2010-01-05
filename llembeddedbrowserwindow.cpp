@@ -74,7 +74,7 @@
 #include <qdebug.h>
 #endif
 
-#if LL_DARWIN
+#if LL_DARWIN || LL_LINUX
 	// Don't define qt_sendSpontaneousEvent on the mac -- it causes a multiply-defined symbol.
 #else
 	#include <qcoreapplication.h>
