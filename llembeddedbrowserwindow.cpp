@@ -60,12 +60,13 @@
 	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
 	Q_IMPORT_PLUGIN(qgif)
 	Q_IMPORT_PLUGIN(qjpeg)
-
+#ifndef LL_LINUX
 	// Qt also has its own translators for CJK text encodings we need to pull in.
 	Q_IMPORT_PLUGIN(qcncodecs)
 	Q_IMPORT_PLUGIN(qjpcodecs)
 	Q_IMPORT_PLUGIN(qkrcodecs)
 	Q_IMPORT_PLUGIN(qtwcodecs)
+#endif
 #endif
 
 //#define LLEMBEDDEDBROWSER_DEBUG
