@@ -6,7 +6,7 @@
 @set SL_DEST_DIR="C:\Documents and Settings\callum\Desktop"
 
 @rem ===== library filename =====
-@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-20091218.tar.bz2"
+@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-20100104.tar.bz2"
 
 @rem =============== instructions ===============
 @echo This batch file copies the Qt, OpenSSL and LLQtWebKit files required 
@@ -15,6 +15,7 @@
 @echo LLQtWebKit tarball will be: %LLQTWEBKIT_LIB_FILENAME%
 @echo.
 @echo ******* IMPORTANT ******* 
+@echo.
 @echo Check the following before proceeding:
 @echo.
 @echo   1/ You built release and debug versions of LLQtWebKit

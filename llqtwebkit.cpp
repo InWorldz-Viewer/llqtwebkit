@@ -512,6 +512,54 @@ std::string LLQtWebKit::getNoFollowScheme(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+void LLQtWebKit::setExternalTargetName(int browser_window_id, std::string name)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        browser_window->setExternalTargetName(name);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+std::string LLQtWebKit::getExternalTargetName(int browser_window_id)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        return browser_window->getExternalTargetName();
+    }
+
+    return ("");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void LLQtWebKit::setBlankTargetName(int browser_window_id, std::string name)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        browser_window->setBlankTargetName(name);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+std::string LLQtWebKit::getBlankTargetName(int browser_window_id)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        return browser_window->getBlankTargetName();
+    }
+
+    return ("");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
 void LLQtWebKit::pump(int max_milliseconds)
 {
     LLEmbeddedBrowser::getInstance()->pump(max_milliseconds);

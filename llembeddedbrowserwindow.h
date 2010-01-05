@@ -123,6 +123,12 @@ public:
     void setNoFollowScheme(std::string scheme);
     std::string getNoFollowScheme();
 
+	// accessor/mutator for names of HREF attributes for blank and external targets
+	void setExternalTargetName(std::string name);
+	std::string getExternalTargetName();
+	void setBlankTargetName(std::string name);
+	std::string getBlankTargetName();
+
 	// prepend the current history with the given url
 	void prependHistoryUrl(std::string url);
 	// clear the URL history

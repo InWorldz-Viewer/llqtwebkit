@@ -144,23 +144,44 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 		QString linkTarget = hitTest.linkElement().attribute("target");
 		window->d->mClickTarget = linkTarget.toStdString();
 
-        // The "_external" target is specifically handled by the Second Life code
-        // and forces links to open in your system browser.
-        // We want to maintain that behavior but until we support
-        // opening a new "Window" for links with a target attribute,
-        // we will just open them in the same one
-        if ( ! window->d->mClickTarget.empty() &&
-        		window->d->mClickTarget != "_external" )
-        {
-            window->navigateTo( window->d->mClickHref );
-        };
+		// start off with no target specified
+		int link_target_type = LinkTargetType::LTT_TARGET_UNKNOWN;
 
-        LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
-                                           window->getCurrentUri(),
-                                           window->d->mClickHref,
-                                           window->d->mClickTarget);
-        window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkHref, event);
-    }
+		// user clicks on a link with a target that matches the one set as "External"
+		if ( window->d->mClickTarget.empty() )
+		{
+			link_target_type = LinkTargetType::LTT_TARGET_NONE;
+		}
+		else
+		if ( window->d->mClickTarget == window->d->mExternalTargetName )
+		{
+			link_target_type = LinkTargetType::LTT_TARGET_EXTERNAL;
+		}
+		else
+		// user clicks on a link with a target that matches the one set as "Blank"
+		if ( window->d->mClickTarget == window->d->mBlankTargetName )
+		{
+			link_target_type = LinkTargetType::LTT_TARGET_BLANK;
+		}
+		else
+		{
+			// default action for a target we haven't specified is to open in current window
+			// and fire an event as if it was a normal click
+			window->navigateTo( window->d->mClickHref );
+
+			link_target_type = LinkTargetType::LTT_TARGET_OTHER;
+		};
+
+		// build event based on the data we have and emit it
+		LLEmbeddedBrowserWindowEvent event( window->getWindowId(),
+											window->getCurrentUri(),
+											window->d->mClickHref,
+											window->d->mClickTarget,
+											link_target_type );
+
+		window->d->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onClickLinkHref, event );
+	};
+
     return accepted;
 }
 

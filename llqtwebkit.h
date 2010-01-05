@@ -81,6 +81,16 @@ class LLEmbeddedBrowserWindowEvent
 		{
 		};
 
+		// 2 strings plus an int passed with the event
+		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value, std::string value2, int link_type ) :
+			mEventWindowId(window_id),
+			mEventUri(uri),
+			mStringVal(value),
+			mStringVal2(value2),
+			mLinkType(link_type)
+		{
+		};
+
 		// string and an int passed with the event
 		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value, int value2) :
 			mEventWindowId(window_id),
@@ -130,6 +140,11 @@ class LLEmbeddedBrowserWindowEvent
 			return mStringVal2;
 		};
 
+		int getLinkType() const
+		{
+			return mLinkType;
+		};
+
 		void getRectValue(int& x, int& y, int& width, int& height) const
 		{
 			x = mXVal;
@@ -144,6 +159,7 @@ class LLEmbeddedBrowserWindowEvent
 		int mIntVal;
 		std::string mStringVal;
 		std::string mStringVal2;
+		int mLinkType;
 		int mXVal;
 		int mYVal;
 		int mWidthVal;
@@ -303,7 +319,13 @@ class LLQtWebKit
 		void setNoFollowScheme(int browser_window_id, std::string scheme);
 		std::string getNoFollowScheme(int browser_window_id);
 
-                void pump(int max_milliseconds);
+		// accessor/mutator for names of HREF attributes for blank and external targets
+		void setExternalTargetName(int browser_window_id, std::string name);
+		std::string getExternalTargetName(int browser_window_id);
+		void setBlankTargetName(int browser_window_id, std::string name);
+		std::string getBlankTargetName(int browser_window_id);
+
+		void pump(int max_milliseconds);
 
 		void prependHistoryUrl(int browser_window_id, std::string url);
 		void clearHistory(int browser_window_id);
@@ -452,5 +474,14 @@ const unsigned long LL_DOM_VK_CLOSE_BRACKET  = 0xDD;
 const unsigned long LL_DOM_VK_QUOTE          = 0xDE;
 
 const unsigned long LL_DOM_VK_META           = 0xE0;
+
+namespace LinkTargetType
+{
+	const unsigned int LTT_TARGET_UNKNOWN		 = 0x00;
+	const unsigned int LTT_TARGET_NONE			 = 0x01;
+	const unsigned int LTT_TARGET_BLANK			 = 0x02;
+	const unsigned int LTT_TARGET_EXTERNAL		 = 0x04;
+	const unsigned int LTT_TARGET_OTHER			 = 0x08;
+}
 
 #endif // LLQTWEBKIT_H

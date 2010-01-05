@@ -78,7 +78,7 @@ class testGL :
 	public:
 		testGL() :
 			mAppWindowWidth( 800 ),						// dimensions of the app window - can be anything
-			mAppWindowHeight( 600 ),
+			mAppWindowHeight( 900 ),
 			mBrowserWindowWidth( mAppWindowWidth ),		// dimensions of the embedded browser - can be anything
 			mBrowserWindowHeight( mAppWindowHeight ),	// but looks best when it's the same as the app window
 			mAppTextureWidth( -1 ),						// dimensions of the texture that the browser is rendered into
@@ -89,11 +89,11 @@ class testGL :
 			mHomeUrl(),
 			mNeedsUpdate( true )						// flag to indicate if browser texture needs an update
 		{
-                        char tempPath[255];
-                        char *cwd = getcwd(tempPath, 255);
-                        mHomeUrl = cwd;
-                        mHomeUrl.append("/testpage.html");
-                        std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
+			char tempPath[255];
+            char *cwd = getcwd(tempPath, 255);
+            mHomeUrl = cwd;
+            mHomeUrl.append("/testpage.html");
+            std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -150,6 +150,9 @@ class testGL :
 
 			// don't flip bitmap
 			LLQtWebKit::getInstance()->flipWindow( mBrowserWindowId, false );
+
+			// don't flip bitmap
+			LLQtWebKit::getInstance()->setExternalTargetName( mBrowserWindowId, "Wibblewobbly" );
 
 			// go to the "home page" or URL passed in via command line
 			if ( ! argv1.empty() )
@@ -381,9 +384,14 @@ class testGL :
 			};
 
 			// control-R reloads
+			if ( keyIn == 8 )
+			{
+				LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, mHomeUrl );
+			}
+			else
+			// control-R reloads
 			if ( keyIn == 18 )
 			{
-
 				LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_RELOAD );
 			}
 			else
@@ -451,10 +459,22 @@ class testGL :
 		// virtual
 		void onClickLinkHref( const EventType& eventIn )
 		{
-			if ( ! eventIn.getStringValue2().empty() )
-				std::cout << "Event: clicked on link to " << eventIn.getStringValue() << " with a target of " << eventIn.getStringValue2() << std::endl;
-			else
-			std::cout << "Event: clicked on link to " << eventIn.getStringValue() << std::endl;
+			std::cout << "Event: clicked on link:" << std::endl;
+			std::cout << "  URL:" << eventIn.getStringValue() << std::endl;
+
+			if ( LinkTargetType::LTT_TARGET_NONE == eventIn.getLinkType() )
+				std::cout << "  No target attribute - opening in current window" << std::endl;
+
+			if ( LinkTargetType::LTT_TARGET_BLANK == eventIn.getLinkType() )
+				std::cout << "  Blank target attribute (" << eventIn.getStringValue2() << ") - not navigating in this window" << std::endl;
+
+			if ( LinkTargetType::LTT_TARGET_EXTERNAL == eventIn.getLinkType() )
+				std::cout << "  External target attribute (" << eventIn.getStringValue2() << ") - not navigating in this window" << std::endl;
+
+			if ( LinkTargetType::LTT_TARGET_OTHER == eventIn.getLinkType() )
+				std::cout << "  Other target attribute (" << eventIn.getStringValue2() << ") - opening in current window" << std::endl;
+
+			std::cout << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////

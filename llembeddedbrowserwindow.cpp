@@ -60,7 +60,7 @@
 	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
 	Q_IMPORT_PLUGIN(qgif)
 	Q_IMPORT_PLUGIN(qjpeg)
-	
+
 	// Qt also has its own translators for CJK text encodings we need to pull in.
 	Q_IMPORT_PLUGIN(qcncodecs)
 	Q_IMPORT_PLUGIN(qjpcodecs)
@@ -446,7 +446,7 @@ bool LLEmbeddedBrowserWindow::flipWindow(bool flip)
 static Qt::KeyboardModifiers convert_modifiers(LLQtWebKit::EKeyboardModifier modifiers)
 {
 	Qt::KeyboardModifiers result = Qt::NoModifier;
-	
+
 	if(modifiers & LLQtWebKit::KM_MODIFIER_SHIFT)
 		result |= Qt::ShiftModifier;
 
@@ -458,16 +458,16 @@ static Qt::KeyboardModifiers convert_modifiers(LLQtWebKit::EKeyboardModifier mod
 
 	if(modifiers & LLQtWebKit::KM_MODIFIER_META)
 		result |= Qt::MetaModifier;
-		
+
 	return result;
 }
 
 static Qt::MouseButton qt_button_from_button_number(int button)
 {
 	Qt::MouseButton result;
-	
+
 	switch(button)
-	{	
+	{
 		default:	result = Qt::NoButton;			break;
 		case 0:		result = Qt::LeftButton;		break;
 		case 1:		result = Qt::RightButton;		break;
@@ -475,24 +475,24 @@ static Qt::MouseButton qt_button_from_button_number(int button)
 		case 3:		result = Qt::XButton1;			break;
 		case 4:		result = Qt::XButton2;			break;
 	}
-	
+
 	return result;
 }
 
 static QEvent::Type event_from_mouse_event(LLQtWebKit::EMouseEvent mouse_event)
 {
 	QEvent::Type result;
-	
+
 	switch(mouse_event)
-	{	
+	{
 		default:
 			result = QEvent::None;
 		break;
-		
+
 		case LLQtWebKit::ME_MOUSE_MOVE:
 			result = QEvent::MouseMove;
 		break;
-		
+
 		case LLQtWebKit::ME_MOUSE_DOWN:
 			result = QEvent::MouseButtonPress;
 		break;
@@ -503,22 +503,22 @@ static QEvent::Type event_from_mouse_event(LLQtWebKit::EMouseEvent mouse_event)
 
 		case LLQtWebKit::ME_MOUSE_DOUBLE_CLICK:
 			result = QEvent::MouseButtonDblClick;
-		break;		
+		break;
 	}
-	
+
 	return result;
 }
 
 static QEvent::Type event_from_keyboard_event(LLQtWebKit::EKeyEvent keyboard_event)
 {
 	QEvent::Type result;
-	
+
 	switch(keyboard_event)
-	{	
+	{
 		default:
 			result = QEvent::None;
 		break;
-		
+
 		case LLQtWebKit::KE_KEY_DOWN:
 		case LLQtWebKit::KE_KEY_REPEAT:
 			result = QEvent::KeyPress;
@@ -528,7 +528,7 @@ static QEvent::Type event_from_keyboard_event(LLQtWebKit::EKeyEvent keyboard_eve
 			result = QEvent::KeyRelease;
 		break;
 	}
-	
+
 	return result;
 }
 
@@ -541,13 +541,13 @@ void LLEmbeddedBrowserWindow::mouseEvent(LLQtWebKit::EMouseEvent mouse_event, in
 	QEvent::Type type = event_from_mouse_event(mouse_event);
 	Qt::MouseButton qt_button = qt_button_from_button_number(button);
 	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
-	
+
 	if(type == QEvent::MouseMove)
 	{
 		// Mouse move events should always use "no button".
 		qt_button = Qt::NoButton;
 	}
-	
+
 	// FIXME: should the current button state be updated before or after constructing the event?
 	switch(type)
 	{
@@ -555,18 +555,18 @@ void LLEmbeddedBrowserWindow::mouseEvent(LLQtWebKit::EMouseEvent mouse_event, in
 		case QEvent::MouseButtonDblClick:
 			d->mCurrentMouseButtonState |= qt_button;
 		break;
-		
+
 		case QEvent::MouseButtonRelease:
 			d->mCurrentMouseButtonState &= ~qt_button;
 		break;
-		
+
 		default:
 		break;
 	}
 
     QMouseEvent event(type, QPoint(x, y), qt_button, d->mCurrentMouseButtonState, qt_modifiers);
 
-    qt_sendSpontaneousEvent(d->mGraphicsView->viewport(), &event);	
+    qt_sendSpontaneousEvent(d->mGraphicsView->viewport(), &event);
 }
 
 void LLEmbeddedBrowserWindow::scrollWheelEvent(int16_t x, int16_t y, int16_t scroll_x, int16_t scroll_y, LLQtWebKit::EKeyboardModifier modifiers)
@@ -576,7 +576,7 @@ void LLEmbeddedBrowserWindow::scrollWheelEvent(int16_t x, int16_t y, int16_t scr
 #endif
 
 	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
-	
+
 	if(scroll_y != 0)
 	{
 	    QWheelEvent event(QPoint(x, y), scroll_y, d->mCurrentMouseButtonState, qt_modifiers, Qt::Vertical);
@@ -650,7 +650,7 @@ void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t 
 			text = QString(QChar(key_code));
 		break;
     }
-	
+
 	QKeyEvent event(type, key, qt_modifiers, text, auto_repeat);
 
 	qApp->sendEvent(d->mGraphicsScene, &event);
@@ -759,6 +759,26 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     return d->mNoFollowScheme.toStdString();
+}
+
+void LLEmbeddedBrowserWindow::setExternalTargetName(std::string name)
+{
+    d->mExternalTargetName = name;
+}
+
+std::string LLEmbeddedBrowserWindow::getExternalTargetName()
+{
+    return d->mExternalTargetName;
+}
+
+void LLEmbeddedBrowserWindow::setBlankTargetName(std::string name)
+{
+    d->mBlankTargetName = name;
+}
+
+std::string LLEmbeddedBrowserWindow::getBlankTargetName()
+{
+    return d->mBlankTargetName;
 }
 
 void LLEmbeddedBrowserWindow::prependHistoryUrl(std::string url)
