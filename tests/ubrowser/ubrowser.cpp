@@ -921,12 +921,91 @@ void uBrowser::windowPosToTexturePos( int winXIn, int winYIn, int& texXOut, int&
     faceOut = mPixelColorG[ 0 ];
 }
 
+// convert a GLUT keyboard modifier to an LLQtWebKit one
+// (only valid in mouse and keyboard callbacks
+static LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode()
+{
+	int result = LLQtWebKit::KM_MODIFIER_NONE;
+	
+	int modifiers = glutGetModifiers();
+
+	if ( GLUT_ACTIVE_SHIFT & modifiers )
+		result |= LLQtWebKit::KM_MODIFIER_SHIFT;
+
+	if ( GLUT_ACTIVE_CTRL & modifiers )
+		result |= LLQtWebKit::KM_MODIFIER_CONTROL;
+
+	if ( GLUT_ACTIVE_ALT & modifiers )
+		result |= LLQtWebKit::KM_MODIFIER_ALT;
+	
+	return (LLQtWebKit::EKeyboardModifier)result;
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 void uBrowser::keyboard( unsigned char keyIn, int xIn, int yIn )
 {
-    // pass on the keypress to Qt - will need something more sophisticated here one day
-	LLQtWebKit::getInstance()->unicodeInput(mCurWindowId, keyIn, LLQtWebKit::KM_MODIFIER_NONE );
+	if(keyIn == 127)
+	{
+		// Turn delete char into backspace
+		keyIn = LLQtWebKit::KEY_BACKSPACE;
+	}
+
+	char text[2];
+	if(keyIn < 0x80)
+	{
+		text[0] = (char)keyIn;
+	}
+	else
+	{
+		text[0] = 0;
+	}
+
+	text[1] = 0;
+		
+	// send event to LLQtWebKit
+	LLQtWebKit::getInstance()->keyboardEvent(mCurWindowId, LLQtWebKit::KE_KEY_DOWN, keyIn, text, getLLQtWebKitKeyboardModifierCode() );
+	LLQtWebKit::getInstance()->keyboardEvent(mCurWindowId, LLQtWebKit::KE_KEY_UP, keyIn, text, getLLQtWebKitKeyboardModifierCode() );
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void uBrowser::specialKeyboard( int keyIn, int xIn, int yIn )
+{
+	uint32_t key = LLQtWebKit::KEY_NONE;
+	
+	switch(keyIn)
+	{
+		case GLUT_KEY_F1:			key = LLQtWebKit::KEY_F1;		break;
+		case GLUT_KEY_F2:			key = LLQtWebKit::KEY_F2;		break;
+		case GLUT_KEY_F3:			key = LLQtWebKit::KEY_F3;		break;
+		case GLUT_KEY_F4:			key = LLQtWebKit::KEY_F4;		break;
+		case GLUT_KEY_F5:			key = LLQtWebKit::KEY_F5;		break;
+		case GLUT_KEY_F6:			key = LLQtWebKit::KEY_F6;		break;
+		case GLUT_KEY_F7:			key = LLQtWebKit::KEY_F7;		break;
+		case GLUT_KEY_F8:			key = LLQtWebKit::KEY_F8;		break;
+		case GLUT_KEY_F9:			key = LLQtWebKit::KEY_F9;		break;
+		case GLUT_KEY_F10:			key = LLQtWebKit::KEY_F10;		break;
+		case GLUT_KEY_F11:			key = LLQtWebKit::KEY_F11;		break;
+		case GLUT_KEY_F12:			key = LLQtWebKit::KEY_F12;		break;
+		case GLUT_KEY_LEFT:			key = LLQtWebKit::KEY_LEFT;		break;
+		case GLUT_KEY_UP:			key = LLQtWebKit::KEY_UP;		break;
+		case GLUT_KEY_RIGHT:		key = LLQtWebKit::KEY_RIGHT;	break;
+		case GLUT_KEY_DOWN:			key = LLQtWebKit::KEY_DOWN;		break;
+		case GLUT_KEY_PAGE_UP:		key = LLQtWebKit::KEY_PAGE_UP;	break;
+		case GLUT_KEY_PAGE_DOWN:	key = LLQtWebKit::KEY_PAGE_DOWN;break;
+		case GLUT_KEY_HOME:			key = LLQtWebKit::KEY_HOME;		break;
+		case GLUT_KEY_END:			key = LLQtWebKit::KEY_END;		break;
+		case GLUT_KEY_INSERT:		key = LLQtWebKit::KEY_INSERT;	break;
+		
+		default:
+		break;
+	}
+	
+	if(key != LLQtWebKit::KEY_NONE)
+	{
+		keyboard(key, xIn, yIn);
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -961,7 +1040,7 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
 													LLQtWebKit::ME_MOUSE_DOWN,
 														LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
 															x, y,
-																LLQtWebKit::KM_MODIFIER_NONE );
+																getLLQtWebKitKeyboardModifierCode() );
         }
         else
         if ( state == GLUT_UP )
@@ -976,7 +1055,7 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
 													LLQtWebKit::ME_MOUSE_UP,
 														LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
 															x, y,
-																LLQtWebKit::KM_MODIFIER_NONE );
+																getLLQtWebKitKeyboardModifierCode() );
 
             // this seems better than sending focus on mouse down (still need to improve this)
             LLQtWebKit::getInstance()->focusBrowser( mCurWindowId, true );
@@ -992,7 +1071,7 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
 													LLQtWebKit::ME_MOUSE_DOWN,
 														LLQtWebKit::MB_MOUSE_BUTTON_RIGHT,
 															x, y,
-																LLQtWebKit::KM_MODIFIER_NONE );
+																getLLQtWebKitKeyboardModifierCode() );
         }
         else
         if ( state == GLUT_UP )
@@ -1002,7 +1081,7 @@ void uBrowser::mouseButton( int button, int state, int xIn, int yIn )
 													LLQtWebKit::ME_MOUSE_UP,
 														LLQtWebKit::MB_MOUSE_BUTTON_RIGHT,
 															x, y,
-																LLQtWebKit::KM_MODIFIER_NONE );
+																getLLQtWebKitKeyboardModifierCode() );
         };
 
     };

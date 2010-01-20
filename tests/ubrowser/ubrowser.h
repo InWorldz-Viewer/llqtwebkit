@@ -45,7 +45,7 @@
 
 #ifdef LL_OSX
 #include "GLUT/glut.h"
-#include "GL/glui.h"
+#include "glui.h"
 #else
 #include "GL/glut.h"
 #include "GL/glui.h"
@@ -75,6 +75,7 @@ class uBrowser :
 		void display();
 		void idle();
 		void keyboard( unsigned char keyIn, int xIn, int yIn );
+		void specialKeyboard( int keyIn, int xIn, int yIn );
 		void passiveMouse( int xIn, int yIn );
 		void mouseButton( int button, int state, int xIn, int yIn );
 		void mouseMove( int xIn, int yIn );

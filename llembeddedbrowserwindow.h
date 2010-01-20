@@ -111,8 +111,14 @@ public:
     // mouse & keyboard events
     void mouseEvent(LLQtWebKit::EMouseEvent mouse_event, int16_t button, int16_t x, int16_t y, LLQtWebKit::EKeyboardModifier modifiers);
     void scrollWheelEvent(int16_t x, int16_t y, int16_t scroll_x, int16_t scroll_y, LLQtWebKit::EKeyboardModifier modifiers);
-    void keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t key_code, LLQtWebKit::EKeyboardModifier modifiers);
-    void unicodeInput(uint32_t unicode_char, LLQtWebKit::EKeyboardModifier modifiers);
+    void keyboardEvent(
+		LLQtWebKit::EKeyEvent key_event, 
+		uint32_t key_code, 
+		const char *utf8_text, 
+		LLQtWebKit::EKeyboardModifier modifiers, 
+		uint32_t native_scan_code,
+		uint32_t native_virtual_key,
+		uint32_t native_modifiers);
 
     // allow consumers of this class and to observe browser events
     bool addObserver(LLEmbeddedBrowserWindowObserver* observer);

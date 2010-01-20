@@ -298,18 +298,20 @@ class testGL :
 		// (only valid in mouse and keyboard callbacks
 		LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode()
 		{
+			int result = LLQtWebKit::KM_MODIFIER_NONE;
+			
 			int modifiers = glutGetModifiers();
 
-			if ( GLUT_ACTIVE_SHIFT == modifiers )
-				return LLQtWebKit::KM_MODIFIER_SHIFT;
+			if ( GLUT_ACTIVE_SHIFT & modifiers )
+				result |= LLQtWebKit::KM_MODIFIER_SHIFT;
 
-			if ( GLUT_ACTIVE_CTRL == modifiers )
-				return LLQtWebKit::KM_MODIFIER_CONTROL;
+			if ( GLUT_ACTIVE_CTRL & modifiers )
+				result |= LLQtWebKit::KM_MODIFIER_CONTROL;
 
-			if ( GLUT_ACTIVE_ALT == modifiers )
-				return LLQtWebKit::KM_MODIFIER_ALT;
-
-			return LLQtWebKit::KM_MODIFIER_NONE;
+			if ( GLUT_ACTIVE_ALT & modifiers )
+				result |= LLQtWebKit::KM_MODIFIER_ALT;
+			
+			return (LLQtWebKit::EKeyboardModifier)result;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -329,7 +331,7 @@ class testGL :
 															LLQtWebKit::ME_MOUSE_DOWN,
 																LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
 																	xIn, yIn,
-																		LLQtWebKit::KM_MODIFIER_NONE );
+																		getLLQtWebKitKeyboardModifierCode() );
 				}
 				else
 				if ( state == GLUT_UP )
@@ -339,7 +341,7 @@ class testGL :
 															LLQtWebKit::ME_MOUSE_UP,
 																LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
 																	xIn, yIn,
-																		LLQtWebKit::KM_MODIFIER_NONE );
+																		getLLQtWebKitKeyboardModifierCode() );
 
 
 					// this seems better than sending focus on mouse down (still need to improve this)
@@ -373,7 +375,7 @@ class testGL :
 
 		////////////////////////////////////////////////////////////////////////////////
 		//
-		void keyboard( unsigned char keyIn, int /*xIn*/, int /*yIn*/ )
+		void keyboard( unsigned char keyIn, bool isDown)
 		{
 			// ESC key exits
 			if ( keyIn == 27 )
@@ -382,8 +384,14 @@ class testGL :
 
 				exit( 0 );
 			};
+			
+			if(keyIn == 127)
+			{
+				// Turn delete char into backspace
+				keyIn = LLQtWebKit::KEY_BACKSPACE;
+			}
 
-			// control-R reloads
+			// control-H goes home
 			if ( keyIn == 8 )
 			{
 				LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, mHomeUrl );
@@ -396,11 +404,62 @@ class testGL :
 			}
 			else
 			{
+				char text[2];
+				if(keyIn < 0x80)
+				{
+					text[0] = (char)keyIn;
+				}
+				else
+				{
+					text[0] = 0;
+				}
 
-				LLQtWebKit::EKeyboardModifier modifier = LLQtWebKit::KM_MODIFIER_NONE; //getLLQtWebKitKeyboardModifierCode();
-
+				text[1] = 0;
+				
+				std::cerr << "key " << (isDown?"down ":"up ") << (int)keyIn << ", modifiers = " << (int)getLLQtWebKitKeyboardModifierCode() << std::endl;
+				
 				// send event to LLQtWebKit
-				LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, keyIn, modifier );
+				LLQtWebKit::getInstance()->keyboardEvent(mBrowserWindowId, isDown?LLQtWebKit::KE_KEY_DOWN:LLQtWebKit::KE_KEY_UP, keyIn, text, getLLQtWebKitKeyboardModifierCode() );
+			}
+		};
+
+		////////////////////////////////////////////////////////////////////////////////
+		//
+		void keyboardSpecial( int specialIn, bool isDown)
+		{
+			uint32_t key = LLQtWebKit::KEY_NONE;
+			
+			switch(specialIn)
+			{
+				case GLUT_KEY_F1:			key = LLQtWebKit::KEY_F1;		break;
+				case GLUT_KEY_F2:			key = LLQtWebKit::KEY_F2;		break;
+				case GLUT_KEY_F3:			key = LLQtWebKit::KEY_F3;		break;
+				case GLUT_KEY_F4:			key = LLQtWebKit::KEY_F4;		break;
+				case GLUT_KEY_F5:			key = LLQtWebKit::KEY_F5;		break;
+				case GLUT_KEY_F6:			key = LLQtWebKit::KEY_F6;		break;
+				case GLUT_KEY_F7:			key = LLQtWebKit::KEY_F7;		break;
+				case GLUT_KEY_F8:			key = LLQtWebKit::KEY_F8;		break;
+				case GLUT_KEY_F9:			key = LLQtWebKit::KEY_F9;		break;
+				case GLUT_KEY_F10:			key = LLQtWebKit::KEY_F10;		break;
+				case GLUT_KEY_F11:			key = LLQtWebKit::KEY_F11;		break;
+				case GLUT_KEY_F12:			key = LLQtWebKit::KEY_F12;		break;
+				case GLUT_KEY_LEFT:			key = LLQtWebKit::KEY_LEFT;		break;
+				case GLUT_KEY_UP:			key = LLQtWebKit::KEY_UP;		break;
+				case GLUT_KEY_RIGHT:		key = LLQtWebKit::KEY_RIGHT;	break;
+				case GLUT_KEY_DOWN:			key = LLQtWebKit::KEY_DOWN;		break;
+				case GLUT_KEY_PAGE_UP:		key = LLQtWebKit::KEY_PAGE_UP;	break;
+				case GLUT_KEY_PAGE_DOWN:	key = LLQtWebKit::KEY_PAGE_DOWN;break;
+				case GLUT_KEY_HOME:			key = LLQtWebKit::KEY_HOME;		break;
+				case GLUT_KEY_END:			key = LLQtWebKit::KEY_END;		break;
+				case GLUT_KEY_INSERT:		key = LLQtWebKit::KEY_INSERT;	break;
+				
+				default:
+				break;
+			}
+			
+			if(key != LLQtWebKit::KEY_NONE)
+			{
+				keyboard(key, isDown);
 			}
 		};
 
@@ -462,16 +521,16 @@ class testGL :
 			std::cout << "Event: clicked on link:" << std::endl;
 			std::cout << "  URL:" << eventIn.getStringValue() << std::endl;
 
-			if ( LinkTargetType::LTT_TARGET_NONE == eventIn.getLinkType() )
+			if ( LLQtWebKit::LTT_TARGET_NONE == eventIn.getLinkType() )
 				std::cout << "  No target attribute - opening in current window" << std::endl;
 
-			if ( LinkTargetType::LTT_TARGET_BLANK == eventIn.getLinkType() )
+			if ( LLQtWebKit::LTT_TARGET_BLANK == eventIn.getLinkType() )
 				std::cout << "  Blank target attribute (" << eventIn.getStringValue2() << ") - not navigating in this window" << std::endl;
 
-			if ( LinkTargetType::LTT_TARGET_EXTERNAL == eventIn.getLinkType() )
+			if ( LLQtWebKit::LTT_TARGET_EXTERNAL == eventIn.getLinkType() )
 				std::cout << "  External target attribute (" << eventIn.getStringValue2() << ") - not navigating in this window" << std::endl;
 
-			if ( LinkTargetType::LTT_TARGET_OTHER == eventIn.getLinkType() )
+			if ( LLQtWebKit::LTT_TARGET_OTHER == eventIn.getLinkType() )
 				std::cout << "  Other target attribute (" << eventIn.getStringValue2() << ") - opening in current window" << std::endl;
 
 			std::cout << std::endl;
@@ -559,18 +618,42 @@ void glutIdle()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void glutKeyboard( unsigned char keyIn, int xIn, int yIn )
+void glutKeyboard( unsigned char keyIn, int /*xIn*/, int /*yIn*/ )
 {
-	if ( keyIn == 27 )
-	{
-		if ( theApp )
-			theApp->reset();
-
-		exit( 0 );
-	};
-
 	if ( theApp )
-		theApp->keyboard( keyIn, xIn, yIn );
+	{
+		theApp->keyboard( keyIn, true );
+	}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void glutKeyboardUp( unsigned char keyIn, int /*xIn*/, int /*yIn*/ )
+{
+	if ( theApp )
+	{
+		theApp->keyboard( keyIn, false );
+	}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void glutSpecial( int specialIn, int /*xIn*/, int /*yIn*/ )
+{
+	if ( theApp )
+	{
+		theApp->keyboardSpecial( specialIn, true );
+	}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void glutSpecialUp( int specialIn, int /*xIn*/, int /*yIn*/ )
+{
+	if ( theApp )
+	{
+		theApp->keyboardSpecial( specialIn, false );
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -614,6 +697,9 @@ int main( int argc, char* argv[] )
 		theApp->init( std::string( argv[ 0 ] ), url );
 
 		glutKeyboardFunc( glutKeyboard );
+		glutKeyboardUpFunc( glutKeyboardUp );
+		glutSpecialFunc( glutSpecial );
+		glutSpecialUpFunc( glutSpecialUp );
 
 		glutMouseFunc( glutMouseButton );
 		glutPassiveMotionFunc( glutMouseMove );

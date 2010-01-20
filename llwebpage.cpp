@@ -145,23 +145,23 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 		window->d->mClickTarget = linkTarget.toStdString();
 
 		// start off with no target specified
-		int link_target_type = LinkTargetType::LTT_TARGET_UNKNOWN;
+		int link_target_type = LLQtWebKit::LTT_TARGET_UNKNOWN;
 
 		// user clicks on a link with a target that matches the one set as "External"
 		if ( window->d->mClickTarget.empty() )
 		{
-			link_target_type = LinkTargetType::LTT_TARGET_NONE;
+			link_target_type = LLQtWebKit::LTT_TARGET_NONE;
 		}
 		else
 		if ( window->d->mClickTarget == window->d->mExternalTargetName )
 		{
-			link_target_type = LinkTargetType::LTT_TARGET_EXTERNAL;
+			link_target_type = LLQtWebKit::LTT_TARGET_EXTERNAL;
 		}
 		else
 		// user clicks on a link with a target that matches the one set as "Blank"
 		if ( window->d->mClickTarget == window->d->mBlankTargetName )
 		{
-			link_target_type = LinkTargetType::LTT_TARGET_BLANK;
+			link_target_type = LLQtWebKit::LTT_TARGET_BLANK;
 		}
 		else
 		{
@@ -169,7 +169,7 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 			// and fire an event as if it was a normal click
 			window->navigateTo( window->d->mClickHref );
 
-			link_target_type = LinkTargetType::LTT_TARGET_OTHER;
+			link_target_type = LLQtWebKit::LTT_TARGET_OTHER;
 		};
 
 		// build event based on the data we have and emit it

@@ -84,8 +84,8 @@ void glutKeyboard( unsigned char keyIn, int xIn, int yIn )
 //
 void glutSpecialKeyboard( int keyIn, int xIn, int yIn )
 {
-	// appears that you need this defined even if it's empty
-	// passing NULL for the handler func ptr crashes this app
+	if ( theApp )
+		theApp->specialKeyboard( keyIn, xIn, yIn );
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -602,77 +602,104 @@ void LLEmbeddedBrowserWindow::scrollByLines(int16_t lines)
     d->mPage->mainFrame()->setScrollBarValue(Qt::Vertical, currentScrollValue + lines);
 }
 
-// accept a (mozilla-style) keycode
-void LLEmbeddedBrowserWindow::keyEvent(LLQtWebKit::EKeyEvent key_event, int16_t key_code, LLQtWebKit::EKeyboardModifier modifiers)
+// Send a keyboard event with native event data.
+void LLEmbeddedBrowserWindow::keyboardEvent(
+		LLQtWebKit::EKeyEvent key_event, 
+		uint32_t key_code, 
+		const char *utf8_text, 
+		LLQtWebKit::EKeyboardModifier modifiers, 
+		uint32_t native_scan_code,
+		uint32_t native_virtual_key,
+		uint32_t native_modifiers)
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << key_code;
-#endif
-    Qt::Key key;
-    QString text; // default to an empty string
 	QEvent::Type type = event_from_keyboard_event(key_event);
 	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
 	bool auto_repeat = (key_event == LLQtWebKit::KE_KEY_REPEAT);
+	QString text = QString::fromUtf8(utf8_text);
+
+    Qt::Key key = Qt::Key_unknown;
 
     switch (key_code)
 	{
-		case LL_DOM_VK_CANCEL:			key = Qt::Key_Cancel;		break;
-		case LL_DOM_VK_HELP:			key = Qt::Key_Help;			break;
-		case LL_DOM_VK_BACK_SPACE:		key = Qt::Key_Backspace;	break;
-		case LL_DOM_VK_TAB:				key = Qt::Key_Tab;			break;
-		case LL_DOM_VK_CLEAR:			key = Qt::Key_Clear;		break;
-		case LL_DOM_VK_RETURN:
-			key = Qt::Key_Return;		
-			// Special case to fix return key not working.
-			text = QString(QChar('\x0d'));
-		break;
-		case LL_DOM_VK_ENTER:			key = Qt::Key_Enter;		break;
-		case LL_DOM_VK_SHIFT:			key = Qt::Key_Shift;		break;
-		case LL_DOM_VK_CONTROL:			key = Qt::Key_Control;		break;
-		case LL_DOM_VK_ALT:				key = Qt::Key_Alt;			break;
-		case LL_DOM_VK_PAUSE:			key = Qt::Key_Pause;		break;
-		case LL_DOM_VK_CAPS_LOCK:		key = Qt::Key_CapsLock;		break;
-		case LL_DOM_VK_ESCAPE:			key = Qt::Key_Escape;		break;
-		case LL_DOM_VK_PAGE_UP:			key = Qt::Key_PageUp;		break;
-		case LL_DOM_VK_PAGE_DOWN:		key = Qt::Key_PageDown;		break;
-		case LL_DOM_VK_END:				key = Qt::Key_End;			break;
-		case LL_DOM_VK_HOME:			key = Qt::Key_Home;			break;
-		case LL_DOM_VK_LEFT:			key = Qt::Key_Left;			break;
-		case LL_DOM_VK_UP:				key = Qt::Key_Up;			break;
-		case LL_DOM_VK_RIGHT:			key = Qt::Key_Right;		break;
-		case LL_DOM_VK_DOWN:			key = Qt::Key_Down;			break;
-		case LL_DOM_VK_PRINTSCREEN:		key = Qt::Key_Print;		break;
-		case LL_DOM_VK_INSERT:			key = Qt::Key_Insert;		break;
-		case LL_DOM_VK_DELETE:			key = Qt::Key_Delete;		break;
-		case LL_DOM_VK_CONTEXT_MENU:	key = Qt::Key_Menu;			break;
+		case LLQtWebKit::KEY_RETURN:			key = Qt::Key_Return;		break;
+		case LLQtWebKit::KEY_LEFT:				key = Qt::Key_Left;			break;
+		case LLQtWebKit::KEY_RIGHT:				key = Qt::Key_Right;		break;
+		case LLQtWebKit::KEY_UP:				key = Qt::Key_Up;			break;
+		case LLQtWebKit::KEY_DOWN:				key = Qt::Key_Down;			break;
+		case LLQtWebKit::KEY_ESCAPE:			key = Qt::Key_Escape;		break;
+		case LLQtWebKit::KEY_BACKSPACE:			key = Qt::Key_Backspace;	break;
+		case LLQtWebKit::KEY_DELETE:			key = Qt::Key_Delete;		break;
+		case LLQtWebKit::KEY_SHIFT:				key = Qt::Key_Shift;		break;
+		case LLQtWebKit::KEY_CONTROL:			key = Qt::Key_Control;		break;
+		case LLQtWebKit::KEY_ALT:				key = Qt::Key_Alt;			break;
+		case LLQtWebKit::KEY_HOME:				key = Qt::Key_Home;			break;
+		case LLQtWebKit::KEY_END:				key = Qt::Key_End;			break;
+		case LLQtWebKit::KEY_PAGE_UP:			key = Qt::Key_PageUp;		break;
+		case LLQtWebKit::KEY_PAGE_DOWN:			key = Qt::Key_PageDown;		break;
+		case LLQtWebKit::KEY_HYPHEN:			key = Qt::Key_hyphen;		break;
+		case LLQtWebKit::KEY_EQUALS:			key = Qt::Key_Equal;		break;
+		case LLQtWebKit::KEY_INSERT:			key = Qt::Key_Insert;		break;
+		case LLQtWebKit::KEY_CAPSLOCK:			key = Qt::Key_CapsLock;		break;
+		case LLQtWebKit::KEY_TAB:				key = Qt::Key_Tab;			break;
+		case LLQtWebKit::KEY_ADD:				key = Qt::Key_Plus;			break;
+		case LLQtWebKit::KEY_SUBTRACT:			key = Qt::Key_Minus;		break;
+		case LLQtWebKit::KEY_MULTIPLY:			key = Qt::Key_Asterisk;		break;
+		case LLQtWebKit::KEY_DIVIDE:			key = Qt::Key_Slash;		break;
+		case LLQtWebKit::KEY_F1:				key = Qt::Key_F1;			break;
+		case LLQtWebKit::KEY_F2:				key = Qt::Key_F2;			break;
+		case LLQtWebKit::KEY_F3:				key = Qt::Key_F3;			break;
+		case LLQtWebKit::KEY_F4:				key = Qt::Key_F4;			break;
+		case LLQtWebKit::KEY_F5:				key = Qt::Key_F5;			break;
+		case LLQtWebKit::KEY_F6:				key = Qt::Key_F6;			break;
+		case LLQtWebKit::KEY_F7:				key = Qt::Key_F7;			break;
+		case LLQtWebKit::KEY_F8:				key = Qt::Key_F8;			break;
+		case LLQtWebKit::KEY_F9:				key = Qt::Key_F9;			break;
+		case LLQtWebKit::KEY_F10:				key = Qt::Key_F10;			break;
+		case LLQtWebKit::KEY_F11:				key = Qt::Key_F11;			break;
+		case LLQtWebKit::KEY_F12:				key = Qt::Key_F12;			break;
 
+		case LLQtWebKit::KEY_PAD_UP:			key = Qt::Key_Up;			qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_DOWN:			key = Qt::Key_Down;			qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_LEFT:			key = Qt::Key_Left;			qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_RIGHT:			key = Qt::Key_Right;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_HOME:			key = Qt::Key_Home;			qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_END:			key = Qt::Key_End;			qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_PGUP:			key = Qt::Key_PageUp;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_PGDN:			key = Qt::Key_PageDown;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_CENTER:		key = Qt::Key_5;			qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_INS:			key = Qt::Key_Insert;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_DEL:			key = Qt::Key_Delete;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_RETURN:		key = Qt::Key_Enter;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_ADD:			key = Qt::Key_Plus;			qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_SUBTRACT:		key = Qt::Key_Minus;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_MULTIPLY:		key = Qt::Key_Asterisk;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		case LLQtWebKit::KEY_PAD_DIVIDE:		key = Qt::Key_Slash;		qt_modifiers |= Qt::KeypadModifier; 	break;
+		
+		case LLQtWebKit::KEY_NONE:			key = Qt::Key_unknown;		break;
+		
 		default:
 			key = (Qt::Key)key_code;
-			text = QString(QChar(key_code));
 		break;
     }
 
-	QKeyEvent event(type, key, qt_modifiers, text, auto_repeat);
 
-	qApp->sendEvent(d->mGraphicsScene, &event);
+	QKeyEvent *event = 
+		QKeyEvent::createExtendedKeyEvent(
+			type, 
+			key, 
+			qt_modifiers,
+			native_scan_code, 
+			native_virtual_key, 
+			native_modifiers,
+			text,
+			auto_repeat,
+			text.count());
+
+    qApp->sendEvent(d->mGraphicsScene, event);
+	
+	delete event;
 }
 
-// accept keyboard input that's already been translated into a unicode char.
-void LLEmbeddedBrowserWindow::unicodeInput(uint32_t unicode_char, LLQtWebKit::EKeyboardModifier modifiers)
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << unicode_char;
-#endif
-    Qt::Key key = Qt::Key_unknown;
-    QChar input((uint)unicode_char);
-
-	Qt::KeyboardModifiers qt_modifiers = convert_modifiers(modifiers);
-
-    QKeyEvent press_event(QEvent::KeyPress, key, qt_modifiers, input);
-    qApp->sendEvent(d->mGraphicsScene, &press_event);
-    QKeyEvent release_event(QEvent::KeyRelease, key, qt_modifiers, input);
-    qApp->sendEvent(d->mGraphicsScene, &release_event);
-}
 
 // give focus to the browser so that input keyboard events work
 void LLEmbeddedBrowserWindow::focusBrowser(bool focus_browser)

@@ -446,26 +446,20 @@ bool LLQtWebKit::scrollWheelEvent(int browser_window_id, int x, int y, int scrol
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLQtWebKit::keyEvent(int browser_window_id, EKeyEvent key_event, int key_code, EKeyboardModifier modifiers)
+bool LLQtWebKit::keyboardEvent(
+		int browser_window_id,
+		EKeyEvent key_event, 
+		uint32_t key_code, 
+		const char *utf8_text, 
+		EKeyboardModifier modifiers, 
+		uint32_t native_scan_code,
+		uint32_t native_virtual_key,
+		uint32_t native_modifiers)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        browser_window->keyEvent(key_event, key_code, modifiers);
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLQtWebKit::unicodeInput(int browser_window_id, unsigned long uni_char, EKeyboardModifier modifiers)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->unicodeInput(uni_char, modifiers);
+        browser_window->keyboardEvent(key_event, key_code, utf8_text, modifiers, native_scan_code, native_virtual_key, native_modifiers);
         return true;
     }
 
