@@ -45,6 +45,10 @@
 class LLEmbeddedBrowser;
 class LLEmbeddedBrowserWindow;
 
+#ifdef _WINDOWS
+typedef unsigned long uint32_t;
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // data class that is passed with an event
 class LLEmbeddedBrowserWindowEvent
