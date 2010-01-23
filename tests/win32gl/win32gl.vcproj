@@ -66,7 +66,8 @@
 				AdditionalDependencies="llqtwebkitd.lib opengl32.lib qtcored4.lib qtguid4.lib qtmaind.lib qtnetworkd4.lib qtopengld4.lib qtwebkitd4.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;.\llqtwebkit\$(ConfigurationName)&quot;;&quot;.\qt\$(ConfigurationName)&quot;"
-				GenerateManifest="false"
+				GenerateManifest="true"
+				AdditionalManifestDependencies="type=&apos;win32&apos; name=&apos;Microsoft.VC80.CRT&apos; version=&apos;8.0.50727.4053&apos; processorArchitecture=&apos;x86&apos; publicKeyToken=&apos;1fc8b3b9a1e18e3b&apos;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -123,7 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
+				Optimization="2"
 				AdditionalIncludeDirectories=".\llqtwebkit"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
