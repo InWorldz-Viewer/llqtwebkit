@@ -44,6 +44,9 @@ int mAppWindowHeight = 1024;
 int gTextureWidth = 1024;
 int gTextureHeight = 1024;
 int gBrowserWindowId = 0;
+WPARAM gWParam = 0;
+LPARAM gLParam = 0L;
+int gcharcode = 0;
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -69,17 +72,17 @@ void resize_gl_screen( int width, int height )
 //
 void init_qt( HWND hWnd )
 {
-    char cur_directory[MAX_PATH] = "";
+    char cur_directory[ MAX_PATH ] = "";
     GetCurrentDirectory( sizeof( cur_directory ) - 1, cur_directory );
 
     std::string app_dir = std::string( cur_directory );
     std::string component_dir = app_dir;
 
-	#ifdef _DEBUG
+    #ifdef _DEBUG
     std::string profile_dir = app_dir + "\\debug\\" + "win32gl_profile";
-	#else
+    #else
     std::string profile_dir = app_dir + "\\release\\" + "win32gl_profile";
-	#endif
+    #endif
 
     LLQtWebKit::getInstance()->init( app_dir, component_dir, profile_dir, hWnd );
 
@@ -93,9 +96,9 @@ void init_qt( HWND hWnd )
 
     LLQtWebKit::getInstance()->flipWindow( gBrowserWindowId, false );
 
-	std::string home_url( "http://google.com" );
-	//home_url = "http://www.keybr.com";
-	//home_url = "file:///C:/Work/llqtwebkit-4.6/tests/testgl/testpage.html";
+    std::string home_url( "http://google.com" );
+    home_url = "http://www.keybr.com";
+    //home_url = "file:///C:/Work/llqtwebkit-4.6/tests/testgl/testpage.html";
     LLQtWebKit::getInstance()->navigateTo( gBrowserWindowId, home_url );
 }
 
@@ -152,42 +155,46 @@ void draw_gl_scene( GLuint texture_handle )
 //
 void mouse_event( int x, int y, LLQtWebKit::EMouseEvent mev )
 {
-	LLQtWebKit::getInstance()->mouseEvent( gBrowserWindowId, 
-												mev, LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
-													x, y, LLQtWebKit::KM_MODIFIER_NONE );
+    LLQtWebKit::getInstance()->mouseEvent( gBrowserWindowId,
+                                                mev, LLQtWebKit::MB_MOUSE_BUTTON_LEFT,
+                                                    x, y, LLQtWebKit::KM_MODIFIER_NONE );
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 //
-void keyboard_event( WPARAM wParam, LPARAM lParam, LLQtWebKit::EKeyEvent kev )
+void keyboard_event( int char_code, LLQtWebKit::EKeyEvent kev )
 {
-	unsigned long key = (unsigned long)wParam;
-	char* utf8str = "";
-	unsigned long native_scan_code = (unsigned long)( ( lParam >> 16 ) & 0xff );
-	unsigned long native_virtual_key = ( unsigned long )( wParam );
+    unsigned long key = (unsigned long)char_code;
+    char utf8str[2];
+	utf8str[0]= (char)char_code;
+	utf8str[1]= 0;
+    unsigned long native_scan_code = (unsigned long)( ( gLParam >> 16 ) & 0xff );
+    unsigned long native_virtual_key = ( unsigned long )( gWParam );
+
 	unsigned long native_modifiers = LLQtWebKit::KM_MODIFIER_NONE;
+    LLQtWebKit::EKeyboardModifier modifiers = LLQtWebKit::KM_MODIFIER_NONE;
+    if ( GetKeyState( VK_SHIFT ) )
+    {
+        modifiers = LLQtWebKit::KM_MODIFIER_SHIFT;
+        native_modifiers = LLQtWebKit::KM_MODIFIER_SHIFT;
+    };
 
-	LLQtWebKit::EKeyboardModifier modifiers = LLQtWebKit::KM_MODIFIER_NONE;
-	if ( GetKeyState( VK_SHIFT ) )
-	{
-		modifiers = LLQtWebKit::KM_MODIFIER_SHIFT;
-		native_modifiers = LLQtWebKit::KM_MODIFIER_SHIFT;
-	};
-
-	//LLQtWebKit::getInstance()->keyboardEvent( gBrowserWindowId, kev, key, utf8str, modifiers, native_scan_code, native_virtual_key, native_modifiers );
+    LLQtWebKit::getInstance()->keyboardEvent( gBrowserWindowId, kev, key, utf8str, modifiers, native_scan_code, native_virtual_key, native_modifiers );
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 //
 LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
+	static int last_char_code = 0;
+
     switch ( uMsg )
     {
         case WM_LBUTTONDOWN:
         {
             int x_pos = ( LOWORD( lParam ) * gTextureWidth ) / mAppWindowWidth;
             int y_pos = ( HIWORD( lParam ) * gTextureHeight ) / mAppWindowHeight;
-			mouse_event( x_pos, y_pos, LLQtWebKit::ME_MOUSE_DOWN );
+            mouse_event( x_pos, y_pos, LLQtWebKit::ME_MOUSE_DOWN );
             return 0;
         };
 
@@ -195,7 +202,7 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
         {
             int x_pos = ( LOWORD( lParam ) * gTextureWidth ) / mAppWindowWidth;
             int y_pos = ( HIWORD( lParam ) * gTextureHeight ) / mAppWindowHeight;
-			mouse_event( x_pos, y_pos, LLQtWebKit::ME_MOUSE_UP );
+            mouse_event( x_pos, y_pos, LLQtWebKit::ME_MOUSE_UP );
             return 0;
         };
 
@@ -203,7 +210,7 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
         {
             int x_pos = ( LOWORD( lParam ) * gTextureWidth ) / mAppWindowWidth;
             int y_pos = ( HIWORD( lParam ) * gTextureHeight ) / mAppWindowHeight;
-			mouse_event( x_pos, y_pos, LLQtWebKit::ME_MOUSE_MOVE );
+            mouse_event( x_pos, y_pos, LLQtWebKit::ME_MOUSE_MOVE );
             return 0;
         };
 
@@ -213,22 +220,41 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
             return 0;
         };
 
+        case WM_CHAR:
+        {
+			// pick up the character code here - keyboard event grabs virtual/scan 
+			// key codes set during WM_KEYDOWN
+			last_char_code = (int)wParam;
+            keyboard_event( last_char_code, LLQtWebKit::KE_KEY_DOWN );
+			return 0;
+        };
+
         case WM_KEYDOWN:
         {
-			keyboard_event( wParam, lParam, LLQtWebKit::KE_KEY_DOWN );
+			// no keyboard_event here because we don't know the character code here.
+			// just save the wParam and lParam values - WM_CHAR will get sent next 
+			// and call keyboard_event with char code.
+			gLParam = lParam;
+			gWParam = wParam;
             return 0;
         };
 
         case WM_KEYUP:
         {
-			keyboard_event( wParam, lParam, LLQtWebKit::KE_KEY_UP );
-            return 0;
+			// don't know what char code to send here - no WM_CHAR after a WM_KEYUP
+			// in the same way WM_KEYDOWN works.
+            keyboard_event( last_char_code, LLQtWebKit::KE_KEY_UP );
+
+			// not sure if we need yo update these here too?
+			gLParam = lParam;
+			gWParam = wParam;
+			return 0;
         };
 
         case WM_SIZE:
         {
-			int new_width = LOWORD( lParam );
-			int new_height = HIWORD( lParam );
+            int new_width = LOWORD( lParam );
+            int new_height = HIWORD( lParam );
             resize_gl_screen( new_width, new_height );
             return 0;
         };
