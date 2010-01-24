@@ -39,6 +39,12 @@
 #ifndef LLQTWEBKIT_H
 #define LLQTWEBKIT_H
 
+#ifdef _MSC_VER
+#include "pstdint.h"
+#else
+#include <stdint.h>        // Use the C99 official header
+#endif
+
 #include <string>
 #include <map>
 
