@@ -97,11 +97,11 @@ void init_qt( HWND hWnd )
     LLQtWebKit::getInstance()->flipWindow( gBrowserWindowId, false );
 
     std::string home_url;
-    //home_url = "http://www.keybr.com";
+    home_url = "http://www.keybr.com";
     //home_url = "file:///C:/Work/llqtwebkit-4.6/tests/testgl/testpage.html";
     //home_url = "http://www.keybr.com";
     //home_url = "http://www.google.com";
-    home_url = "http://www.webwasp.co.uk/tutorials/a16-input-text-frog/input-box-frog.htm";
+    //home_url = "http://www.webwasp.co.uk/tutorials/a16-input-text-frog/input-box-frog.htm";
     //home_url = "http://yvern.com/fMAME/fMAME.html";
     //home_url = "http://www.2flashgames.com/f/f-882.htm";
     //home_url = "http://www.flashfridge.com/tutorial.asp?ID=10";
@@ -190,37 +190,40 @@ void keyboard_event( int char_code, LLQtWebKit::EKeyEvent kev )
     LLQtWebKit::getInstance()->keyboardEvent( gBrowserWindowId, kev, key, utf8str, modifiers, native_scan_code, native_virtual_key, native_modifiers );
 }
 
-bool nonprintable_key(int vk)
+bool nonprintable_key(int vk, int *key_code)
 {
     switch (vk)
 	{
-		case VK_LEFT:				
-		case VK_RIGHT:				
-		case VK_UP:				
-		case VK_DOWN:				
-		case VK_ESCAPE:			
-		case VK_DELETE:			
-		case VK_HOME:				
-		case VK_END:				
-		case VK_PRIOR:			
-		case VK_NEXT:		
-		case VK_INSERT:			
-		case VK_F1:				
-		case VK_F2:				
-		case VK_F3:				
-		case VK_F4:				
-		case VK_F5:				
-		case VK_F6:				
-		case VK_F7:				
-		case VK_F8:				
-		case VK_F9:				
-		case VK_F10:				
-		case VK_F11:				
-		case VK_F12:				
-            return true;
-        default:
-            return false;
+    case VK_BACK: *key_code = LLQtWebKit::KEY_BACKSPACE; break;
+    case VK_RETURN: *key_code = LLQtWebKit::KEY_RETURN; break;
+    case VK_LEFT: *key_code = LLQtWebKit::KEY_LEFT; break;
+    case VK_RIGHT: *key_code = LLQtWebKit::KEY_RIGHT; break;
+	case VK_UP: *key_code = LLQtWebKit::KEY_UP; break;
+	case VK_DOWN: *key_code = LLQtWebKit::KEY_DOWN; break;
+	case VK_ESCAPE: *key_code = LLQtWebKit::KEY_ESCAPE; break;
+	case VK_DELETE:	*key_code = LLQtWebKit::KEY_DELETE; break;
+	case VK_HOME: *key_code = LLQtWebKit::KEY_HOME; break;
+	case VK_END: *key_code = LLQtWebKit::KEY_END; break;
+	case VK_PRIOR: *key_code = LLQtWebKit::KEY_PAGE_UP; break;
+	case VK_NEXT: *key_code = LLQtWebKit::KEY_PAGE_DOWN; break;
+	case VK_INSERT:	*key_code = LLQtWebKit::KEY_INSERT; break;
+	case VK_F1: *key_code = LLQtWebKit::KEY_F1; break;
+	case VK_F2:	*key_code = LLQtWebKit::KEY_F2; break;
+	case VK_F3:	*key_code = LLQtWebKit::KEY_F3; break;
+	case VK_F4:	*key_code = LLQtWebKit::KEY_F4; break;
+	case VK_F5:	*key_code = LLQtWebKit::KEY_F5; break;
+	case VK_F6:	*key_code = LLQtWebKit::KEY_F6; break;
+	case VK_F7:	*key_code = LLQtWebKit::KEY_F7; break;
+	case VK_F8:	*key_code = LLQtWebKit::KEY_F8; break;
+	case VK_F9:	*key_code = LLQtWebKit::KEY_F9; break;
+	case VK_F10: *key_code = LLQtWebKit::KEY_F10; break;
+	case VK_F11: *key_code = LLQtWebKit::KEY_F11; break;
+    case VK_F12: *key_code = LLQtWebKit::KEY_F12; break;
+    default:
+        return false;
     }
+			
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -275,12 +278,11 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			// no keyboard_event here because we don't know the character code here.
 			// just save the wParam and lParam values - WM_CHAR will get sent next 
 			// and call keyboard_event with char code.
-            last_char_code = 0;
 			gLParam = lParam;
 			gWParam = wParam;
-            if (nonprintable_key(wParam)) {
+            if (nonprintable_key(wParam, &last_char_code)) {
                 // this is not a printable key
-                keyboard_event(wParam, LLQtWebKit::KE_KEY_DOWN);
+                keyboard_event(last_char_code, LLQtWebKit::KE_KEY_DOWN);
             } else {
                 // this is a printable, process in WM_CHAR
             }
