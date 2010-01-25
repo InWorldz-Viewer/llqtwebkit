@@ -264,7 +264,11 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-//
+int main(int argc, char *argv)
+{
+    return WinMain(NULL, NULL, NULL, 0);
+}
+
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
     WNDCLASS wc;
