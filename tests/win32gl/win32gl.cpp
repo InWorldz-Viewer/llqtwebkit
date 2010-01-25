@@ -97,8 +97,16 @@ void init_qt( HWND hWnd )
     LLQtWebKit::getInstance()->flipWindow( gBrowserWindowId, false );
 
     std::string home_url( "http://google.com" );
-    home_url = "http://www.keybr.com";
+    //home_url = "http://www.keybr.com";
     //home_url = "file:///C:/Work/llqtwebkit-4.6/tests/testgl/testpage.html";
+    //home_url = "http://www.keybr.com";
+    //home_url = "http://www.google.com";
+    home_url = "http://www.webwasp.co.uk/tutorials/a16-input-text-frog/input-box-frog.htm";
+    //home_url = "http://yvern.com/fMAME/fMAME.html";
+    //home_url = "http://www.2flashgames.com/f/f-882.htm";
+    //home_url = "http://www.flashfridge.com/tutorial.asp?ID=10";
+    //home_url = "http://www.kirupa.com/developer/mx/movement_keys.htm";
+
     LLQtWebKit::getInstance()->navigateTo( gBrowserWindowId, home_url );
 }
 
