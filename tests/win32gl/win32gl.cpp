@@ -96,16 +96,16 @@ void init_qt( HWND hWnd )
 
     LLQtWebKit::getInstance()->flipWindow( gBrowserWindowId, false );
 
-    std::string home_url( "http://google.com" );
+    std::string home_url;
     //home_url = "http://www.keybr.com";
     //home_url = "file:///C:/Work/llqtwebkit-4.6/tests/testgl/testpage.html";
     //home_url = "http://www.keybr.com";
     //home_url = "http://www.google.com";
-    home_url = "http://www.webwasp.co.uk/tutorials/a16-input-text-frog/input-box-frog.htm";
+    //home_url = "http://www.webwasp.co.uk/tutorials/a16-input-text-frog/input-box-frog.htm";
     //home_url = "http://yvern.com/fMAME/fMAME.html";
     //home_url = "http://www.2flashgames.com/f/f-882.htm";
     //home_url = "http://www.flashfridge.com/tutorial.asp?ID=10";
-    //home_url = "http://www.kirupa.com/developer/mx/movement_keys.htm";
+    home_url = "http://www.kirupa.com/developer/mx/movement_keys.htm";
 
     LLQtWebKit::getInstance()->navigateTo( gBrowserWindowId, home_url );
 }
@@ -242,8 +242,17 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			// no keyboard_event here because we don't know the character code here.
 			// just save the wParam and lParam values - WM_CHAR will get sent next 
 			// and call keyboard_event with char code.
+            extern int qt_translateKeyCode(int vk); // from qkeymapper_win.cpp
+            last_char_code = 0;
 			gLParam = lParam;
 			gWParam = wParam;
+            int qtKey = qt_translateKeyCode(wParam);
+            if (qtKey != 0) {
+                // this is not a printable key
+                keyboard_event(qtKey, LLQtWebKit::KE_KEY_DOWN);
+            } else {
+                // this is a printable, process in WM_CHAR
+            }
             return 0;
         };
 
