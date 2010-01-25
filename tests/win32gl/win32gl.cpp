@@ -101,11 +101,11 @@ void init_qt( HWND hWnd )
     //home_url = "file:///C:/Work/llqtwebkit-4.6/tests/testgl/testpage.html";
     //home_url = "http://www.keybr.com";
     //home_url = "http://www.google.com";
-    //home_url = "http://www.webwasp.co.uk/tutorials/a16-input-text-frog/input-box-frog.htm";
+    home_url = "http://www.webwasp.co.uk/tutorials/a16-input-text-frog/input-box-frog.htm";
     //home_url = "http://yvern.com/fMAME/fMAME.html";
     //home_url = "http://www.2flashgames.com/f/f-882.htm";
     //home_url = "http://www.flashfridge.com/tutorial.asp?ID=10";
-    home_url = "http://www.kirupa.com/developer/mx/movement_keys.htm";
+    //home_url = "http://www.kirupa.com/developer/mx/movement_keys.htm";
 
     LLQtWebKit::getInstance()->navigateTo( gBrowserWindowId, home_url );
 }
@@ -190,6 +190,39 @@ void keyboard_event( int char_code, LLQtWebKit::EKeyEvent kev )
     LLQtWebKit::getInstance()->keyboardEvent( gBrowserWindowId, kev, key, utf8str, modifiers, native_scan_code, native_virtual_key, native_modifiers );
 }
 
+bool nonprintable_key(int vk)
+{
+    switch (vk)
+	{
+		case VK_LEFT:				
+		case VK_RIGHT:				
+		case VK_UP:				
+		case VK_DOWN:				
+		case VK_ESCAPE:			
+		case VK_DELETE:			
+		case VK_HOME:				
+		case VK_END:				
+		case VK_PRIOR:			
+		case VK_NEXT:		
+		case VK_INSERT:			
+		case VK_F1:				
+		case VK_F2:				
+		case VK_F3:				
+		case VK_F4:				
+		case VK_F5:				
+		case VK_F6:				
+		case VK_F7:				
+		case VK_F8:				
+		case VK_F9:				
+		case VK_F10:				
+		case VK_F11:				
+		case VK_F12:				
+            return true;
+        default:
+            return false;
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 //
 LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -242,14 +275,12 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			// no keyboard_event here because we don't know the character code here.
 			// just save the wParam and lParam values - WM_CHAR will get sent next 
 			// and call keyboard_event with char code.
-            extern int qt_translateKeyCode(int vk); // from qkeymapper_win.cpp
             last_char_code = 0;
 			gLParam = lParam;
 			gWParam = wParam;
-            int qtKey = qt_translateKeyCode(wParam);
-            if (qtKey != 0) {
+            if (nonprintable_key(wParam)) {
                 // this is not a printable key
-                keyboard_event(qtKey, LLQtWebKit::KE_KEY_DOWN);
+                keyboard_event(wParam, LLQtWebKit::KE_KEY_DOWN);
             } else {
                 // this is a printable, process in WM_CHAR
             }
