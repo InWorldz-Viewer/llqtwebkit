@@ -678,7 +678,7 @@ void LLEmbeddedBrowserWindow::keyboardEvent(
 		case LLQtWebKit::KEY_NONE:			key = Qt::Key_unknown;		break;
 		
 		default:
-			key = (Qt::Key)key_code;
+			key = (Qt::Key)toupper(key_code);
 		break;
     }
 
