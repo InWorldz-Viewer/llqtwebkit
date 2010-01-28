@@ -46,6 +46,7 @@ public:
     WebPage(QWidget *parent = 0);
     ~WebPage();
 
+    void onCursorChanged(const EventType& event);
     void onPageChanged(const EventType& event);
     void onNavigateBegin(const EventType& event);
     void onNavigateComplete(const EventType& event);
@@ -106,6 +107,19 @@ WebPage::~WebPage()
 
     // clean up
     LLQtWebKit::getInstance()->reset();
+}
+
+void WebPage::onCursorChanged(const EventType& event)
+{
+    qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
+    switch (event.getIntValue()) {
+    case LLQtWebKit::C_ARROW: setCursor(QCursor(Qt::ArrowCursor)); break;
+    case LLQtWebKit::C_IBEAM: setCursor(QCursor(Qt::IBeamCursor)); break;
+    case LLQtWebKit::C_SPLITV: setCursor(QCursor(Qt::SplitHCursor)); break;
+    case LLQtWebKit::C_SPLITH: setCursor(QCursor(Qt::SplitVCursor)); break;
+    case LLQtWebKit::C_POINTINGHAND: setCursor(QCursor(Qt::PointingHandCursor)); break;
+    default: break;
+    }
 }
 
 void WebPage::onPageChanged(const EventType& event)
@@ -217,7 +231,7 @@ void WebPage::keyPressEvent(QKeyEvent *event)
 
 void WebPage::keyReleaseEvent(QKeyEvent *event)
 {
-    LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, event->text().at(0).unicode(),LLQtWebKit::KM_MODIFIER_NONE);
+    //LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, event->text().at(0).unicode(),LLQtWebKit::KM_MODIFIER_NONE);
 }
 
 void WebPage::goBack()
