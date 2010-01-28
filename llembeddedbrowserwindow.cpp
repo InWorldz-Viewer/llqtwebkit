@@ -865,27 +865,10 @@ LLWebView::LLWebView(QGraphicsItem *parent)
 {
 }
 
-// XxX
-// START copy from qwebpage_p.h
-// I will propose making this class public in QtWebKit
-class SetCursorEvent : public QEvent {
-public:
-    static const int EventType = 724;
-    SetCursorEvent(const QCursor&);
-
-    QCursor cursor() const { return m_cursor; } ;
-private:
-    QCursor m_cursor;
-};
-// END
-// XxX
-
-bool LLWebView::sceneEvent(QEvent *event)
+bool LLWebView::event(QEvent* event)
 {
-    if (window
-        && event->type() == static_cast<QEvent::Type>(SetCursorEvent::EventType)) {
-
-        QCursor cursor = static_cast<SetCursorEvent*>(event)->cursor();
+    if (window && event->type() == QEvent::CursorChange) {
+        QCursor cursor = this->cursor();
         if (currentShape != cursor.shape()) {
             currentShape = cursor.shape();
             LLQtWebKit::ECursor llcursor;
@@ -916,13 +899,6 @@ bool LLWebView::sceneEvent(QEvent *event)
                     ((int)llcursor));
             window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCursorChanged, llevent);
         }
-        event->accept();
-        return true;
     }
-    if (event->type() == QEvent::CursorChange) {
-        event->accept();
-        return true;
-    }
-    return QGraphicsWebView::sceneEvent(event);
+    return QGraphicsWebView::event(event);
 }
-

@@ -141,7 +141,7 @@ public:
     int height() const { return boundingRect().height(); }
 
 protected:
-    bool sceneEvent(QEvent *event);
+    bool event(QEvent *event);
 
     Qt::CursorShape currentShape;
 };
