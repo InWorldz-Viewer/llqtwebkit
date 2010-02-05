@@ -40,7 +40,8 @@
 #define LLQTWEBKIT_H
 
 #ifdef _MSC_VER
-#include "pstdint.h"
+// no pstdint.h in the client where this header is used
+typedef unsigned long uint32_t;
 #else
 #include <stdint.h>        // Use the C99 official header
 #endif

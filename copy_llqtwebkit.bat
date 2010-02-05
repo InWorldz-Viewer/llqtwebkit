@@ -1,12 +1,12 @@
 @rem ===== source/destination dirs that may change =====
 @set QT_SRC_DIR=C:\Work\qt\qt-girishs-qt
 @set OPENSSL_SRC_DIR=c:\work\qt\openssl-0.9.8l
-@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit-4.6
-@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit-4.6\licenses
+@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit-4.6.monroe_linden
+@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit-4.6.monroe_linden\licenses
 @set SL_DEST_DIR="C:\Documents and Settings\callum\Desktop"
 
 @rem ===== library filename =====
-@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-20100104.tar.bz2"
+@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-20100204.tar.bz2"
 
 @rem =============== instructions ===============
 @echo This batch file copies the Qt, OpenSSL and LLQtWebKit files required 
