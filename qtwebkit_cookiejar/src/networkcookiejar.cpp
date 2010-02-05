@@ -182,6 +182,10 @@ bool NetworkCookieJar::restoreState(const QByteArray &state)
     if (marker != NetworkCookieJarMagic || v != version)
         return false;
     stream >> d->tree;
+    if (stream.status() != QDataStream::Ok) {
+        d->tree.clear();
+        return false;
+    }
     return true;
 }
 

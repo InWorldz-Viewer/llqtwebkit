@@ -191,10 +191,13 @@ QDataStream &operator<<(QDataStream &out, const Trie<T>&trie) {
 template<class T>
 QDataStream &operator>>(QDataStream &in, Trie<T> &trie) {
     trie.clear();
+    if (in.status() != QDataStream::Ok)
+        return in;
     in >> trie.values;
     in >> trie.childrenKeys;
-    in >> trie.children;
-    Q_ASSERT(trie.childrenKeys.count() == trie.children.count());
+    //Q_ASSERT(trie.childrenKeys.count() == trie.children.count());
+    if (trie.childrenKeys.count() != trie.children.count())
+        in.setStatus(QDataStream::ReadCorruptData);
     return in;
 }
 
@@ -252,4 +255,3 @@ Trie<T>* Trie<T>::walkTo(const QStringList &key, bool create) {
 }
 
 #endif
-
