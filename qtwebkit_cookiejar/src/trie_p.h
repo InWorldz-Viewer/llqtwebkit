@@ -195,6 +195,7 @@ QDataStream &operator>>(QDataStream &in, Trie<T> &trie) {
         return in;
     in >> trie.values;
     in >> trie.childrenKeys;
+	in >> trie.children;
     //Q_ASSERT(trie.childrenKeys.count() == trie.children.count());
     if (trie.childrenKeys.count() != trie.children.count())
         in.setStatus(QDataStream::ReadCorruptData);
