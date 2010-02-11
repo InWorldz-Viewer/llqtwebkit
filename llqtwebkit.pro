@@ -8,7 +8,7 @@ include(llqtwebkit.pri)
 
 QT += webkit opengl network gui
 
-win32:debug {
+win32:CONFIG(debug,debug|release) {
   TARGET = llqtwebkitd
 }
 

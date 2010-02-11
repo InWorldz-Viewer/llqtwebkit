@@ -5,6 +5,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../
 
 CONFIG += static
+include(../../static.pri)
 
 QT += webkit opengl network
 
@@ -28,10 +29,10 @@ win32{
     INCLUDEPATH += ../
     LIBS += -L../GL 
     DESTDIR=../GL
-    debug {
+    CONFIG(debug,debug|release) {
       LIBS += $$PWD/../../Debug/llqtwebkitd.lib
     }
-    release {
+    CONFIG(release,debug|release) {
       LIBS += $$PWD/../../Release/llqtwebkit.lib
     }
 }

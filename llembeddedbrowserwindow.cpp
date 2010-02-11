@@ -75,8 +75,9 @@
 #include <qdebug.h>
 #endif
 
-#if LL_DARWIN || LL_LINUX
+#if LL_DARWIN || LL_LINUX || defined(STATIC_QT)
 	// Don't define qt_sendSpontaneousEvent on the mac -- it causes a multiply-defined symbol.
+	extern bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
 #else
 	#include <qcoreapplication.h>
 	bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
