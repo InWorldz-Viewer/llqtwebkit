@@ -64,6 +64,7 @@ class LLWebPage : public QWebPage
         void javaScriptAlert(QWebFrame* frame, const QString& msg);
         bool javaScriptConfirm(QWebFrame* frame, const QString& msg);
         bool javaScriptPrompt(QWebFrame* frame, const QString& msg, const QString& defaultValue, QString* result);
+        QWebPage *createWindow(WebWindowType type);
 
     private:
         QPoint currentPoint;

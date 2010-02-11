@@ -249,3 +249,8 @@ bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QSt
     return false;
 }
 
+QWebPage *LLWebPage::createWindow(WebWindowType type)
+{
+    Q_UNUSED(type);
+    return this;
+}
