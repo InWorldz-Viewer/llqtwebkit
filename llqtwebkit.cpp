@@ -593,6 +593,17 @@ std::string LLQtWebKit::evaluateJavascript(int browser_window_id, const std::str
     return "";
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//
+void LLQtWebKit::setWindowOpenBehavior(int browser_window_id, WindowOpenBehavior behavior)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        browser_window->setWindowOpenBehavior(behavior);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLQtWebKit::set404RedirectUrl(int browser_window_in, std::string redirect_url)

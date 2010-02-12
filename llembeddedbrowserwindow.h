@@ -102,6 +102,7 @@ public:
 
     // javascript access/control
     std::string evaluateJavascript(std::string script);
+    void setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior);
 
     // redirection when you hit a missing page
     bool set404RedirectUrl(std::string redirect_url);

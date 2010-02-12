@@ -95,6 +95,9 @@ WebPage::WebPage(QWidget *parent)
     // don't flip bitmap
     LLQtWebKit::getInstance()->flipWindow(mBrowserWindowId, false);
 
+    // open window.open() in same page
+    LLQtWebKit::getInstance()->setWindowOpenBehavior(mBrowserWindowId, LLQtWebKit::REDIRECT_TO_SELF);
+
     // go to the "home page"
     QString url = QUrl::fromLocalFile(QDir::currentPath() + "/../testgl/testpage.html").toString();
     LLQtWebKit::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());

@@ -35,6 +35,7 @@
 
 class QGraphicsWebView;
 #include <qwebpage.h>
+#include "llqtwebkit.h"
 
 class LLEmbeddedBrowserWindow;
 class LLWebPage : public QWebPage
@@ -48,14 +49,7 @@ class LLWebPage : public QWebPage
 
         QGraphicsWebView *webView;
 
-        enum WindowOpenBehavior {
-	    Ignore,
-	    RedirectToSelf
-	};
-
-        void setWindowOpenBehavior(WindowOpenBehavior behavior) {
-	    this->windowOpenBehavior = behavior;
-	}
+        void setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior);
 
     protected:
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);
@@ -77,7 +71,7 @@ class LLWebPage : public QWebPage
 
     private:
         QPoint currentPoint;
-	WindowOpenBehavior windowOpenBehavior;
+	LLQtWebKit::WindowOpenBehavior windowOpenBehavior;
 };
 
 #endif

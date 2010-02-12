@@ -48,7 +48,7 @@
 LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
     , window(0)
-    , windowOpenBehavior(LLWebPage::Ignore)
+    , windowOpenBehavior(LLQtWebKit::IGNORE)
 {
     connect(this, SIGNAL(loadProgress(int)),
             this, SLOT(loadProgressSlot(int)));
@@ -186,6 +186,11 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
     return accepted;
 }
 
+void LLWebPage::setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior)
+{
+    windowOpenBehavior = behavior;
+}
+
 void LLWebPage::loadStarted()
 {
     if (!window)
@@ -253,5 +258,5 @@ bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QSt
 QWebPage *LLWebPage::createWindow(WebWindowType type)
 {
     Q_UNUSED(type);
-    return (windowOpenBehavior == Ignore) ? 0 : this;
+    return (windowOpenBehavior == LLQtWebKit::IGNORE) ? 0 : this;
 }

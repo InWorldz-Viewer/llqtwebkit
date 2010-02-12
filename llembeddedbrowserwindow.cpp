@@ -741,6 +741,14 @@ std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
     return result.toStdString();
 }
 
+void LLEmbeddedBrowserWindow::setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior)
+{
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << window_id;
+#endif
+    d->mPage->setWindowOpenBehavior(behavior);
+}
+
 bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG

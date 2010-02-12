@@ -306,6 +306,12 @@ class LLQtWebKit
 		// javascript access/control
 		std::string evaluateJavascript(int browser_window_id, const std::string script);
 
+		enum WindowOpenBehavior {
+		    IGNORE,
+		    REDIRECT_TO_SELF
+		};
+		void setWindowOpenBehavior(int browser_window_id, WindowOpenBehavior behavior);
+
 		// set/clear URL to redirect to when a 404 page is reached
 		bool set404RedirectUrl(int browser_window_in, std::string redirect_url);
 		bool clr404RedirectUrl(int browser_window_in);
