@@ -48,6 +48,15 @@ class LLWebPage : public QWebPage
 
         QGraphicsWebView *webView;
 
+        enum WindowOpenBehavior {
+	    Ignore,
+	    RedirectToSelf
+	};
+
+        void setWindowOpenBehavior(WindowOpenBehavior behavior) {
+	    this->windowOpenBehavior = behavior;
+	}
+
     protected:
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);
 
@@ -68,6 +77,7 @@ class LLWebPage : public QWebPage
 
     private:
         QPoint currentPoint;
+	WindowOpenBehavior windowOpenBehavior;
 };
 
 #endif
