@@ -6,7 +6,15 @@
 @set SL_DEST_DIR="C:\Documents and Settings\callum\Desktop"
 
 @rem ===== library filename =====
-@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-20100204.tar.bz2"
+@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-2010XXXX.tar.bz2"
+
+@rem ===== make sure the filename for the archive is updated =====
+@if %LLQTWEBKIT_LIB_FILENAME%=="llqtwebkit-windows-qt4.6-2010XXXX.tar.bz2" goto VERSION_UNSET
+@goto VERSION_SET
+@:VERSION_UNSET
+@echo ERROR: ****** The version number of the LLQtWebKit archive is not set
+@goto END
+@:VERSION_SET
 
 @rem =============== instructions ===============
 @echo This batch file copies the Qt, OpenSSL and LLQtWebKit files required 
@@ -106,4 +114,5 @@
 @echo.
 
 @echo -- Complete --
-pause
+:END
+@pause
