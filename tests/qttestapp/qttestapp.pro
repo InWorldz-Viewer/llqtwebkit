@@ -4,7 +4,6 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../../
 
-CONFIG += static
 include(../../static.pri)
 
 QT += webkit opengl network

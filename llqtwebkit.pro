@@ -1,5 +1,5 @@
-CONFIG += static
 TEMPLATE = lib
+CONFIG += static staticlib # we always build as static lib whether Qt is static or not
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
