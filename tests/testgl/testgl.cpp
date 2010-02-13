@@ -151,8 +151,11 @@ class testGL :
 			// don't flip bitmap
 			LLQtWebKit::getInstance()->flipWindow( mBrowserWindowId, false );
 
-			// don't flip bitmap
+			// target name we open in external browser
 			LLQtWebKit::getInstance()->setExternalTargetName( mBrowserWindowId, "Wibblewobbly" );
+
+			// turn on option to catch JavaScript window.open commands and open in same window
+			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserWindowId, LLQtWebKit::WOB_REDIRECT_TO_SELF );
 
 			// go to the "home page" or URL passed in via command line
 			if ( ! argv1.empty() )

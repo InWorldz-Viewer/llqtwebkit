@@ -48,7 +48,7 @@
 LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
     , window(0)
-    , windowOpenBehavior(LLQtWebKit::IGNORE)
+    , windowOpenBehavior(LLQtWebKit::WOB_IGNORE)
 {
     connect(this, SIGNAL(loadProgress(int)),
             this, SLOT(loadProgressSlot(int)));
@@ -258,5 +258,5 @@ bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QSt
 QWebPage *LLWebPage::createWindow(WebWindowType type)
 {
     Q_UNUSED(type);
-    return (windowOpenBehavior == LLQtWebKit::IGNORE) ? 0 : this;
+    return (windowOpenBehavior == LLQtWebKit::WOB_IGNORE) ? 0 : this;
 }

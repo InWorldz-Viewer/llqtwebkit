@@ -306,9 +306,10 @@ class LLQtWebKit
 		// javascript access/control
 		std::string evaluateJavascript(int browser_window_id, const std::string script);
 
-		enum WindowOpenBehavior {
-		    IGNORE,
-		    REDIRECT_TO_SELF
+		enum WindowOpenBehavior
+		{
+		    WOB_IGNORE,
+		    WOB_REDIRECT_TO_SELF
 		};
 		void setWindowOpenBehavior(int browser_window_id, WindowOpenBehavior behavior);
 
