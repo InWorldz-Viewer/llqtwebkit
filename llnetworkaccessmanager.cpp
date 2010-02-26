@@ -79,7 +79,9 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
 
 void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
+#ifndef VANILLA_QT
     authenticator->tryAgainLater = true;
+#endif
     AuthDialog authDialog;
     int i;
     for (i = 0; i < authDialogs.count(); ++i) {
@@ -123,7 +125,9 @@ void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthe
         authDialog.proxyWidget = 0;
         authDialog.authenticationDialog = 0;
         authDialogs.removeAt(i);
+#ifndef VANILLA_QT
         authenticator->tryAgainLater = false;
+#endif
     }
 }
 

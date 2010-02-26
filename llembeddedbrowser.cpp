@@ -65,7 +65,7 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
     if (!qApp)
     {
         static int argc = 0;
-        static char* argv[] = {""};
+        static const char* argv[] = {""};
         mApplication = new QApplication(argc, (char **)argv);
         mApplication->addLibraryPath(qApp->applicationDirPath());
     }
@@ -281,8 +281,8 @@ void LLEmbeddedBrowser::pump(int max_milliseconds)
 
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent, const QString& cookie_filename)
     : NetworkCookieJar(parent)
-    , mAllowCookies(true)
     , mCookieStorageFileName(cookie_filename)
+    , mAllowCookies(true)
 {
 }
 
