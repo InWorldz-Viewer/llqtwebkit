@@ -11,7 +11,7 @@ unix {
     DEFINES += LL_LINUX
 #    DEFINES += LL_LINUX LL_NEWER_GLUI
     LIBS += -lglui -lglut
-    LIBS += $$PWD/../../libllmozlib2.a
+    LIBS += $$PWD/../../libllqtwebkit.a
 }
 }
 
