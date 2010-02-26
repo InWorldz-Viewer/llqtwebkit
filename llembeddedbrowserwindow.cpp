@@ -75,7 +75,7 @@
 #include <qdebug.h>
 #endif
 
-#if LL_DARWIN || LL_LINUX || defined(STATIC_QT)
+#if LL_DARWIN || defined(STATIC_QT)
 	// Don't define qt_sendSpontaneousEvent on the mac -- it causes a multiply-defined symbol.
 	extern bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
 #else
@@ -826,6 +826,8 @@ void LLEmbeddedBrowserWindow::prependHistoryUrl(std::string url)
     d->mPage->history()->prependItem(QString::fromStdString(url),
 									 QString::fromAscii(""),
 									 QDateTime::currentDateTime());
+#else
+    Q_UNUSED(url);
 #endif
 }
 
@@ -900,6 +902,7 @@ bool LLWebView::event(QEvent* event)
                 break;
                 default:
                     qWarning() << "Unhandled cursor shape:" << currentShape;
+                    llcursor = LLQtWebKit::C_ARROW;
             }
 
             LLEmbeddedBrowserWindowEvent llevent(
