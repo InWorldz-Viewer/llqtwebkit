@@ -11,8 +11,8 @@ include($$join(PRL, "/"))
 
 contains(QMAKE_PRL_CONFIG, static) {
     DEFINES += STATIC_QT
+    QTPLUGIN += qgif
 } else {
     DEFINES += SHARED_QT
-    QTPLUGIN += qgif
 }
 
