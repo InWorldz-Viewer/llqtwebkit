@@ -13,7 +13,7 @@ unix {
 #    DEFINES += LL_LINUX LL_NEWER_GLUI
     LIBS += -lglui -lglut
     LIBS += $$system(pkg-config gtk+-2.0 --libs)
-	LIBS += $$PWD/../../libllqtwebkit.so
+	LIBS += $$PWD/../../libllqtwebkit.a
 }
 }
 
