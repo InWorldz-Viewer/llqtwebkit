@@ -96,7 +96,7 @@ WebPage::WebPage(QWidget *parent)
     LLQtWebKit::getInstance()->flipWindow(mBrowserWindowId, false);
 
     // open window.open() in same page
-    LLQtWebKit::getInstance()->setWindowOpenBehavior(mBrowserWindowId, LLQtWebKit::REDIRECT_TO_SELF);
+    LLQtWebKit::getInstance()->setWindowOpenBehavior(mBrowserWindowId, LLQtWebKit::WOB_REDIRECT_TO_SELF);
 
     // go to the "home page"
     QString url = QUrl::fromLocalFile(QDir::currentPath() + "/../testgl/testpage.html").toString();

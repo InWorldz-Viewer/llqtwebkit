@@ -9,7 +9,7 @@ include(../../static.pri)
 QT += webkit opengl network
 
 unix {
-    LIBS += $$PWD/../../libllqtwebkit.so
+    LIBS += $$PWD/../../libllqtwebkit.a
 }
 
 !mac {
