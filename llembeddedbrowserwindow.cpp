@@ -233,7 +233,7 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     if (!d->mEnabled)
         return 0;
 
-    d->mImage = QImage(QSize(d->mView->width(), d->mView->height()), QImage::Format_RGB32);
+    Q_ASSERT(d->mImage.size() == d->mView->size());
     if (!d->mPage->mainFrame()->url().isValid())
     {
         d->mImage.fill(d->backgroundColor.value());
