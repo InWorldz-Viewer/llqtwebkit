@@ -643,6 +643,24 @@ void LLQtWebKit::prependHistoryUrl(int browser_window_id, std::string url)
     }
 }
 
+std::vector<char> LLQtWebKit::saveHistory(int browser_window_id)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        return browser_window->saveHistory();
+    }
+}
+
+void LLQtWebKit::restoreHistory(int browser_window_id, const std::vector<char> &history)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        browser_window->restoreHistory(history);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 void LLQtWebKit::clearHistory(int browser_window_id)

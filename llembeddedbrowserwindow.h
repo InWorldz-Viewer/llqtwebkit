@@ -41,6 +41,7 @@
 #define LLEMBEDDEDBROWSERWINDOW_H
 
 #include <string>
+#include <vector>
 #include <list>
 #include <algorithm>
 #ifdef _MSC_VER
@@ -136,11 +137,16 @@ public:
 	void setBlankTargetName(std::string name);
 	std::string getBlankTargetName();
 
-	// prepend the current history with the given url
+	// Obsolete: prepend the current history with the given url
 	void prependHistoryUrl(std::string url);
+    // Obsolete: dump history
+	std::string dumpHistory();
+
 	// clear the URL history
 	void clearHistory();
-	std::string dumpHistory();
+
+	std::vector<char> saveHistory();
+	void restoreHistory(const std::vector<char> &history);
 
 private:
     friend class LLWebPage;

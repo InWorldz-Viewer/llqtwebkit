@@ -836,6 +836,45 @@ void LLEmbeddedBrowserWindow::clearHistory()
 	d->mPage->history()->clear();
 }
 
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+static void dump(QWebHistory *h)
+{
+    if (h->count() == 0) {
+        qDebug() << "Empty";
+        return;
+    }
+
+    qDebug() << h->count() << "items in history";
+    for (int i = 0; i < h->count(); i++) {
+        bool c = h->currentItemIndex() == i;
+        qDebug() << (c ? '*' : ' ')  << h->itemAt(i).url();
+    }
+}
+#endif
+
+void LLEmbeddedBrowserWindow::restoreHistory(const std::vector<char> &history)
+{
+    QByteArray ba;
+    ba.resize(history.size());
+    memcpy(ba.data(), &history[0], history.size());
+
+    QDataStream stream(ba);
+    stream >> *d->mPage->history();
+}
+
+std::vector<char> LLEmbeddedBrowserWindow::saveHistory()
+{
+    QByteArray ba;
+    QDataStream stream(&ba, QIODevice::ReadWrite);
+    stream << *d->mPage->history();
+
+    std::vector<char> result;
+    result.resize(ba.size());
+    memcpy(&result[0], ba.constData(), ba.size());
+
+    return result;
+}
+
 std::string LLEmbeddedBrowserWindow::dumpHistory()
 {
 	std::ostringstream oss;

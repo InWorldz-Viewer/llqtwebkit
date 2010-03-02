@@ -98,13 +98,27 @@ WebPage::WebPage(QWidget *parent)
     // open window.open() in same page
     LLQtWebKit::getInstance()->setWindowOpenBehavior(mBrowserWindowId, LLQtWebKit::WOB_REDIRECT_TO_SELF);
 
-    // go to the "home page"
-    QString url = QUrl::fromLocalFile(QDir::currentPath() + "/../testgl/testpage.html").toString();
-    LLQtWebKit::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
+    QSettings settings("llqtwebkit", "qttestapp");
+
+    QByteArray ba = settings.value("page/history").toByteArray();
+    if (!ba.isEmpty()) {
+        std::vector<char> history;
+        history.resize(ba.size());
+        memcpy(&history[0], ba.constData(), ba.size());
+        LLQtWebKit::getInstance()->restoreHistory(mBrowserWindowId, history);
+    } else {
+        // go to the "home page"
+        QString url = QUrl::fromLocalFile(QDir::currentPath() + "/../testgl/testpage.html").toString();
+        LLQtWebKit::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
+    }
 }
 
 WebPage::~WebPage()
 {
+    QSettings settings("llqtwebkit", "qttestapp");
+    std::vector<char> history = LLQtWebKit::getInstance()->saveHistory(mBrowserWindowId);
+    settings.setValue("page/history", QByteArray(&history[0], history.size()));
+
     // unhook observer
     LLQtWebKit::getInstance()->remObserver( mBrowserWindowId, this );
 
@@ -297,8 +311,9 @@ void Window::loadUrl()
 int main(int argc, char **argv)
 {
     QApplication application(argc, argv);
-    Window window;
-    window.show();
+    Window *window = new Window;
+    window->setAttribute(Qt::WA_DeleteOnClose);
+    window->show();
     return application.exec();
 }
 

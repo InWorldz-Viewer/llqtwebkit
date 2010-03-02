@@ -48,6 +48,7 @@ typedef unsigned long uint32_t;
 
 #include <string>
 #include <map>
+#include <vector>
 
 class LLEmbeddedBrowser;
 class LLEmbeddedBrowserWindow;
@@ -353,9 +354,13 @@ class LLQtWebKit
 
 		void pump(int max_milliseconds);
 
-		void prependHistoryUrl(int browser_window_id, std::string url);
+		void prependHistoryUrl(int browser_window_id, std::string url); // obsolete
+		std::string dumpHistory(int browser_window_id); // obsolete
+
 		void clearHistory(int browser_window_id);
-		std::string dumpHistory(int browser_window_id);
+
+        std::vector<char> saveHistory(int browser_window_id);
+        void restoreHistory(int browser_window_id, const std::vector<char> &history);
 
 		// Copied from indra_constants.h.
 		// The key_code argument to keyboardEvent should either be one of these or a 7-bit ascii character.
