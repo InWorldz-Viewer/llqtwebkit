@@ -114,7 +114,7 @@ WebPage::~WebPage()
 
 void WebPage::onCursorChanged(const EventType& event)
 {
-    qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
+    //qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
     switch (event.getIntValue()) {
     case LLQtWebKit::C_ARROW: setCursor(QCursor(Qt::ArrowCursor)); break;
     case LLQtWebKit::C_IBEAM: setCursor(QCursor(Qt::IBeamCursor)); break;
@@ -128,18 +128,18 @@ void WebPage::onCursorChanged(const EventType& event)
 void WebPage::onPageChanged(const EventType& event)
 {
     LLQtWebKit::getInstance()->grabBrowserWindow( mBrowserWindowId );
-    qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
+    //qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
     update();
 }
 
 void WebPage::onNavigateBegin(const EventType& event)
 {
-    qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
+    //qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
 }
 
 void WebPage::onNavigateComplete(const EventType& event)
 {
-    qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
+    //qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
 }
 
 void WebPage::onUpdateProgress(const EventType& event)
@@ -154,7 +154,7 @@ void WebPage::onStatusTextChange(const EventType& event)
 
 void WebPage::onLocationChange(const EventType& event)
 {
-    qDebug() << __FUNCTION__;
+    //qDebug() << __FUNCTION__;
     emit locationChanged(QString::fromStdString(event.getEventUri()));
     //void canGoBack(bool);
     //void canGoForward(bool);
@@ -184,7 +184,6 @@ void WebPage::paintEvent(QPaintEvent *event)
     int height = LLQtWebKit::getInstance()->getBrowserHeight(mBrowserWindowId);
     const unsigned char* pixels = LLQtWebKit::getInstance()->getBrowserWindowPixels(mBrowserWindowId);
     QImage image(pixels, width, height, QImage::Format_RGB32);
-    qDebug() << "paint" << width << height << pixels << image.isNull();
     QPainter painter(this);
     painter.drawImage(QPoint(0, 0), image);
 }
