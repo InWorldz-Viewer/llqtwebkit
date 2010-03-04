@@ -233,13 +233,13 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     if (!d->mEnabled)
         return 0;
 
-    Q_ASSERT(d->mImage.size() == d->mView->size());
+    Q_ASSERT(d->mPixmap.size() == d->mView->size());
     if (!d->mPage->mainFrame()->url().isValid())
     {
-        d->mImage.fill(d->backgroundColor.value());
+        d->mPixmap.fill(d->backgroundColor.value());
     } else
     {
-        QPainter painter(&d->mImage);
+        QPainter painter(&d->mPixmap);
 #if 1   // Paint from the graphics view
         QRectF r(x, y, width, height);
         QRect g(0, 0, d->mView->width(), d->mView->height());
@@ -249,12 +249,8 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
         d->mPage->mainFrame()->render(&painter, clip);
 #endif
         painter.end();
-        if (!d->mFlipBitmap)
-        {
-            d->mImage = d->mImage.mirrored();
-        }
     }
-    d->mImage = QGLWidget::convertToGLFormat(d->mImage);
+    d->mImage = d->mPixmap.toImage();
     d->mPageBuffer = d->mImage.bits();
     return d->mPageBuffer;
 }
@@ -273,7 +269,7 @@ int16_t LLEmbeddedBrowserWindow::getBrowserWidth()
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
-    return d->mImage.width();
+    return d->mPixmap.width();
 }
 
 int16_t LLEmbeddedBrowserWindow::getBrowserHeight()
@@ -281,7 +277,7 @@ int16_t LLEmbeddedBrowserWindow::getBrowserHeight()
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
-    return d->mImage.height();
+    return d->mPixmap.height();
 }
 
 int16_t LLEmbeddedBrowserWindow::getBrowserDepth()
@@ -395,10 +391,10 @@ bool LLEmbeddedBrowserWindow::setSize(int16_t width, int16_t height)
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << width << height;
 #endif
     d->mPageBuffer = NULL;
-    d->mImage = QImage(QSize(width, height), QImage::Format_RGB32);
+    d->mPixmap = QPixmap(QSize(width, height));
     d->mGraphicsView->resize(width, height);
     d->mView->resize(width, height);
-    d->mImage.fill(d->backgroundColor.rgb());
+    d->mPixmap.fill(d->backgroundColor.rgb());
     return true;
 }
 
