@@ -3,6 +3,7 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../../
+CONFIG -= app_bundle
 
 include(../../static.pri)
 
