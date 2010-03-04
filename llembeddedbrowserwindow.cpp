@@ -233,6 +233,9 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     if (!d->mEnabled)
         return 0;
 
+    if (!d->mDirty)
+        return d->mPageBuffer;
+
     Q_ASSERT(d->mPixmap.size() == d->mView->size());
     if (!d->mPage->mainFrame()->url().isValid())
     {
@@ -252,6 +255,7 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
     }
     d->mImage = d->mPixmap.toImage();
     d->mPageBuffer = d->mImage.bits();
+    d->mDirty = false;
     return d->mPageBuffer;
 }
 
@@ -861,6 +865,7 @@ void LLGraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
 {
     if (!window)
         return;
+    window->d->mDirty = true;
     for (int i = 0; i < regions.count(); ++i) {
         LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
                 regions[i].x(), regions[i].y(), regions[i].width(), regions[i].height());

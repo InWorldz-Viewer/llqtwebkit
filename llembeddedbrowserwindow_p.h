@@ -170,6 +170,7 @@ class LLEmbeddedBrowserWindowPrivate
         , mEnabled(true)
         , mFlipBitmap(false)
         , mPageBuffer(NULL)
+        , mDirty(false)
     {
     }
 
@@ -209,6 +210,7 @@ class LLEmbeddedBrowserWindowPrivate
     bool mFlipBitmap;
     unsigned char* mPageBuffer;
     QColor backgroundColor;
+    bool mDirty;
 };
 
 
