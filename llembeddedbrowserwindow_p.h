@@ -186,7 +186,6 @@ class LLEmbeddedBrowserWindowPrivate
 
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
     QImage mImage;
-    QPixmap mPixmap;
     LLEmbeddedBrowser *mParent;
     LLWebPage *mPage;
 
