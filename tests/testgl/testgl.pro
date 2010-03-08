@@ -3,6 +3,7 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../../
+CONFIG -= app_bundle
 
 QT += webkit opengl network
 
@@ -18,12 +19,7 @@ unix {
 mac {
     DEFINES += LL_OSX
     LIBS += -framework GLUT -framework OpenGL
-    debug {
-      LIBS += $$PWD/../../build/Debug/libllqtwebkit.dylib
-    }
-    release {
-      LIBS += $$PWD/../../build/Release/libllqtwebkit.dylib
-    }
+   LIBS += $$PWD/../../libllqtwebkit.a
 }
 
 
