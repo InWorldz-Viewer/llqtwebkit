@@ -92,6 +92,7 @@ LLEmbeddedBrowserPrivate::~LLEmbeddedBrowserPrivate()
 
 LLEmbeddedBrowser::LLEmbeddedBrowser()
     : d(new LLEmbeddedBrowserPrivate)
+    , mHostLanguage( "en" )
 {
 }
 
@@ -232,6 +233,15 @@ void LLEmbeddedBrowser::setBrowserAgentId(std::string id)
     QCoreApplication::setApplicationName(QString::fromStdString(id));
 }
 
+// updates value of 'hostLanguage' in JavaScript 'Navigator' obect that 
+// embedded pages can query to see what language the host app is set to
+// IMPORTANT: call this before any windows are created - only gets passed
+//            to LLWebPage when new window is created
+void LLEmbeddedBrowser::setHostLanguage( const std::string& host_language )
+{
+	mHostLanguage = host_language;
+}
+
 LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height)
 {
     LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
@@ -239,6 +249,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int h
     {
         newWin->setSize(width, height);
         newWin->setParent(this);
+        newWin->setHostLanguage(mHostLanguage);
         clearLastError();
         d->windows.append(newWin);
         return newWin;

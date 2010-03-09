@@ -728,6 +728,16 @@ bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
     return true;
 }
 
+void LLEmbeddedBrowserWindow::setHostLanguage(const std::string host_language)
+{
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(host_language);
+#endif
+	if ( d )
+		if ( d->mPage )
+    		d->mPage->setHostLanguage( host_language );
+}
+
 bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG

@@ -281,9 +281,14 @@ class LLQtWebKit
 		std::string getVersion();
 		void setBrowserAgentId(std::string id);
 		bool enableProxy(bool enabled, std::string host_name, int port);
+		
 		bool enableCookies(bool enabled);
 		bool clearAllCookies();
 		bool enablePlugins(bool enabled);
+
+		// updates value of 'hostLanguage' in JavaScript 'Navigator' obect that 
+		// embedded pages can query to see what language the host app is set to
+		void setHostLanguage(const std::string& host_language);
 
 		// browser window - creation/deletion, mutation etc.
 		int createBrowserWindow(int width, int height);

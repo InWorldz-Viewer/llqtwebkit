@@ -137,6 +137,12 @@ class testGL :
 			std::string profileDir = applicationDir + "/" + "testGL_profile";
 #endif
 			LLQtWebKit::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
+			
+			// set host language test (in reality, string will be language code passed into client) 
+			// IMPORTANT: must be called before createBrowserWindow(...)
+			LLQtWebKit::getInstance()->setHostLanguage( "EN-AB-CD-EF" );
+
+			// make a browser window		
 			mBrowserWindowId = LLQtWebKit::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
 
 			// tell LLQtWebKit about the size of the browser window

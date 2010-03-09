@@ -50,6 +50,7 @@ class LLWebPage : public QWebPage
         QGraphicsWebView *webView;
 
         void setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior);
+        void setHostLanguage(const std::string& host_language);
 
     protected:
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);
@@ -62,6 +63,9 @@ class LLWebPage : public QWebPage
         void loadStarted();
         void loadFinished(bool ok);
 
+    private slots:
+	    void extendNavigatorObject();
+
     protected:
         QString chooseFile(QWebFrame* parentFrame, const QString& suggestedFile);
         void javaScriptAlert(QWebFrame* frame, const QString& msg);
@@ -71,7 +75,8 @@ class LLWebPage : public QWebPage
 
     private:
         QPoint currentPoint;
-	LLQtWebKit::WindowOpenBehavior windowOpenBehavior;
+	    LLQtWebKit::WindowOpenBehavior windowOpenBehavior;
+	    std::string mHostLanguage;
 };
 
 #endif

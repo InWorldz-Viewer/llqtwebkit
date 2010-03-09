@@ -113,7 +113,7 @@ bool LLQtWebKit::clearCache()
 std::string LLQtWebKit::getVersion()
 {
     const int majorVersion = 2;
-    const int minorVersion = 1;
+    const int minorVersion = 2;
 
     // number of hours since "time began" for this library - used to identify builds of same version
     const int magicNumber = static_cast< int >((time(NULL) / 3600L) - (321190L));
@@ -145,6 +145,13 @@ void LLQtWebKit::setBrowserAgentId(std::string id)
 bool LLQtWebKit::enableProxy(bool enabled, std::string host_name, int port)
 {
     return LLEmbeddedBrowser::getInstance()->enableProxy(enabled, host_name, port);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void LLQtWebKit::setHostLanguage(const std::string& host_language )
+{
+    LLEmbeddedBrowser::getInstance()->setHostLanguage(host_language);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

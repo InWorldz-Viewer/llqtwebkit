@@ -49,6 +49,7 @@ LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
     , window(0)
     , windowOpenBehavior(LLQtWebKit::WOB_IGNORE)
+    , mHostLanguage( "en" )
 {
     connect(this, SIGNAL(loadProgress(int)),
             this, SLOT(loadProgressSlot(int)));
@@ -62,6 +63,8 @@ LLWebPage::LLWebPage(QObject *parent)
             this, SLOT(loadFinished(bool)));
     connect(mainFrame(), SIGNAL(titleChanged(const QString&)),
             this, SLOT(titleChangedSlot(const QString&)));
+    connect(mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
+            this, SLOT(extendNavigatorObject()));
 }
 
 void LLWebPage::loadProgressSlot(int progress)
@@ -255,8 +258,20 @@ bool LLWebPage::javaScriptPrompt(QWebFrame* frame, const QString& msg, const QSt
     return false;
 }
 
+void LLWebPage::extendNavigatorObject()
+{
+	QString q_host_language = QString::fromStdString( mHostLanguage );
+
+    mainFrame()->evaluateJavaScript(QString("navigator.hostLanguage=\"%1\"").arg( q_host_language ));
+}
+
 QWebPage *LLWebPage::createWindow(WebWindowType type)
 {
     Q_UNUSED(type);
     return (windowOpenBehavior == LLQtWebKit::WOB_IGNORE) ? 0 : this;
+}
+
+void LLWebPage::setHostLanguage(const std::string& host_language)
+{
+	mHostLanguage = host_language;
 }

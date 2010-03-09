@@ -108,6 +108,9 @@ public:
     bool set404RedirectUrl(std::string redirect_url);
     bool clr404RedirectUrl();
     void load404RedirectUrl();
+    
+    // host language setting
+    void setHostLanguage(const std::string host_language);
 
     // mouse & keyboard events
     void mouseEvent(LLQtWebKit::EMouseEvent mouse_event, int16_t button, int16_t x, int16_t y, LLQtWebKit::EKeyboardModifier modifiers);

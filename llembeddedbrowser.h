@@ -67,6 +67,7 @@ class LLEmbeddedBrowser
         bool enablePlugins(bool enabled);
         std::string getGREVersion();
         void setBrowserAgentId(std::string id);
+        void setHostLanguage( const std::string& host_language );
         LLEmbeddedBrowserWindow* createBrowserWindow(int width, int height);
         bool destroyBrowserWindow(LLEmbeddedBrowserWindow* browser_window);
         void setLastError(int error_number);
@@ -79,6 +80,7 @@ class LLEmbeddedBrowser
         friend class LLEmbeddedBrowserWindow;
         friend class LLEmbeddedBrowserWindowPrivate;
         LLEmbeddedBrowserPrivate *d;
+        std::string mHostLanguage;
 
         static LLEmbeddedBrowser* sInstance;
 };
