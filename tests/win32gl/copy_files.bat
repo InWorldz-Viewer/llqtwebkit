@@ -1,4 +1,4 @@
-set QT_SRC_DIR="c:\work\qt\qt-girishs-qt"
+set QT_SRC_DIR="c:\work\qt\lindenqt"
 set OPENSSL_SRC_DIR="c:\work\qt\openssl-0.9.8l"
 set LLQTWEBKIT_SRC_DIR="c:\work\llqtwebkit-4.6"
 set SL_DEST_DIR=".\"

@@ -1,41 +1,27 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is Linden Lab Inc. (http://lindenlab.com) code.
- *
- * The Initial Developer of the Original Code is:
- *   Callum Prentice (callum@ubrowser.com)
- *
- * Portions created by the Initial Developer are Copyright (C) 2006
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *  Callum Prentice (callum@ubrowser.com)
- *  Benjamin Meyer (benjamin.meyer@torchmobile.com)
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
+/* Copyright (c) 2006-2010, Linden Research, Inc.
+ * 
+ * LLQtWebKit Source Code
+ * The source code in this file ("Source Code") is provided by Linden Lab
+ * to you under the terms of the GNU General Public License, version 2.0
+ * ("GPL"), unless you have obtained a separate licensing agreement
+ * ("Other License"), formally executed by you and Linden Lab.  Terms of
+ * the GPL can be found in GPL-license.txt in this distribution, or online at
+ * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/gplv2
+ * 
+ * There are special exceptions to the terms and conditions of the GPL as
+ * it is applied to this Source Code. View the full text of the exception
+ * in the file FLOSS-exception.txt in this software distribution, or
+ * online at
+ * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/flossexception
+ * 
+ * By copying, modifying or distributing this software, you acknowledge
+ * that you have read and understood your obligations described above,
+ * and agree to abide by those obligations.
+ * 
+ * ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
+ * WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
+ * COMPLETENESS OR PERFORMANCE.
+ */
 
 #include "llembeddedbrowser.h"
 
@@ -92,6 +78,7 @@ LLEmbeddedBrowserPrivate::~LLEmbeddedBrowserPrivate()
 
 LLEmbeddedBrowser::LLEmbeddedBrowser()
     : d(new LLEmbeddedBrowserPrivate)
+    , mHostLanguage( "en" )
 {
 }
 
@@ -232,6 +219,15 @@ void LLEmbeddedBrowser::setBrowserAgentId(std::string id)
     QCoreApplication::setApplicationName(QString::fromStdString(id));
 }
 
+// updates value of 'hostLanguage' in JavaScript 'Navigator' obect that 
+// embedded pages can query to see what language the host app is set to
+// IMPORTANT: call this before any windows are created - only gets passed
+//            to LLWebPage when new window is created
+void LLEmbeddedBrowser::setHostLanguage( const std::string& host_language )
+{
+	mHostLanguage = host_language;
+}
+
 LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height)
 {
     LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
@@ -239,6 +235,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int h
     {
         newWin->setSize(width, height);
         newWin->setParent(this);
+        newWin->setHostLanguage(mHostLanguage);
         clearLastError();
         d->windows.append(newWin);
         return newWin;
