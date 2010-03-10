@@ -19,7 +19,7 @@ unix {
 mac {
     DEFINES += LL_OSX
     LIBS += -framework GLUT -framework OpenGL
-   LIBS += $$PWD/../../libllqtwebkit.a
+   LIBS += $$PWD/libllqtwebkit.dylib
 }
 
 
