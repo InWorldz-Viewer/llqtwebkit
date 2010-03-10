@@ -7,25 +7,23 @@ This comes in three parts:
 1) BUILDING Qt FOR LINUX LLQTWEBKIT
 -----------------------------------
 
-NOTE: It is not strictly necessary to build a 'special' Qt - you can
-use the system Qt if you already have it - though we strongly recommend
-Qt version 4.5.2 or above, with our enhancement patches incorporated.
-This section describes how we (Linden Lab) generate our distro-agnostic
-static Qt libs specifically tailored for LLQtWebKit, including our own patches.
+Acquire the Qt 4.6 source with our patches
+ * Our clone of Qt is available here: http://gitorious.org/+lindenqt/qt/lindenqt
+ * Download the source by clicking on the "lindenqt" branch under "Branches" and then using the "download as tar.gz" link on the right hand side of the page
+     o Alternately, if you prefer you can clone the repository with git using the "clone" link on the page -- details of this are left as an exercise to the reader 
+ * Extract the tarball into ~/llqtwebkit (or wherever else you've unpacked this source repository)
+ * This may take some as the archive contains a lot of files
+ * You should now have a directory ~/llqtwebkit/qt-lindenqt
+ * Open a terminal window and cd to ~/llqtwebkit/qt-lindenqt directory
+ * run the following commands (we'll use the QTDIR variable in later steps) 
+      export QTDIR=`pwd`
+      export PATH=$PATH:$QTDIR/bin
 
-* On a ubuntu dapper (6.06) machine:
-$ tar -zxf qt-all-opensource-src-4.5.2.tar.gz
-$ cd qt-all-opensource-src-4.5.2
 
-* we now apply a series of patches to Qt to enhance it for our purposes (better history handling, better frame handling, etc.)
-* in numerical order, apply all the patches from the 'qt_patches' directory of llqtwebkit:
-** for each FILE:
-$ patch -p1 < FILE
-
-* configure the build
+Configure the Build
 $ CXXFLAGS='-DQT_NO_INOTIFY' ./configure -v -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon -openssl-linked -no-3dnow -no-sse -no-sse2 -no-gtkstyle -no-xinput -no-sm -buildkey LL`date +%s` -no-sql-sqlite -no-scripttools -no-cups -no-dbus -no-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb -xrender -svg
 
-* Are you making a build for redistribution to other people and you are not specifically on Ubuntu Dapper?  Then please add '-fno-stack-protector' to the CXXFLAGS above.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
+* Are you making a build for redistribution to other people and you are not specifically on your distribution?  Then please add '-fno-stack-protector' to the CXXFLAGS above.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
 
 * Accept the license, if you do.
 
@@ -51,7 +49,7 @@ $ export PATH=$PATH:$QTDIR/bin
 * configure llqtwebkit
 $ qmake CONFIG-=debug
 
-* Are you making a build for redistribution to other people and you are not specifically on Ubuntu Dapper?  Then please hack the resulting Makefile and add '-fno-stack-protector' to CXXFLAGS and CFLAGS.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
+* Are you making a build for redistribution to other people and you are not specifically on your distribution?  Then please hack the resulting Makefile and add '-fno-stack-protector' to CXXFLAGS and CFLAGS.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
 
 * build it
 $ make
