@@ -211,6 +211,13 @@ bool LLEmbeddedBrowser::enablePlugins(bool enabled)
     return true;
 }
 
+bool LLEmbeddedBrowser::enableJavascript(bool enabled)
+{
+    QWebSettings *defaultSettings = QWebSettings::globalSettings();
+    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, enabled);
+    return true;
+}
+
 /*
 	Sets a string that should be addded to the user agent to identify the application
 */

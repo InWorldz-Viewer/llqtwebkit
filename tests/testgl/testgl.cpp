@@ -128,6 +128,12 @@ class testGL :
 			// set host language test (in reality, string will be language code passed into client) 
 			// IMPORTANT: must be called before createBrowserWindow(...)
 			LLQtWebKit::getInstance()->setHostLanguage( "EN-AB-CD-EF" );
+			
+			// enable Javascript
+			LLQtWebKit::getInstance()->enableJavascript( true );
+
+			// enable Plugins
+			LLQtWebKit::getInstance()->enablePlugins( true );
 
 			// make a browser window		
 			mBrowserWindowId = LLQtWebKit::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );

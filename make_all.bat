@@ -54,7 +54,7 @@ nmake clean
 nmake
 popd
 
-@rem switch to GL directory which is where all the test apps end up
-cd tests\GL
+@rem switch to root of tests directory - some need to be run from their own dir
+cd tests
 
 pause

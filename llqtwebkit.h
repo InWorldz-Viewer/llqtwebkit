@@ -272,6 +272,7 @@ class LLQtWebKit
 		bool enableCookies(bool enabled);
 		bool clearAllCookies();
 		bool enablePlugins(bool enabled);
+		bool enableJavascript(bool enabled);
 
 		// updates value of 'hostLanguage' in JavaScript 'Navigator' obect that 
 		// embedded pages can query to see what language the host app is set to
