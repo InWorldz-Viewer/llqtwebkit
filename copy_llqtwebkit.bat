@@ -1,8 +1,8 @@
 @rem ===== source/destination dirs that may change =====
 @set QT_SRC_DIR=C:\Work\qt\lindenqt
 @set OPENSSL_SRC_DIR=c:\work\qt\openssl-0.9.8l
-@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit-4.6
-@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit-4.6\licenses
+@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit
+@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit\licenses
 @set SL_DEST_DIR="C:\Documents and Settings\callum\Desktop"
 
 @rem ===== library filename - change this when you make a new build but don't check in =====
