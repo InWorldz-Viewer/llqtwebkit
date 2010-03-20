@@ -37,21 +37,25 @@
 
 #include <qgraphicswebview.h>
 
+class LLEmbeddedBrowser;
 class LLNetworkCookieJar : public NetworkCookieJar
 {
 public:
-    LLNetworkCookieJar(QObject *parent, const QString &filename);
+    LLNetworkCookieJar(QObject *parent, LLEmbeddedBrowser *browser);
     ~LLNetworkCookieJar();
-
-    void load();
-    void save();
 
     QList<QNetworkCookie> cookiesForUrl(const QUrl& url) const;
     bool setCookiesFromUrl(const QList<QNetworkCookie> &cookie_list, const QUrl& url);
-    void clear();
 
-    QString mCookieStorageFileName;
+	/*virtual*/ void onCookieSetFromURL(const QNetworkCookie &cookie, const QUrl &url, bool already_dead);
+
+    void clear();
+	
+	void setCookiesFromRawForm(const std::string &cookie_string);
+	std::string getAllCookiesInRawForm();
+	
     bool mAllowCookies;
+	LLEmbeddedBrowser *mBrowser;
 };
 
 class LLNetworkAccessManager;

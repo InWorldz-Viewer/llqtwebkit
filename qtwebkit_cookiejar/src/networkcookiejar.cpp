@@ -261,7 +261,10 @@ bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList
                 break;
             }
         }
-
+		
+		// Notify derived class
+		onCookieSetFromURL(cookie, url, alreadyDead);
+		
         if (alreadyDead)
             continue;
 
@@ -280,16 +283,32 @@ QList<QNetworkCookie> NetworkCookieJar::allCookies() const
     return d->tree.all();
 }
 
+void NetworkCookieJar::clearCookies()
+{
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+    qDebug() << "NetworkCookieJar::" << __FUNCTION__;
+#endif
+    d->tree.clear();
+}
+
+void NetworkCookieJar::setCookies(const QList<QNetworkCookie> &cookieList)
+{
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+    qDebug() << "NetworkCookieJar::" << __FUNCTION__ << cookieList.count();
+#endif
+    foreach (const QNetworkCookie &cookie, cookieList) {
+        QString domain = cookie.domain();
+        d->tree.insert(splitHost(domain), cookie);
+    }
+}
+
 void NetworkCookieJar::setAllCookies(const QList<QNetworkCookie> &cookieList)
 {
 #if defined(NETWORKCOOKIEJAR_DEBUG)
     qDebug() << "NetworkCookieJar::" << __FUNCTION__ << cookieList.count();
 #endif
-    d->tree.clear();
-    foreach (const QNetworkCookie &cookie, cookieList) {
-        QString domain = cookie.domain();
-        d->tree.insert(splitHost(domain), cookie);
-    }
+	clearCookies();
+	setCookies(cookieList);
 }
 
 QString NetworkCookieJarPrivate::urlPath(const QUrl &url) const
@@ -366,3 +385,12 @@ void NetworkCookieJar::setSecondLevelDomains(const QStringList &secondLevelDomai
     qSort(d->secondLevelDomains);
 }
 
+
+void NetworkCookieJar::onCookieSetFromURL(const QNetworkCookie &cookie, const QUrl &url, bool already_dead)
+{
+	Q_UNUSED(cookie);
+	Q_UNUSED(url);
+	Q_UNUSED(already_dead);
+	
+	// Derived classes can use this to track cookie changes.
+}

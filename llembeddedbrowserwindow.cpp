@@ -814,6 +814,16 @@ std::string LLEmbeddedBrowserWindow::dumpHistory()
 	return oss.str();
 }
 
+void LLEmbeddedBrowserWindow::cookieChanged(const std::string &cookie, const std::string &url, bool dead)
+{
+	LLEmbeddedBrowserWindowEvent llevent(
+			getWindowId(),
+			url,
+			cookie,
+			((int)dead));
+	d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCookieChanged, llevent);
+}
+
 LLGraphicsScene::LLGraphicsScene()
     : QGraphicsScene()
     , window(0)

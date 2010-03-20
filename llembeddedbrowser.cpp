@@ -84,6 +84,11 @@ LLEmbeddedBrowser::LLEmbeddedBrowser()
 
 LLEmbeddedBrowser::~LLEmbeddedBrowser()
 {
+	if(d->mNetworkCookieJar)
+	{
+		d->mNetworkCookieJar->mBrowser = NULL;
+	}
+
     delete d;
 }
 
@@ -155,8 +160,7 @@ bool LLEmbeddedBrowser::reset()
     if (QLatin1String(qVersion()) != QLatin1String("4.5.1"))
         d->mNetworkAccessManager->setCache(d->mDiskCache);
 #endif
-    d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager, d->mStorageDirectory + "/cookies");
-    d->mNetworkCookieJar->load();
+    d->mNetworkCookieJar = new LLNetworkCookieJar(d->mNetworkAccessManager, this);
     d->mNetworkAccessManager->setCookieJar(d->mNetworkCookieJar);
     clearLastError();
     return true;
@@ -202,6 +206,26 @@ bool LLEmbeddedBrowser::clearAllCookies()
         return false;
     d->mNetworkCookieJar->clear();
     return true;
+}
+
+void LLEmbeddedBrowser::setCookies(const std::string &cookies)
+{
+    if (d->mNetworkCookieJar)
+	{
+	    d->mNetworkCookieJar->setCookiesFromRawForm(cookies);
+	}
+}
+
+std::string LLEmbeddedBrowser::getAllCookies()
+{
+	std::string result;
+	
+    if (d->mNetworkCookieJar)
+	{
+		result = d->mNetworkCookieJar->getAllCookiesInRawForm();
+	}
+
+	return result;
 }
 
 bool LLEmbeddedBrowser::enablePlugins(bool enabled)
@@ -283,38 +307,23 @@ void LLEmbeddedBrowser::pump(int max_milliseconds)
 #endif
 }
 
-LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent, const QString& cookie_filename)
+void LLEmbeddedBrowser::cookieChanged(const std::string &cookie, const std::string &url, bool dead)
+{
+	foreach (LLEmbeddedBrowserWindow* window, d->windows)
+	{
+		window->cookieChanged(cookie, url, dead);
+	}
+}
+
+LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent, LLEmbeddedBrowser *browser)
     : NetworkCookieJar(parent)
-    , mCookieStorageFileName(cookie_filename)
     , mAllowCookies(true)
+	, mBrowser(browser)
 {
 }
 
 LLNetworkCookieJar::~LLNetworkCookieJar()
 {
-    save();
-}
-
-void LLNetworkCookieJar::load()
-{
-    QFile file(mCookieStorageFileName);
-    if (!file.open(QFile::ReadOnly))
-        return;
-    QByteArray state = file.readAll();
-    restoreState(state);
-    file.close();
-}
-
-void LLNetworkCookieJar::save()
-{
-    if (mCookieStorageFileName.isEmpty())
-        return;
-
-    QFile file(mCookieStorageFileName);
-    file.open(QFile::ReadWrite);
-    QByteArray state = saveState();
-    file.write(state);
-    file.close();
 }
 
 QList<QNetworkCookie> LLNetworkCookieJar::cookiesForUrl(const QUrl& url) const
@@ -331,9 +340,45 @@ bool LLNetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookie_l
     return NetworkCookieJar::setCookiesFromUrl(cookie_list, url);
 }
 
+void LLNetworkCookieJar::onCookieSetFromURL(const QNetworkCookie &cookie, const QUrl &url, bool already_dead)
+{
+//	qDebug() << "LLNetworkCookieJar::" << __FUNCTION__ << (already_dead?"set dead cookie":"set cookie ") << cookie;	
+
+	if(mBrowser)
+	{
+		QByteArray cookie_bytes = cookie.toRawForm(QNetworkCookie::Full);
+		std::string cookie_string(cookie_bytes.data(), cookie_bytes.size());
+		std::string url_string = QString(url.toEncoded()).toStdString();
+		mBrowser->cookieChanged(cookie_string, url_string, already_dead);
+	}
+}
+
 void LLNetworkCookieJar::clear()
 {
-    setAllCookies(QList<QNetworkCookie>());
+    clearCookies();
+}
+
+void LLNetworkCookieJar::setCookiesFromRawForm(const std::string &cookie_string)
+{
+	QByteArray cookie_bytearray(cookie_string.data(), cookie_string.size());
+	QList<QNetworkCookie> cookie_list = QNetworkCookie::parseCookies(cookie_bytearray);
+	setCookies(cookie_list);
+}
+
+std::string LLNetworkCookieJar::getAllCookiesInRawForm()
+{
+	std::string result;
+	
+	QList<QNetworkCookie> cookie_list = allCookies();
+	
+	foreach (const QNetworkCookie &cookie, cookie_list)
+	{
+		QByteArray raw_form = cookie.toRawForm(QNetworkCookie::Full);
+		result.append(raw_form.data(), raw_form.size());
+		result.append("\n");
+	}
+	
+	return result;
 }
 
 #include "llembeddedbrowserwindow_p.h"

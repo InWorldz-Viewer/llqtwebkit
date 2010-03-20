@@ -569,6 +569,21 @@ bool LLQtWebKit::clearAllCookies()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+void LLQtWebKit::setCookies(const std::string &cookies)
+{
+    return LLEmbeddedBrowser::getInstance()->setCookies(cookies);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+std::string LLQtWebKit::getAllCookies()
+{
+    return LLEmbeddedBrowser::getInstance()->getAllCookies();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
 bool LLQtWebKit::enablePlugins(bool enabled)
 {
     return LLEmbeddedBrowser::getInstance()->enablePlugins(enabled);
@@ -720,6 +735,10 @@ void LLEmbeddedBrowserWindowObserver::onClickLinkHref(const EventType&)
 }
 
 void LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow(const EventType&)
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onCookieChanged(const EventType&)
 {
 }
 

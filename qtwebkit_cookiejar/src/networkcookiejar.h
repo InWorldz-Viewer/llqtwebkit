@@ -44,8 +44,12 @@ protected:
     void endSession();
 
     QList<QNetworkCookie> allCookies() const;
+    void clearCookies();
+    void setCookies(const QList<QNetworkCookie> &cookieList);
     void setAllCookies(const QList<QNetworkCookie> &cookieList);
     void setSecondLevelDomains(const QStringList &secondLevelDomains);
+	
+	virtual void onCookieSetFromURL(const QNetworkCookie &cookie, const QUrl &url, bool already_dead);
 
 private:
     NetworkCookieJarPrivate *d;

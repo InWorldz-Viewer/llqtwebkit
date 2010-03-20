@@ -50,6 +50,8 @@ class LLEmbeddedBrowser
         bool enableProxy(bool enabled, std::string host_name, int port);
         bool enableCookies(bool enabled);
         bool clearAllCookies();
+		void setCookies(const std::string &cookies);
+		std::string getAllCookies();
         bool enablePlugins(bool enabled);
         bool enableJavascript(bool enabled);
         std::string getGREVersion();
@@ -62,6 +64,7 @@ class LLEmbeddedBrowser
         int getLastError();
         int getWindowCount() const;
         void pump(int max_milliseconds);
+		void cookieChanged(const std::string &cookie, const std::string &url, bool dead);
 
     private:
         friend class LLEmbeddedBrowserWindow;

@@ -36,6 +36,7 @@ extern "C" {
 
 #include <iostream>
 #include <stdlib.h>
+#include <fstream>
 
 #ifdef LL_OSX
 // I'm not sure why STATIC_QT is getting defined, but the Q_IMPORT_PLUGIN thing doesn't seem to be necessary on the mac.
@@ -54,6 +55,12 @@ Q_IMPORT_PLUGIN(qgif)
 #include "GL/glut.h"
 #endif
 #include "llqtwebkit.h"
+
+#ifdef _WINDOWS
+	#define PATH_SEPARATOR "\\"
+#else
+	#define PATH_SEPARATOR "/"
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation of the test app - implemented as a class and derrives from
@@ -76,9 +83,7 @@ class testGL :
 			mHomeUrl(),
 			mNeedsUpdate( true )						// flag to indicate if browser texture needs an update
 		{
-			char tempPath[255];
-            char *cwd = getcwd(tempPath, 255);
-            mHomeUrl = cwd;
+            mHomeUrl = getcwd(NULL, 1024);;
             mHomeUrl.append("/testpage.html");
             std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
 		};
@@ -115,15 +120,14 @@ class testGL :
 						0, GL_RGB, GL_UNSIGNED_BYTE, 0 );
 
 			// create a single browser window and set things up.
-			std::string applicationDir = argv0.substr( 0, argv0.find_last_of("\\/") );
+			mApplicationDir = argv0.substr( 0, argv0.find_last_of("\\/") );
 
-            std::string componentDir = applicationDir;
-#ifdef _WINDOWS
-			std::string profileDir = applicationDir + "\\" + "testGL_profile";
-#else
-			std::string profileDir = applicationDir + "/" + "testGL_profile";
-#endif
-			LLQtWebKit::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
+			mComponentDir = mApplicationDir;
+			mProfileDir = mApplicationDir + PATH_SEPARATOR + "testGL_profile";
+
+			mCookiePath = mProfileDir + PATH_SEPARATOR + "cookies.txt";
+			
+			LLQtWebKit::getInstance()->init( mApplicationDir, mComponentDir, mProfileDir, getNativeWindowHandle() );
 			
 			// set host language test (in reality, string will be language code passed into client) 
 			// IMPORTANT: must be called before createBrowserWindow(...)
@@ -155,6 +159,25 @@ class testGL :
 
 			// turn on option to catch JavaScript window.open commands and open in same window
 			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserWindowId, LLQtWebKit::WOB_REDIRECT_TO_SELF );
+			
+			// Attempt to read cookies from the cookie file and send them to llqtwebkit.
+			{
+				std::ifstream cookie_file(mCookiePath.c_str(), std::ios_base::in);
+				std::string cookies;
+				
+				while(cookie_file.good() && !cookie_file.eof())
+				{
+					std::string tmp;
+					std::getline(cookie_file, tmp);
+					cookies += tmp;
+					cookies += "\n";
+				}
+				
+				if(!cookies.empty())
+				{
+					LLQtWebKit::getInstance()->setCookies(cookies);
+				}
+			}
 
 			// go to the "home page" or URL passed in via command line
 			if ( ! argv1.empty() )
@@ -167,6 +190,25 @@ class testGL :
 		//
 		void reset( void )
 		{
+			// Get cookies from this instance
+			std::string cookies = LLQtWebKit::getInstance()->getAllCookies();
+			
+			// Dump cookies to stdout
+//			std::cout << "Cookies:" << std::endl;
+//			std::cout << cookies;
+			
+			// and save them to cookies.txt in the profile directory
+			{
+				std::ofstream cookie_file(mCookiePath.c_str(), std::ios_base::out|std::ios_base::trunc);
+				
+				if(cookie_file.good())
+				{
+					cookie_file << cookies;
+				}
+				
+				cookie_file.close();
+			}
+			
 			// unhook observer
 			LLQtWebKit::getInstance()->remObserver( mBrowserWindowId, this );
 
@@ -539,6 +581,14 @@ class testGL :
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
+		// virtual
+		void onCookieChanged( const EventType& eventIn )
+		{
+			bool dead = (bool)eventIn.getIntValue();
+			std::cout << (dead?"deleting cookie: ":"setting cookie: ") << eventIn.getStringValue() << std::endl;
+		}
+
+		////////////////////////////////////////////////////////////////////////////////
 		//
 		int getAppWindowWidth()
 		{
@@ -590,6 +640,10 @@ class testGL :
 		std::string mAppWindowName;
 		std::string mHomeUrl;
 		bool mNeedsUpdate;
+		std::string mApplicationDir;
+		std::string mComponentDir;
+		std::string mProfileDir;
+		std::string mCookiePath;
 };
 
 testGL* theApp;

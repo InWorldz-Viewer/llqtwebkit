@@ -131,6 +131,8 @@ public:
 	void clearHistory();
 	std::string dumpHistory();
 
+	void cookieChanged(const std::string &cookie, const std::string &url, bool dead);
+
 private:
     friend class LLWebPage;
     friend class LLGraphicsScene;

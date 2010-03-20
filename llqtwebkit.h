@@ -185,6 +185,10 @@ class LLEmbeddedBrowserWindowObserver
 		virtual void onLocationChange(const EventType& event);
 		virtual void onClickLinkHref(const EventType& event);
 		virtual void onClickLinkNoFollow(const EventType& event);
+		virtual void onCookieChanged(const EventType& event);	
+			// mStringVal will be the cookie in RFC 2109 string format
+			// mEventUri will be the url that caused the cookie change
+			// mIntVal will be true if the cookie is dead (i.e. being deleted), false otherwise
 };
 #ifdef __GNUC__
 #pragma GCC visibility pop
@@ -271,6 +275,14 @@ class LLQtWebKit
 		
 		bool enableCookies(bool enabled);
 		bool clearAllCookies();
+		
+		// The following two functions accept and return cookies in the same format that's used for the Set-Cookie: HTTP header
+		// as defined in RFC 2109 ( http://www.ietf.org/rfc/rfc2109.txt ).  The string should not contain the literal "Set-Cookie:",
+		// just the cookie itself.
+		// Multiple cookies within the string are separated by a newline character ('\n')
+		void setCookies(const std::string &cookies);
+		std::string getAllCookies();
+
 		bool enablePlugins(bool enabled);
 		bool enableJavascript(bool enabled);
 
