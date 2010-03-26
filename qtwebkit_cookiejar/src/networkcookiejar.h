@@ -47,6 +47,8 @@ protected:
     void clearCookies();
     void setCookies(const QList<QNetworkCookie> &cookieList);
     void setAllCookies(const QList<QNetworkCookie> &cookieList);
+	void removeCookie(const QNetworkCookie &cookie);
+	void dump();
     void setSecondLevelDomains(const QStringList &secondLevelDomains);
 	
 	virtual void onCookieSetFromURL(const QNetworkCookie &cookie, const QUrl &url, bool already_dead);

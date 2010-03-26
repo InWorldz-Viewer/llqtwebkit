@@ -247,20 +247,7 @@ bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList
         }
 
         // replace/remove existing cookies
-        QString domain = cookie.domain();
-        Q_ASSERT(!domain.isEmpty());
-        QStringList urlHost = splitHost(domain);
-
-        QList<QNetworkCookie> cookies = d->tree.find(urlHost);
-        QList<QNetworkCookie>::const_iterator it = cookies.constBegin();
-        for (; it != cookies.constEnd(); ++it) {
-            if (cookie.name() == it->name() &&
-                cookie.domain() == it->domain() &&
-                cookie.path() == it->path()) {
-                d->tree.remove(urlHost, *it);
-                break;
-            }
-        }
+		removeCookie(cookie);
 		
 		// Notify derived class
 		onCookieSetFromURL(cookie, url, alreadyDead);
@@ -269,7 +256,7 @@ bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList
             continue;
 
         changed = true;
-        d->tree.insert(urlHost, cookie);
+        d->tree.insert(splitHost(cookie.domain()), cookie);
     }
 
     return changed;
@@ -296,9 +283,30 @@ void NetworkCookieJar::setCookies(const QList<QNetworkCookie> &cookieList)
 #if defined(NETWORKCOOKIEJAR_DEBUG)
     qDebug() << "NetworkCookieJar::" << __FUNCTION__ << cookieList.count();
 #endif
-    foreach (const QNetworkCookie &cookie, cookieList) {
-        QString domain = cookie.domain();
-        d->tree.insert(splitHost(domain), cookie);
+
+    QDateTime now = QDateTime::currentDateTime().toTimeSpec(Qt::UTC);
+
+    foreach (const QNetworkCookie &cookie, cookieList) 
+	{
+		// If a matching cookie is already in the list, remove it.
+		removeCookie(cookie);
+		
+		if(!cookie.isSessionCookie() && cookie.expirationDate() < now)
+		{
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+			qDebug() << "NetworkCookieJar::" << __FUNCTION__ << "removing cookie: " << cookie;
+#endif
+			// This cookie has expired -- don't re-add it
+		}
+		else
+		{
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+			qDebug() << "NetworkCookieJar::" << __FUNCTION__ << "adding cookie: " << cookie;
+#endif
+			// this cookie has not expired -- save it
+    	    d->tree.insert(splitHost(cookie.domain()), cookie);
+		}
+
     }
 }
 
@@ -309,6 +317,46 @@ void NetworkCookieJar::setAllCookies(const QList<QNetworkCookie> &cookieList)
 #endif
 	clearCookies();
 	setCookies(cookieList);
+}
+
+void NetworkCookieJar::removeCookie(const QNetworkCookie &cookie)
+{
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+	qDebug() << "NetworkCookieJar::" << __FUNCTION__ << "removing cookie: " << cookie;
+#endif
+	
+	// If a cookie with the matching domain, path, and name exists in the cookiejar, remove it.
+	QString domain = cookie.domain();
+	Q_ASSERT(!domain.isEmpty());
+	QStringList urlHost = splitHost(domain);
+
+	QList<QNetworkCookie> cookies = d->tree.find(urlHost);
+	QList<QNetworkCookie>::const_iterator it = cookies.constBegin();
+	for (; it != cookies.constEnd(); ++it) 
+	{
+		if (cookie.name() == it->name() &&
+			domain == it->domain() &&
+			cookie.path() == it->path()) 
+		{
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+			qDebug() << "NetworkCookieJar::" << __FUNCTION__ << "found matching cookie: " << *it;
+#endif
+			d->tree.remove(urlHost, *it);
+			break;
+		}
+	}
+}
+
+void NetworkCookieJar::dump()
+{
+#if defined(NETWORKCOOKIEJAR_DEBUG)
+	qDebug() << "NetworkCookieJar::" << __FUNCTION__ << "dumping all cookies: ";
+	QList<QNetworkCookie> cookies = allCookies();
+	foreach (const QNetworkCookie &cookie, cookies)
+	{
+		qDebug() << "    " << cookie;
+	}
+#endif	
 }
 
 QString NetworkCookieJarPrivate::urlPath(const QUrl &url) const
