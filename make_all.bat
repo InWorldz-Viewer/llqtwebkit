@@ -9,6 +9,8 @@
 @echo This probably won't work unless you run it from a Qt command prompt
 @echo since it needs a path to the Qt build directory.
 @echo.
+@echo About to delete intermediate files - edit this file if that makes you sad.
+@echo.
 @pause
 
 @rem Uncomment the next line if you DO NOT want to erase intermediate files first
@@ -49,6 +51,11 @@
 @del tests\ubrowser\Makefile.Debug
 @del tests\ubrowser\Makefile.Release
 
+@echo.
+@echo Deleted intermediate files.
+@echo.
+@pause
+
 :NO_ERASE
 
 @rem location of GLUT and GLUI components we built previously
@@ -56,13 +63,11 @@ set GL_COMPONENT_DIR=C:\Work\qt\GL
 xcopy %GL_COMPONENT_DIR%\*.* tests\GL\ /y
 
 @rem clean and make a debug version of LLQtWebKit
-nmake clean
 qmake CONFIG+=debug
 nmake clean
 nmake
 
 @rem clean and make a release version of LLQtWebKit
-nmake clean
 qmake CONFIG-=debug
 nmake clean
 nmake
@@ -70,7 +75,6 @@ nmake
 @rem clean and make a release version of testGL test app
 pushd .
 cd tests\testgl
-nmake clean
 qmake CONFIG-=debug
 nmake clean
 nmake
@@ -79,7 +83,6 @@ popd
 @rem clean and make a release version of QtTestApp test app
 pushd .
 cd tests\qttestapp
-nmake clean
 qmake CONFIG-=debug
 nmake clean
 nmake
@@ -88,7 +91,6 @@ popd
 @rem clean and make a release version of uBrowser test app
 pushd .
 cd tests\ubrowser
-nmake clean
 qmake CONFIG-=debug
 nmake clean
 nmake
@@ -96,5 +98,3 @@ popd
 
 @rem switch to root of tests directory - some need to be run from their own dir
 cd tests
-
-pause
