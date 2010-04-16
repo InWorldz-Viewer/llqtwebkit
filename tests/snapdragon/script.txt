@@ -1,0 +1,208 @@
+###########################################################
+#
+#	Simple script to test LLQtWebKit 
+#
+###########################################################
+
+# Override some default variables
+# No support for spaces so use _ for now.
+SET BROWSERWIDTH 1024
+SET BROWSERHEIGHT 900
+SET JAVASCRIPTENABLED TRUE
+SET PLUGINSENABLED TRUE
+SET FLIPWINDOW FALSE
+SET HOSTLANGUAGE EN-US
+SET USERAGENTSTRINGADDITION USER_AGENT_STRING_ADDITION
+SET EXTERNALTARGETNAME EXTERNAL_WINDOW
+SET WINDOWOPENBEHAVIOR IGNORE
+
+DUMPSETTINGS About to run test
+
+NAVIGATE http://www.youtube.com/watch?v=YD38neSK7ho
+WAITUNTILLOADED
+PAUSE 5
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://apps.facebook.com/bejeweledblitz/?lpt=bookmark
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://automobiles.honda.com/fit
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://dsc.discovery.com/discovery-earth-live/#
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://go.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://mixi.jp/about.pl
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://news.163.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://secondlife.com/whatis/?lang=en-US
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.adobe.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.aol.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.barbie.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.bbc.co.uk
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.ebay.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.fancast.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.fox.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.hulu.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.imaginationcubed.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.imdb.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.justin.tv
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.kongregate.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.linkedin.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.mlb.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.myspace.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.nasa.gov/externalflash/aero/
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.nhl.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.nike.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.pepsi.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.photoshop.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.playfirst.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.qq.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.sohu.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.sony.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.sonypictures.com/movies/planet51/epk/
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.stickam.com
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.yandex.ru
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://www.youtube.com/watch?v=YD38neSK7ho
+WAITUNTILLOADED
+WRITETGA *
+CHECKTGA *
+
+NAVIGATE http://mail.yahoo.com
+WAITUNTILLOADED
+PAUSE 5
+WRITETGA *
+CHECKTGA *
+
+EXIT
