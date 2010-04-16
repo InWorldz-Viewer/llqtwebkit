@@ -1,7 +1,7 @@
 @echo.
 @echo This is a very simple batch file that makes debug and release
 @echo versions of LLQtWebKit and then makes release versions of 
-@echo testGL, uBrowser and QtTestApp. 
+@echo testGL, uBrowser, QtTestApp and Snap Dragon.
 @echo.
 @echo To make the Win32GL test, run the copy_files.bat batch file after
 @echo running this one and load the MSVC solution file and build as normal.
@@ -51,6 +51,13 @@
 @del tests\ubrowser\Makefile.Debug
 @del tests\ubrowser\Makefile.Release
 
+@rem Delete snapdragon
+@rmdir tests\snapdragon\Debug\ /s /q
+@rmdir tests\snapdragon\Release\ /s /q
+@del tests\snapdragon\Makefile
+@del tests\snapdragon\Makefile.Debug
+@del tests\snapdragon\Makefile.Release
+
 @echo.
 @echo Deleted intermediate files.
 @echo.
@@ -92,6 +99,14 @@ popd
 pushd .
 cd tests\ubrowser
 qmake CONFIG-=debug
+nmake clean
+nmake
+popd
+
+@rem clean and make a release version of uBrowser test app
+pushd .
+cd tests\snapdragon
+qmake CONFIG-=debug CONFIG+=console
 nmake clean
 nmake
 popd
