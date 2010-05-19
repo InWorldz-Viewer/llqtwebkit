@@ -314,7 +314,8 @@ class LLQtWebKit
 		enum WindowOpenBehavior
 		{
 		    WOB_IGNORE,
-		    WOB_REDIRECT_TO_SELF
+		    WOB_REDIRECT_TO_SELF,
+		    WOB_SIMULATE_BLANK_HREF_CLICK
 		};
 		void setWindowOpenBehavior(int browser_window_id, WindowOpenBehavior behavior);
 

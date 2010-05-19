@@ -38,6 +38,7 @@
 #include "llqtwebkit.h"
 
 class LLEmbeddedBrowser;
+class LLWebPageOpenShim;
 
 ////////////////////////////////////////////////////////////////////////////////
 // class for a "window" that holds a browser - there can be lots of these
@@ -133,8 +134,11 @@ public:
 
 	void cookieChanged(const std::string &cookie, const std::string &url, bool dead);
 
+	LLWebPageOpenShim *getWebPageOpenShim();
+
 private:
     friend class LLWebPage;
+    friend class LLWebPageOpenShim;
     friend class LLGraphicsScene;
     friend class LLWebView;
     friend class LLEmbeddedBrowserPrivate;

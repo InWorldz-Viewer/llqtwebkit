@@ -27,6 +27,7 @@
 #define LLEMBEDDEDBROWSERWINDOW_P_H
 
 #include "llwebpage.h"
+#include "llwebpageopenshim.h"
 
 #include <qgraphicsscene.h>
 #include <qgraphicsview.h>
@@ -145,6 +146,7 @@ class LLEmbeddedBrowserWindowPrivate
     LLEmbeddedBrowserWindowPrivate()
         : mParent(0)
         , mPage(new LLWebPage)
+		, mOpenShim(NULL)
         , mView(0)
         , mGraphicsScene(0)
         , mGraphicsView(0)
@@ -172,6 +174,11 @@ class LLEmbeddedBrowserWindowPrivate
         mGraphicsScene->window = 0;
         mPage->window = 0;
         mView->deleteLater();
+		if(mOpenShim)
+		{
+			mOpenShim->window = 0;
+			mOpenShim->deleteLater();
+		}
         mGraphicsScene->deleteLater();
         mGraphicsView->viewport()->setParent(mGraphicsView);
         mGraphicsView->deleteLater();
@@ -181,6 +188,7 @@ class LLEmbeddedBrowserWindowPrivate
     QImage mImage;
     LLEmbeddedBrowser *mParent;
     LLWebPage *mPage;
+    LLWebPageOpenShim *mOpenShim;
 
     LLWebView *mView;
     LLGraphicsScene *mGraphicsScene;

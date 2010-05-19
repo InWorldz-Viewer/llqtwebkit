@@ -155,10 +155,10 @@ class testGL :
 			LLQtWebKit::getInstance()->flipWindow( mBrowserWindowId, false );
 
 			// target name we open in external browser
-			LLQtWebKit::getInstance()->setExternalTargetName( mBrowserWindowId, "Wibblewobbly" );
+//			LLQtWebKit::getInstance()->setExternalTargetName( mBrowserWindowId, "Wibblewobbly" );
 
-			// turn on option to catch JavaScript window.open commands and open in same window
-			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserWindowId, LLQtWebKit::WOB_REDIRECT_TO_SELF );
+			// turn on option to make a window opened with javascript window.open() look like a click on a link with target="_blank"
+			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserWindowId, LLQtWebKit::WOB_SIMULATE_EXTERNAL_HREF );
 			
 			// Attempt to read cookies from the cookie file and send them to llqtwebkit.
 			{
@@ -429,20 +429,44 @@ class testGL :
 				exit( 0 );
 			};
 			
-			if(keyIn == 127)
+			// Translate some keys
+			switch(keyIn)
 			{
-				// Turn delete char into backspace
-				keyIn = LLQtWebKit::KEY_BACKSPACE;
+				case 127:
+					// Turn delete char into backspace
+					keyIn = LLQtWebKit::KEY_BACKSPACE;
+				break;
+				case '\r':
+				case '\n':
+					// Turn CR and NL into enter key
+					keyIn = LLQtWebKit::KEY_RETURN;
+				break;
+				
+				case '\t':
+					keyIn = LLQtWebKit::KEY_TAB;
+				break;
+				
+				default:
+				break;
 			}
-
+			
 			// control-H goes home
 			if ( keyIn == 8 )
 			{
 				LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, mHomeUrl );
 			}
-			else
+			// control-B navigates back
+			else if ( keyIn == 2 )
+			{
+				LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_BACK);
+			}
+			// control-F navigates forward
+			else if ( keyIn == 6 )
+			{
+				LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_FORWARD);
+			}
 			// control-R reloads
-			if ( keyIn == 18 )
+			else if ( keyIn == 18 )
 			{
 				LLQtWebKit::getInstance()->userAction(mBrowserWindowId, LLQtWebKit::UA_NAVIGATE_RELOAD );
 			}
@@ -566,16 +590,16 @@ class testGL :
 			std::cout << "  URL:" << eventIn.getStringValue() << std::endl;
 
 			if ( LLQtWebKit::LTT_TARGET_NONE == eventIn.getLinkType() )
-				std::cout << "  No target attribute - opening in current window" << std::endl;
+				std::cout << "  No target attribute" << std::endl;
 
 			if ( LLQtWebKit::LTT_TARGET_BLANK == eventIn.getLinkType() )
-				std::cout << "  Blank target attribute (" << eventIn.getStringValue2() << ") - not navigating in this window" << std::endl;
+				std::cout << "  Blank target attribute (" << eventIn.getStringValue2() << ")" << std::endl;
 
 			if ( LLQtWebKit::LTT_TARGET_EXTERNAL == eventIn.getLinkType() )
-				std::cout << "  External target attribute (" << eventIn.getStringValue2() << ") - not navigating in this window" << std::endl;
+				std::cout << "  External target attribute (" << eventIn.getStringValue2() << ")" << std::endl;
 
 			if ( LLQtWebKit::LTT_TARGET_OTHER == eventIn.getLinkType() )
-				std::cout << "  Other target attribute (" << eventIn.getStringValue2() << ") - opening in current window" << std::endl;
+				std::cout << "  Other target attribute (" << eventIn.getStringValue2() << ")" << std::endl;
 
 			std::cout << std::endl;
 		};

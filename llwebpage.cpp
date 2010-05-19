@@ -115,6 +115,7 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 {
     if (!window)
         return false;
+
     if (request.url().scheme() == window->d->mNoFollowScheme)
     {
         QString encodedUrl = request.url().toEncoded();
@@ -126,60 +127,92 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
         }
         std::string rawUri = encodedUrl.toStdString();
         LLEmbeddedBrowserWindowEvent event(window->getWindowId(), rawUri, rawUri);
-	window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);
-        return false;
+		window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);
+
+//	 	qDebug() << "LLWebPage::acceptNavigationRequest: sending onClickLinkNoFollow, NavigationType is " << type << ", url is " << QString::fromStdString(rawUri) ;
+       return false;
     }
-    bool accepted = QWebPage::acceptNavigationRequest(frame, request, type);
-    if (accepted && type == QWebPage::NavigationTypeLinkClicked)
-    {
-		// save URL
-        QUrl url = request.url();
-        window->d->mClickHref = QString(url.toEncoded()).toStdString();
+	
+	bool result = false;
 
-		// save target attribute
-		QWebHitTestResult hitTest = mainFrame()->hitTestContent(currentPoint);
-		QString linkTarget = hitTest.linkElement().attribute("target");
-		window->d->mClickTarget = linkTarget.toStdString();
+	// Figure out the href and target of the click.
+	std::string click_href = QString(request.url().toEncoded()).toStdString();
+	std::string click_target = mainFrame()->hitTestContent(currentPoint).linkElement().attribute("target").toStdString();
 
-		// start off with no target specified
-		int link_target_type = LLQtWebKit::LTT_TARGET_UNKNOWN;
+//	qDebug() << "LLWebPage::acceptNavigationRequest: NavigationType is " << type << ", target is " << QString::fromStdString(click_target) << ", url is " << QString::fromStdString(click_href);
 
-		// user clicks on a link with a target that matches the one set as "External"
-		if ( window->d->mClickTarget.empty() )
+	// Figure out the link target type
+	// start off with no target specified
+	int link_target_type = LLQtWebKit::LTT_TARGET_UNKNOWN;
+
+	// user clicks on a link with a target that matches the one set as "External"
+	if ( click_target.empty() )
+	{
+		link_target_type = LLQtWebKit::LTT_TARGET_NONE;
+	}
+	else if ( click_target == window->d->mExternalTargetName )
+	{
+		link_target_type = LLQtWebKit::LTT_TARGET_EXTERNAL;
+	}
+	else if ( click_target == window->d->mBlankTargetName )
+	{
+		link_target_type = LLQtWebKit::LTT_TARGET_BLANK;
+	}
+	else // other tags (user-defined)
+	{
+		link_target_type = LLQtWebKit::LTT_TARGET_OTHER;
+	}
+
+	bool send_event = false;
+
+	if(type == QWebPage::NavigationTypeLinkClicked)
+	{
+		switch(link_target_type)
 		{
-			link_target_type = LLQtWebKit::LTT_TARGET_NONE;
+			case LLQtWebKit::LTT_TARGET_EXTERNAL:
+			case LLQtWebKit::LTT_TARGET_BLANK:
+				// _blank and _external targets should open a new window.  This logic needs to be handled by the plugin host, without processing an internal navigate.
+				send_event = true;
+			break;
+			
+			default:
+				// other targets may be pointed at frames, so we need to pass them through.
+				// TODO: this case is also the way a web page opens a new, named window that can be repeatedly targeted.  
+				// Handling this correctly is complex, so we're punting for now.
+				if(QWebPage::acceptNavigationRequest(frame, request, type))
+				{
+					// save URL and target attribute
+					window->d->mClickHref = click_href;
+					window->d->mClickTarget = click_target;
+					send_event = true;
+					result = true;
+				}				
+			break;
 		}
-		else
-		if ( window->d->mClickTarget == window->d->mExternalTargetName )
-		{
-			link_target_type = LLQtWebKit::LTT_TARGET_EXTERNAL;
-		}
-		else
-		// user clicks on a link with a target that matches the one set as "Blank"
-		if ( window->d->mClickTarget == window->d->mBlankTargetName )
-		{
-			link_target_type = LLQtWebKit::LTT_TARGET_BLANK;
-		}
-		else
-		{
-			// default action for a target we haven't specified is to open in current window
-			// and fire an event as if it was a normal click
-			window->navigateTo( window->d->mClickHref );
+	}
+	else
+	{
+		// For other navigation types, allow QWebPage to handle them.
+		result = true;
+	}
 
-			link_target_type = LLQtWebKit::LTT_TARGET_OTHER;
-		};
+	
+//	qDebug() << "LLWebPage::acceptNavigationRequest: send_event is " << send_event << ", result is " << result ;
+
+	if(send_event)
+	{
 
 		// build event based on the data we have and emit it
 		LLEmbeddedBrowserWindowEvent event( window->getWindowId(),
 											window->getCurrentUri(),
-											window->d->mClickHref,
-											window->d->mClickTarget,
+											click_href,
+											click_target,
 											link_target_type );
 
 		window->d->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onClickLinkHref, event );
-	};
-
-    return accepted;
+	}
+	
+    return result;
 }
 
 void LLWebPage::setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior)
@@ -261,7 +294,26 @@ void LLWebPage::extendNavigatorObject()
 QWebPage *LLWebPage::createWindow(WebWindowType type)
 {
     Q_UNUSED(type);
-    return (windowOpenBehavior == LLQtWebKit::WOB_IGNORE) ? 0 : this;
+	QWebPage *result = NULL;
+	
+	switch(windowOpenBehavior)
+	{
+		case LLQtWebKit::WOB_IGNORE:
+		break;
+		
+		case LLQtWebKit::WOB_REDIRECT_TO_SELF:
+			result = this;
+		break;
+
+		case LLQtWebKit::WOB_SIMULATE_BLANK_HREF_CLICK:
+			if(window)
+			{
+				result = window->getWebPageOpenShim();
+			}
+		break;
+	}
+	
+	return result;
 }
 
 void LLWebPage::setHostLanguage(const std::string& host_language)

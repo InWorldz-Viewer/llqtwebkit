@@ -824,6 +824,18 @@ void LLEmbeddedBrowserWindow::cookieChanged(const std::string &cookie, const std
 	d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCookieChanged, llevent);
 }
 
+LLWebPageOpenShim *LLEmbeddedBrowserWindow::getWebPageOpenShim()
+{
+	if(!d->mOpenShim)
+	{
+		d->mOpenShim = new LLWebPageOpenShim(d->mPage);
+		d->mOpenShim->window = this;
+	}
+	
+	return d->mOpenShim;
+}
+
+
 LLGraphicsScene::LLGraphicsScene()
     : QGraphicsScene()
     , window(0)

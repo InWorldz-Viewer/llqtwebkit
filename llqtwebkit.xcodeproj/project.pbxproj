@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9906522E119DE2EA0009B90A /* moc_llwebpageopenshim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9906522D119DE2EA0009B90A /* moc_llwebpageopenshim.cpp */; };
 		9922B4720F3A34170035C84F /* networkcookiejar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9922B46C0F3A34170035C84F /* networkcookiejar.cpp */; };
 		9922B4DF0F3A3A7C0035C84F /* moc_networkcookiejar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9922B4DE0F3A3A7C0035C84F /* moc_networkcookiejar.cpp */; };
 		992EFFA31045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 992EFFA21045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp */; };
@@ -18,9 +19,11 @@
 		99CCFC840A76AC7500ED39DE /* llembeddedbrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */; };
 		99CCFC870A76AC7500ED39DE /* llqtwebkit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC810A76AC7500ED39DE /* llqtwebkit.cpp */; };
 		99CCFC880A76AC7500ED39DE /* llembeddedbrowserwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */; };
+		99F405EA119DDF6700E07C8B /* llwebpageopenshim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99F405E8119DDF6700E07C8B /* llwebpageopenshim.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9906522D119DE2EA0009B90A /* moc_llwebpageopenshim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = moc_llwebpageopenshim.cpp; sourceTree = SOURCE_ROOT; };
 		9922B46C0F3A34170035C84F /* networkcookiejar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = networkcookiejar.cpp; path = src/networkcookiejar.cpp; sourceTree = "<group>"; };
 		9922B46D0F3A34170035C84F /* networkcookiejar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = networkcookiejar.h; path = src/networkcookiejar.h; sourceTree = "<group>"; };
 		9922B46E0F3A34170035C84F /* networkcookiejar_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = networkcookiejar_p.h; path = src/networkcookiejar_p.h; sourceTree = "<group>"; };
@@ -42,6 +45,11 @@
 		99CCFC810A76AC7500ED39DE /* llqtwebkit.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llqtwebkit.cpp; sourceTree = SOURCE_ROOT; };
 		99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = llembeddedbrowserwindow.cpp; sourceTree = SOURCE_ROOT; };
 		99CCFC830A76AC7500ED39DE /* llqtwebkit.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = llqtwebkit.h; sourceTree = SOURCE_ROOT; };
+		99F405BE119DDB2B00E07C8B /* llembeddedbrowserwindow_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = llembeddedbrowserwindow_p.h; sourceTree = SOURCE_ROOT; };
+		99F405C0119DDB4900E07C8B /* llwebpage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = llwebpage.h; sourceTree = SOURCE_ROOT; };
+		99F405C1119DDB6600E07C8B /* llembeddedbrowser_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = llembeddedbrowser_p.h; sourceTree = SOURCE_ROOT; };
+		99F405E8119DDF6700E07C8B /* llwebpageopenshim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = llwebpageopenshim.cpp; sourceTree = SOURCE_ROOT; };
+		99F405E9119DDF6700E07C8B /* llwebpageopenshim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = llwebpageopenshim.h; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* libllqtwebkit.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libllqtwebkit.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -70,17 +78,23 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */,
-				99CCFC7F0A76AC7500ED39DE /* llembeddedbrowser.h */,
-				99CCFC800A76AC7500ED39DE /* llembeddedbrowserwindow.h */,
+				99CCFC830A76AC7500ED39DE /* llqtwebkit.h */,
 				99CCFC810A76AC7500ED39DE /* llqtwebkit.cpp */,
+				99CCFC7F0A76AC7500ED39DE /* llembeddedbrowser.h */,
+				99F405C1119DDB6600E07C8B /* llembeddedbrowser_p.h */,
+				99CCFC7E0A76AC7500ED39DE /* llembeddedbrowser.cpp */,
+				99CCFC800A76AC7500ED39DE /* llembeddedbrowserwindow.h */,
+				99F405BE119DDB2B00E07C8B /* llembeddedbrowserwindow_p.h */,
 				99CCFC820A76AC7500ED39DE /* llembeddedbrowserwindow.cpp */,
 				99693D030F6B12B3001DC1EB /* moc_llembeddedbrowserwindow_p.cpp */,
-				99CCFC830A76AC7500ED39DE /* llqtwebkit.h */,
+				99F405C0119DDB4900E07C8B /* llwebpage.h */,
 				9951589A0EE8BA030040F5E4 /* llwebpage.cpp */,
+				9951589D0EE8BA130040F5E4 /* moc_llwebpage.cpp */,
+				99F405E9119DDF6700E07C8B /* llwebpageopenshim.h */,
+				99F405E8119DDF6700E07C8B /* llwebpageopenshim.cpp */,
+				9906522D119DE2EA0009B90A /* moc_llwebpageopenshim.cpp */,
 				993150710F952054000609D0 /* llstyle.h */,
 				993150720F952054000609D0 /* llstyle.cpp */,
-				9951589D0EE8BA130040F5E4 /* moc_llwebpage.cpp */,
 				9999856B1045F33B00417AF3 /* llnetworkaccessmanager.h */,
 				9999856C1045F33B00417AF3 /* llnetworkaccessmanager.cpp */,
 				992EFFA21045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp */,
@@ -174,7 +188,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "QTDIR/bin/moc llwebpage.h -o moc_llwebpage.cpp\nQTDIR/bin/moc qtwebkit_cookiejar/src/networkcookiejar.h -o qtwebkit_cookiejar/src/moc_networkcookiejar.cpp\n\nQTDIR/bin/moc llembeddedbrowserwindow_p.h -o moc_llembeddedbrowserwindow_p.cpp\nQTDIR/bin/moc llnetworkaccessmanager.h -o moc_llnetworkaccessmanager.cpp\n\nQTDIR/bin/uic passworddialog.ui -o ui_passworddialog.h\n\n";
+			shellScript = "QTDIR/bin/moc llwebpage.h -o moc_llwebpage.cpp\nQTDIR/bin/moc llwebpageopenshim.h -o moc_llwebpageopenshim.cpp\nQTDIR/bin/moc qtwebkit_cookiejar/src/networkcookiejar.h -o qtwebkit_cookiejar/src/moc_networkcookiejar.cpp\n\nQTDIR/bin/moc llembeddedbrowserwindow_p.h -o moc_llembeddedbrowserwindow_p.cpp\nQTDIR/bin/moc llnetworkaccessmanager.h -o moc_llnetworkaccessmanager.cpp\n\nQTDIR/bin/uic passworddialog.ui -o ui_passworddialog.h\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -194,6 +208,8 @@
 				993150730F952054000609D0 /* llstyle.cpp in Sources */,
 				9999856D1045F33B00417AF3 /* llnetworkaccessmanager.cpp in Sources */,
 				992EFFA31045F4DA00FD2F36 /* moc_llnetworkaccessmanager.cpp in Sources */,
+				99F405EA119DDF6700E07C8B /* llwebpageopenshim.cpp in Sources */,
+				9906522E119DE2EA0009B90A /* moc_llwebpageopenshim.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
