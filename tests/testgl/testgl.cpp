@@ -158,7 +158,7 @@ class testGL :
 //			LLQtWebKit::getInstance()->setExternalTargetName( mBrowserWindowId, "Wibblewobbly" );
 
 			// turn on option to make a window opened with javascript window.open() look like a click on a link with target="_blank"
-			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserWindowId, LLQtWebKit::WOB_SIMULATE_EXTERNAL_HREF );
+			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserWindowId, LLQtWebKit::WOB_SIMULATE_BLANK_HREF_CLICK );
 			
 			// Attempt to read cookies from the cookie file and send them to llqtwebkit.
 			{
