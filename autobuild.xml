@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<llsd>
+<map>
+    <key>llqtwebkit</key>
+    <map>
+      <key>build</key>
+      <map>
+        <key>common</key>
+        <map>
+          <key>command</key>
+          <string>sh -c ./build-cmd.sh</string>
+        </map>
+      </map>
+      <key>builddir</key>
+      <string>install</string>
+      <key>manifest</key>
+      <map>
+        <key>common</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>LICENSES/LLQTWEBKIT_LICENSE.txt</string>
+            <string>include/llqtwebkit.h</string>
+          </array>
+        </map>
+      </map>
+      <key>source</key>
+      <string>http://bitbucket.org/lindenlab/llqtwebkit</string>
+      <key>sourcetype</key>
+      <string>hg</string>
+      <key>uploadtoS3</key>
+      <integer>1</integer>
+    </map>
+  </map>
+</llsd>
