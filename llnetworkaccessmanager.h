@@ -27,6 +27,7 @@
 #define LLNETWORKACCESSMANAGER_H
 
 #include <qnetworkaccessmanager.h>
+#include <qsslerror.h>
 
 #include "ui_passworddialog.h"
 
@@ -52,7 +53,8 @@ public:
 private slots:
     void finishLoading(QNetworkReply* reply);
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
-
+	void sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors);
+	
 private:
     LLEmbeddedBrowserPrivate* mBrowser;
 

@@ -46,6 +46,16 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
             this, SLOT(finishLoading(QNetworkReply*)));
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
+    connect(this, SIGNAL(sslErrors( QNetworkReply *, const QList<QSslError> &)),
+            this, SLOT(sslErrorsSlot( QNetworkReply *, const QList<QSslError> &  )));
+}
+
+void LLNetworkAccessManager::sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors)
+{
+	//qDebug() << "SSL Errors: " << errors;
+	// HACK: Ignore SSL (cert errors)
+	//       Temporary workaround until we work out how to use local cert file
+	reply->ignoreSslErrors();
 }
 
 void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
