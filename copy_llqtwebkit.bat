@@ -3,7 +3,7 @@
 @set OPENSSL_SRC_DIR=c:\work\qt\openssl-0.9.8l
 @set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit
 @set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit\licenses
-@set SL_DEST_DIR="C:\Documents and Settings\callum\Desktop"
+@set SL_DEST_DIR="C:\Users\callum\Desktop"
 
 @rem ===== library filename - change this when you make a new build but don't check in =====
 @set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-2010XXXX.tar.bz2"
