@@ -34,6 +34,7 @@
 #include <qwebsettings.h>
 #include <qnetworkproxy.h>
 #include <qfile.h>
+#include <qsslconfiguration.h>
 
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
@@ -313,6 +314,30 @@ void LLEmbeddedBrowser::cookieChanged(const std::string &cookie, const std::stri
 	{
 		window->cookieChanged(cookie, url, dead);
 	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
+{
+	bool result = false;
+//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
+
+	// Extract the list of certificates from the specified file
+	QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromStdString(ca_file));
+	
+	if(!certs.isEmpty())
+	{
+//		qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "certs read: " << certs;	
+
+		// Set the default CA cert for Qt's SSL implementation.
+		QSslConfiguration config = QSslConfiguration::defaultConfiguration();
+		config.setCaCertificates(certs);
+		QSslConfiguration::setDefaultConfiguration(config);
+		result = true;
+	}
+	
+	return result;
 }
 
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent, LLEmbeddedBrowser *browser)

@@ -52,6 +52,7 @@ __ZN10LLQtWebKit4pumpEi
 __ZN10LLQtWebKit5resetEv
 __ZN10LLQtWebKit7setSizeEiii
 __ZN10LLQtWebKit9sInstanceE
+__ZN10LLQtWebKit9setCAFileERKSs
 __ZN10LLQtWebKitC1Ev
 __ZN10LLQtWebKitC2Ev
 __ZN10LLQtWebKitD0Ev

@@ -363,6 +363,11 @@ class LLQtWebKit
 		void clearHistory(int browser_window_id);
 		std::string dumpHistory(int browser_window_id);
 
+		// Specify a path to a .pem file containing a list of CA certificates the browser should trust.
+		// NOTE that this will replace the default list of root certs (not add to it).
+		// If the file isn't found or doesn't contain any certs in the correct format, this call will have no effect and will return false.
+		bool setCAFile(const std::string &ca_file);
+		
 		// Copied from indra_constants.h.
 		// The key_code argument to keyboardEvent should either be one of these or a 7-bit ascii character.
 		enum keyCodes

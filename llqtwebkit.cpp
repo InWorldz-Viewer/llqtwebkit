@@ -681,6 +681,12 @@ std::string LLQtWebKit::dumpHistory(int browser_window_id)
 	return NULL;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLQtWebKit::setCAFile(const std::string &ca_file)
+{
+	return LLEmbeddedBrowser::getInstance()->setCAFile(ca_file);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // utility method to get an LLEmbeddedBrowserWindow* from a window id (int)
