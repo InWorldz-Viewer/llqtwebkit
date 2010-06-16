@@ -48,6 +48,7 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
     , mDiskCache(0)
 #endif
     , mNetworkCookieJar(0)
+    , mHostLanguage( "en" )
 {
     if (!qApp)
     {
@@ -79,7 +80,6 @@ LLEmbeddedBrowserPrivate::~LLEmbeddedBrowserPrivate()
 
 LLEmbeddedBrowser::LLEmbeddedBrowser()
     : d(new LLEmbeddedBrowserPrivate)
-    , mHostLanguage( "en" )
 {
 }
 
@@ -257,7 +257,7 @@ void LLEmbeddedBrowser::setBrowserAgentId(std::string id)
 //            to LLWebPage when new window is created
 void LLEmbeddedBrowser::setHostLanguage( const std::string& host_language )
 {
-	mHostLanguage = host_language;
+	d->mHostLanguage = host_language;
 }
 
 LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height)
@@ -267,7 +267,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int h
     {
         newWin->setSize(width, height);
         newWin->setParent(this);
-        newWin->setHostLanguage(mHostLanguage);
+        newWin->setHostLanguage(d->mHostLanguage);
         clearLastError();
         d->windows.append(newWin);
         return newWin;

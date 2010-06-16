@@ -50,6 +50,9 @@ class LLNetworkAccessManager: public QNetworkAccessManager
 public:
     LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser, QObject* parent = 0);
 
+protected:
+    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &request,
+                                         QIODevice *outgoingData = 0);
 private slots:
     void finishLoading(QNetworkReply* reply);
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);

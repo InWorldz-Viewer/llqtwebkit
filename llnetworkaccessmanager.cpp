@@ -50,6 +50,19 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
             this, SLOT(sslErrorsSlot( QNetworkReply *, const QList<QSslError> &  )));
 }
 
+QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request,
+                                         QIODevice *outgoingData)
+{
+	// Create a local copy of the request we can modify.
+	QNetworkRequest mutable_request(request);
+	
+	// Set an Accept-Language header in the request, based on what the host has set through setHostLanguage.
+	mutable_request.setRawHeader(QByteArray("Accept-Language"), QByteArray(mBrowser->mHostLanguage.c_str()));
+	
+	// and pass this through to the parent implementation
+	return QNetworkAccessManager::createRequest(op, mutable_request, outgoingData);
+}
+
 void LLNetworkAccessManager::sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors)
 {
 	//qDebug() << "SSL Errors: " << errors;

@@ -71,7 +71,6 @@ class LLEmbeddedBrowser
         friend class LLEmbeddedBrowserWindow;
         friend class LLEmbeddedBrowserWindowPrivate;
         LLEmbeddedBrowserPrivate *d;
-        std::string mHostLanguage;
 
         static LLEmbeddedBrowser* sInstance;
 };
