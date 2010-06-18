@@ -39,7 +39,7 @@ fetch_git_as_tarball()
   curl -q -o "$archive" "$url"
 }
 
-#fetch_git_as_tarball "$QT_ARCHIVE" "$QT_REPOS"
+fetch_git_as_tarball "$QT_ARCHIVE" "$QT_REPOS"
 extract "$QT_ARCHIVE"
 
 top="$(pwd)"
@@ -88,10 +88,19 @@ case "$AUTOBUILD_PLATFORM" in
         popd
         qmake -platform linux-g++-32 CONFIG-=debug
         make -j12
+
+        mkdir -p "install/lib"
+        cp "libllqtwebkit.a" "install/lib"
+
+        mkdir -p "install/include"
+        cp "llqtwebkit.h" "install/include"
+
+        cp "$install/lib"/libQt*.a "install/lib"
+        cp "$install/plugins/imageformats"/libq*.a "install/lib"
     ;;
 esac
-mkdir -p install/LICENSES
-cp LLQTWEBKIT_LICENSE.txt > install/LICENSES/
+mkdir -p "install/LICENSES"
+cp "LLQTWEBKIT_LICENSE.txt" "install/LICENSES/"
 
 pass
 

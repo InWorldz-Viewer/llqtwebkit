@@ -23,11 +23,20 @@
             <string>include/llqtwebkit.h</string>
           </array>
         </map>
+        <key>linux</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>lib/release/lib*.a</string>
+          </array>
+        </map>
       </map>
       <key>source</key>
       <string>http://bitbucket.org/lindenlab/llqtwebkit</string>
       <key>sourcetype</key>
       <string>hg</string>
+      <key>version</key>
+      <string>4.6-cookies</string>
       <key>uploadtoS3</key>
       <integer>1</integer>
     </map>
