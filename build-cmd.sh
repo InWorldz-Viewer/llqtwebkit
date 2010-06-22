@@ -45,16 +45,17 @@ extract "$QT_ARCHIVE"
 top="$(pwd)"
 case "$AUTOBUILD_PLATFORM" in
     "windows")
+        load_vsvars
         build="$(pwd)/build-vc80"
         packages="$build/packages"
         install="$build/install"
         QTDIR=$(cygpath -m "$(pwd)/$QT_SOURCE_DIR")
         pushd "$QT_SOURCE_DIR"
             chmod +x "./configure.exe"
-            yes | head -n 1 | \
-                ./configure.exe -opensource -platform win32-msvc2008 -debug-and-release -no-qt3support -prefix "$QTDIR" -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -I "$packages/include" -L "$packages/lib/release"
+            yes | head -n 1 | unix2dos | \
+                ./configure.exe -opensource -platform win32-msvc2005 -debug-and-release -no-qt3support -prefix "$QTDIR" -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -I "$(cygpath -m "$packages/include")" -L "$(cygpath -m "$packages/lib/release")"
             export PATH="$(cygpath -u "$QTDIR")/bin:$PATH"
-            export QMAKESPEC="win32-msvc2008"
+            export QMAKESPEC="win32-msvc2005"
 
             nmake sub-src
         popd
@@ -62,51 +63,45 @@ case "$AUTOBUILD_PLATFORM" in
         qmake "CONFIG-=debug" && nmake
         qmake "CONFIG+=debug" && nmake
 
-        mkdir -p install/lib/debug
-        mkdir -p install/lib/release
-        cp "contrib/vstudio/vc8/x86/ZlibStatDebug/zlibstat.lib" \
-            "install/lib/debug/zlibd.lib"
-        cp "contrib/vstudio/vc8/x86/ZlibStatRelease/zlibstat.lib" \
-            "install/lib/release/zlib.lib"
-        mkdir -p "install/include/zlib"
-        cp {zlib.h,zconf.h} "install/include/zlib"
 
         local qtwebkit_libs_debug="QtCored4.dll QtCored4.lib QtGuid4.dll QtGuid4.lib \
             qtmain.lib QtNetworkd4.dll QtNetworkd4.lib QtOpenGLd4.dll QtOpenGLd4.lib \
             QtWebKitd4.dll QtWebKitd4.lib"
 
+        mkdir -p "$install/lib/debug"
         for lib in $qtwebkit_libs_debug ; do
-            cp "$QTWEBKIT_DIR/lib/$lib" "$DEBUG_OUT_DIR"
+            cp "$QT_SOURCE_DIR/lib/$lib" "$install/lib/debug"
         done
 
         local qtwebkit_libs_release="QtCore4.dll QtCore4.lib QtGui4.dll QtGui4.lib \
             qtmain.lib QtNetwork4.dll QtNetwork4.lib QtOpenGL4.dll QtOpenGL4.lib \
             QtWebKit4.dll QtWebKit4.lib"
 
+        mkdir -p "$install/lib/release"
         for lib in $qtwebkit_libs_release ; do
-            cp "$QTWEBKIT_DIR/lib/$lib" "$RELEASE_OUT_DIR"
+            cp "$QT_SOURCE_DIR/lib/$lib" "$install/lib/release"
         done
 
         local qtwebkit_imageplugins_debug="qgifd4.dll qicod4.dll qjpegd4.dll \
             qmngd4.dll qsvgd4.dll qtiffd4.dll"
 
-        mkdir -p "$DEBUG_OUT_DIR/imageformats"
+        mkdir -p "$install/lib/debug/imageformats"
         for plugin in $qtwebkit_imageplugins_debug ; do
-            cp "$QTWEBKIT_DIR/plugins/imageformats/$plugin" "$DEBUG_OUT_DIR/imageformats"
+            cp "$QT_SOURCE_DIR/plugins/imageformats/$plugin" "$install/lib/debug/imageformats"
         done
 
         local qtwebkit_imageplugins_release="qgif4.dll qico4.dll qjpeg4.dll \
             qmng4.dll qsvg4.dll qtiff4.dll"
 
-        mkdir -p "$RELEASE_OUT_DIR/imageformats"
+        mkdir -p "$install/lib/release/imageformats"
         for plugin in $qtwebkit_imageplugins_release ; do
-            cp "$QTWEBKIT_DIR/plugins/imageformats/$plugin" "$RELEASE_OUT_DIR/imageformats"
+            cp "$QT_SOURCE_DIR/plugins/imageformats/$plugin" "$install/lib/release/imageformats"
         done
 
-        cp "$LLQTWEBKIT_DIR/debug/llqtwebkitd.lib"  "$DEBUG_OUT_DIR"
-        cp "$LLQTWEBKIT_DIR/release/llqtwebkit.lib" "$RELEASE_OUT_DIR"
+        cp "debug/llqtwebkitd.lib"  "$install/lib/debug"
+        cp "release/llqtwebkit.lib" "$install/lib/release"
 
-        cp "$LLQTWEBKIT_DIR/llqtwebkit.h" "$GLOBAL_INCLUDE_OUT_DIR/"
+        cp "llqtwebkit.h" "$install/include"
 
         # *TODO copy license files to $LICENSE_OUT_DIR/qt-4.5-linden-changes.txt, qt-4.5-LICENSE.LGPL, qt-4.5-LGPL_EXCEPTION.txt
 
