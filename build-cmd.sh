@@ -39,7 +39,7 @@ fetch_git_as_tarball()
   curl -q -o "$archive" "$url"
 }
 
-fetch_git_as_tarball "$QT_ARCHIVE" "$QT_REPOS"
+[ -r "$QT_ARCHIVE" ] || fetch_git_as_tarball "$QT_ARCHIVE" "$QT_REPOS"
 extract "$QT_ARCHIVE"
 
 top="$(pwd)"
