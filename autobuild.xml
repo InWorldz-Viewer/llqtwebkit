@@ -13,6 +13,10 @@
       </map>
       <key>builddir</key>
       <string>install</string>
+      <key>license</key>
+      <string>lgpl</string>
+      <key>licensefile</key>
+      <string>LICENSES/LLQTWEBKIT_LICENSE.txt</string>
       <key>manifest</key>
       <map>
         <key>common</key>
@@ -33,12 +37,16 @@
       </map>
       <key>source</key>
       <string>http://bitbucket.org/lindenlab/llqtwebkit</string>
+      <key>sourcedir</key>
+      <string>.</string>
       <key>sourcetype</key>
       <string>hg</string>
-      <key>version</key>
-      <string>4.6-cookies</string>
       <key>uploadtoS3</key>
       <integer>1</integer>
+      <key>uploadtos3</key>
+      <boolean>true</boolean>
+      <key>version</key>
+      <string>4.6-cookies</string>
     </map>
   </map>
 </llsd>
