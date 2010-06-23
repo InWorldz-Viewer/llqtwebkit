@@ -110,15 +110,25 @@ case "$AUTOBUILD_PLATFORM" in
         build="$(pwd)/build-darwin-i386"
         packages="$build/packages"
         install="$build/install"
-        ./configure --prefix="$install"
-        make
-        make install
+        pushd "$QT_SOURCE_DIR"
+            export QTDIR="$(pwd)"
+            yes | head -n 1 | \
+                ./configure -opensource -platform macx-g++40 -no-framework -fast -no-qt3support -prefix "$install" -static -release -no-xmlpatterns -no-phonon -universal -sdk /Developer/SDKs/MacOSX10.4u.sdk/ -nomake examples -nomake demos -nomake docs -nomake translations
+            make -j4
+            make -j4 -C "src/3rdparty/webkit/JavaScriptCore"
+            export PATH="$PATH:$QTDIR/bin"
+            make install
+        popd
+
+        ln -s "$QT_SOURCE_DIR" QTDIR
+        xcodebuild -project llqtwebkit.xcodeproj -target llqtwebkit -configuration Release
     ;;
     "linux")
         build="$(pwd)/build-linux-i686-relwithdebinfo"
         packages="$build/packages"
         install="$build/install"
         pushd "$QT_SOURCE_DIR"
+            export QTDIR="$(pwd)"
             echo "DISTCC_HOSTS=$DISTCC_HOSTS"
             yes | head -n 1 | \
             MAKEFLAGS="-j12" CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector" \
@@ -129,7 +139,6 @@ case "$AUTOBUILD_PLATFORM" in
                 -no-sql-sqlite -no-scripttools -no-cups -no-dbus -qt-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb \
                 -xrender -svg -no-pch -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install/"
             make -j12
-            export QTDIR=$(pwd)
             export PATH="$PATH:$QTDIR/bin"
             make install
         popd
