@@ -178,6 +178,10 @@ class testGL :
 					LLQtWebKit::getInstance()->setCookies(cookies);
 				}
 			}
+			
+			// Tell llqtwebkit to look for a CA file in the application directory.
+			// If it can't find or parse the file, this should have no effect.
+			LLQtWebKit::getInstance()->setCAFile(mApplicationDir + PATH_SEPARATOR + "CA.pem");
 
 			// go to the "home page" or URL passed in via command line
 			if ( ! argv1.empty() )

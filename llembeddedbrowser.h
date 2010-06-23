@@ -65,12 +65,12 @@ class LLEmbeddedBrowser
         int getWindowCount() const;
         void pump(int max_milliseconds);
 		void cookieChanged(const std::string &cookie, const std::string &url, bool dead);
+		bool setCAFile(const std::string &ca_file);
 
     private:
         friend class LLEmbeddedBrowserWindow;
         friend class LLEmbeddedBrowserWindowPrivate;
         LLEmbeddedBrowserPrivate *d;
-        std::string mHostLanguage;
 
         static LLEmbeddedBrowser* sInstance;
 };

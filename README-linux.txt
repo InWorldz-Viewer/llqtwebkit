@@ -6,6 +6,14 @@ This comes in three parts:
 
 1) BUILDING Qt FOR LINUX LLQTWEBKIT
 -----------------------------------
+NOTE: It is not strictly necessary to build a 'special' Qt - our version has
+assorted features and fixes that we wanted, but you can use the system Qt
+if you already have it - though we strongly recommend Qt version 4.6 or above.
+This section describes how we (Linden Lab) generate our distro-agnostic
+static Qt libs from our own Qt tree, including our own patches.
+Follow these steps on - very specifically - a Ubuntu Dapper installation,
+if you (i.e. Linden Lab!) desire the widest possible compatibility of
+the resulting binary.
 
 Acquire the Qt 4.6 source with our patches
  * Our clone of Qt is available here: http://gitorious.org/+lindenqt/qt/lindenqt
@@ -21,9 +29,9 @@ Acquire the Qt 4.6 source with our patches
 
 
 Configure the Build
-$ CXXFLAGS='-DQT_NO_INOTIFY' ./configure -v -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon -openssl-linked -no-3dnow -no-sse -no-sse2 -no-gtkstyle -no-xinput -no-sm -buildkey LL`date +%s` -no-sql-sqlite -no-scripttools -no-cups -no-dbus -no-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb -xrender -svg
+$ CXXFLAGS='-DQT_NO_INOTIFY' ./configure -v -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon -openssl-linked -no-3dnow -no-sse -no-sse2 -no-gtkstyle -no-xinput -no-sm -buildkey LL`date +%s` -no-sql-sqlite -no-scripttools -no-cups -no-dbus -no-libmng -glib -qt-libpng -opengl desktop  -no-xkb -xrender -svg
 
-* Are you making a build for redistribution to other people and you are not specifically on your distribution?  Then please add '-fno-stack-protector' to the CXXFLAGS above.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
+* Are you making a build for redistribution to other people and you are not specifically on Ubuntu Dapper?  Then please add '-fno-stack-protector' to the CXXFLAGS above.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
 
 * Accept the license, if you do.
 
@@ -42,14 +50,14 @@ $ sudo make install
 2) BUILDING LLQTWEBKIT
 ----------------------
 
-* set up environment vars
+* set up environment vars - change '4.5.2' as appropriate for your Qt version.
 $ export QTDIR=/usr/local/Trolltech/Qt-4.5.2
 $ export PATH=$PATH:$QTDIR/bin
 
 * configure llqtwebkit
 $ qmake CONFIG-=debug
 
-* Are you making a build for redistribution to other people and you are not specifically on your distribution?  Then please hack the resulting Makefile and add '-fno-stack-protector' to CXXFLAGS and CFLAGS.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
+* Are you making a build for redistribution to other people and you are not specifically on Ubuntu Dapper?  Then please hack the resulting Makefile and add '-fno-stack-protector' to CXXFLAGS and CFLAGS.  This is important!  Otherwise your resulting lib will not be usable at runtime on many machines.
 
 * build it
 $ make

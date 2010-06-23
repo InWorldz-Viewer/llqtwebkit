@@ -1,5 +1,5 @@
 /* Copyright (c) 2006-2010, Linden Research, Inc.
- * 
+ *
  * LLQtWebKit Source Code
  * The source code in this file ("Source Code") is provided by Linden Lab
  * to you under the terms of the GNU General Public License, version 2.0
@@ -7,17 +7,17 @@
  * ("Other License"), formally executed by you and Linden Lab.  Terms of
  * the GPL can be found in GPL-license.txt in this distribution, or online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/gplv2
- * 
+ *
  * There are special exceptions to the terms and conditions of the GPL as
  * it is applied to this Source Code. View the full text of the exception
  * in the file FLOSS-exception.txt in this software distribution, or
  * online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/flossexception
- * 
+ *
  * By copying, modifying or distributing this software, you acknowledge
  * that you have read and understood your obligations described above,
  * and agree to abide by those obligations.
- * 
+ *
  * ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
  * WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
  * COMPLETENESS OR PERFORMANCE.
@@ -46,6 +46,34 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
             this, SLOT(finishLoading(QNetworkReply*)));
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
+    connect(this, SIGNAL(sslErrors( QNetworkReply *, const QList<QSslError> &)),
+            this, SLOT(sslErrorsSlot( QNetworkReply *, const QList<QSslError> &  )));
+}
+
+QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request,
+                                         QIODevice *outgoingData)
+{
+	// Create a local copy of the request we can modify.
+	QNetworkRequest mutable_request(request);
+	
+	// Set an Accept-Language header in the request, based on what the host has set through setHostLanguage.
+	mutable_request.setRawHeader(QByteArray("Accept-Language"), QByteArray(mBrowser->mHostLanguage.c_str()));
+	
+	// and pass this through to the parent implementation
+	return QNetworkAccessManager::createRequest(op, mutable_request, outgoingData);
+}
+
+void LLNetworkAccessManager::sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors)
+{
+	//qDebug() << "SSL Errors: " << errors;
+	// HACK: Ignore SSL (cert errors)
+	//       Temporary workaround until we work out how to use local cert file
+	bool ignore_ssl_errors_hack_enabled = false;
+
+	if ( ignore_ssl_errors_hack_enabled )
+	{
+		reply->ignoreSslErrors();
+	};
 }
 
 void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
@@ -99,7 +127,7 @@ void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthe
         authDialog.proxyWidget = scene->addWidget(authDialog.authenticationDialog);
         authDialog.proxyWidget->setWindowFlags(Qt::Window); // this makes the item a panel
         authDialog.proxyWidget->setPanelModality(QGraphicsItem::SceneModal);
-        authDialog.proxyWidget->setPos((webView->boundingRect().width() - authDialog.authenticationDialog->sizeHint().width())/2, 
+        authDialog.proxyWidget->setPos((webView->boundingRect().width() - authDialog.authenticationDialog->sizeHint().width())/2,
                                        (webView->boundingRect().height() - authDialog.authenticationDialog->sizeHint().height())/2);
         authDialog.proxyWidget->setActive(true);
 

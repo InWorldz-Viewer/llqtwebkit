@@ -78,6 +78,8 @@ public:
 
     QString mStorageDirectory;
     QList<LLEmbeddedBrowserWindow*> windows;
+
+	std::string mHostLanguage;
 };
 
 #endif

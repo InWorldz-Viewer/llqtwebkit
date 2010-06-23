@@ -27,6 +27,7 @@
 #define LLNETWORKACCESSMANAGER_H
 
 #include <qnetworkaccessmanager.h>
+#include <qsslerror.h>
 
 #include "ui_passworddialog.h"
 
@@ -49,10 +50,14 @@ class LLNetworkAccessManager: public QNetworkAccessManager
 public:
     LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser, QObject* parent = 0);
 
+protected:
+    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &request,
+                                         QIODevice *outgoingData = 0);
 private slots:
     void finishLoading(QNetworkReply* reply);
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
-
+	void sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors);
+	
 private:
     LLEmbeddedBrowserPrivate* mBrowser;
 
