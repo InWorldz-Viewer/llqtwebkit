@@ -56,6 +56,7 @@ bool LLWebPageOpenShim::acceptNavigationRequest(QWebFrame* frame, const QNetwork
 //		<< ", web frame is " << frame 
 //		<< ", frame->page is " << frame->page()
 //		<< ", url is " << request.url() 
+//		<< ", target is " << QString::fromStdString(window->getClickLinkTarget())
 //		;
 	
     if (request.url().scheme() == QString("file"))
@@ -69,8 +70,8 @@ bool LLWebPageOpenShim::acceptNavigationRequest(QWebFrame* frame, const QNetwork
 
 	// Turn the request into an event that makes it look like the user clicked on an "_external" link.
 	std::string click_href = QString(request.url().toEncoded()).toStdString();
-	std::string click_target = "_blank";
-	int link_target_type = LLQtWebKit::LTT_TARGET_BLANK;
+	std::string click_target = window->getClickLinkTarget();
+	int link_target_type = window->targetToTargetType(click_target);
 
 	// build event based on the data we have and emit it
 	LLEmbeddedBrowserWindowEvent event( window->getWindowId(),

@@ -835,6 +835,26 @@ LLWebPageOpenShim *LLEmbeddedBrowserWindow::getWebPageOpenShim()
 	return d->mOpenShim;
 }
 
+int LLEmbeddedBrowserWindow::targetToTargetType(const std::string &target)
+{
+	int result = LLQtWebKit::LTT_TARGET_OTHER;
+	
+	if ( target.empty() )
+	{
+		result = LLQtWebKit::LTT_TARGET_NONE;
+	}
+	else if ( target == d->mExternalTargetName )
+	{
+		result = LLQtWebKit::LTT_TARGET_EXTERNAL;
+	}
+	else if ( target == d->mBlankTargetName )
+	{
+		result = LLQtWebKit::LTT_TARGET_BLANK;
+	}
+	
+	return result;
+}
+
 
 LLGraphicsScene::LLGraphicsScene()
     : QGraphicsScene()

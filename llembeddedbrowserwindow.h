@@ -135,6 +135,8 @@ public:
 	void cookieChanged(const std::string &cookie, const std::string &url, bool dead);
 
 	LLWebPageOpenShim *getWebPageOpenShim();
+	
+	int targetToTargetType(const std::string &target);
 
 private:
     friend class LLWebPage;

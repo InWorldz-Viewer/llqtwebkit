@@ -143,25 +143,7 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 
 	// Figure out the link target type
 	// start off with no target specified
-	int link_target_type = LLQtWebKit::LTT_TARGET_UNKNOWN;
-
-	// user clicks on a link with a target that matches the one set as "External"
-	if ( click_target.empty() )
-	{
-		link_target_type = LLQtWebKit::LTT_TARGET_NONE;
-	}
-	else if ( click_target == window->d->mExternalTargetName )
-	{
-		link_target_type = LLQtWebKit::LTT_TARGET_EXTERNAL;
-	}
-	else if ( click_target == window->d->mBlankTargetName )
-	{
-		link_target_type = LLQtWebKit::LTT_TARGET_BLANK;
-	}
-	else // other tags (user-defined)
-	{
-		link_target_type = LLQtWebKit::LTT_TARGET_OTHER;
-	}
+	int link_target_type = window->targetToTargetType(click_target);
 
 	bool send_event = false;
 
@@ -177,14 +159,12 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 			
 			default:
 				// other targets may be pointed at frames, so we need to pass them through.
-				// TODO: this case is also the way a web page opens a new, named window that can be repeatedly targeted.  
-				// Handling this correctly is complex, so we're punting for now.
+				window->d->mClickHref = click_href;
+				window->d->mClickTarget = click_target;
+
 				if(QWebPage::acceptNavigationRequest(frame, request, type))
 				{
-					// save URL and target attribute
-					window->d->mClickHref = click_href;
-					window->d->mClickTarget = click_target;
-					send_event = true;
+					// Allow the request to go through.
 					result = true;
 				}				
 			break;
