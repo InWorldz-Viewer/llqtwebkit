@@ -52,13 +52,15 @@ bool LLWebPageOpenShim::acceptNavigationRequest(QWebFrame* frame, const QNetwork
         return false;
 	}
 
-//	qDebug() << "LLWebPageOpenShim::acceptNavigationRequest called, NavigationType is " << type 
-//		<< ", web frame is " << frame 
-//		<< ", frame->page is " << frame->page()
-//		<< ", url is " << request.url() 
-//		<< ", target is " << QString::fromStdString(window->getClickLinkTarget())
-//		;
-	
+#if 0
+	qDebug() << "LLWebPageOpenShim::acceptNavigationRequest called, NavigationType is " << type 
+		<< ", web frame is " << frame 
+		<< ", frame->page is " << frame->page()
+		<< ", url is " << request.url() 
+		<< ", frame name is " << frame->frameName()
+		;
+#endif
+
     if (request.url().scheme() == QString("file"))
 	{
 		// For some reason, I'm seeing a spurious call to this function with a file:/// URL that points to the current working directory.
@@ -68,9 +70,13 @@ bool LLWebPageOpenShim::acceptNavigationRequest(QWebFrame* frame, const QNetwork
 		return false;
 	}
 
-	// Turn the request into an event that makes it look like the user clicked on an "_external" link.
+	// The name of the incoming frame has been set to the link target that was used when opening this window.
 	std::string click_href = QString(request.url().toEncoded()).toStdString();
-	std::string click_target = window->getClickLinkTarget();
+	std::string click_target = frame->frameName().toStdString();
+	if(click_target.empty())
+	{
+		click_target = "_blank";
+	}
 	int link_target_type = window->targetToTargetType(click_target);
 
 	// build event based on the data we have and emit it
