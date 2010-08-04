@@ -5,16 +5,22 @@
 @set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit\licenses
 @set SL_DEST_DIR="C:\Users\callum\Desktop"
 
-@rem ===== library filename - change this when you make a new build but don't check in =====
-@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-2010XXXX.tar.bz2"
+@rem ===== default archive filename =====
+@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-2010XXXX.tar.aabz2"
+
+@rem ===== archive filename - change this to match build date when you make a new version but do not check in =====
+@set LLQTWEBKIT_LIB_FILENAME=%DEFAULT_LLQTWEBKIT_LIB_FILENAME%
 
 @rem ===== make sure the filename for the archive is updated =====
-@if %LLQTWEBKIT_LIB_FILENAME%=="llqtwebkit-windows-qt4.6-2010XXXX.tar.bz2" goto VERSION_UNSET
-@goto VERSION_SET
-@:VERSION_UNSET
-@echo ERROR: ****** The version number of the LLQtWebKit archive is not set
-@goto END
-@:VERSION_SET
+@if %LLQTWEBKIT_LIB_FILENAME% NEQ %DEFAULT_LLQTWEBKIT_LIB_FILENAME% goto CONTINUE
+@:INPUT
+@SET INPUT=
+@ECHO.
+@SET /P INPUT=LLQtWebKit archive file name not set - proceed with default name?: %=%
+@if /i "%INPUT%" EQU "N" GOTO END
+@if /i "%INPUT%" NEQ "Y" GOTO INPUT
+
+@:CONTINUE
 
 @rem =============== instructions ===============
 @echo This batch file copies the Qt, OpenSSL and LLQtWebKit files required 
