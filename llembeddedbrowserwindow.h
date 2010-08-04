@@ -61,8 +61,6 @@ public:
     int16_t getPercentComplete();
     std::string& getStatusMsg();
     std::string& getCurrentUri();
-    std::string& getClickLinkHref();
-    std::string& getClickLinkTarget();
 
     // memory buffer management
     unsigned char* grabWindow(int x, int y, int width, int height);

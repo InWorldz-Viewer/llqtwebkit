@@ -191,24 +191,6 @@ std::string& LLEmbeddedBrowserWindow::getStatusMsg()
     return d->mStatusText;
 }
 
-// utility method that is used by observers to retrieve data after an event
-std::string& LLEmbeddedBrowserWindow::getClickLinkHref()
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    return d->mClickHref;
-}
-
-// utility method that is used by observers to retrieve data after an event
-std::string& LLEmbeddedBrowserWindow::getClickLinkTarget()
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    return d->mClickTarget;
-}
-
 // render a page into memory and grab the window
 unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int height)
 {

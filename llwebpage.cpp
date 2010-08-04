@@ -158,10 +158,6 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 			break;
 			
 			default:
-				// other targets may be pointed at frames, so we need to pass them through.
-				window->d->mClickHref = click_href;
-				window->d->mClickTarget = click_target;
-
 				if(QWebPage::acceptNavigationRequest(frame, request, type))
 				{
 					// Allow the request to go through.

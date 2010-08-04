@@ -155,8 +155,6 @@ class LLEmbeddedBrowserWindowPrivate
         , mStatusText("")
         , mTitle("")
         , mCurrentUri("")
-        , mClickHref("")
-        , mClickTarget("")
         , mExternalTargetName("_external")
         , mBlankTargetName("_blank")
         , mNoFollowScheme("secondlife")
@@ -199,8 +197,6 @@ class LLEmbeddedBrowserWindowPrivate
     std::string mStatusText;
     std::string mTitle;
     std::string mCurrentUri;
-    std::string mClickHref;
-    std::string mClickTarget;
 	std::string mExternalTargetName;
 	std::string mBlankTargetName;
     QString mNoFollowScheme;
