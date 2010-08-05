@@ -240,6 +240,7 @@ bool LLEmbeddedBrowser::enableJavascript(bool enabled)
 {
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, enabled);
+    defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, enabled);
     return true;
 }
 
