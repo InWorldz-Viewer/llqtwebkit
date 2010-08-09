@@ -6,7 +6,7 @@
 @set SL_DEST_DIR="C:\Users\callum\Desktop"
 
 @rem ===== default archive filename =====
-@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-2010XXXX.tar.aabz2"
+@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-2010XXXX.tar.bz2"
 
 @rem ===== archive filename - change this to match build date when you make a new version but do not check in =====
 @set LLQTWEBKIT_LIB_FILENAME=%DEFAULT_LLQTWEBKIT_LIB_FILENAME%
@@ -16,7 +16,7 @@
 @:INPUT
 @SET INPUT=
 @ECHO.
-@SET /P INPUT=LLQtWebKit archive file name not set - proceed with default name?: %=%
+@SET /P INPUT=LLQtWebKit archive file name not set - proceed with default name of %DEFAULT_LLQTWEBKIT_LIB_FILENAME%?: %=%
 @if /i "%INPUT%" EQU "N" GOTO END
 @if /i "%INPUT%" NEQ "Y" GOTO INPUT
 
