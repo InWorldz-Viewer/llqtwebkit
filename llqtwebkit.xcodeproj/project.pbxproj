@@ -239,7 +239,7 @@
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
 					"$(SRCROOT)/QTDIR/plugins/codecs/",
-					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
+					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore/release/",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
@@ -255,7 +255,7 @@
 					"-lQtOpenGL",
 					"-lQtGui",
 					"-lQtCore",
-					"-lJavaScriptCore",
+					"-ljscore",
 					"-framework",
 					ApplicationServices,
 					"-framework",
@@ -382,7 +382,7 @@
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
 					"$(SRCROOT)/QTDIR/plugins/codecs/",
-					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
+					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore/release/",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
@@ -398,7 +398,7 @@
 					"-lQtOpenGL",
 					"-lQtGui",
 					"-lQtCore",
-					"-lJavaScriptCore",
+					"-ljscore",
 					"-framework",
 					ApplicationServices,
 					"-framework",
