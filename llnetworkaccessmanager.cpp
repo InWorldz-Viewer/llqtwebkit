@@ -38,6 +38,8 @@
 
 #include "ui_passworddialog.h"
 
+#define VANILLA_QT 1
+
 LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser,QObject* parent)
     : QNetworkAccessManager(parent)
     , mBrowser(browser)
