@@ -748,3 +748,7 @@ void LLEmbeddedBrowserWindowObserver::onCookieChanged(const EventType&)
 {
 }
 
+void LLEmbeddedBrowserWindowObserver::onWindowCloseRequested(const EventType&)
+{
+}
+

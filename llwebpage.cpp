@@ -54,6 +54,8 @@ LLWebPage::LLWebPage(QObject *parent)
             this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)),
             this, SLOT(loadFinished(bool)));
+    connect(this, SIGNAL(windowCloseRequested()),
+            this, SLOT(windowCloseRequested()));
     connect(mainFrame(), SIGNAL(titleChanged(const QString&)),
             this, SLOT(titleChangedSlot(const QString&)));
     connect(mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
@@ -211,6 +213,14 @@ void LLWebPage::loadFinished(bool)
     LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
             window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateComplete, event);
+}
+
+void LLWebPage::windowCloseRequested()
+{
+    if (!window)
+        return;
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onWindowCloseRequested, event);
 }
 
 QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFile)

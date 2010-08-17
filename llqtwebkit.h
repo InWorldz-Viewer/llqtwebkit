@@ -43,11 +43,25 @@ class LLEmbeddedBrowserWindow;
 typedef unsigned long uint32_t;
 #endif
 
+// Use this to conditionalize code that depends on particular changes to the llqtwebkit API.
+// This can be useful for times when we're waiting for a rebuild on one platform or another.
+// When you bump this number, please note what the changes were in a comment below the #define,
+// and keep the existing comments as history.
+#define LLQTWEBKIT_API_VERSION 1
+// version 1:
+	// Added the LLQTWEBKIT_API_VERSION define.
+	// Added LLEmbeddedBrowserWindowObserver::onWindowCloseRequested
+
 ////////////////////////////////////////////////////////////////////////////////
 // data class that is passed with an event
 class LLEmbeddedBrowserWindowEvent
 {
 	public:
+		LLEmbeddedBrowserWindowEvent(int window_id) :
+			mEventWindowId(window_id)
+		{
+		};
+
 		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri) :
 			mEventWindowId(window_id),
 			mEventUri(uri)
@@ -189,6 +203,7 @@ class LLEmbeddedBrowserWindowObserver
 			// mStringVal will be the cookie in RFC 2109 string format
 			// mEventUri will be the url that caused the cookie change
 			// mIntVal will be true if the cookie is dead (i.e. being deleted), false otherwise
+		virtual void onWindowCloseRequested(const EventType& event);
 };
 #ifdef __GNUC__
 #pragma GCC visibility pop

@@ -55,6 +55,7 @@ class LLWebPage : public QWebPage
         void urlChangedSlot(const QUrl& url);
         void loadStarted();
         void loadFinished(bool ok);
+	    void windowCloseRequested();
 
     private slots:
 	    void extendNavigatorObject();
