@@ -13,3 +13,6 @@ tests/testgl/testGL_profile
 # ignore a couple of symlinks that are used for local configuration on the mac
 QTDIR
 tests/testgl/libllqtwebkit.dylib
+
+qt-lindenqt*
+build-*/
