@@ -748,3 +748,7 @@ void LLEmbeddedBrowserWindowObserver::onCookieChanged(const EventType&)
 {
 }
 
+std::string LLEmbeddedBrowserWindowObserver::onRequestFilePicker(const EventType&)
+{
+	return std::string();
+}

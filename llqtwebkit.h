@@ -189,6 +189,7 @@ class LLEmbeddedBrowserWindowObserver
 			// mStringVal will be the cookie in RFC 2109 string format
 			// mEventUri will be the url that caused the cookie change
 			// mIntVal will be true if the cookie is dead (i.e. being deleted), false otherwise
+		virtual std::string onRequestFilePicker(const EventType& event);
 };
 #ifdef __GNUC__
 #pragma GCC visibility pop
