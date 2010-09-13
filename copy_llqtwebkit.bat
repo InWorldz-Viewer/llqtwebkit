@@ -6,17 +6,17 @@
 @set SL_DEST_DIR="C:\Users\callum\Desktop"
 
 @rem ===== default archive filename - DO NOT CHANGE THIS =====
-@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.0.rc1-2010XXXX.tar.bz2"
+@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.0-2010XXXX.tar.bz2"
 
 @rem ===== archive filename - change this to match build date when you make a new version but do not check in =====
-@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.0.rc1-20100908.tar.bz2"
+@set LLQTWEBKIT_LIB_FILENAME=%DEFAULT_LLQTWEBKIT_LIB_FILENAME%
 
 @rem ===== make sure the filename for the archive is updated =====
 @if %LLQTWEBKIT_LIB_FILENAME% NEQ %DEFAULT_LLQTWEBKIT_LIB_FILENAME% goto CONTINUE
 @:INPUT
 @set INPUT=
 @ECHO.
-@set /p INPUT=LLQtWebKit archive file name not set - proceed with default name of %DEFAULT_LLQTWEBKIT_LIB_FILENAME%?: %=%
+@set /P INPUT=LLQtWebKit archive file name not set - proceed with default name of %DEFAULT_LLQTWEBKIT_LIB_FILENAME%?: %=%
 @if /i "%INPUT%" equ "N" goto END
 @if /i "%INPUT%" neq "Y" goto INPUT
 
