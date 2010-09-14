@@ -47,6 +47,7 @@ class LLEmbeddedBrowserWindowEmitter
         typedef typename T::EventType EventType;
         typedef std::list< T* > ObserverContainer;
         typedef void(T::*observerMethod)(const EventType&);
+        typedef std::string(T::*observerMethodReturn)(const EventType&);
 
         ///////////////////////////////////////////////////////////////////////////////
         //
@@ -86,6 +87,16 @@ class LLEmbeddedBrowserWindowEmitter
                 ((*iter)->*method)(msg);
                 ++iter;
             }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //
+        std::string updateAndReturn(observerMethodReturn method, const EventType& msg)
+        {
+            typename std::list< T* >::iterator iter = observers.begin();
+
+			// NOTE: only responds to the first observer
+            return ((*iter)->*method)(msg);
         }
 
         int getObserverNumber()

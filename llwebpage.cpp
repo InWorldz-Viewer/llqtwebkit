@@ -190,8 +190,11 @@ QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFi
 {
     Q_UNUSED(parentFrame);
     Q_UNUSED(suggestedFile);
-    qWarning() << "LLWebPage::" << __FUNCTION__ << "not implemented" << "Returning empty string";
-    return QString();
+
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(), "*.png;*.jpg" );
+    std::string filename_chosen = window->d->mEventEmitter.updateAndReturn( &LLEmbeddedBrowserWindowObserver::onRequestFilePicker, event );
+
+    return QString::fromStdString( filename_chosen );
 }
 
 void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)

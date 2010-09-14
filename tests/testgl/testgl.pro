@@ -30,9 +30,11 @@ win32{
     DESTDIR=../GL
     debug {
       LIBS += $$PWD/../../Debug/llqtwebkitd.lib
+      LIBS += comdlg32.lib
     }
     release {
       LIBS += $$PWD/../../Release/llqtwebkit.lib
+      LIBS += comdlg32.lib
     }
 }
 

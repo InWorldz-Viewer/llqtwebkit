@@ -31,6 +31,7 @@ extern "C" {
 
 #ifdef _WINDOWS
 #include <windows.h>
+#include <commdlg.h>  // file choser dialog
 #include <direct.h>	// for local file access
 #endif
 
@@ -60,6 +61,34 @@ Q_IMPORT_PLUGIN(qgif)
 	#define PATH_SEPARATOR "\\"
 #else
 	#define PATH_SEPARATOR "/"
+#endif
+
+
+#ifdef _WINDOWS
+////////////////////////////////////////////////////////////////////////////////
+//
+std::string chooseFileName()
+{
+	OPENFILENAMEA ofn ;
+	static char szFile[_MAX_PATH] ;
+
+    ZeroMemory( &ofn , sizeof( ofn) );
+	ofn.lStructSize = sizeof ( ofn );
+	ofn.hwndOwner = NULL  ;
+	ofn.lpstrFile = szFile ;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = sizeof( szFile );
+	ofn.lpstrFilter = "All\0*.*\0Images\0*.jpg;*.png\0";
+	ofn.nFilterIndex =1;
+	ofn.lpstrFileTitle = NULL ;
+	ofn.nMaxFileTitle = 0 ;
+	ofn.lpstrInitialDir=NULL ;
+	ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST ;
+
+	GetOpenFileNameA( &ofn );
+
+	return ofn.lpstrFile;
+}
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -602,6 +631,15 @@ class testGL :
 		{
 			bool dead = (bool)eventIn.getIntValue();
 			std::cout << (dead?"deleting cookie: ":"setting cookie: ") << eventIn.getStringValue() << std::endl;
+		}
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
+		std::string onRequestFilePicker( const EventType& eventIn )
+		{
+			std::string fn = chooseFileName();
+
+			return fn;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
