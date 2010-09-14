@@ -261,7 +261,7 @@ void LLEmbeddedBrowser::setHostLanguage( const std::string& host_language )
 	d->mHostLanguage = host_language;
 }
 
-LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height)
+LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height, const std::string target)
 {
     LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
     if (newWin)
@@ -271,6 +271,12 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int h
         newWin->setHostLanguage(d->mHostLanguage);
         clearLastError();
         d->windows.append(newWin);
+		
+		if(!target.empty() && (target != "_blank"))
+		{
+			newWin->setTarget(target);
+		}
+		
         return newWin;
     }
     return 0;

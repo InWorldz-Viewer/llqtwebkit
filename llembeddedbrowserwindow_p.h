@@ -32,6 +32,7 @@
 #include <qgraphicsscene.h>
 #include <qgraphicsview.h>
 #include <qwebview.h>
+#include <map>
 
 ///////////////////////////////////////////////////////////////////////////////
 // manages the process of storing and emitting events that the consumer
@@ -145,8 +146,7 @@ class LLEmbeddedBrowserWindowPrivate
     public:
     LLEmbeddedBrowserWindowPrivate()
         : mParent(0)
-        , mPage(new LLWebPage)
-		, mOpenShim(NULL)
+        , mPage(0)
         , mView(0)
         , mGraphicsScene(0)
         , mGraphicsView(0)
@@ -155,8 +155,6 @@ class LLEmbeddedBrowserWindowPrivate
         , mStatusText("")
         , mTitle("")
         , mCurrentUri("")
-        , mExternalTargetName("_external")
-        , mBlankTargetName("_blank")
         , mNoFollowScheme("secondlife")
         , mWindowId(-1)
         , m404RedirectUrl("")
@@ -164,29 +162,48 @@ class LLEmbeddedBrowserWindowPrivate
         , mFlipBitmap(false)
         , mPageBuffer(NULL)
         , mDirty(false)
+		, mOpeningSelf(false)
     {
     }
 
     ~LLEmbeddedBrowserWindowPrivate()
     {
-        mGraphicsScene->window = 0;
-        mPage->window = 0;
-        mView->deleteLater();
-		if(mOpenShim)
+		while(!mProxyPages.empty())
 		{
-			mOpenShim->window = 0;
-			mOpenShim->deleteLater();
+			ProxyList::iterator iter = mProxyPages.begin();
+			(*iter)->window = 0;
+			(*iter)->deleteLater();
 		}
-        mGraphicsScene->deleteLater();
-        mGraphicsView->viewport()->setParent(mGraphicsView);
-        mGraphicsView->deleteLater();
+
+		if(mGraphicsScene)
+		{
+        	mGraphicsScene->window = 0;
+		}
+		if(mPage)
+		{
+	        mPage->window = 0;
+		}
+		if(mView)
+		{
+	        mView->deleteLater();
+		}
+		if(mGraphicsScene)
+		{
+	        mGraphicsScene->deleteLater();
+		}
+		if(mGraphicsView)
+		{
+	        mGraphicsView->viewport()->setParent(mGraphicsView);
+	        mGraphicsView->deleteLater();
+		}
     }
 
     LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
     QImage mImage;
     LLEmbeddedBrowser *mParent;
     LLWebPage *mPage;
-    LLWebPageOpenShim *mOpenShim;
+	typedef std::list<LLWebPageOpenShim*> ProxyList;
+	ProxyList mProxyPages;
 
     LLWebView *mView;
     LLGraphicsScene *mGraphicsScene;
@@ -197,8 +214,6 @@ class LLEmbeddedBrowserWindowPrivate
     std::string mStatusText;
     std::string mTitle;
     std::string mCurrentUri;
-	std::string mExternalTargetName;
-	std::string mBlankTargetName;
     QString mNoFollowScheme;
     int mWindowId;
     std::string m404RedirectUrl;
@@ -207,6 +222,7 @@ class LLEmbeddedBrowserWindowPrivate
     unsigned char* mPageBuffer;
     QColor backgroundColor;
     bool mDirty;
+	bool mOpeningSelf;
 };
 
 

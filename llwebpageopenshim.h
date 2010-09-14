@@ -34,13 +34,29 @@ class LLWebPageOpenShim : public QWebPage
     Q_OBJECT
 
     public:
-        LLWebPageOpenShim(QObject *parent = 0);
+        LLWebPageOpenShim(LLEmbeddedBrowserWindow *in_window, QObject *parent = 0);
         ~LLWebPageOpenShim();
         LLEmbeddedBrowserWindow *window;
+		bool matchesTarget(const std::string target);
+		bool matchesUUID(const std::string uuid);
+		void setProxy(const std::string &target, const std::string &uuid);
 
+	public slots:
+	    void windowCloseRequested();
+		void geometryChangeRequested(const QRect& geom);
+	
     protected:
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);
+        QWebPage *createWindow(WebWindowType type);
 
+    private:
+		std::string mUUID;
+		std::string mTarget;
+		bool mOpeningSelf;
+		bool mGeometryChangeRequested;
+		bool mHasSentUUID;
+		QRect mGeometry;
+		
 };
 
 #endif

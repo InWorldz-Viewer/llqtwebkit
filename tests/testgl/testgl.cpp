@@ -153,12 +153,6 @@ class testGL :
 
 			// don't flip bitmap
 			LLQtWebKit::getInstance()->flipWindow( mBrowserWindowId, false );
-
-			// target name we open in external browser
-//			LLQtWebKit::getInstance()->setExternalTargetName( mBrowserWindowId, "Wibblewobbly" );
-
-			// turn on option to make a window opened with javascript window.open() look like a click on a link with target="_blank"
-			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserWindowId, LLQtWebKit::WOB_SIMULATE_BLANK_HREF_CLICK );
 			
 			// Attempt to read cookies from the cookie file and send them to llqtwebkit.
 			{
@@ -590,22 +584,16 @@ class testGL :
 		// virtual
 		void onClickLinkHref( const EventType& eventIn )
 		{
+			std::string uuid = eventIn.getStringValue2();
+			
 			std::cout << "Event: clicked on link:" << std::endl;
-			std::cout << "  URL:" << eventIn.getStringValue() << std::endl;
-
-			if ( LLQtWebKit::LTT_TARGET_NONE == eventIn.getLinkType() )
-				std::cout << "  No target attribute" << std::endl;
-
-			if ( LLQtWebKit::LTT_TARGET_BLANK == eventIn.getLinkType() )
-				std::cout << "  Blank target attribute (" << eventIn.getStringValue2() << ")" << std::endl;
-
-			if ( LLQtWebKit::LTT_TARGET_EXTERNAL == eventIn.getLinkType() )
-				std::cout << "  External target attribute (" << eventIn.getStringValue2() << ")" << std::endl;
-
-			if ( LLQtWebKit::LTT_TARGET_OTHER == eventIn.getLinkType() )
-				std::cout << "  Other target attribute (" << eventIn.getStringValue2() << ")" << std::endl;
-
+			std::cout << "  URL:" << eventIn.getEventUri() << std::endl;
+			std::cout << "  target:" << eventIn.getStringValue() << std::endl;
+			std::cout << "  UUID:" << uuid << std::endl;
 			std::cout << std::endl;
+			
+			// Since we never actually open the window, send a "proxy window closed" back to webkit to keep it from leaking.
+			LLQtWebKit::getInstance()->proxyWindowClosed(mBrowserWindowId, uuid);
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -621,6 +609,19 @@ class testGL :
 		void onWindowCloseRequested( const EventType& )
 		{
 			std::cout << "Event: window close requested" << std::endl;
+		};
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
+		void onWindowGeometryChangeRequested( const EventType& eventIn)
+		{
+			int x, y, width, height;
+			eventIn.getRectValue(x, y, width, height);
+
+			std::cout << "Event: window geometry change requested" << std::endl;
+			std::cout << "  uuid: " << eventIn.getStringValue() << std::endl;
+			std::cout << "  location: (" << x << ", " << y << ")" << std::endl;
+			std::cout << "  size: (" << width << ", " << height << ")" << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////

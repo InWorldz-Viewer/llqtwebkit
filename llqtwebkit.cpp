@@ -143,9 +143,9 @@ void LLQtWebKit::setHostLanguage(const std::string& host_language )
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-int LLQtWebKit::createBrowserWindow(int width, int height)
+int LLQtWebKit::createBrowserWindow(int width, int height, const std::string target)
 {
-    LLEmbeddedBrowserWindow* browser_window = LLEmbeddedBrowser::getInstance()->createBrowserWindow(width, height);
+    LLEmbeddedBrowserWindow* browser_window = LLEmbeddedBrowser::getInstance()->createBrowserWindow(width, height, target);
 
     if (browser_window)
     {
@@ -165,6 +165,27 @@ int LLQtWebKit::createBrowserWindow(int width, int height)
     }
 
     return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void LLQtWebKit::proxyWindowOpened(int browser_window_id, const std::string target, const std::string uuid)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        browser_window->proxyWindowOpened(target, uuid);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////
+//
+void LLQtWebKit::proxyWindowClosed(int browser_window_id, const std::string uuid)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+    {
+        browser_window->proxyWindowClosed(uuid);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,20 +214,6 @@ bool LLQtWebKit::setBackgroundColor(int browser_window_id, const int red, const 
     if (browser_window)
     {
         browser_window->setBackgroundColor(red, green, blue);
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLQtWebKit::setCaretColor(int browser_window_id, const int red, const int green, const int blue)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->setCaretColor(red, green, blue);
         return true;
     }
 
@@ -500,54 +507,6 @@ std::string LLQtWebKit::getNoFollowScheme(int browser_window_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLQtWebKit::setExternalTargetName(int browser_window_id, std::string name)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->setExternalTargetName(name);
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-std::string LLQtWebKit::getExternalTargetName(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        return browser_window->getExternalTargetName();
-    }
-
-    return ("");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-void LLQtWebKit::setBlankTargetName(int browser_window_id, std::string name)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->setBlankTargetName(name);
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-std::string LLQtWebKit::getBlankTargetName(int browser_window_id)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        return browser_window->getBlankTargetName();
-    }
-
-    return ("");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
 void LLQtWebKit::pump(int max_milliseconds)
 {
     LLEmbeddedBrowser::getInstance()->pump(max_milliseconds);
@@ -607,17 +566,6 @@ std::string LLQtWebKit::evaluateJavascript(int browser_window_id, const std::str
     }
 
     return "";
-}
-
-///////////////////////////////////////////////////////////////////////////////
-//
-void LLQtWebKit::setWindowOpenBehavior(int browser_window_id, WindowOpenBehavior behavior)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
-    if (browser_window)
-    {
-        browser_window->setWindowOpenBehavior(behavior);
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -751,4 +699,9 @@ void LLEmbeddedBrowserWindowObserver::onCookieChanged(const EventType&)
 void LLEmbeddedBrowserWindowObserver::onWindowCloseRequested(const EventType&)
 {
 }
+
+void LLEmbeddedBrowserWindowObserver::onWindowGeometryChangeRequested(const EventType&)
+{
+}
+
 

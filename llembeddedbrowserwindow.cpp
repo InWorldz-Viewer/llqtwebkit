@@ -77,8 +77,9 @@
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
 {
     d = new LLEmbeddedBrowserWindowPrivate();
+	
+	d->mPage = new LLWebPage;
     d->mPage->window = this;
-
     d->mView = new LLWebView;
     d->mPage->webView = d->mView;
     d->mView->window = this;
@@ -120,18 +121,6 @@ void LLEmbeddedBrowserWindow::setBackgroundColor(const uint8_t red, const uint8_
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << red << green << blue;
 #endif
     d->backgroundColor = QColor(red, green, blue);
-}
-
-// change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
-void LLEmbeddedBrowserWindow::setCaretColor(const uint8_t red, const uint8_t green, const uint8_t blue)
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << red << green << blue;
-#endif
-    Q_UNUSED(red);
-    Q_UNUSED(green);
-    Q_UNUSED(blue);
-    // QtWebKit paints the caret so we don't have to
 }
 
 //
@@ -194,7 +183,7 @@ std::string& LLEmbeddedBrowserWindow::getStatusMsg()
 // render a page into memory and grab the window
 unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int height)
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+#if LLEMBEDDEDBROWSER_DEBUG > 10
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y << width << height;
 #endif
     // only grab the window if it's enabled
@@ -242,7 +231,7 @@ unsigned char* LLEmbeddedBrowserWindow::getPageBuffer()
 
 int16_t LLEmbeddedBrowserWindow::getBrowserWidth()
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+#if LLEMBEDDEDBROWSER_DEBUG > 10
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     return d->mImage.width();
@@ -250,7 +239,7 @@ int16_t LLEmbeddedBrowserWindow::getBrowserWidth()
 
 int16_t LLEmbeddedBrowserWindow::getBrowserHeight()
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+#if LLEMBEDDEDBROWSER_DEBUG > 10
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     return d->mImage.height();
@@ -258,7 +247,7 @@ int16_t LLEmbeddedBrowserWindow::getBrowserHeight()
 
 int16_t LLEmbeddedBrowserWindow::getBrowserDepth()
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+#if LLEMBEDDEDBROWSER_DEBUG > 10
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     return 4;
@@ -266,7 +255,7 @@ int16_t LLEmbeddedBrowserWindow::getBrowserDepth()
 
 int32_t LLEmbeddedBrowserWindow::getBrowserRowSpan()
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+#if LLEMBEDDEDBROWSER_DEBUG > 10
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
     return 4 * getBrowserWidth();
@@ -324,7 +313,7 @@ bool LLEmbeddedBrowserWindow::userAction(LLQtWebKit::EUserAction action)
 
 bool LLEmbeddedBrowserWindow::userActionIsEnabled(LLQtWebKit::EUserAction action)
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+#if LLEMBEDDEDBROWSER_DEBUG > 10
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << action;
 #endif
 
@@ -474,7 +463,7 @@ static QEvent::Type event_from_keyboard_event(LLQtWebKit::EKeyEvent keyboard_eve
 
 void LLEmbeddedBrowserWindow::mouseEvent(LLQtWebKit::EMouseEvent mouse_event, int16_t button, int16_t x, int16_t y, LLQtWebKit::EKeyboardModifier modifiers)
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
+#if LLEMBEDDEDBROWSER_DEBUG > 10
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << x << y;
 #endif
 
@@ -669,6 +658,32 @@ int LLEmbeddedBrowserWindow::getWindowId()
     return d->mWindowId;
 }
 
+void LLEmbeddedBrowserWindow::proxyWindowOpened(const std::string target, const std::string uuid)
+{
+	LLWebPageOpenShim *shim = findShim(uuid);
+	if(!shim)
+	{
+		// We don't already have a shim with this uuid -- create one.
+		shim = new LLWebPageOpenShim(this, d->mPage);
+		d->mProxyPages.push_back(shim);
+
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+		qDebug() << "LLEmbeddedBrowserWindow::proxyWindowOpened: page list size is " << d->mProxyPages.size();
+#endif
+	}
+	
+	shim->setProxy(target, uuid);
+}
+
+void LLEmbeddedBrowserWindow::proxyWindowClosed(const std::string uuid)
+{
+	LLWebPageOpenShim *shim = findShim(uuid);
+	if(shim)
+	{
+		deleteShim(shim);
+	}
+}
+
 std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
@@ -677,14 +692,6 @@ std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
     QString q_script = QString::fromStdString(script);
     QString result = d->mPage->mainFrame()->evaluateJavaScript(q_script).toString();
     return result.toStdString();
-}
-
-void LLEmbeddedBrowserWindow::setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior)
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << window_id;
-#endif
-    d->mPage->setWindowOpenBehavior(behavior);
 }
 
 bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
@@ -746,26 +753,6 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
     return d->mNoFollowScheme.toStdString();
 }
 
-void LLEmbeddedBrowserWindow::setExternalTargetName(std::string name)
-{
-    d->mExternalTargetName = name;
-}
-
-std::string LLEmbeddedBrowserWindow::getExternalTargetName()
-{
-    return d->mExternalTargetName;
-}
-
-void LLEmbeddedBrowserWindow::setBlankTargetName(std::string name)
-{
-    d->mBlankTargetName = name;
-}
-
-std::string LLEmbeddedBrowserWindow::getBlankTargetName()
-{
-    return d->mBlankTargetName;
-}
-
 void LLEmbeddedBrowserWindow::prependHistoryUrl(std::string url)
 {
 #ifdef WEBHISTORYPATCH
@@ -798,45 +785,76 @@ std::string LLEmbeddedBrowserWindow::dumpHistory()
 
 void LLEmbeddedBrowserWindow::cookieChanged(const std::string &cookie, const std::string &url, bool dead)
 {
-	LLEmbeddedBrowserWindowEvent llevent(
-			getWindowId(),
-			url,
-			cookie,
-			((int)dead));
-	d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCookieChanged, llevent);
+	LLEmbeddedBrowserWindowEvent event(getWindowId());
+	event.setEventUri(url);
+	event.setStringValue(cookie);
+	event.setIntValue((int)dead);
+
+	d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCookieChanged, event);
 }
 
-LLWebPageOpenShim *LLEmbeddedBrowserWindow::getWebPageOpenShim()
+QWebPage *LLEmbeddedBrowserWindow::createWindow()
 {
-	if(!d->mOpenShim)
+	QWebPage *result = NULL;
+	if(d->mOpeningSelf)
 	{
-		d->mOpenShim = new LLWebPageOpenShim(d->mPage);
-		d->mOpenShim->window = this;
+		// Special case: opening self to set target, etc.
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+		qDebug() << "LLEmbeddedBrowserWindow::createWindow: opening self to set target name. ";
+#endif
+		result = d->mPage;
+		d->mOpeningSelf = false;
 	}
-	
-	return d->mOpenShim;
-}
+	else
+	{
+		LLWebPageOpenShim *shim = new LLWebPageOpenShim(this, d->mPage);
+		d->mProxyPages.push_back(shim);
+		result = shim;
 
-int LLEmbeddedBrowserWindow::targetToTargetType(const std::string &target)
-{
-	int result = LLQtWebKit::LTT_TARGET_OTHER;
-	
-	if ( target.empty() )
-	{
-		result = LLQtWebKit::LTT_TARGET_NONE;
-	}
-	else if ( target == d->mExternalTargetName )
-	{
-		result = LLQtWebKit::LTT_TARGET_EXTERNAL;
-	}
-	else if ( target == d->mBlankTargetName )
-	{
-		result = LLQtWebKit::LTT_TARGET_BLANK;
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+		qDebug() << "LLEmbeddedBrowserWindow::createWindow: page list size is " << d->mProxyPages.size();
+#endif
 	}
 	
 	return result;
 }
 
+LLWebPageOpenShim *LLEmbeddedBrowserWindow::findShim(const std::string &uuid)
+{	
+	LLEmbeddedBrowserWindowPrivate::ProxyList::iterator iter;
+	for(iter = d->mProxyPages.begin(); iter != d->mProxyPages.end(); iter++)
+	{
+		if((*iter)->matchesUUID(uuid))
+			return *iter;
+	}
+	
+	return NULL;
+}
+
+void LLEmbeddedBrowserWindow::deleteShim(LLWebPageOpenShim *shim)
+{
+	shim->window = 0;
+	shim->deleteLater();
+	d->mProxyPages.remove(shim);
+
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+	qDebug() << "LLEmbeddedBrowserWindow::deleteShim: page list size is " << d->mProxyPages.size();
+#endif
+}
+
+void LLEmbeddedBrowserWindow::setTarget(const std::string &target)
+{
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+	qDebug() << "LLEmbeddedBrowserWindow::setTarget: setting target to " << QString::fromStdString(target);
+#endif
+
+	d->mOpeningSelf = true;
+	
+	std::stringstream s;
+	s << "window.open(\"\",\"" << target << "\");";
+	
+	evaluateJavascript(s.str());
+}
 
 LLGraphicsScene::LLGraphicsScene()
     : QGraphicsScene()
@@ -851,9 +869,11 @@ void LLGraphicsScene::repaintRequestedSlot(const QList<QRectF> &regions)
     if (!window)
         return;
     window->d->mDirty = true;
-    for (int i = 0; i < regions.count(); ++i) {
-        LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(),
-                regions[i].x(), regions[i].y(), regions[i].width(), regions[i].height());
+    for (int i = 0; i < regions.count(); ++i) 
+	{
+        LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+		event.setEventUri(window->getCurrentUri());
+		event.setRectValue(regions[i].x(), regions[i].y(), regions[i].width(), regions[i].height());
 
         window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onPageChanged, event);
     }
@@ -896,12 +916,13 @@ bool LLWebView::event(QEvent* event)
                     llcursor = LLQtWebKit::C_ARROW;
             }
 
-            LLEmbeddedBrowserWindowEvent llevent(
-                    window->getWindowId(),
-                    window->getCurrentUri(),
-                    ((int)llcursor));
-            window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCursorChanged, llevent);
+            LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+			event.setEventUri(window->getCurrentUri());
+			event.setIntValue((int)llcursor);
+            window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onCursorChanged, event);
         }
+		
+		return true;
     }
     return QGraphicsWebView::event(event);
 }

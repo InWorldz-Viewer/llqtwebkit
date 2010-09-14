@@ -41,7 +41,6 @@
 LLWebPage::LLWebPage(QObject *parent)
     : QWebPage(parent)
     , window(0)
-    , windowOpenBehavior(LLQtWebKit::WOB_IGNORE)
     , mHostLanguage( "en" )
 {
     connect(this, SIGNAL(loadProgress(int)),
@@ -56,6 +55,8 @@ LLWebPage::LLWebPage(QObject *parent)
             this, SLOT(loadFinished(bool)));
     connect(this, SIGNAL(windowCloseRequested()),
             this, SLOT(windowCloseRequested()));
+    connect(this, SIGNAL(geometryChangeRequested(const QRect&)),
+            this, SLOT(geometryChangeRequested(const QRect&)));
     connect(mainFrame(), SIGNAL(titleChanged(const QString&)),
             this, SLOT(titleChangedSlot(const QString&)));
     connect(mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
@@ -67,7 +68,9 @@ void LLWebPage::loadProgressSlot(int progress)
     if (!window)
         return;
     window->d->mPercentComplete = progress;
-    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(), progress);
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(window->getCurrentUri());
+	event.setIntValue(progress);
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onUpdateProgress, event);
 }
 
@@ -76,7 +79,9 @@ void LLWebPage::statusBarMessageSlot(const QString& text)
     if (!window)
         return;
     window->d->mStatusText = text.toStdString();
-    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(), window->d->mStatusText);
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(window->getCurrentUri());
+	event.setStringValue(window->d->mStatusText);
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onStatusTextChange, event);
 }
 
@@ -85,7 +90,9 @@ void LLWebPage::titleChangedSlot(const QString& text)
     if (!window)
         return;
     window->d->mTitle = text.toStdString();
-	LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri(), window->d->mTitle);
+	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(window->getCurrentUri());
+	event.setStringValue(window->d->mTitle);
 	window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onTitleChange, event);
 }
 
@@ -96,7 +103,8 @@ void LLWebPage::urlChangedSlot(const QUrl& url)
     if (!window)
         return;
 
-    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri());
+	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLocationChange, event);
 }
 
@@ -106,8 +114,7 @@ bool LLWebPage::event(QEvent *event)
 
     if (event->type() == QEvent::GraphicsSceneMousePress)
 		currentPoint = ((QGraphicsSceneMouseEvent*)event)->pos().toPoint();
-    else
-    if (event->type() == QEvent::GraphicsSceneMouseRelease)
+    else if(event->type() == QEvent::GraphicsSceneMouseRelease)
         currentPoint = QPoint();
 
     return result;
@@ -128,81 +135,25 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
             encodedUrl = window->d->mNoFollowScheme + "://" + encodedUrl;
         }
         std::string rawUri = encodedUrl.toStdString();
-        LLEmbeddedBrowserWindowEvent event(window->getWindowId(), rawUri, rawUri);
+		LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+		event.setEventUri(rawUri);
 		window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);
 
 //	 	qDebug() << "LLWebPage::acceptNavigationRequest: sending onClickLinkNoFollow, NavigationType is " << type << ", url is " << QString::fromStdString(rawUri) ;
-       return false;
+		return false;
     }
 	
-	bool result = false;
-
-	// Figure out the href and target of the click.
-	std::string click_href = QString(request.url().toEncoded()).toStdString();
-	std::string click_target = mainFrame()->hitTestContent(currentPoint).linkElement().attribute("target").toStdString();
-
-//	qDebug() << "LLWebPage::acceptNavigationRequest: NavigationType is " << type << ", target is " << QString::fromStdString(click_target) << ", url is " << QString::fromStdString(click_href);
-
-	// Figure out the link target type
-	// start off with no target specified
-	int link_target_type = window->targetToTargetType(click_target);
-
-	bool send_event = false;
-
-	if(type == QWebPage::NavigationTypeLinkClicked)
-	{
-		switch(link_target_type)
-		{
-			case LLQtWebKit::LTT_TARGET_EXTERNAL:
-			case LLQtWebKit::LTT_TARGET_BLANK:
-				// _blank and _external targets should open a new window.  This logic needs to be handled by the plugin host, without processing an internal navigate.
-				send_event = true;
-			break;
-			
-			default:
-				if(QWebPage::acceptNavigationRequest(frame, request, type))
-				{
-					// Allow the request to go through.
-					result = true;
-				}				
-			break;
-		}
-	}
-	else
-	{
-		// For other navigation types, allow QWebPage to handle them.
-		result = true;
-	}
-
 	
-//	qDebug() << "LLWebPage::acceptNavigationRequest: send_event is " << send_event << ", result is " << result ;
-
-	if(send_event)
-	{
-
-		// build event based on the data we have and emit it
-		LLEmbeddedBrowserWindowEvent event( window->getWindowId(),
-											window->getCurrentUri(),
-											click_href,
-											click_target,
-											link_target_type );
-
-		window->d->mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onClickLinkHref, event );
-	}
-	
-    return result;
+    return true;
 }
 
-void LLWebPage::setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior)
-{
-    windowOpenBehavior = behavior;
-}
 
 void LLWebPage::loadStarted()
 {
     if (!window)
         return;
-    LLEmbeddedBrowserWindowEvent event(window->getWindowId(), window->getCurrentUri());
+	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateBegin, event);
 }
 
@@ -210,8 +161,8 @@ void LLWebPage::loadFinished(bool)
 {
     if (!window)
         return;
-    LLEmbeddedBrowserWindowEvent event(window->getWindowId(),
-            window->getCurrentUri());
+	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(window->getCurrentUri());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateComplete, event);
 }
 
@@ -221,6 +172,18 @@ void LLWebPage::windowCloseRequested()
         return;
     LLEmbeddedBrowserWindowEvent event(window->getWindowId());
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onWindowCloseRequested, event);
+}
+
+void LLWebPage::geometryChangeRequested(const QRect& geom)
+{
+    if (!window)
+        return;
+    
+	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	// empty UUID indicates this is targeting the main window
+//	event.setStringValue(window->getUUID());
+	event.setRectValue(geom.x(), geom.y(), geom.width(), geom.height());
+    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onWindowGeometryChangeRequested, event);	
 }
 
 QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFile)
@@ -282,21 +245,9 @@ QWebPage *LLWebPage::createWindow(WebWindowType type)
     Q_UNUSED(type);
 	QWebPage *result = NULL;
 	
-	switch(windowOpenBehavior)
+	if(window)
 	{
-		case LLQtWebKit::WOB_IGNORE:
-		break;
-		
-		case LLQtWebKit::WOB_REDIRECT_TO_SELF:
-			result = this;
-		break;
-
-		case LLQtWebKit::WOB_SIMULATE_BLANK_HREF_CLICK:
-			if(window)
-			{
-				result = window->getWebPageOpenShim();
-			}
-		break;
+		result = window->createWindow();
 	}
 	
 	return result;
