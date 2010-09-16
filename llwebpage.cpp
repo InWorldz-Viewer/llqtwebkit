@@ -1,5 +1,5 @@
 /* Copyright (c) 2006-2010, Linden Research, Inc.
- * 
+ *
  * LLQtWebKit Source Code
  * The source code in this file ("Source Code") is provided by Linden Lab
  * to you under the terms of the GNU General Public License, version 2.0
@@ -7,17 +7,17 @@
  * ("Other License"), formally executed by you and Linden Lab.  Terms of
  * the GPL can be found in GPL-license.txt in this distribution, or online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/gplv2
- * 
+ *
  * There are special exceptions to the terms and conditions of the GPL as
  * it is applied to this Source Code. View the full text of the exception
  * in the file FLOSS-exception.txt in this software distribution, or
  * online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/flossexception
- * 
+ *
  * By copying, modifying or distributing this software, you acknowledge
  * that you have read and understood your obligations described above,
  * and agree to abide by those obligations.
- * 
+ *
  * ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
  * WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
  * COMPLETENESS OR PERFORMANCE.
@@ -122,6 +122,9 @@ bool LLWebPage::event(QEvent *event)
 
 bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type)
 {
+	Q_UNUSED( frame );
+	Q_UNUSED( type );
+
     if (!window)
         return false;
 
@@ -142,8 +145,8 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
 //	 	qDebug() << "LLWebPage::acceptNavigationRequest: sending onClickLinkNoFollow, NavigationType is " << type << ", url is " << QString::fromStdString(rawUri) ;
 		return false;
     }
-	
-	
+
+
     return true;
 }
 
@@ -178,12 +181,12 @@ void LLWebPage::geometryChangeRequested(const QRect& geom)
 {
     if (!window)
         return;
-    
+
 	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 	// empty UUID indicates this is targeting the main window
 //	event.setStringValue(window->getUUID());
 	event.setRectValue(geom.x(), geom.y(), geom.width(), geom.height());
-    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onWindowGeometryChangeRequested, event);	
+    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onWindowGeometryChangeRequested, event);
 }
 
 QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFile)
@@ -249,12 +252,12 @@ QWebPage *LLWebPage::createWindow(WebWindowType type)
 {
     Q_UNUSED(type);
 	QWebPage *result = NULL;
-	
+
 	if(window)
 	{
 		result = window->createWindow();
 	}
-	
+
 	return result;
 }
 

@@ -267,7 +267,7 @@ LRESULT CALLBACK window_proc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			// and call keyboard_event with char code.
 			gLParam = lParam;
 			gWParam = wParam;
-            if (nonprintable_key(wParam, &last_char_code)) 
+            if (nonprintable_key((int)wParam, &last_char_code)) 
 			{
                 // this is not a printable key
                 keyboard_event(last_char_code, LLQtWebKit::KE_KEY_DOWN);

@@ -1,5 +1,5 @@
 /* Copyright (c) 2006-2010, Linden Research, Inc.
- * 
+ *
  * LLQtWebKit Source Code
  * The source code in this file ("Source Code") is provided by Linden Lab
  * to you under the terms of the GNU General Public License, version 2.0
@@ -7,17 +7,17 @@
  * ("Other License"), formally executed by you and Linden Lab.  Terms of
  * the GPL can be found in GPL-license.txt in this distribution, or online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/gplv2
- * 
+ *
  * There are special exceptions to the terms and conditions of the GPL as
  * it is applied to this Source Code. View the full text of the exception
  * in the file FLOSS-exception.txt in this software distribution, or
  * online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/flossexception
- * 
+ *
  * By copying, modifying or distributing this software, you acknowledge
  * that you have read and understood your obligations described above,
  * and agree to abide by those obligations.
- * 
+ *
  * ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
  * WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
  * COMPLETENESS OR PERFORMANCE.
@@ -112,7 +112,11 @@ class testGL :
 			mHomeUrl(),
 			mNeedsUpdate( true )						// flag to indicate if browser texture needs an update
 		{
-            mHomeUrl = getcwd(NULL, 1024);;
+#ifdef _WINDOWS	// to remove warning on Windows
+            mHomeUrl = _getcwd(NULL, 1024);
+#else
+            mHomeUrl = getcwd(NULL, 1024);
+#endif
             mHomeUrl.append("/testpage.html");
             std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
 		};
@@ -155,20 +159,20 @@ class testGL :
 			mProfileDir = mApplicationDir + PATH_SEPARATOR + "testGL_profile";
 
 			mCookiePath = mProfileDir + PATH_SEPARATOR + "cookies.txt";
-			
+
 			LLQtWebKit::getInstance()->init( mApplicationDir, mComponentDir, mProfileDir, getNativeWindowHandle() );
-			
-			// set host language test (in reality, string will be language code passed into client) 
+
+			// set host language test (in reality, string will be language code passed into client)
 			// IMPORTANT: must be called before createBrowserWindow(...)
 			LLQtWebKit::getInstance()->setHostLanguage( "EN-AB-CD-EF" );
-			
+
 			// enable Javascript
 			LLQtWebKit::getInstance()->enableJavascript( true );
 
 			// enable Plugins
 			LLQtWebKit::getInstance()->enablePlugins( true );
 
-			// make a browser window		
+			// make a browser window
 			mBrowserWindowId = LLQtWebKit::getInstance()->createBrowserWindow( mBrowserWindowWidth, mBrowserWindowHeight );
 
 			// tell LLQtWebKit about the size of the browser window
@@ -182,12 +186,12 @@ class testGL :
 
 			// don't flip bitmap
 			LLQtWebKit::getInstance()->flipWindow( mBrowserWindowId, false );
-			
+
 			// Attempt to read cookies from the cookie file and send them to llqtwebkit.
 			{
 				std::ifstream cookie_file(mCookiePath.c_str(), std::ios_base::in);
 				std::string cookies;
-				
+
 				while(cookie_file.good() && !cookie_file.eof())
 				{
 					std::string tmp;
@@ -195,13 +199,13 @@ class testGL :
 					cookies += tmp;
 					cookies += "\n";
 				}
-				
+
 				if(!cookies.empty())
 				{
 					LLQtWebKit::getInstance()->setCookies(cookies);
 				}
 			}
-			
+
 			// Tell llqtwebkit to look for a CA file in the application directory.
 			// If it can't find or parse the file, this should have no effect.
 			LLQtWebKit::getInstance()->setCAFile(mApplicationDir + PATH_SEPARATOR + "CA.pem");
@@ -219,23 +223,23 @@ class testGL :
 		{
 			// Get cookies from this instance
 			std::string cookies = LLQtWebKit::getInstance()->getAllCookies();
-			
+
 			// Dump cookies to stdout
 //			std::cout << "Cookies:" << std::endl;
 //			std::cout << cookies;
-			
+
 			// and save them to cookies.txt in the profile directory
 			{
 				std::ofstream cookie_file(mCookiePath.c_str(), std::ios_base::out|std::ios_base::trunc);
-				
+
 				if(cookie_file.good())
 				{
 					cookie_file << cookies;
 				}
-				
+
 				cookie_file.close();
 			}
-			
+
 			// unhook observer
 			LLQtWebKit::getInstance()->remObserver( mBrowserWindowId, this );
 
@@ -370,7 +374,7 @@ class testGL :
 		LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode()
 		{
 			int result = LLQtWebKit::KM_MODIFIER_NONE;
-			
+
 			int modifiers = glutGetModifiers();
 
 			if ( GLUT_ACTIVE_SHIFT & modifiers )
@@ -381,7 +385,7 @@ class testGL :
 
 			if ( GLUT_ACTIVE_ALT & modifiers )
 				result |= LLQtWebKit::KM_MODIFIER_ALT;
-			
+
 			return (LLQtWebKit::EKeyboardModifier)result;
 		};
 
@@ -455,7 +459,7 @@ class testGL :
 
 				exit( 0 );
 			};
-			
+
 			// Translate some keys
 			switch(keyIn)
 			{
@@ -468,15 +472,15 @@ class testGL :
 					// Turn CR and NL into enter key
 					keyIn = LLQtWebKit::KEY_RETURN;
 				break;
-				
+
 				case '\t':
 					keyIn = LLQtWebKit::KEY_TAB;
 				break;
-				
+
 				default:
 				break;
 			}
-			
+
 			// control-H goes home
 			if ( keyIn == 8 )
 			{
@@ -510,9 +514,9 @@ class testGL :
 				}
 
 				text[1] = 0;
-				
+
 				std::cerr << "key " << (isDown?"down ":"up ") << (int)keyIn << ", modifiers = " << (int)getLLQtWebKitKeyboardModifierCode() << std::endl;
-				
+
 				// send event to LLQtWebKit
 				LLQtWebKit::getInstance()->keyboardEvent(mBrowserWindowId, isDown?LLQtWebKit::KE_KEY_DOWN:LLQtWebKit::KE_KEY_UP, keyIn, text, getLLQtWebKitKeyboardModifierCode() );
 			}
@@ -523,7 +527,7 @@ class testGL :
 		void keyboardSpecial( int specialIn, bool isDown)
 		{
 			uint32_t key = LLQtWebKit::KEY_NONE;
-			
+
 			switch(specialIn)
 			{
 				case GLUT_KEY_F1:			key = LLQtWebKit::KEY_F1;		break;
@@ -547,11 +551,11 @@ class testGL :
 				case GLUT_KEY_HOME:			key = LLQtWebKit::KEY_HOME;		break;
 				case GLUT_KEY_END:			key = LLQtWebKit::KEY_END;		break;
 				case GLUT_KEY_INSERT:		key = LLQtWebKit::KEY_INSERT;	break;
-				
+
 				default:
 				break;
 			}
-			
+
 			if(key != LLQtWebKit::KEY_NONE)
 			{
 				keyboard(key, isDown);
@@ -614,13 +618,13 @@ class testGL :
 		void onClickLinkHref( const EventType& eventIn )
 		{
 			std::string uuid = eventIn.getStringValue2();
-			
+
 			std::cout << "Event: clicked on link:" << std::endl;
 			std::cout << "  URL:" << eventIn.getEventUri() << std::endl;
 			std::cout << "  target:" << eventIn.getStringValue() << std::endl;
 			std::cout << "  UUID:" << uuid << std::endl;
 			std::cout << std::endl;
-			
+
 			// Since we never actually open the window, send a "proxy window closed" back to webkit to keep it from leaking.
 			LLQtWebKit::getInstance()->proxyWindowClosed(mBrowserWindowId, uuid);
 		};
@@ -629,16 +633,15 @@ class testGL :
 		// virtual
 		void onCookieChanged( const EventType& eventIn )
 		{
-			bool dead = (bool)eventIn.getIntValue();
+			int dead = eventIn.getIntValue();
 			std::cout << (dead?"deleting cookie: ":"setting cookie: ") << eventIn.getStringValue() << std::endl;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
 		// virtual
-		std::string onRequestFilePicker( const EventType& eventIn )
+		std::string onRequestFilePicker( const EventType& )
 		{
 			std::string fn = chooseFileName();
-
 			return fn;
 		}
 
