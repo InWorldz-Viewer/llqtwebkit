@@ -39,6 +39,7 @@
 
 class LLEmbeddedBrowser;
 class LLWebPageOpenShim;
+class QWebPage;
 
 ////////////////////////////////////////////////////////////////////////////////
 // class for a "window" that holds a browser - there can be lots of these
@@ -56,6 +57,8 @@ public:
     void scrollByLines(int16_t lines);
     void setWindowId(int window_id);
     int getWindowId();
+	void proxyWindowOpened(const std::string target, const std::string uuid);
+	void proxyWindowClosed(const std::string uuid);
 
     // random accessors
     int16_t getPercentComplete();
@@ -74,9 +77,6 @@ public:
     // set background color that you see in between pages - default is white but sometimes useful to change
     void setBackgroundColor(const uint8_t red, const uint8_t green, const uint8_t blue);
 
-    // change the caret color (we have different backgrounds to edit fields - black caret on black background == bad)
-    void setCaretColor(const uint8_t red, const uint8_t green, const uint8_t blue);
-
     // can turn off updates to a page - e.g. when it's hidden by your windowing system
     void setEnabled(bool enabledIn);
 
@@ -87,7 +87,6 @@ public:
 
     // javascript access/control
     std::string evaluateJavascript(std::string script);
-    void setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior);
 
     // redirection when you hit a missing page
     bool set404RedirectUrl(std::string redirect_url);
@@ -118,12 +117,6 @@ public:
     void setNoFollowScheme(std::string scheme);
     std::string getNoFollowScheme();
 
-	// accessor/mutator for names of HREF attributes for blank and external targets
-	void setExternalTargetName(std::string name);
-	std::string getExternalTargetName();
-	void setBlankTargetName(std::string name);
-	std::string getBlankTargetName();
-
 	// prepend the current history with the given url
 	void prependHistoryUrl(std::string url);
 	// clear the URL history
@@ -132,10 +125,12 @@ public:
 
 	void cookieChanged(const std::string &cookie, const std::string &url, bool dead);
 
-	LLWebPageOpenShim *getWebPageOpenShim();
-	
-	int targetToTargetType(const std::string &target);
+	QWebPage *createWindow();
 
+	LLWebPageOpenShim *findShim(const std::string &uuid);
+	void deleteShim(LLWebPageOpenShim *shim);
+	void setTarget(const std::string &target);
+		
 private:
     friend class LLWebPage;
     friend class LLWebPageOpenShim;

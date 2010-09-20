@@ -1,6 +1,6 @@
 set QT_SRC_DIR="c:\work\qt\lindenqt"
 set OPENSSL_SRC_DIR="c:\work\qt\openssl-0.9.8l"
-set LLQTWEBKIT_SRC_DIR="c:\work\llqtwebkit-4.6"
+set LLQTWEBKIT_SRC_DIR="c:\work\llqtwebkit"
 set SL_DEST_DIR=".\"
 
 if not exist %SL_DEST_DIR%\release\QtCore4.dll           (xcopy %QT_SRC_DIR%\lib\QtCore4.dll         %SL_DEST_DIR%\release\ /y)      
