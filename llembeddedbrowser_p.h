@@ -80,6 +80,7 @@ public:
     QList<LLEmbeddedBrowserWindow*> windows;
 
 	std::string mHostLanguage;
+	bool mIgnoreSSLCertErrors;
 };
 
 #endif

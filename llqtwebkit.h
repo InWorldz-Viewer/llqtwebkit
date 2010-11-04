@@ -47,7 +47,9 @@ typedef unsigned long uint32_t;
 // This can be useful for times when we're waiting for a rebuild on one platform or another.
 // When you bump this number, please note what the changes were in a comment below the #define,
 // and keep the existing comments as history.
-#define LLQTWEBKIT_API_VERSION 2
+#define LLQTWEBKIT_API_VERSION 3
+// version 3:
+	// Added setIgnoreSSLCertErrors and getIgnoreSSLCertErrors
 // version 2:
 	// Changed the usage of the event parameters in onClickLinkHref and onClickLinkNoFollow events slightly.
 	// The clicked URI for both should now be retrieved with getEventUri() instead of getStringValue().
@@ -304,6 +306,11 @@ class LLQtWebKit
 		// NOTE that this will replace the default list of root certs (not add to it).
 		// If the file isn't found or doesn't contain any certs in the correct format, this call will have no effect and will return false.
 		bool setCAFile(const std::string &ca_file);
+		
+		// Set a flag causing all SSL cert errors to be ignored.  
+		// NOTE: this should only be used for testing, as it negates the security model of https.
+		void setIgnoreSSLCertErrors(bool ignore);
+		bool getIgnoreSSLCertErrors();
 		
 		// Copied from indra_constants.h.
 		// The key_code argument to keyboardEvent should either be one of these or a 7-bit ascii character.

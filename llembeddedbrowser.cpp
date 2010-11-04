@@ -49,6 +49,7 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
 #endif
     , mNetworkCookieJar(0)
     , mHostLanguage( "en" )
+	, mIgnoreSSLCertErrors(false)
 {
     if (!qApp)
     {
@@ -345,6 +346,16 @@ bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
 	}
 	
 	return result;
+}
+
+void LLEmbeddedBrowser::setIgnoreSSLCertErrors(bool ignore)
+{
+	d->mIgnoreSSLCertErrors = ignore;
+}
+
+bool LLEmbeddedBrowser::getIgnoreSSLCertErrors()
+{
+	return d->mIgnoreSSLCertErrors;
 }
 
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent, LLEmbeddedBrowser *browser)

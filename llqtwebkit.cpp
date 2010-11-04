@@ -637,6 +637,20 @@ bool LLQtWebKit::setCAFile(const std::string &ca_file)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+void LLQtWebKit::setIgnoreSSLCertErrors(bool ignore)
+{
+	LLEmbeddedBrowser::getInstance()->setIgnoreSSLCertErrors(ignore);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLQtWebKit::getIgnoreSSLCertErrors()
+{
+	return LLEmbeddedBrowser::getInstance()-> getIgnoreSSLCertErrors();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // utility method to get an LLEmbeddedBrowserWindow* from a window id (int)
 LLEmbeddedBrowserWindow* LLQtWebKit::getBrowserWindowFromWindowId(int browser_window_id)
 {

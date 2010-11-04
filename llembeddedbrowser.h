@@ -66,6 +66,8 @@ class LLEmbeddedBrowser
         void pump(int max_milliseconds);
 		void cookieChanged(const std::string &cookie, const std::string &url, bool dead);
 		bool setCAFile(const std::string &ca_file);
+		void setIgnoreSSLCertErrors(bool ignore);
+		bool getIgnoreSSLCertErrors();
 
     private:
         friend class LLEmbeddedBrowserWindow;
