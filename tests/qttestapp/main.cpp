@@ -88,9 +88,6 @@ WebPage::WebPage(QWidget *parent)
     // don't flip bitmap
     LLQtWebKit::getInstance()->flipWindow(mBrowserWindowId, false);
 
-    // open window.open() in same page
-    LLQtWebKit::getInstance()->setWindowOpenBehavior(mBrowserWindowId, LLQtWebKit::WOB_REDIRECT_TO_SELF);
-
     // go to the "home page"
     QString url = QUrl::fromLocalFile(QDir::currentPath() + "/../testgl/testpage.html").toString();
     LLQtWebKit::getInstance()->navigateTo(mBrowserWindowId, url.toStdString());
@@ -120,7 +117,7 @@ void WebPage::onCursorChanged(const EventType& event)
 
 void WebPage::onPageChanged(const EventType& event)
 {
-	Q_UNUSED(event);
+    Q_UNUSED(event);
     LLQtWebKit::getInstance()->grabBrowserWindow( mBrowserWindowId );
     //qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
     update();
@@ -128,13 +125,13 @@ void WebPage::onPageChanged(const EventType& event)
 
 void WebPage::onNavigateBegin(const EventType& event)
 {
-	Q_UNUSED(event);
+    Q_UNUSED(event);
     //qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
 }
 
 void WebPage::onNavigateComplete(const EventType& event)
 {
-	Q_UNUSED(event);
+    Q_UNUSED(event);
     //qDebug() << __FUNCTION__ << QString::fromStdString(event.getEventUri());
 }
 
@@ -229,7 +226,7 @@ void WebPage::keyPressEvent(QKeyEvent *event)
 
 void WebPage::keyReleaseEvent(QKeyEvent *event)
 {
-	Q_UNUSED(event);
+    Q_UNUSED(event);
     //LLQtWebKit::getInstance()->unicodeInput(mBrowserWindowId, event->text().at(0).unicode(),LLQtWebKit::KM_MODIFIER_NONE);
 }
 

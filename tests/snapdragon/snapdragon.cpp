@@ -128,7 +128,6 @@ class snapDragon :
 			mHostLanguage = "en-us";
 			mUserAgentStringAddition = "User Agent String Addition";
 			mExternalTargetName = "External Window";
-			mWindowOpenBehavior = LLQtWebKit::WOB_IGNORE;
 			mLastNavigatedURL = "";
 
 			// dirs we will use
@@ -145,7 +144,7 @@ class snapDragon :
 		bool init()
 		{
 			LLQtWebKit::getInstance()->init( mApplicationDir, mApplicationDir, mProfileDir, GetDesktopWindow() );
-			
+
 //			LLQtWebKit::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
 
 			LLQtWebKit::getInstance()->setHostLanguage( mHostLanguage );
@@ -162,10 +161,6 @@ class snapDragon :
 			LLQtWebKit::getInstance()->setBrowserAgentId( mUserAgentStringAddition );
 
 			LLQtWebKit::getInstance()->flipWindow( mBrowserId, mFlipWindow );
-
-			LLQtWebKit::getInstance()->setExternalTargetName( mBrowserId, mExternalTargetName );
-
-			LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserId, mWindowOpenBehavior );
 
 			dumpLLQtWebKitSettings();
 
@@ -195,7 +190,6 @@ class snapDragon :
 			std::cout << "LLQtWebKit user agent string addition is " << mUserAgentStringAddition << std::endl;
 			std::cout << "LLQtWebKit flip window setting is " << mFlipWindow << std::endl;
 			std::cout << "LLQtWebKit external target name is " << mExternalTargetName  << std::endl;
-			std::cout << "LLQtWebKit window open setting is " << mWindowOpenBehavior  << std::endl;
 			std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
 		}
 
@@ -207,13 +201,13 @@ class snapDragon :
 			LLQtWebKit::getInstance()->pump( 100 );
 
 			MSG msg;
-			while ( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) ) 
+			while ( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) )
 			{
 				GetMessage( &msg, NULL, 0, 0 );
 				TranslateMessage( &msg );
 				DispatchMessage( &msg );
 			};
-			
+
 			return true;
 		};
 
@@ -241,7 +235,7 @@ class snapDragon :
 		void pause( int seconds )
 		{
 			time_t start_time = time( 0 );
-			
+
 			while ( time( 0 ) < start_time + (time_t)seconds )
 			{
 				update();
@@ -389,27 +383,6 @@ class snapDragon :
 						LLQtWebKit::getInstance()->setBrowserAgentId( mUserAgentStringAddition );
 					}
 					else
-					if ( caseInsensitiveCompare( variable, "EXTERNALTARGETNAME" ) )
-					{
-						std::cout << "Executing [" << command << "] [" << variable << "] = [" << value << "]" << std::endl;
-						mExternalTargetName = value;
-						LLQtWebKit::getInstance()->setExternalTargetName( mBrowserId, mExternalTargetName );
-					}
-					else
-					if ( caseInsensitiveCompare( variable, "WINDOWOPENBEHAVIOR" ) )
-					{
-						std::cout << "Executing [" << command << "] [" << variable << "] = [" << value << "]" << std::endl;
-						if ( caseInsensitiveCompare( value, "IGNORE" ) )
-						{
-							mWindowOpenBehavior = LLQtWebKit::WOB_IGNORE;
-						}
-						else
-						{
-							mWindowOpenBehavior = LLQtWebKit::WOB_REDIRECT_TO_SELF;
-						};
-						LLQtWebKit::getInstance()->setWindowOpenBehavior( mBrowserId, mWindowOpenBehavior );
-					}
-					else
 					{
 						std::cout << "Unknown parameter for " << command << "] [" << variable << "] = [" << value << "]" << std::endl;
 					};
@@ -450,12 +423,12 @@ class snapDragon :
 			if ( caseInsensitiveCompare( command, "PAUSE" ) )
 			{
 				std::string value = tokens[ 1 ];
-			
+
 				std::cout << "Executing " << command << " " << value << std::endl;
-				
+
 				int seconds = stringToInt( value );
 
-				pause( seconds );				
+				pause( seconds );
 
 				return true;
 			}
@@ -693,9 +666,9 @@ class snapDragon :
 		void onNavigateComplete( const EventType& eventIn )
 		{
 			mIsDone = true;
-			
+
 			LLQtWebKit::getInstance()->grabBrowserWindow( mBrowserId );
-		
+
 			std::cout << "Event: end navigation to " << eventIn.getEventUri() << std::endl;
 		};
 
@@ -785,7 +758,6 @@ class snapDragon :
 		std::string mHostLanguage;
 		std::string mUserAgentStringAddition;
 		std::string mExternalTargetName;
-		LLQtWebKit::WindowOpenBehavior mWindowOpenBehavior;
 		std::vector< std::string > mScriptLines;
 };
 

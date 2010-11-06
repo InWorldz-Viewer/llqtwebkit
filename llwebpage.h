@@ -42,7 +42,6 @@ class LLWebPage : public QWebPage
 
         QGraphicsWebView *webView;
 
-        void setWindowOpenBehavior(LLQtWebKit::WindowOpenBehavior behavior);
         void setHostLanguage(const std::string& host_language);
 
     protected:
@@ -55,6 +54,8 @@ class LLWebPage : public QWebPage
         void urlChangedSlot(const QUrl& url);
         void loadStarted();
         void loadFinished(bool ok);
+	    void windowCloseRequested();
+		void geometryChangeRequested(const QRect& geom);
 
     private slots:
 	    void extendNavigatorObject();
@@ -68,7 +69,6 @@ class LLWebPage : public QWebPage
 
     private:
         QPoint currentPoint;
-	    LLQtWebKit::WindowOpenBehavior windowOpenBehavior;
 	    std::string mHostLanguage;
 };
 

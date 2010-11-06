@@ -43,106 +43,56 @@ class LLEmbeddedBrowserWindow;
 typedef unsigned long uint32_t;
 #endif
 
+// Use this to conditionalize code that depends on particular changes to the llqtwebkit API.
+// This can be useful for times when we're waiting for a rebuild on one platform or another.
+// When you bump this number, please note what the changes were in a comment below the #define,
+// and keep the existing comments as history.
+#define LLQTWEBKIT_API_VERSION 3
+// version 3:
+	// Added setIgnoreSSLCertErrors and getIgnoreSSLCertErrors
+// version 2:
+	// Changed the usage of the event parameters in onClickLinkHref and onClickLinkNoFollow events slightly.
+	// The clicked URI for both should now be retrieved with getEventUri() instead of getStringValue().
+	// The "target" string in onClickLinkHref is now retrieved with getStringValue() instead of getStringValue2().
+	// The contents of getStringValue2() in the onClickLinkHref event is now a unique ID for the window proxy the click targets.
+	// Removed the "link target type" concept, since it doesn't really belong here.
+	// Removed most of the construtor variants in LLEmbeddedBrowserWindowEvent and added setters in their place.
+	// Removed setCaretColor, since it's done nothing for some time now.
+	// Added LLEmbeddedBrowserWindowObserver::onWindowGeometryChangeRequested
+	// Added 
+// version 1:
+	// Added the LLQTWEBKIT_API_VERSION define.
+	// Added LLEmbeddedBrowserWindowObserver::onWindowCloseRequested
+
 ////////////////////////////////////////////////////////////////////////////////
 // data class that is passed with an event
 class LLEmbeddedBrowserWindowEvent
 {
 	public:
-		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri) :
-			mEventWindowId(window_id),
-			mEventUri(uri)
+		LLEmbeddedBrowserWindowEvent(int window_id) :
+			mEventWindowId(window_id)
 		{
 		};
 
-		// single int passed with the event - e.g. progress
-		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, int value) :
-			mEventWindowId(window_id),
-			mEventUri(uri),
-			mIntVal(value)
-		{
-		};
+		virtual ~LLEmbeddedBrowserWindowEvent() {}
 
-		// string passed with the event
-		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value) :
-			mEventWindowId(window_id),
-			mEventUri(uri),
-			mStringVal(value)
+		void setEventUri(const std::string &uri) { mEventUri = uri; }
+		void setIntValue(int val) { mIntVal = val; }
+		void setStringValue(const std::string &val) { mStringVal = val; }
+		void setStringValue2(const std::string &val) { mStringVal2 = val; }
+		void setRectValue(int x, int y, int width, int height)
 		{
-		};
-
-		// 2 strings passed with the event
-		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value, std::string value2) :
-			mEventWindowId(window_id),
-			mEventUri(uri),
-			mStringVal(value),
-			mStringVal2(value2)
-		{
-		};
-
-		// 2 strings plus an int passed with the event
-		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value, std::string value2, int link_type ) :
-			mEventWindowId(window_id),
-			mEventUri(uri),
-			mStringVal(value),
-			mStringVal2(value2),
-			mLinkType(link_type)
-		{
-		};
-
-		// string and an int passed with the event
-		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, std::string value, int value2) :
-			mEventWindowId(window_id),
-			mEventUri(uri),
-			mIntVal(value2),
-			mStringVal(value)
-		{
+			mXVal = x;
+			mYVal = y;
+			mWidthVal = width;
+			mHeightVal = height;
 		}
 
-		// 4 ints passed (semantically as a rectangle but could be anything - didn't want to make a RECT type structure)
-		LLEmbeddedBrowserWindowEvent(int window_id, std::string uri, int x, int y, int width, int height) :
-			mEventWindowId(window_id),
-			mEventUri(uri),
-			mXVal(x),
-			mYVal(y),
-			mWidthVal(width),
-			mHeightVal(height)
-		{
-		};
-
-		virtual ~LLEmbeddedBrowserWindowEvent()
-		{
-		};
-
-		int getEventWindowId() const
-		{
-			return mEventWindowId;
-		};
-
-		std::string getEventUri() const
-		{
-			return mEventUri;
-		};
-
-		int getIntValue() const
-		{
-			return mIntVal;
-		};
-
-		std::string getStringValue() const
-		{
-			return mStringVal;
-		};
-
-		std::string getStringValue2() const
-		{
-			return mStringVal2;
-		};
-
-		int getLinkType() const
-		{
-			return mLinkType;
-		};
-
+		int getEventWindowId() const { return mEventWindowId; }
+		std::string getEventUri() const	{ return mEventUri;	}
+		int getIntValue() const	{ return mIntVal; };
+		std::string getStringValue() const	{ return mStringVal; }
+		std::string getStringValue2() const	{ return mStringVal2; }
 		void getRectValue(int& x, int& y, int& width, int& height) const
 		{
 			x = mXVal;
@@ -157,7 +107,6 @@ class LLEmbeddedBrowserWindowEvent
 		int mIntVal;
 		std::string mStringVal;
 		std::string mStringVal2;
-		int mLinkType;
 		int mXVal;
 		int mYVal;
 		int mWidthVal;
@@ -190,6 +139,8 @@ class LLEmbeddedBrowserWindowObserver
 			// mEventUri will be the url that caused the cookie change
 			// mIntVal will be true if the cookie is dead (i.e. being deleted), false otherwise
 		virtual std::string onRequestFilePicker(const EventType& event);
+		virtual void onWindowCloseRequested(const EventType& event);
+		virtual void onWindowGeometryChangeRequested(const EventType& event);
 };
 #ifdef __GNUC__
 #pragma GCC visibility pop
@@ -292,12 +243,13 @@ class LLQtWebKit
 		void setHostLanguage(const std::string& host_language);
 
 		// browser window - creation/deletion, mutation etc.
-		int createBrowserWindow(int width, int height);
+		int createBrowserWindow(int width, int height, const std::string target = std::string(""));
+		void proxyWindowOpened(int browser_window_id, const std::string target, const std::string uuid);
+		void proxyWindowClosed(int browser_window_id, const std::string uuid);
 		bool destroyBrowserWindow(int browser_window_id);
 		bool setSize(int browser_window_id, int width, int height);
 		bool scrollByLines(int browser_window_id, int lines);
 		bool setBackgroundColor(int browser_window_id, const int red, const int green, const int blue);
-		bool setCaretColor(int browser_window_id, const int red, const int green, const int blue);
 		bool setEnabled(int browser_window_id, bool enabled);
 
 		// add/remove yourself as an observer on browser events - see LLEmbeddedBrowserWindowObserver declaration
@@ -311,14 +263,6 @@ class LLQtWebKit
 
 		// javascript access/control
 		std::string evaluateJavascript(int browser_window_id, const std::string script);
-
-		enum WindowOpenBehavior
-		{
-		    WOB_IGNORE,
-		    WOB_REDIRECT_TO_SELF,
-		    WOB_SIMULATE_BLANK_HREF_CLICK
-		};
-		void setWindowOpenBehavior(int browser_window_id, WindowOpenBehavior behavior);
 
 		// set/clear URL to redirect to when a 404 page is reached
 		bool set404RedirectUrl(int browser_window_in, std::string redirect_url);
@@ -352,12 +296,6 @@ class LLQtWebKit
 		void setNoFollowScheme(int browser_window_id, std::string scheme);
 		std::string getNoFollowScheme(int browser_window_id);
 
-		// accessor/mutator for names of HREF attributes for blank and external targets
-		void setExternalTargetName(int browser_window_id, std::string name);
-		std::string getExternalTargetName(int browser_window_id);
-		void setBlankTargetName(int browser_window_id, std::string name);
-		std::string getBlankTargetName(int browser_window_id);
-
 		void pump(int max_milliseconds);
 
 		void prependHistoryUrl(int browser_window_id, std::string url);
@@ -368,6 +306,11 @@ class LLQtWebKit
 		// NOTE that this will replace the default list of root certs (not add to it).
 		// If the file isn't found or doesn't contain any certs in the correct format, this call will have no effect and will return false.
 		bool setCAFile(const std::string &ca_file);
+		
+		// Set a flag causing all SSL cert errors to be ignored.  
+		// NOTE: this should only be used for testing, as it negates the security model of https.
+		void setIgnoreSSLCertErrors(bool ignore);
+		bool getIgnoreSSLCertErrors();
 		
 		// Copied from indra_constants.h.
 		// The key_code argument to keyboardEvent should either be one of these or a 7-bit ascii character.
@@ -430,16 +373,7 @@ class LLQtWebKit
 
 			KEY_NONE			= 0x00FF // not sent from keyboard.  For internal use only.
 		};
-		
-		enum linkTargetType
-		{
-			LTT_TARGET_UNKNOWN		= 0x00,
-			LTT_TARGET_NONE			= 0x01,
-			LTT_TARGET_BLANK		= 0x02,
-			LTT_TARGET_EXTERNAL		= 0x04,
-			LTT_TARGET_OTHER		= 0x08
-		};
-		
+				
 	private:
 		LLQtWebKit();
 		LLEmbeddedBrowserWindow* getBrowserWindowFromWindowId(int browser_window_id);

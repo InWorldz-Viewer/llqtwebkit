@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<llsd>
+<map>
+    <key>openssl</key>
+    <map>
+      <key>archives</key>
+      <map>
+        <key>darwin</key>
+        <map>
+          <key>md5sum</key>
+          <string>bcb9664fc922663e8ee2b4ecd6103796</string>
+          <key>url</key>
+          <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_openssl-autobuild/rev/204126/arch/Darwin/installer/openssl-0.9.8j-darwin-20100516.tar.bz2</string>
+        </map>
+        <key>linux</key>
+        <map>
+          <key>md5sum</key>
+          <string>2ccf47e8a1acf87a5d729999b69591d6</string>
+          <key>url</key>
+          <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_openssl-autobuild/rev/204126/arch/Linux/installer/openssl-0.9.8j-linux-20100428.tar.bz2</string>
+        </map>
+        <key>windows</key>
+        <map>
+          <key>md5sum</key>
+          <string>c847d54ac48f2da60d66aab97d350408</string>
+          <key>url</key>
+          <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_openssl-autobuild/rev/204126/arch/CYGWIN/installer/openssl-0.9.8j-windows-20100428.tar.bz2</string>
+        </map>
+      </map>
+      <key>copyright</key>
+      <string />
+      <key>description</key>
+      <string />
+      <key>license</key>
+      <string>openssl</string>
+      <key>licensefile</key>
+      <string>LICENSES/openssl.txt</string>
+    </map>
+    <key>zlib</key>
+    <map>
+      <key>archives</key>
+      <map>
+        <key>darwin</key>
+        <map>
+          <key>md5sum</key>
+          <string>4a8d551111f5c14979b8a9c454a0a28f</string>
+          <key>url</key>
+          <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/Darwin/installer/zlib-1.2.3-darwin-20100515.tar.bz2</string>
+        </map>
+        <key>linux</key>
+        <map>
+          <key>md5sum</key>
+          <string>7f7803995f1687f929bad7d937c3f0b9</string>
+          <key>url</key>
+          <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/Linux/installer/zlib-1.2.3-linux-20100428.tar.bz2</string>
+        </map>
+        <key>windows</key>
+        <map>
+          <key>md5sum</key>
+          <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/CYGWIN/installer/zlib-1.2.3-windows-20100515.tar.bz2</string>
+          <key>url</key>
+          <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/CYGWIN/installer/zlib-1.2.3-windows-20100515.tar.bz2</string>
+        </map>
+      </map>
+      <key>copyright</key>
+      <string>Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler</string>
+      <key>description</key>
+      <string>A Massively Spiffy Yet Delicately Unobtrusive Compression Library (Also Free - Not to Mention Unencumbered by Patents)</string>
+      <key>license</key>
+      <string>zlib</string>
+      <key>licensefile</key>
+      <string>LICENSES/zlib.txt</string>
+    </map>
+  </map>
+</llsd>

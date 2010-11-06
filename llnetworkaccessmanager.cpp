@@ -67,13 +67,9 @@ QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetwor
 
 void LLNetworkAccessManager::sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors)
 {
-	Q_UNUSED(errors);
-	//qDebug() << "SSL Errors: " << errors;
-	// HACK: Ignore SSL (cert errors)
-	//       Temporary workaround until we work out how to use local cert file
-	bool ignore_ssl_errors_hack_enabled = false;
+	Q_UNUSED( errors );
 
-	if ( ignore_ssl_errors_hack_enabled )
+	if ( mBrowser && mBrowser->mIgnoreSSLCertErrors )
 	{
 		reply->ignoreSslErrors();
 	};

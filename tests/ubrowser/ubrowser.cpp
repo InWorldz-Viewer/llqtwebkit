@@ -1,5 +1,5 @@
 /* Copyright (c) 2006-2010, Linden Research, Inc.
- * 
+ *
  * LLQtWebKit Source Code
  * The source code in this file ("Source Code") is provided by Linden Lab
  * to you under the terms of the GNU General Public License, version 2.0
@@ -7,17 +7,17 @@
  * ("Other License"), formally executed by you and Linden Lab.  Terms of
  * the GPL can be found in GPL-license.txt in this distribution, or online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/gplv2
- * 
+ *
  * There are special exceptions to the terms and conditions of the GPL as
  * it is applied to this Source Code. View the full text of the exception
  * in the file FLOSS-exception.txt in this software distribution, or
  * online at
  * http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/flossexception
- * 
+ *
  * By copying, modifying or distributing this software, you acknowledge
  * that you have read and understood your obligations described above,
  * and agree to abide by those obligations.
- * 
+ *
  * ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
  * WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
  * COMPLETENESS OR PERFORMANCE.
@@ -257,9 +257,6 @@ bool uBrowser::init( const char* arg0, int appWindowIn )
 
         // this is the default color - just here to show that it can be done
         LLQtWebKit::getInstance()->setBackgroundColor( mWindowId[ i ], 0xff, 0xff, 0xff );
-
-        // this is the default color - just here to show that it can be done
-        LLQtWebKit::getInstance()->setCaretColor( mWindowId[ i ], 0x00, 0x00, 0x00 );
 
         // don't flip bitmap
         LLQtWebKit::getInstance()->flipWindow( mWindowId[ i ], false );
@@ -665,13 +662,10 @@ void uBrowser::display()
                 if ( pixels )
                 {
                     glBindTexture( GL_TEXTURE_2D, mAppTexture[ i ] );
-                    int rowSpan = LLQtWebKit::getInstance()->getBrowserRowSpan( mWindowId[ i ] );
                     int depth = LLQtWebKit::getInstance()->getBrowserDepth( mWindowId[ i ] );
                     int mBrowserWindowWidth = LLQtWebKit::getInstance()->getBrowserWidth( mWindowId[ i ] );
                     glTexSubImage2D( GL_TEXTURE_2D, 0,
                         0, 0,
-                            // because sometimes the rowspan != width * bytes per pixel (mBrowserWindowWidth)
-                            //rowSpan / depth,
                             mBrowserWindowWidth,
                                 mBrowserWindowHeight,
                                     getGLTextureFormat(depth),
@@ -913,7 +907,7 @@ void uBrowser::windowPosToTexturePos( int winXIn, int winYIn, int& texXOut, int&
 static LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode()
 {
 	int result = LLQtWebKit::KM_MODIFIER_NONE;
-	
+
 	int modifiers = glutGetModifiers();
 
 	if ( GLUT_ACTIVE_SHIFT & modifiers )
@@ -924,13 +918,13 @@ static LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode()
 
 	if ( GLUT_ACTIVE_ALT & modifiers )
 		result |= LLQtWebKit::KM_MODIFIER_ALT;
-	
+
 	return (LLQtWebKit::EKeyboardModifier)result;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void uBrowser::keyboard( unsigned char keyIn, int xIn, int yIn )
+void uBrowser::keyboard( unsigned char keyIn, int, int )
 {
 	if(keyIn == 127)
 	{
@@ -949,7 +943,7 @@ void uBrowser::keyboard( unsigned char keyIn, int xIn, int yIn )
 	}
 
 	text[1] = 0;
-		
+
 	// send event to LLQtWebKit
 	LLQtWebKit::getInstance()->keyboardEvent(mCurWindowId, LLQtWebKit::KE_KEY_DOWN, keyIn, text, getLLQtWebKitKeyboardModifierCode() );
 	LLQtWebKit::getInstance()->keyboardEvent(mCurWindowId, LLQtWebKit::KE_KEY_UP, keyIn, text, getLLQtWebKitKeyboardModifierCode() );
@@ -960,7 +954,7 @@ void uBrowser::keyboard( unsigned char keyIn, int xIn, int yIn )
 void uBrowser::specialKeyboard( int keyIn, int xIn, int yIn )
 {
 	uint32_t key = LLQtWebKit::KEY_NONE;
-	
+
 	switch(keyIn)
 	{
 		case GLUT_KEY_F1:			key = LLQtWebKit::KEY_F1;		break;
@@ -984,11 +978,11 @@ void uBrowser::specialKeyboard( int keyIn, int xIn, int yIn )
 		case GLUT_KEY_HOME:			key = LLQtWebKit::KEY_HOME;		break;
 		case GLUT_KEY_END:			key = LLQtWebKit::KEY_END;		break;
 		case GLUT_KEY_INSERT:		key = LLQtWebKit::KEY_INSERT;	break;
-		
+
 		default:
 		break;
 	}
-	
+
 	if(key != LLQtWebKit::KEY_NONE)
 	{
 		keyboard(key, xIn, yIn);
@@ -1263,7 +1257,7 @@ void uBrowser::gluiCallback( int controlIdIn )
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void uBrowser::onNavigateBegin( const EventType& eventIn )
+void uBrowser::onNavigateBegin( const EventType& )
 {
     // could do something here like start a throbber :)
 }
@@ -1285,7 +1279,7 @@ void uBrowser::onClickLinkNoFollow( const EventType& eventIn )
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void uBrowser::onNavigateComplete( const EventType& eventIn )
+void uBrowser::onNavigateComplete( const EventType& )
 {
     // this test calls a Javascript function in the page contents
     //std::string myScript = "hello();";
@@ -1421,7 +1415,7 @@ SetFocus( FindWindow( NULL, (LPCWSTR)mName.c_str() ) );
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-GLenum uBrowser::getGLTextureFormat(int size)
+GLenum uBrowser::getGLTextureFormat( int )
 {
     return GL_RGBA;
 }

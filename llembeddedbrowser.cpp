@@ -49,6 +49,7 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
 #endif
     , mNetworkCookieJar(0)
     , mHostLanguage( "en" )
+	, mIgnoreSSLCertErrors(false)
 {
     if (!qApp)
     {
@@ -261,7 +262,7 @@ void LLEmbeddedBrowser::setHostLanguage( const std::string& host_language )
 	d->mHostLanguage = host_language;
 }
 
-LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height)
+LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int height, const std::string target)
 {
     LLEmbeddedBrowserWindow *newWin = new LLEmbeddedBrowserWindow();
     if (newWin)
@@ -271,6 +272,12 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow(int width, int h
         newWin->setHostLanguage(d->mHostLanguage);
         clearLastError();
         d->windows.append(newWin);
+		
+		if(!target.empty() && (target != "_blank"))
+		{
+			newWin->setTarget(target);
+		}
+		
         return newWin;
     }
     return 0;
@@ -339,6 +346,16 @@ bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
 	}
 	
 	return result;
+}
+
+void LLEmbeddedBrowser::setIgnoreSSLCertErrors(bool ignore)
+{
+	d->mIgnoreSSLCertErrors = ignore;
+}
+
+bool LLEmbeddedBrowser::getIgnoreSSLCertErrors()
+{
+	return d->mIgnoreSSLCertErrors;
 }
 
 LLNetworkCookieJar::LLNetworkCookieJar(QObject* parent, LLEmbeddedBrowser *browser)
