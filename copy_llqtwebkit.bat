@@ -1,9 +1,10 @@
 @rem ===== source/destination dirs that may change =====
-@set QT_SRC_DIR=C:\Work\qt\qt-4.7.0-rc1
-@set OPENSSL_SRC_DIR=c:\work\qt\openssl-0.9.8l
-@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit-qt-4.7
-@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit-qt-4.7\licenses
-@set SL_DEST_DIR="C:\Users\callum\Desktop"
+@set QT_SRC_DIR="%QTDIR%"
+@set OPENSSL_SRC_DIR="%QTDIR%\..\openssl-0.9.8l\"
+@set CURRENT_DIR=%CD%
+@set LLQTWEBKIT_SRC_DIR=%CURRENT_DIR%
+@set LLQTWEBKIT_LICENSE_DIR="%CURRENT_DIR%\licenses"
+@set SL_DEST_DIR="%USERPROFILE%\Desktop"
 
 @rem ===== default archive filename - DO NOT CHANGE THIS =====
 @set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.0-2010XXXX.tar.bz2"
@@ -26,7 +27,11 @@
 @echo This batch file copies the Qt, OpenSSL and LLQtWebKit files required 
 @echo by LLQtWebKit into a Second Life client compatible source tree.
 @echo.
-@echo LLQtWebKit tarball will be: %LLQTWEBKIT_LIB_FILENAME%
+@echo Qt files copied from %QT_SRC_DIR%
+@echo.
+@echo LLQtWebKit files copied from %LLQTWEBKIT_SRC_DIR% to %SL_DEST_DIR% 
+@echo.
+@echo LLQtWebKit tarball: %SL_DEST_DIR%\%LLQTWEBKIT_LIB_FILENAME%
 @echo.
 @echo ******* IMPORTANT ******* 
 @echo.
