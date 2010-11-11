@@ -230,7 +230,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/include//**",
+					"$(SRCROOT)/QTDIR/include",
+					"$(SRCROOT)/QTDIR/include/QtCore",
+					"$(SRCROOT)/QTDIR/include/QtGui",
+					"$(SRCROOT)/QTDIR/include/QtWebKit",
+					"$(SRCROOT)/QTDIR/include/QtNetwork",
+					"$(SRCROOT)/QTDIR/include/QtOpenGL",
 				);
 				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
@@ -284,7 +289,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/include//**",
+					"$(SRCROOT)/QTDIR/include",
+					"$(SRCROOT)/QTDIR/include/QtCore",
+					"$(SRCROOT)/QTDIR/include/QtGui",
+					"$(SRCROOT)/QTDIR/include/QtWebKit",
+					"$(SRCROOT)/QTDIR/include/QtNetwork",
+					"$(SRCROOT)/QTDIR/include/QtOpenGL",
 				);
 				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
@@ -369,7 +379,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/include//**",
+					"$(SRCROOT)/QTDIR/include",
+					"$(SRCROOT)/QTDIR/include/QtCore",
+					"$(SRCROOT)/QTDIR/include/QtGui",
+					"$(SRCROOT)/QTDIR/include/QtWebKit",
+					"$(SRCROOT)/QTDIR/include/QtNetwork",
+					"$(SRCROOT)/QTDIR/include/QtOpenGL",
 				);
 				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
