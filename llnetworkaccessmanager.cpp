@@ -37,6 +37,7 @@
 #include "llembeddedbrowser_p.h"
 
 #include "ui_passworddialog.h"
+#include "windows.h"
 
 #define VANILLA_QT 1
 
@@ -55,11 +56,15 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
 QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request,
                                          QIODevice *outgoingData)
 {
+
 	// Create a local copy of the request we can modify.
 	QNetworkRequest mutable_request(request);
 
 	// Set an Accept-Language header in the request, based on what the host has set through setHostLanguage.
 	mutable_request.setRawHeader(QByteArray("Accept-Language"), QByteArray(mBrowser->mHostLanguage.c_str()));
+
+	// this is undefine'd in 4.7.1 and leads to caching issues - setting it here explicitly
+	mutable_request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork);
 
 	// and pass this through to the parent implementation
 	return QNetworkAccessManager::createRequest(op, mutable_request, outgoingData);
@@ -90,6 +95,11 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
             }
         }
     }
+
+	// tests if navigation request resulted in a cache hit - useful for testing so leaving here for the moment.
+	//QVariant from_cache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute );
+    //QString url = QString(reply->url().toEncoded());
+    //qDebug() << url << " --- from cache?" << fromCache.toBool() << "\n";
 }
 
 void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
