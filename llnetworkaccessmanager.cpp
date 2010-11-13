@@ -37,7 +37,6 @@
 #include "llembeddedbrowser_p.h"
 
 #include "ui_passworddialog.h"
-#include "windows.h"
 
 #define VANILLA_QT 1
 
