@@ -7,10 +7,10 @@
 @set SL_DEST_DIR="%USERPROFILE%\Desktop"
 
 @rem ===== default archive filename - DO NOT CHANGE THIS =====
-@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.0-2010XXXX.tar.bz2"
+@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.1-2010XXXX.tar.bz2"
 
 @rem ===== archive filename - change this to match build date when you make a new version but do not check in =====
-@set LLQTWEBKIT_LIB_FILENAME=%DEFAULT_LLQTWEBKIT_LIB_FILENAME%
+@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.1-2010XXXX.tar.bz2"
 
 @rem ===== make sure the filename for the archive is updated =====
 @if %LLQTWEBKIT_LIB_FILENAME% NEQ %DEFAULT_LLQTWEBKIT_LIB_FILENAME% goto CONTINUE
