@@ -56,7 +56,7 @@
 #endif
 #endif
 
-//#define LLEMBEDDEDBROWSER_DEBUG
+//#define LLEMBEDDEDBROWSER_DEBUG 1
 
 #ifdef LLEMBEDDEDBROWSER_DEBUG
 #include <qdebug.h>
@@ -855,6 +855,42 @@ void LLEmbeddedBrowserWindow::setTarget(const std::string &target)
 	s << "window.open(\"\",\"" << target << "\");";
 	
 	evaluateJavascript(s.str());
+}
+
+std::string LLEmbeddedBrowserWindow::requestFilePicker()
+{
+	std::string filename_chosen;
+	
+	LLEmbeddedBrowserWindowEvent event(getWindowId());
+	event.setEventUri(getCurrentUri());
+	event.setStringValue("*.png;*.jpg");
+		
+	// If there's at least one observer registered, call it with the event.
+	LLEmbeddedBrowserWindowPrivate::Emitter::iterator i = d->mEventEmitter.begin();
+	if(i != d->mEventEmitter.end())
+	{
+		filename_chosen = (*i)->onRequestFilePicker(event);
+	}
+	
+	return filename_chosen;
+}
+
+bool LLEmbeddedBrowserWindow::authRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
+{
+	bool result = false;
+
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+	qDebug() << "LLEmbeddedBrowserWindow::authRequest: requesting auth for url " << QString::fromStdString(in_url) << ", realm " << QString::fromStdString(in_realm);
+#endif
+	
+	// If there's at least one observer registered, send it the auth request.
+	LLEmbeddedBrowserWindowPrivate::Emitter::iterator i = d->mEventEmitter.begin();
+	if(i != d->mEventEmitter.end())
+	{
+		result = (*i)->onAuthRequest(in_url, in_realm, out_username, out_password);
+	}
+	
+	return result;
 }
 
 LLGraphicsScene::LLGraphicsScene()

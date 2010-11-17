@@ -33,16 +33,6 @@
 
 class QGraphicsProxyWidget;
 
-class AuthDialog
-{
-public:
-    AuthDialog() : authenticationDialog(0), passwordDialog(0), proxyWidget(0) {}
-    QDialog *authenticationDialog;
-    Ui::PasswordDialog *passwordDialog;
-    QString realm;
-    QGraphicsProxyWidget *proxyWidget;
-};
-
 class LLEmbeddedBrowserPrivate;
 class LLNetworkAccessManager: public QNetworkAccessManager
 {
@@ -55,13 +45,11 @@ protected:
                                          QIODevice *outgoingData = 0);
 private slots:
     void finishLoading(QNetworkReply* reply);
-    void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+    void authenticationRequiredSlot(QNetworkReply *reply, QAuthenticator *authenticator);
 	void sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors);
 	
 private:
     LLEmbeddedBrowserPrivate* mBrowser;
-
-    QList<AuthDialog> authDialogs;
 
 };
 

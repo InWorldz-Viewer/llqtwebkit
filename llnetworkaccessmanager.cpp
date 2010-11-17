@@ -38,7 +38,6 @@
 
 #include "ui_passworddialog.h"
 
-#define VANILLA_QT 1
 
 LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser,QObject* parent)
     : QNetworkAccessManager(parent)
@@ -47,7 +46,7 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
     connect(this, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(finishLoading(QNetworkReply*)));
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
-            SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
+            this, SLOT(authenticationRequiredSlot(QNetworkReply*, QAuthenticator*)));
     connect(this, SIGNAL(sslErrors( QNetworkReply *, const QList<QSslError> &)),
             this, SLOT(sslErrorsSlot( QNetworkReply *, const QList<QSslError> &  )));
 }
@@ -101,57 +100,22 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
     //qDebug() << url << " --- from cache?" << fromCache.toBool() << "\n";
 }
 
-void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
-{
-#ifndef VANILLA_QT
-    authenticator->tryAgainLater = true;
-#endif
-    AuthDialog authDialog;
-    int i;
-    for (i = 0; i < authDialogs.count(); ++i) {
-        AuthDialog a = authDialogs[i];
-        if (a.realm == authenticator->realm()) {
-            authDialog = a;
-            break;
-        }
-    }
-
-    if (authDialog.realm.isEmpty()) {
-        authDialog.realm = authenticator->realm();
-        QGraphicsWebView *webView = mBrowser->findView(reply);
-        QGraphicsScene *scene = webView->scene();
-        authDialog.authenticationDialog = new QDialog;
-        authDialog.passwordDialog = new Ui::PasswordDialog;
-        authDialog.passwordDialog->setupUi(authDialog.authenticationDialog);
-        authDialog.passwordDialog->icon->setText(QString());
-        authDialog.passwordDialog->icon->setPixmap(qApp->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, 0).pixmap(32, 32));
-        authDialog.passwordDialog->userName->setFocus();
-
-        QString message = tr("<qt>Enter username and password for \"%1\" at %2</qt>")
-            .arg(Qt::escape(authenticator->realm()))
-            .arg(Qt::escape(reply->url().host()));
-        authDialog.passwordDialog->message->setText(message);
-
-        authDialog.proxyWidget = scene->addWidget(authDialog.authenticationDialog);
-        authDialog.proxyWidget->setWindowFlags(Qt::Window); // this makes the item a panel
-        authDialog.proxyWidget->setPanelModality(QGraphicsItem::SceneModal);
-        authDialog.proxyWidget->setPos((webView->boundingRect().width() - authDialog.authenticationDialog->sizeHint().width())/2,
-                                       (webView->boundingRect().height() - authDialog.authenticationDialog->sizeHint().height())/2);
-        authDialog.proxyWidget->setActive(true);
-
-        authDialog.authenticationDialog->show();
-        scene->setFocusItem(authDialog.proxyWidget);
-        authDialogs.append(authDialog);
-    } else if (authDialog.authenticationDialog->result() == QDialog::Accepted) {
-        authenticator->setUser(authDialog.passwordDialog->userName->text());
-        authenticator->setPassword(authDialog.passwordDialog->password->text());
-        authDialog.proxyWidget->deleteLater();
-        authDialog.proxyWidget = 0;
-        authDialog.authenticationDialog = 0;
-        authDialogs.removeAt(i);
-#ifndef VANILLA_QT
-        authenticator->tryAgainLater = false;
-#endif
-    }
+void LLNetworkAccessManager:: authenticationRequiredSlot(QNetworkReply *reply, QAuthenticator *authenticator)
+{	
+	std::string username;
+	std::string password;
+	std::string url = reply->url().toString().toStdString();
+	std::string realm = authenticator->realm().toStdString();
+	
+	if(mBrowser->authRequest(url, realm, username, password))
+	{
+		// Got credentials to try, attempt auth with them.
+		authenticator->setUser(QString::fromStdString(username));
+		authenticator->setPassword(QString::fromStdString(password));
+	}
+	else
+	{
+		// The user cancelled, don't attempt auth.
+	}
 }
 

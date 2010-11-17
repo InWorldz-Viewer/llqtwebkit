@@ -47,7 +47,9 @@ typedef unsigned long uint32_t;
 // This can be useful for times when we're waiting for a rebuild on one platform or another.
 // When you bump this number, please note what the changes were in a comment below the #define,
 // and keep the existing comments as history.
-#define LLQTWEBKIT_API_VERSION 3
+#define LLQTWEBKIT_API_VERSION 4
+// version 4:
+	// Added LLEmbeddedBrowserWindowObserver::onAuthRequest
 // version 3:
 	// Added setIgnoreSSLCertErrors and getIgnoreSSLCertErrors
 // version 2:
@@ -141,6 +143,9 @@ class LLEmbeddedBrowserWindowObserver
 		virtual std::string onRequestFilePicker(const EventType& event);
 		virtual void onWindowCloseRequested(const EventType& event);
 		virtual void onWindowGeometryChangeRequested(const EventType& event);
+		
+		// This should return true to attempt auth, or false to cancel.
+		virtual bool onAuthRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password);
 };
 #ifdef __GNUC__
 #pragma GCC visibility pop

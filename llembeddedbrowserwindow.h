@@ -130,7 +130,11 @@ public:
 	LLWebPageOpenShim *findShim(const std::string &uuid);
 	void deleteShim(LLWebPageOpenShim *shim);
 	void setTarget(const std::string &target);
-		
+	
+	std::string requestFilePicker();
+
+	bool authRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password);
+	
 private:
     friend class LLWebPage;
     friend class LLWebPageOpenShim;

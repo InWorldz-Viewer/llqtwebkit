@@ -583,7 +583,7 @@ class testGL :
 		// virtual
 		void onNavigateComplete( const EventType& eventIn )
 		{
-			std::cout << "Event: end navigation to " << eventIn.getEventUri() << " with response status of " << eventIn.getIntValue() << std::endl;
+			std::cout << "Event: end navigation to " << eventIn.getEventUri() << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -645,6 +645,15 @@ class testGL :
 		{
 			std::string fn = chooseFileName();
 			return fn;
+		}
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
+		bool onAuthRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
+		{
+			std::cout << "Auth request, url = " << in_url << ", realm = " << in_realm << std::endl;
+			
+			return false;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -846,7 +855,9 @@ int main( int argc, char* argv[] )
 		glutIdleFunc( glutIdle );
 
 		glutMainLoop();
-
+		
+		std::cout << "glutMainLoop returned" << std::endl;
+		
 		delete theApp;
 	};
 

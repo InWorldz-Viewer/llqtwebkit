@@ -65,6 +65,8 @@ public:
     LLEmbeddedBrowserPrivate();
     ~LLEmbeddedBrowserPrivate();
 
+	bool authRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password);
+
     int mErrorNum;
     void* mNativeWindowHandle;
     LLNetworkAccessManager *mNetworkAccessManager;

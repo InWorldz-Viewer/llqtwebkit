@@ -435,4 +435,26 @@ QGraphicsWebView *LLEmbeddedBrowserPrivate::findView(QNetworkReply *reply)
     return windows[0]->d->mView;
 }
 
+bool LLEmbeddedBrowserPrivate::authRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
+{
+	bool result = false;
+	
+//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "requesting auth for url " << QString::fromStdString(in_url) << ", realm " << QString::fromStdString(in_realm);
+//
+//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "window count is " << windows.count();
+
+	if(windows.count() > 1)
+	{
+		qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "WARNING: authRequest called with more than one window, using the first one";	
+	}
+	
+	LLEmbeddedBrowserWindow* window = windows.first();
+	
+	if(window)
+	{
+		result = window->authRequest(in_url, in_realm, out_username, out_password);
+	}
+	
+	return result;
+}
 
