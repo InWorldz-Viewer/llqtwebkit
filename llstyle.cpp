@@ -48,3 +48,32 @@ void LLStyle::drawComplexControl(ComplexControl control, const QStyleOptionCompl
 #endif
     QPlastiqueStyle::drawComplexControl(control, option, painter, widget);
 }
+
+void LLStyle::drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+	switch(element)
+	{
+	case CE_ScrollBarAddLine:
+	case CE_ScrollBarSubLine:
+		// This fixes the "scrollbar arrows pointing the wrong way" bug.
+        if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option))
+		{
+			// Make the State_Horizontal bit in the option's state field match its orientation field.
+			QStyleOptionSlider localOption(*scrollBar);
+            if(localOption.orientation == Qt::Horizontal)
+			{
+				localOption.state |= State_Horizontal;
+			}
+			else
+			{
+				localOption.state &= ~State_Horizontal;
+			}
+			QPlastiqueStyle::drawControl(element, &localOption, painter, widget);	
+			return;
+		}
+
+	break;
+	}
+	
+    QPlastiqueStyle::drawControl(element, option, painter, widget);	
+}
