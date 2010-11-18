@@ -64,11 +64,11 @@ Q_IMPORT_PLUGIN(qgif)
 #endif
 
 
-#ifdef _WINDOWS
 ////////////////////////////////////////////////////////////////////////////////
 //
 std::string chooseFileName()
 {
+#ifdef _WINDOWS
 	OPENFILENAMEA ofn ;
 	static char szFile[_MAX_PATH] ;
 
@@ -88,8 +88,10 @@ std::string chooseFileName()
 	GetOpenFileNameA( &ofn );
 
 	return ofn.lpstrFile;
-}
+#else
+	return "";
 #endif
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation of the test app - implemented as a class and derrives from
