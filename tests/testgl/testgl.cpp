@@ -820,15 +820,15 @@ void glutMouseButton( int buttonIn, int stateIn, int xIn, int yIn )
 //
 int main( int argc, char* argv[] )
 {
+	glutInit( &argc, argv );
+	glutInitDisplayMode( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB );
+
 	// implementation in a class so we can observer events
 	// means we need this painful GLUT <--> class shim...
 	theApp = new testGL;
 
 	if ( theApp )
 	{
-		glutInit( &argc, argv );
-		glutInitDisplayMode( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB );
-
 		glutInitWindowPosition( 80, 0 );
 		glutInitWindowSize( theApp->getAppWindowWidth(), theApp->getAppWindowHeight() );
 

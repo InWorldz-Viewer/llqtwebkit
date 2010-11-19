@@ -55,6 +55,7 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
     {
         static int argc = 0;
         static const char* argv[] = {""};
+		QApplication::setAttribute(Qt::AA_MacPluginApplication);
         mApplication = new QApplication(argc, (char **)argv);
         mApplication->addLibraryPath(qApp->applicationDirPath());
     }
