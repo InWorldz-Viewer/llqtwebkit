@@ -56,6 +56,8 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
         static int argc = 0;
         static const char* argv[] = {""};
 		QApplication::setAttribute(Qt::AA_MacPluginApplication);
+		QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+		
         mApplication = new QApplication(argc, (char **)argv);
         mApplication->addLibraryPath(qApp->applicationDirPath());
     }
@@ -68,6 +70,11 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
 	// It does, however, seem to fix at least one problem ( https://jira.secondlife.com/browse/MOZ-12 ).
 	extern void qt_release_app_proc_handler();
 	qt_release_app_proc_handler();
+
+	// This is defined and exported from qwidget_mac.mm.
+	// Calling it with false should prevent qwidget from bringing its process to the foreground, such as when bringing up a popup menu.
+	extern void qt_mac_set_raise_process(bool b);
+	qt_mac_set_raise_process(false);
 #endif
 }
 
