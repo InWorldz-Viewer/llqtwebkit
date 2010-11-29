@@ -652,7 +652,8 @@ class testGL :
 		bool onAuthRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
 		{
 			std::cout << "Auth request, url = " << in_url << ", realm = " << in_realm << std::endl;
-			
+			out_username = "";	// replace these temporarily with site username/password as required.
+			out_password = "";
 			return false;
 		}
 
