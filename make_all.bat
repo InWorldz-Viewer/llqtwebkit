@@ -112,3 +112,14 @@ qmake CONFIG-=debug CONFIG+=console
 nmake clean
 nmake
 popd
+
+@rem Hard to see if builds fail so look for what we need afterwards
+@if not exist debug\llqtwebkitd.lib echo ****** ERROR: Failed to build LLQtWebKit (debug) library
+@if not exist release\llqtwebkit.lib echo ****** ERROR: Failed to build LLQtWebKit (release) library
+
+@if not exist tests\gl\qttestapp.exe echo ****** ERROR: Failed to build QtTestApp test app
+@if not exist tests\gl\snapdragon.exe echo ****** ERROR: Failed to build SnapDragon test app
+@if not exist tests\gl\testgl.exe echo ****** ERROR: Failed to build testGL test app
+@if not exist tests\gl\ubrowser.exe echo ****** ERROR: Failed to build uBrowser test app
+
+@echo -- End of batch file --
