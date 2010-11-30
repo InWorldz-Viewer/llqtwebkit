@@ -111,16 +111,21 @@ class testGL :
 			mAppTexture( 0 ),
 			mBrowserWindowId( 0 ),
 			mAppWindowName( "testGL" ),
+			mCwd(),
 			mHomeUrl(),
 			mNeedsUpdate( true )						// flag to indicate if browser texture needs an update
 		{
 #ifdef _WINDOWS	// to remove warning on Windows
-            mHomeUrl = _getcwd(NULL, 1024);
+			mCwd = _getcwd(NULL, 1024);
+            mHomeUrl = mCwd;
 #else
-            mHomeUrl = getcwd(NULL, 1024);
+            mCwd = getcwd(NULL, 1024);
+            mHomeUrl = mCwd;
 #endif
             mHomeUrl.append("/testpage.html");
             std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
+            
+            std::cout << "Current working directory is " << mCwd << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -155,14 +160,13 @@ class testGL :
 						0, GL_RGB, GL_UNSIGNED_BYTE, 0 );
 
 			// create a single browser window and set things up.
-			mApplicationDir = argv0.substr( 0, argv0.find_last_of("\\/") );
-
-			mComponentDir = mApplicationDir;
-			mProfileDir = mApplicationDir + PATH_SEPARATOR + "testGL_profile";
+			mProfileDir = mCwd + PATH_SEPARATOR + "testGL_profile";
+			std::cout << "Profiles dir location is " << mProfileDir << std::endl;
 
 			mCookiePath = mProfileDir + PATH_SEPARATOR + "cookies.txt";
+			std::cout << "Cookies.txt file location is " << mCookiePath << std::endl;
 
-			LLQtWebKit::getInstance()->init( mApplicationDir, mComponentDir, mProfileDir, getNativeWindowHandle() );
+			LLQtWebKit::getInstance()->init( mApplicationDir, mApplicationDir, mProfileDir, getNativeWindowHandle() );
 
 			// set host language test (in reality, string will be language code passed into client)
 			// IMPORTANT: must be called before createBrowserWindow(...)
@@ -210,7 +214,10 @@ class testGL :
 
 			// Tell llqtwebkit to look for a CA file in the application directory.
 			// If it can't find or parse the file, this should have no effect.
-			LLQtWebKit::getInstance()->setCAFile(mApplicationDir + PATH_SEPARATOR + "CA.pem");
+			std::string ca_pem_file_loc = mCwd + PATH_SEPARATOR + "CA.pem";
+			
+			LLQtWebKit::getInstance()->setCAFile( ca_pem_file_loc.c_str() );
+			std::cout << "Expected CA.pem file location is " << ca_pem_file_loc << std::endl;
 
 			// go to the "home page" or URL passed in via command line
 			if ( ! argv1.empty() )
@@ -728,9 +735,9 @@ class testGL :
 		int mBrowserWindowId;
 		std::string mAppWindowName;
 		std::string mHomeUrl;
+		std::string mCwd;
 		bool mNeedsUpdate;
 		std::string mApplicationDir;
-		std::string mComponentDir;
 		std::string mProfileDir;
 		std::string mCookiePath;
 };
