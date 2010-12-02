@@ -45,6 +45,8 @@ LLWebPage::LLWebPage(QObject *parent)
 {
     connect(this, SIGNAL(loadProgress(int)),
             this, SLOT(loadProgressSlot(int)));
+    connect(this, SIGNAL(linkHovered(const QString &, const QString &, const QString &)),
+            this, SLOT(linkHoveredSlot(const QString &, const QString &, const QString &)));
     connect(this, SIGNAL(statusBarMessage(const QString &)),
             this, SLOT(statusBarMessageSlot(const QString &)));
     connect(mainFrame(), SIGNAL(urlChanged(const QUrl&)),
@@ -72,6 +74,17 @@ void LLWebPage::loadProgressSlot(int progress)
 	event.setEventUri(window->getCurrentUri());
 	event.setIntValue(progress);
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onUpdateProgress, event);
+}
+
+void LLWebPage::linkHoveredSlot(const QString &link, const QString &title, const QString &textContent)
+{
+    if (!window)
+        return;
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(link.toStdString());
+	event.setStringValue(title.toStdString());
+	event.setStringValue2(textContent.toStdString());
+    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLinkHovered, event);		
 }
 
 void LLWebPage::statusBarMessageSlot(const QString& text)

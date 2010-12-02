@@ -47,7 +47,9 @@ typedef unsigned long uint32_t;
 // This can be useful for times when we're waiting for a rebuild on one platform or another.
 // When you bump this number, please note what the changes were in a comment below the #define,
 // and keep the existing comments as history.
-#define LLQTWEBKIT_API_VERSION 4
+#define LLQTWEBKIT_API_VERSION 5
+// version 5:
+	// Added LLEmbeddedBrowserWindowObserver::onLinkHovered
 // version 4:
 	// Added LLEmbeddedBrowserWindowObserver::onAuthRequest
 // version 3:
@@ -146,6 +148,11 @@ class LLEmbeddedBrowserWindowObserver
 		
 		// This should return true to attempt auth, or false to cancel.
 		virtual bool onAuthRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password);
+
+		virtual void onLinkHovered(const EventType& event);	
+			// mEventURI will be the link
+			// mStringVal will be the title
+			// mStringVal2 will be the text
 };
 #ifdef __GNUC__
 #pragma GCC visibility pop

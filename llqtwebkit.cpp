@@ -723,10 +723,13 @@ void LLEmbeddedBrowserWindowObserver::onWindowGeometryChangeRequested(const Even
 {
 }
 
-#pragma warning( push )
-#pragma warning( disable : 4100 )	// disable warnings for these unreferenced variables
-bool LLEmbeddedBrowserWindowObserver::onAuthRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
+bool LLEmbeddedBrowserWindowObserver::onAuthRequest(const std::string &, const std::string &, std::string &, std::string &)
 {
 	return false;
 }
-#pragma warning( pop )
+
+void LLEmbeddedBrowserWindowObserver::onLinkHovered(const EventType&)
+{
+}
+
+

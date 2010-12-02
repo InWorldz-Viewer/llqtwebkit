@@ -666,6 +666,17 @@ class testGL :
 
 		////////////////////////////////////////////////////////////////////////////////
 		// virtual
+		void onLinkHovered( const EventType& eventIn )
+		{
+			std::cout 
+				<< "Link hovered, link = " << eventIn.getEventUri() 
+				<< ", title = " << eventIn.getStringValue() 
+				<< ", text = " << eventIn.getStringValue2() 
+			<< std::endl;
+		};
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
 		void onWindowCloseRequested( const EventType& )
 		{
 			std::cout << "Event: window close requested" << std::endl;
