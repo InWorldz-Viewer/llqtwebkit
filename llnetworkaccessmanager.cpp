@@ -63,6 +63,15 @@ QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetwor
 
 	// this is undefine'd in 4.7.1 and leads to caching issues - setting it here explicitly
 	mutable_request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork);
+	
+	if(op == GetOperation)
+	{
+		// GET requests should not have a Content-Type header, but it seems somebody somewhere is adding one.
+		// This removes it.
+		mutable_request.setRawHeader("Content-Type", QByteArray());
+	}
+	
+//	qDebug() << "headers for request:" << mutable_request.rawHeaderList();
 
 	// and pass this through to the parent implementation
 	return QNetworkAccessManager::createRequest(op, mutable_request, outgoingData);
