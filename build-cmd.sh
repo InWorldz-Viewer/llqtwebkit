@@ -5,10 +5,12 @@ set -x
 # make errors fatal
 set -e
 
-LLQTWEBKIT_VERSION="4.6-cookies"
-QT_REPOS="http://qt.gitorious.org/qt/lindenqt/archive-tarball/lindenqt"
-QT_ARCHIVE="qt-lindenqt.tar.gz"
-QT_SOURCE_DIR="qt-lindenqt"
+LLQTWEBKIT_VERSION="4.7.1"
+#QT_REPOS="http://qt.gitorious.org/qt/lindenqt/archive-tarball/lindenqt"
+QT_ARCHIVE="qt-everywhere-opensource-src-4.7.1.tar.gz"
+QT_URL="http://get.qt.nokia.com/qt/source/$QT_ARCHIVE"
+QT_MD5="6f88d96507c84e9fea5bf3a71ebeb6d7"
+QT_SOURCE_DIR="qt-everywhere-opensource-src-4.7.1"
 
 if [ -z "$AUTOBUILD" ] ; then 
     fail
@@ -39,16 +41,17 @@ fetch_git_as_tarball()
   curl -q -o "$archive" "$url"
 }
 
-[ -r "$QT_ARCHIVE" ] || fetch_git_as_tarball "$QT_ARCHIVE" "$QT_REPOS"
+fetch_archive "$QT_URL" "$QT_ARCHIVE" "$QT_MD5"
 extract "$QT_ARCHIVE"
 
 top="$(pwd)"
+build="$(pwd)/stage"
+packages="$build/packages"
+install="$build/install"
+
 case "$AUTOBUILD_PLATFORM" in
     "windows")
         load_vsvars
-        build="$(pwd)/build-vc80"
-        packages="$build/packages"
-        install="$build/install"
         QTDIR=$(cygpath -m "$(pwd)/$QT_SOURCE_DIR")
         pushd "$QT_SOURCE_DIR"
             chmod +x "./configure.exe"
@@ -107,9 +110,6 @@ case "$AUTOBUILD_PLATFORM" in
 
     ;;
     "darwin")
-        build="$(pwd)/build-darwin-i386"
-        packages="$build/packages"
-        install="$build/install"
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
             yes | head -n 1 | \
@@ -124,9 +124,6 @@ case "$AUTOBUILD_PLATFORM" in
         xcodebuild -project llqtwebkit.xcodeproj -target llqtwebkit -configuration Release
     ;;
     "linux")
-        build="$(pwd)/build-linux-i686-relwithdebinfo"
-        packages="$build/packages"
-        install="$build/install"
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
             echo "DISTCC_HOSTS=$DISTCC_HOSTS"
