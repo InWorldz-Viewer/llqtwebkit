@@ -70,9 +70,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>4a8d551111f5c14979b8a9c454a0a28f</string>
+              <string>6d09c25297390ca2a99942a5a01c96ab</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/Darwin/installer/zlib-1.2.3-darwin-20100515.tar.bz2</string>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/210074/arch/Darwin/installer/zlib-1.2.3-darwin-20100920.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -82,9 +82,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>7f7803995f1687f929bad7d937c3f0b9</string>
+              <string>f49a6b3ec4d951b6120b85164bdb1e74</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/Linux/installer/zlib-1.2.3-linux-20100428.tar.bz2</string>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/210074/arch/Linux/installer/zlib-1.2.3-linux-20100920.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -94,9 +94,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/CYGWIN/installer/zlib-1.2.3-windows-20100515.tar.bz2</string>
+              <string>2a610fd7d313610d84dea569be847340</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/204135/arch/CYGWIN/installer/zlib-1.2.3-windows-20100515.tar.bz2</string>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/210074/arch/CYGWIN/installer/zlib-1.2.3-windows-20100920.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
