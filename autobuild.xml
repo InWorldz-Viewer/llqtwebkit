@@ -30,9 +30,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>2ccf47e8a1acf87a5d729999b69591d6</string>
+              <string>cb1a84f34ee8ec50d028b17af42225c2</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_openssl-autobuild/rev/204126/arch/Linux/installer/openssl-0.9.8j-linux-20100428.tar.bz2</string>
+              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/openssl-0.9.8j-linux-20101206.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
