@@ -155,7 +155,6 @@
           <key>name</key>
           <string>darwin</string>
         </map>
-      </map>
         <key>linux</key>
         <map>
           <key>build_directory</key>
@@ -187,7 +186,6 @@
           <key>name</key>
           <string>linux</string>
         </map>
-      </map>
         <key>windows</key>
         <map>
           <key>build_directory</key>
