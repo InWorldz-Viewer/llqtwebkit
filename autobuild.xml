@@ -124,6 +124,38 @@
           <key>name</key>
           <string>common</string>
         </map>
+        <key>darwin</key>
+        <map>
+          <key>build_directory</key>
+          <string>stage</string>
+          <key>configurations</key>
+          <map>
+            <key>RelWithDebInfo</key>
+            <map>
+              <key>build</key>
+              <map>
+                <key>arguments</key>
+                <array>
+                  <string>-c</string>
+                  <string>./build-cmd.sh</string>
+                </array>
+                <key>command</key>
+                <string>sh</string>
+              </map>
+              <key>default</key>
+              <boolean>true</boolean>
+              <key>name</key>
+              <string>RelWithDebInfo</string>
+            </map>
+          </map>
+          <key>manifest</key>
+          <array>
+            <string>lib/release/lib*.a</string>
+          </array>
+          <key>name</key>
+          <string>darwin</string>
+        </map>
+      </map>
         <key>linux</key>
         <map>
           <key>build_directory</key>
@@ -156,6 +188,39 @@
           <string>linux</string>
         </map>
       </map>
+        <key>windows</key>
+        <map>
+          <key>build_directory</key>
+          <string>stage</string>
+          <key>configurations</key>
+          <map>
+            <key>RelWithDebInfo</key>
+            <map>
+              <key>build</key>
+              <map>
+                <key>arguments</key>
+                <array>
+                  <string>-c</string>
+                  <string>./build-cmd.sh</string>
+                </array>
+                <key>command</key>
+                <string>sh</string>
+              </map>
+              <key>default</key>
+              <boolean>true</boolean>
+              <key>name</key>
+              <string>RelWithDebInfo</string>
+            </map>
+          </map>
+          <key>manifest</key>
+          <array>
+            <string>lib/release/*.lib</string>
+            <string>lib/release/*.dll</string>
+          </array>
+          <key>name</key>
+          <string>windows</string>
+        </map>
+      </map>
       <key>source</key>
       <string>http://bitbucket.org/lindenlab/llqtwebkit</string>
       <key>source_directory</key>
@@ -163,7 +228,7 @@
       <key>source_type</key>
       <string>hg</string>
       <key>version</key>
-      <string>4.6-cookies</string>
+      <string>4.7.1</string>
     </map>
     <key>type</key>
     <string>autobuild</string>

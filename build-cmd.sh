@@ -5,7 +5,6 @@ set -x
 # make errors fatal
 set -e
 
-LLQTWEBKIT_VERSION="4.7.1"
 #QT_REPOS="http://qt.gitorious.org/qt/lindenqt/archive-tarball/lindenqt"
 QT_ARCHIVE="qt-everywhere-opensource-src-4.7.1.tar.gz"
 QT_URL="http://get.qt.nokia.com/qt/source/$QT_ARCHIVE"
@@ -134,7 +133,7 @@ case "$AUTOBUILD_PLATFORM" in
                 -v -platform linux-g++-32  -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon \
                 -openssl-linked -no-3dnow -no-sse -no-sse2 -no-gtkstyle -no-xinput -no-sm -buildkey LL$(date +%s) \
                 -no-sql-sqlite -no-scripttools -no-cups -no-dbus -qt-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb \
-                -xrender -svg -no-pch -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install/"
+                -xrender -svg -no-pch -webkit -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install/"
             make -j12
             export PATH="$PATH:$QTDIR/bin"
             make install
