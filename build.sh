@@ -7,11 +7,6 @@ if [ -z "$AUTOBUILD" ] ; then
     AUTOBUILD="$(which autobuild)"
 fi
 
-log_build="2>&1"
-if [ -n "$build_log" ] ; then
-	log_build="$log_build | tee -a $build_log"
-fi
-
 autobuild_installed ()
 {
     if [ -z "$AUTOBUILD" ] || [ ! -x "$AUTOBUILD" ] ; then
@@ -43,14 +38,15 @@ fi
 # load autbuild provided shell functions and variables
 eval "$("$AUTOBUILD" source_environment)"
 
-"$AUTOBUILD" install \
-	$log_build
-
-"$AUTOBUILD" build --use-cwd \
-	$log_build
-
-"$AUTOBUILD" package \
-	$log_build
+if [ -n "$build_log" ] ; then
+	"$AUTOBUILD" install 2>&1 | tee -a "$build_log"
+	"$AUTOBUILD" build --use-cwd 2>&1 | tee -a "$build_log"
+	"$AUTOBUILD" package 2>&1 | tee -a "$build_log"
+else
+	"$AUTOBUILD" install 2>&1
+	"$AUTOBUILD" build --use-cwd 2>&1
+	"$AUTOBUILD" package 2>&1
+fi
 
 INSTALLABLE_PACKAGE_FILENAME="$(ls -1 llqtwebkit-*-$AUTOBUILD_PLATFORM-$(date +%Y%m%d)*.tar.bz2)"
 upload_item installer "$INSTALLABLE_PACKAGE_FILENAME" binary/octet-stream
