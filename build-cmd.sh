@@ -55,7 +55,7 @@ case "$AUTOBUILD_PLATFORM" in
         pushd "$QT_SOURCE_DIR"
             chmod +x "./configure.exe"
             yes | head -n 1 | unix2dos | \
-                ./configure.exe -opensource -platform win32-msvc2005 -debug-and-release -no-qt3support -prefix "$QTDIR" -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -I "$(cygpath -m "$packages/include")" -L "$(cygpath -m "$packages/lib/release")"
+                ./configure.exe -opensource -platform win32-msvc2005 -fast -debug-and-release -no-qt3support -prefix "$QTDIR" -no-phonon -no-phonon-backend -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -nomake demos -nomake examples -I "$(cygpath -m "$packages/include")" -L "$(cygpath -m "$packages/lib/release")"
             export PATH="$(cygpath -u "$QTDIR")/bin:$PATH"
             export QMAKESPEC="win32-msvc2005"
 
