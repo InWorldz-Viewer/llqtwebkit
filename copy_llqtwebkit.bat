@@ -1,6 +1,6 @@
 @rem ===== source/destination dirs that may change =====
 @set QT_SRC_DIR="%QTDIR%"
-@set OPENSSL_SRC_DIR="%QTDIR%\..\openssl-0.9.8o\"
+@set OPENSSL_SRC_DIR="%QTDIR%\..\openssl-0.9.8q\"
 @set CURRENT_DIR=%CD%
 @set LLQTWEBKIT_SRC_DIR=%CURRENT_DIR%
 @set LLQTWEBKIT_LICENSE_DIR="%CURRENT_DIR%\licenses"
@@ -38,9 +38,10 @@
 @echo Check the following before proceeding:
 @echo.
 @echo   1/ You built release and debug versions of LLQtWebKit
-@echo   2/ Directory paths in the settings above are correct
-@echo   3/ LLQtWebKit library filename in the settings above is correct
-@echo   4/ You have a recent version of 'tar' and 'md5sum' in your path
+@echo   2/ You built a recent version of OpenSSL and the name matches the settings above
+@echo   3/ Directory paths in the settings above are correct
+@echo   4/ LLQtWebKit library filename in the settings above is correct
+@echo   5/ You have a recent version of 'tar' and 'md5sum' in your path
 @echo.
 @pause
 
