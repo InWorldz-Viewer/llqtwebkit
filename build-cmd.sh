@@ -59,7 +59,7 @@ case "$AUTOBUILD_PLATFORM" in
             export PATH="$(cygpath -u "$QTDIR")/bin:$PATH"
             export QMAKESPEC="win32-msvc2005"
 
-            nmake sub-src
+            nmake
         popd
 
         qmake "CONFIG-=debug" && nmake
