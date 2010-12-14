@@ -210,12 +210,13 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
         d->mPage->mainFrame()->render(&painter, clip);
 #endif
         painter.end();
-        if (!d->mFlipBitmap)
+        if (d->mFlipBitmap)
         {
             d->mImage = d->mImage.mirrored();
         }
+        d->mImage = d->mImage.rgbSwapped();
     }
-    d->mImage = QGLWidget::convertToGLFormat(d->mImage);
+//    d->mImage = QGLWidget::convertToGLFormat(d->mImage);
     d->mPageBuffer = d->mImage.bits();
     d->mDirty = false;
     return d->mPageBuffer;
