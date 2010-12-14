@@ -111,8 +111,10 @@ case "$AUTOBUILD_PLATFORM" in
     "darwin")
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
-            yes | head -n 1 | \
-                ./configure -opensource -platform macx-g++40 -no-framework -fast -no-qt3support -prefix "$install" -static -release -no-xmlpatterns -no-phonon -webkit -sdk /Developer/SDKs/MacOSX10.5.sdk/ -cocoa -nomake examples -nomake demos -nomake docs -nomake translations 
+            echo "yes" | \
+                ./configure -opensource -platform macx-g++40 -no-framework -fast -no-qt3support -prefix "$install" \
+                    -static -release -no-xmlpatterns -no-phonon -webkit -sdk /Developer/SDKs/MacOSX10.5.sdk/ -cocoa \
+                    -nomake examples -nomake demos -nomake docs -nomake translations 
             make -j4
             make -j4 -C "src/3rdparty/webkit/JavaScriptCore"
             export PATH="$PATH:$QTDIR/bin"
