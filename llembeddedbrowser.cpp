@@ -399,7 +399,7 @@ void LLNetworkCookieJar::onCookieSetFromURL(const QNetworkCookie &cookie, const 
 	{
 		QByteArray cookie_bytes = cookie.toRawForm(QNetworkCookie::Full);
 		std::string cookie_string(cookie_bytes.data(), cookie_bytes.size());
-		std::string url_string = QString(url.toEncoded()).toStdString();
+		std::string url_string = llToStdString(url);
 		mBrowser->cookieChanged(cookie_string, url_string, already_dead);
 	}
 }

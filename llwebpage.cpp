@@ -81,9 +81,9 @@ void LLWebPage::linkHoveredSlot(const QString &link, const QString &title, const
     if (!window)
         return;
     LLEmbeddedBrowserWindowEvent event(window->getWindowId());
-	event.setEventUri(link.toStdString());
-	event.setStringValue(title.toStdString());
-	event.setStringValue2(textContent.toStdString());
+	event.setEventUri(llToStdString(link));
+	event.setStringValue(llToStdString(title));
+	event.setStringValue2(llToStdString(textContent));
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLinkHovered, event);		
 }
 
@@ -91,7 +91,7 @@ void LLWebPage::statusBarMessageSlot(const QString& text)
 {
     if (!window)
         return;
-    window->d->mStatusText = text.toStdString();
+    window->d->mStatusText = llToStdString(text);
     LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 	event.setEventUri(window->getCurrentUri());
 	event.setStringValue(window->d->mStatusText);
@@ -102,7 +102,7 @@ void LLWebPage::titleChangedSlot(const QString& text)
 {
     if (!window)
         return;
-    window->d->mTitle = text.toStdString();
+    window->d->mTitle = llToStdString(text);
 	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 	event.setEventUri(window->getCurrentUri());
 	event.setStringValue(window->d->mTitle);
@@ -150,7 +150,7 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
             encodedUrl = encodedUrl.mid(window->d->mNoFollowScheme.length() + 1);
             encodedUrl = window->d->mNoFollowScheme + "://" + encodedUrl;
         }
-        std::string rawUri = encodedUrl.toStdString();
+        std::string rawUri = llToStdString(encodedUrl);
 		LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 		event.setEventUri(rawUri);
 		window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);

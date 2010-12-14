@@ -25,14 +25,6 @@
 
 #include <sstream>
 
-#include "llembeddedbrowserwindow.h"
-#include "llembeddedbrowserwindow_p.h"
-
-#include "llembeddedbrowser.h"
-#include "llembeddedbrowser_p.h"
-#include "llnetworkaccessmanager.h"
-
-
 #include <qaction.h>
 #include <qwebframe.h>
 #include <qwebhistory.h>
@@ -40,6 +32,13 @@
 #include <qevent.h>
 #include <qfile.h>
 #include <QGLWidget>
+
+#include "llembeddedbrowserwindow.h"
+#include "llembeddedbrowserwindow_p.h"
+
+#include "llembeddedbrowser.h"
+#include "llembeddedbrowser_p.h"
+#include "llnetworkaccessmanager.h"
 
 #ifdef STATIC_QT
 	#include <qplugin.h>
@@ -159,7 +158,7 @@ int LLEmbeddedBrowserWindow::getObserverNumber()
 // used by observers of this class to get the current URI
 std::string& LLEmbeddedBrowserWindow::getCurrentUri()
 {
-    d->mCurrentUri = QString(d->mPage->mainFrame()->url().toEncoded()).toStdString();
+    d->mCurrentUri = llToStdString(d->mPage->mainFrame()->url());
     return d->mCurrentUri;
 }
 
@@ -693,7 +692,7 @@ std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
 #endif
     QString q_script = QString::fromStdString(script);
     QString result = d->mPage->mainFrame()->evaluateJavaScript(q_script).toString();
-    return result.toStdString();
+    return llToStdString(result);
 }
 
 bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
@@ -752,7 +751,7 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
-    return d->mNoFollowScheme.toStdString();
+    return llToStdString(d->mNoFollowScheme);
 }
 
 void LLEmbeddedBrowserWindow::prependHistoryUrl(std::string url)
@@ -963,4 +962,20 @@ bool LLWebView::event(QEvent* event)
 		return true;
     }
     return QGraphicsWebView::event(event);
+}
+
+
+std::string llToStdString(const QString &s)
+{
+	return llToStdString(s.toUtf8());
+}
+
+std::string llToStdString(const QByteArray &bytes)
+{
+	return std::string(bytes.constData(), bytes.size());
+}
+
+std::string llToStdString(const QUrl &url)
+{
+	return llToStdString(url.toEncoded());
 }

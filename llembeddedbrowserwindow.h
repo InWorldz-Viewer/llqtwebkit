@@ -144,4 +144,20 @@ private:
     LLEmbeddedBrowserWindowPrivate *d;
 
 };
+
+
+// QString::toStdString converts to ascii, not utf8.  Define our own versions that do utf8.
+
+#ifdef QSTRING_H
+std::string llToStdString(const QString &s);
+#endif
+
+#ifdef QBYTEARRAY_H
+std::string llToStdString(const QByteArray &bytes);
+#endif
+
+#ifdef QURL_H
+std::string llToStdString(const QUrl &url);
+#endif
+
 #endif // LLEMBEDEDDBROWSERWINDOW_H

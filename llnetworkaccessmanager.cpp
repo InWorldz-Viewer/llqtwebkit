@@ -91,10 +91,9 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
 {
     if (reply->error() == QNetworkReply::ContentNotFoundError)
     {
-        QString url = QString(reply->url().toEncoded());
         if (mBrowser)
         {
-            std::string current_url = url.toStdString();
+            std::string current_url = llToStdString(reply->url());
             foreach (LLEmbeddedBrowserWindow *window, mBrowser->windows)
             {
                 if (window->getCurrentUri() == current_url)
@@ -113,8 +112,8 @@ void LLNetworkAccessManager:: authenticationRequiredSlot(QNetworkReply *reply, Q
 {	
 	std::string username;
 	std::string password;
-	std::string url = reply->url().toString().toStdString();
-	std::string realm = authenticator->realm().toStdString();
+	std::string url = llToStdString(reply->url());
+	std::string realm = llToStdString(authenticator->realm());
 	
 	if(mBrowser->authRequest(url, realm, username, password))
 	{

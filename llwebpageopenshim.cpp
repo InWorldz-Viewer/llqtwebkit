@@ -49,7 +49,7 @@ LLWebPageOpenShim::LLWebPageOpenShim(LLEmbeddedBrowserWindow *in_window, QObject
             this, SLOT(geometryChangeRequested(const QRect&)));
 	
 	// Create a unique UUID for this proxy
-	mUUID = QUuid::createUuid().toString().toStdString();
+	mUUID = llToStdString(QUuid::createUuid().toString());
 	
 	// mTarget starts out as the empty string, which is what we want.
 }
@@ -146,8 +146,8 @@ bool LLWebPageOpenShim::acceptNavigationRequest(QWebFrame* frame, const QNetwork
 	}
 
 	// The name of the incoming frame has been set to the link target that was used when opening this window.
-	std::string click_href = QString(request.url().toEncoded()).toStdString();
-	mTarget = frame->frameName().toStdString();
+	std::string click_href = llToStdString(request.url());
+	mTarget = llToStdString(frame->frameName());
 
 	// build event based on the data we have and emit it
 	LLEmbeddedBrowserWindowEvent event( window->getWindowId());
