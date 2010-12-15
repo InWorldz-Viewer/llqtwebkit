@@ -43,6 +43,8 @@ class LLWebPage : public QWebPage
         QGraphicsWebView *webView;
 
         void setHostLanguage(const std::string& host_language);
+		virtual bool supportsExtension(QWebPage::Extension extension) const;
+		virtual bool extension(Extension extension, const ExtensionOption* option, ExtensionReturn* output);
 
     protected:
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);

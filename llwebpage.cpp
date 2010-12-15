@@ -273,3 +273,21 @@ void LLWebPage::setHostLanguage(const std::string& host_language)
 {
 	mHostLanguage = host_language;
 }
+
+bool LLWebPage::supportsExtension(QWebPage::Extension extension) const
+{
+    if (extension == QWebPage::ErrorPageExtension)
+        return true;
+    return false;
+}
+
+bool LLWebPage::extension(Extension, const ExtensionOption* option, ExtensionReturn* output)
+{
+    const QWebPage::ErrorPageExtensionOption* info = static_cast<const QWebPage::ErrorPageExtensionOption*>(option);
+    QWebPage::ErrorPageExtensionReturn* errorPage = static_cast<QWebPage::ErrorPageExtensionReturn*>(output);
+
+    errorPage->content = QString("<html><head><title>Failed loading page</title></head><body bgcolor=\"#ffe0e0\" text=\"#000000\"><h3><tt>%1</tt></h3></body></html>")
+        .arg(info->errorString).toUtf8();
+
+    return true;
+}
