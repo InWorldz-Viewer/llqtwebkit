@@ -136,7 +136,8 @@ case "$AUTOBUILD_PLATFORM" in
                 -openssl-linked -no-3dnow -no-sse -no-sse2 -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 -no-gtkstyle \
 				-no-xinput -no-sm -buildkey LL$(date +%s) \
                 -no-sql-sqlite -no-scripttools -no-cups -no-dbus -qt-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb \
-                -xrender -svg -no-pch -webkit -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install/"
+                -xrender -svg -no-pch -webkit -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install/" \
+                -nomake examples -nomake demos -nomake docs -nomake translations -nomake tools
             make -j12
             export PATH="$PATH:$QTDIR/bin"
             make install
