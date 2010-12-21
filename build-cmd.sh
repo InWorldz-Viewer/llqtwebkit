@@ -129,9 +129,9 @@ case "$AUTOBUILD_PLATFORM" in
             export QTDIR="$(pwd)"
             echo "DISTCC_HOSTS=$DISTCC_HOSTS"
             yes | head -n 1 | \
-            MAKEFLAGS="-j12" CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector" \
-                             CC='distcc gcc-4.1' CFLAGS="-m32 -fno-stack-protector" \
-                ./configure \
+            export MAKEFLAGS="-j12" CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector" \
+                             CC='distcc gcc-4.1' CFLAGS="-m32 -fno-stack-protector" LD="g++-4.1" LDFLAGS="-m32"
+            ./configure \
                 -v -platform linux-g++-32  -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon \
                 -openssl-linked -no-3dnow -no-sse -no-sse2 -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 -no-gtkstyle \
 				-no-xinput -no-sm -buildkey LL$(date +%s) \
