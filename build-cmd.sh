@@ -126,11 +126,17 @@ case "$AUTOBUILD_PLATFORM" in
         xcodebuild -project llqtwebkit.xcodeproj -target llqtwebkit -configuration Release
     ;;
     "linux")
+        export MAKEFLAGS="-j12"
+        export CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector"
+        export CC='distcc gcc-4.1' CFLAGS="-m32 -fno-stack-protector"
+        export LD="g++-4.1" LDFLAGS="-m32"
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
             echo "DISTCC_HOSTS=$DISTCC_HOSTS"
-            export MAKEFLAGS="-j12" CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector" \
-                             CC='distcc gcc-4.1' CFLAGS="-m32 -fno-stack-protector" LD="g++-4.1" LDFLAGS="-m32"
+
+            # fix for build on lenny (not sure why the qt build isn't obeying the environment var
+			patch -p1 < "../000_qt_linux_mkspec_force_g++-4.1.patch"
+
             echo "yes" | \
             ./configure \
                 -v -platform linux-g++-32  -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon \
