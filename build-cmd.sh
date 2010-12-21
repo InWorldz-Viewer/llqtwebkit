@@ -44,9 +44,9 @@ fetch_archive "$QT_URL" "$QT_ARCHIVE" "$QT_MD5"
 extract "$QT_ARCHIVE"
 
 top="$(pwd)"
-build="$(pwd)/stage"
-packages="$build/packages"
-install="$build/install"
+stage="$(pwd)/stage"
+packages="$stage/packages"
+install="$stage"
 
 case "$AUTOBUILD_PLATFORM" in
     "windows")
@@ -136,7 +136,7 @@ case "$AUTOBUILD_PLATFORM" in
                 -openssl-linked -no-3dnow -no-sse -no-sse2 -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 -no-gtkstyle \
 				-no-xinput -no-sm -buildkey LL$(date +%s) \
                 -no-sql-sqlite -no-scripttools -no-cups -no-dbus -qt-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb \
-                -xrender -svg -no-pch -webkit -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install/" \
+                -xrender -svg -no-pch -webkit -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install" \
                 -nomake examples -nomake demos -nomake docs -nomake translations -nomake tools
             make -j12
             export PATH="$PATH:$QTDIR/bin"
@@ -145,18 +145,17 @@ case "$AUTOBUILD_PLATFORM" in
         qmake -platform linux-g++-32 CONFIG-=debug
         make -j12
 
-        mkdir -p "install/lib"
-        cp "libllqtwebkit.a" "install/lib"
+        mkdir -p "$install/lib"
+        cp "libllqtwebkit.a" "$install/lib"
 
-        mkdir -p "install/include"
-        cp "llqtwebkit.h" "install/include"
+        mkdir -p "$install/include"
+        cp "llqtwebkit.h" "$install/include"
 
-        cp "$install/lib"/libQt*.a "install/lib"
-        cp "$install/plugins/imageformats"/libq*.a "install/lib"
+        mv "$install/plugins/imageformats"/libq*.a "$install/lib"
     ;;
 esac
-mkdir -p "install/LICENSES"
-cp "LLQTWEBKIT_LICENSE.txt" "install/LICENSES/"
+mkdir -p "$install/LICENSES"
+cp "LLQTWEBKIT_LICENSE.txt" "$install/LICENSES/"
 
 pass
 

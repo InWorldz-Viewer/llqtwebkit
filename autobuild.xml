@@ -181,7 +181,7 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>lib/release/lib*.a</string>
+            <string>lib/lib*.a</string>
           </array>
           <key>name</key>
           <string>linux</string>
