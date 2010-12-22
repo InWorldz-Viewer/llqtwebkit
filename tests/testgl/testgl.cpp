@@ -216,7 +216,7 @@ class testGL :
 			// If it can't find or parse the file, this should have no effect.
 			std::string ca_pem_file_loc = mCwd + PATH_SEPARATOR + "CA.pem";
 			
-			LLQtWebKit::getInstance()->setCAFile( ca_pem_file_loc.c_str() );
+			LLQtWebKit::getInstance()->addCAFile( ca_pem_file_loc.c_str() );
 			std::cout << "Expected CA.pem file location is " << ca_pem_file_loc << std::endl;
 
 			// go to the "home page" or URL passed in via command line

@@ -356,6 +356,18 @@ bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
 	return result;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLEmbeddedBrowser::addCAFile(const std::string &ca_file)
+{
+	bool result = false;
+//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
+
+    result = QSslSocket::addDefaultCaCertificates(QString::fromStdString(ca_file));
+
+	return result;
+}
+
 void LLEmbeddedBrowser::setIgnoreSSLCertErrors(bool ignore)
 {
 	d->mIgnoreSSLCertErrors = ignore;

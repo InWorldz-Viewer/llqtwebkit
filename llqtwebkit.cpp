@@ -638,6 +638,13 @@ bool LLQtWebKit::setCAFile(const std::string &ca_file)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+bool LLQtWebKit::addCAFile(const std::string &ca_file)
+{
+	return LLEmbeddedBrowser::getInstance()->addCAFile(ca_file);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
 void LLQtWebKit::setIgnoreSSLCertErrors(bool ignore)
 {
 	LLEmbeddedBrowser::getInstance()->setIgnoreSSLCertErrors(ignore);

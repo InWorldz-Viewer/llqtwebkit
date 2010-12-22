@@ -32,6 +32,7 @@
 #include <qgraphicsscene.h>
 #include <qgraphicsproxywidget.h>
 #include <qdebug.h>
+#include <qsslconfiguration.h>
 
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowser_p.h"
@@ -80,6 +81,20 @@ QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetwor
 void LLNetworkAccessManager::sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors)
 {
 	Q_UNUSED( errors );
+
+	// Enabling this code can help diagnose certificate verification issues.
+#if 0
+    qDebug() << "LLNetworkAccessManager" << __FUNCTION__ << "errors: " << errors 
+		<< ", peer certificate chain: ";
+	
+	QSslCertificate cert;
+	foreach(cert, reply->sslConfiguration().peerCertificateChain())
+	{
+		qDebug() << "    cert: " << cert 
+			<< ", issuer = " << cert.issuerInfo(QSslCertificate::CommonName) 
+			<< ", subject = " << cert.subjectInfo(QSslCertificate::CommonName);
+	}
+#endif
 
 	if ( mBrowser && mBrowser->mIgnoreSSLCertErrors )
 	{
