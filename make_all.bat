@@ -3,11 +3,11 @@
 @echo versions of LLQtWebKit and then makes release versions of 
 @echo testGL, uBrowser, QtTestApp and Snap Dragon.
 @echo.
-@echo To make the Win32GL test, run the copy_files.bat batch file after
+@echo To make the Win32GL test, run the copy_llqtwebkit.bat batch file after
 @echo running this one and load the MSVC solution file and build as normal.
 @echo.
-@echo This probably won't work unless you run it from a Qt command prompt
-@echo since it needs a path to the Qt build directory.
+@echo This probably won't work unless you run it from a Qt 4.7.x command
+@echo prompt since it needs a path to the Qt 4.7.x build directory.
 @echo.
 @echo About to delete intermediate files - edit this file if that makes you sad.
 @echo.
@@ -70,12 +70,14 @@ set GL_COMPONENT_DIR=C:\Work\qt\GL
 xcopy %GL_COMPONENT_DIR%\*.* tests\GL\ /y
 
 @rem clean and make a debug version of LLQtWebKit
-qmake CONFIG+=debug
+@rem No longer patching Qt as of v4.7.0 so switch off code that referenced changes
+qmake CONFIG+=debug DEFINES+=VANILLA_QT
 nmake clean
 nmake
 
 @rem clean and make a release version of LLQtWebKit
-qmake CONFIG-=debug
+@rem No longer patching Qt as of v4.7.0 so switch off code that referenced changes
+qmake CONFIG-=debug DEFINES+=VANILLA_QT
 nmake clean
 nmake
 
@@ -111,5 +113,13 @@ nmake clean
 nmake
 popd
 
-@rem switch to root of tests directory - some need to be run from their own dir
-cd tests
+@rem Hard to see if builds fail so look for what we need afterwards
+@if not exist debug\llqtwebkitd.lib echo ****** ERROR: Failed to build LLQtWebKit (debug) library
+@if not exist release\llqtwebkit.lib echo ****** ERROR: Failed to build LLQtWebKit (release) library
+
+@if not exist tests\gl\qttestapp.exe echo ****** ERROR: Failed to build QtTestApp test app
+@if not exist tests\gl\snapdragon.exe echo ****** ERROR: Failed to build SnapDragon test app
+@if not exist tests\gl\testgl.exe echo ****** ERROR: Failed to build testGL test app
+@if not exist tests\gl\ubrowser.exe echo ****** ERROR: Failed to build uBrowser test app
+
+@echo -- End of batch file --

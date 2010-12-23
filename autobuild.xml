@@ -1,52 +1,236 @@
 <?xml version="1.0" ?>
 <llsd>
 <map>
-    <key>llqtwebkit</key>
+    <key>installables</key>
     <map>
-      <key>build</key>
+      <key>openssl</key>
       <map>
-        <key>common</key>
+        <key>license</key>
+        <string>openssl</string>
+        <key>license_file</key>
+        <string>LICENSES/openssl.txt</string>
+        <key>name</key>
+        <string>openssl</string>
+        <key>platforms</key>
         <map>
-          <key>command</key>
-          <string>sh -c ./build-cmd.sh</string>
+          <key>darwin</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>bcb9664fc922663e8ee2b4ecd6103796</string>
+              <key>url</key>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_openssl-autobuild/rev/204126/arch/Darwin/installer/openssl-0.9.8j-darwin-20100516.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>darwin</string>
+          </map>
+          <key>linux</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>cb1a84f34ee8ec50d028b17af42225c2</string>
+              <key>url</key>
+              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/openssl-0.9.8j-linux-20101206.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>linux</string>
+          </map>
+          <key>windows</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>c847d54ac48f2da60d66aab97d350408</string>
+              <key>url</key>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_openssl-autobuild/rev/204126/arch/CYGWIN/installer/openssl-0.9.8j-windows-20100428.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>windows</string>
+          </map>
         </map>
       </map>
-      <key>builddir</key>
-      <string>install</string>
+      <key>zlib</key>
+      <map>
+        <key>copyright</key>
+        <string>Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler</string>
+        <key>description</key>
+        <string>A Massively Spiffy Yet Delicately Unobtrusive Compression Library (Also Free - Not to Mention Unencumbered by Patents)</string>
+        <key>license</key>
+        <string>zlib</string>
+        <key>license_file</key>
+        <string>LICENSES/zlib.txt</string>
+        <key>name</key>
+        <string>zlib</string>
+        <key>platforms</key>
+        <map>
+          <key>darwin</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>6d09c25297390ca2a99942a5a01c96ab</string>
+              <key>url</key>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/210074/arch/Darwin/installer/zlib-1.2.3-darwin-20100920.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>darwin</string>
+          </map>
+          <key>linux</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>f49a6b3ec4d951b6120b85164bdb1e74</string>
+              <key>url</key>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/210074/arch/Linux/installer/zlib-1.2.3-linux-20100920.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>linux</string>
+          </map>
+          <key>windows</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>2a610fd7d313610d84dea569be847340</string>
+              <key>url</key>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_zlib-autobuild/rev/210074/arch/CYGWIN/installer/zlib-1.2.3-windows-20100920.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>windows</string>
+          </map>
+        </map>
+      </map>
+    </map>
+    <key>package_description</key>
+    <map>
       <key>license</key>
       <string>lgpl</string>
-      <key>licensefile</key>
+      <key>license_file</key>
       <string>LICENSES/LLQTWEBKIT_LICENSE.txt</string>
-      <key>manifest</key>
+      <key>name</key>
+      <string>llqtwebkit</string>
+      <key>platforms</key>
       <map>
         <key>common</key>
         <map>
-          <key>files</key>
+          <key>manifest</key>
           <array>
             <string>LICENSES/LLQTWEBKIT_LICENSE.txt</string>
             <string>include/llqtwebkit.h</string>
           </array>
+          <key>name</key>
+          <string>common</string>
         </map>
-        <key>linux</key>
+        <key>darwin</key>
         <map>
-          <key>files</key>
+          <key>build_directory</key>
+          <string>stage</string>
+          <key>configurations</key>
+          <map>
+            <key>RelWithDebInfo</key>
+            <map>
+              <key>build</key>
+              <map>
+                <key>arguments</key>
+                <array>
+                  <string>-c</string>
+                  <string>./build-cmd.sh</string>
+                </array>
+                <key>command</key>
+                <string>sh</string>
+              </map>
+              <key>default</key>
+              <boolean>true</boolean>
+              <key>name</key>
+              <string>RelWithDebInfo</string>
+            </map>
+          </map>
+          <key>manifest</key>
           <array>
             <string>lib/release/lib*.a</string>
           </array>
+          <key>name</key>
+          <string>darwin</string>
+        </map>
+        <key>linux</key>
+        <map>
+          <key>build_directory</key>
+          <string>stage</string>
+          <key>configurations</key>
+          <map>
+            <key>RelWithDebInfo</key>
+            <map>
+              <key>build</key>
+              <map>
+                <key>arguments</key>
+                <array>
+                  <string>-c</string>
+                  <string>./build-cmd.sh</string>
+                </array>
+                <key>command</key>
+                <string>sh</string>
+              </map>
+              <key>default</key>
+              <boolean>true</boolean>
+              <key>name</key>
+              <string>RelWithDebInfo</string>
+            </map>
+          </map>
+          <key>manifest</key>
+          <array>
+            <string>lib/lib*.a</string>
+          </array>
+          <key>name</key>
+          <string>linux</string>
+        </map>
+        <key>windows</key>
+        <map>
+          <key>build_directory</key>
+          <string>stage</string>
+          <key>configurations</key>
+          <map>
+            <key>RelWithDebInfo</key>
+            <map>
+              <key>build</key>
+              <map>
+                <key>arguments</key>
+                <array>
+                  <string>-c</string>
+                  <string>./build-cmd.sh</string>
+                </array>
+                <key>command</key>
+                <string>sh</string>
+              </map>
+              <key>default</key>
+              <boolean>true</boolean>
+              <key>name</key>
+              <string>RelWithDebInfo</string>
+            </map>
+          </map>
+          <key>manifest</key>
+          <array>
+            <string>lib/release/*.lib</string>
+            <string>lib/release/*.dll</string>
+          </array>
+          <key>name</key>
+          <string>windows</string>
         </map>
       </map>
       <key>source</key>
       <string>http://bitbucket.org/lindenlab/llqtwebkit</string>
-      <key>sourcedir</key>
+      <key>source_directory</key>
       <string>.</string>
-      <key>sourcetype</key>
+      <key>source_type</key>
       <string>hg</string>
-      <key>uploadtoS3</key>
-      <integer>1</integer>
-      <key>uploadtos3</key>
-      <boolean>true</boolean>
       <key>version</key>
-      <string>4.6-cookies</string>
+      <string>4.7.1</string>
     </map>
+    <key>type</key>
+    <string>autobuild</string>
+    <key>version</key>
+    <string>1.2</string>
   </map>
 </llsd>

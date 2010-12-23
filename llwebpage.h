@@ -43,12 +43,15 @@ class LLWebPage : public QWebPage
         QGraphicsWebView *webView;
 
         void setHostLanguage(const std::string& host_language);
+		virtual bool supportsExtension(QWebPage::Extension extension) const;
+		virtual bool extension(Extension extension, const ExtensionOption* option, ExtensionReturn* output);
 
     protected:
         bool acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type);
 
     public slots:
         void loadProgressSlot(int progress);
+	    void linkHoveredSlot(const QString &link, const QString &title, const QString &textContent);
         void statusBarMessageSlot(const QString &);
         void titleChangedSlot(const QString &);
         void urlChangedSlot(const QUrl& url);

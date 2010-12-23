@@ -638,6 +638,13 @@ bool LLQtWebKit::setCAFile(const std::string &ca_file)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+bool LLQtWebKit::addCAFile(const std::string &ca_file)
+{
+	return LLEmbeddedBrowser::getInstance()->addCAFile(ca_file);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
 void LLQtWebKit::setIgnoreSSLCertErrors(bool ignore)
 {
 	LLEmbeddedBrowser::getInstance()->setIgnoreSSLCertErrors(ignore);
@@ -720,6 +727,15 @@ void LLEmbeddedBrowserWindowObserver::onWindowCloseRequested(const EventType&)
 }
 
 void LLEmbeddedBrowserWindowObserver::onWindowGeometryChangeRequested(const EventType&)
+{
+}
+
+bool LLEmbeddedBrowserWindowObserver::onAuthRequest(const std::string &, const std::string &, std::string &, std::string &)
+{
+	return false;
+}
+
+void LLEmbeddedBrowserWindowObserver::onLinkHovered(const EventType&)
 {
 }
 

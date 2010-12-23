@@ -32,11 +32,13 @@
 #include <qgraphicsscene.h>
 #include <qgraphicsproxywidget.h>
 #include <qdebug.h>
+#include <qsslconfiguration.h>
 
 #include "llembeddedbrowserwindow.h"
 #include "llembeddedbrowser_p.h"
 
 #include "ui_passworddialog.h"
+
 
 LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser,QObject* parent)
     : QNetworkAccessManager(parent)
@@ -45,7 +47,7 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
     connect(this, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(finishLoading(QNetworkReply*)));
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
-            SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
+            this, SLOT(authenticationRequiredSlot(QNetworkReply*, QAuthenticator*)));
     connect(this, SIGNAL(sslErrors( QNetworkReply *, const QList<QSslError> &)),
             this, SLOT(sslErrorsSlot( QNetworkReply *, const QList<QSslError> &  )));
 }
@@ -53,11 +55,24 @@ LLNetworkAccessManager::LLNetworkAccessManager(LLEmbeddedBrowserPrivate* browser
 QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request,
                                          QIODevice *outgoingData)
 {
+
 	// Create a local copy of the request we can modify.
 	QNetworkRequest mutable_request(request);
 
 	// Set an Accept-Language header in the request, based on what the host has set through setHostLanguage.
 	mutable_request.setRawHeader(QByteArray("Accept-Language"), QByteArray(mBrowser->mHostLanguage.c_str()));
+
+	// this is undefine'd in 4.7.1 and leads to caching issues - setting it here explicitly
+	mutable_request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork);
+	
+	if(op == GetOperation)
+	{
+		// GET requests should not have a Content-Type header, but it seems somebody somewhere is adding one.
+		// This removes it.
+		mutable_request.setRawHeader("Content-Type", QByteArray());
+	}
+	
+//	qDebug() << "headers for request:" << mutable_request.rawHeaderList();
 
 	// and pass this through to the parent implementation
 	return QNetworkAccessManager::createRequest(op, mutable_request, outgoingData);
@@ -66,6 +81,20 @@ QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetwor
 void LLNetworkAccessManager::sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors)
 {
 	Q_UNUSED( errors );
+
+	// Enabling this code can help diagnose certificate verification issues.
+#if 0
+    qDebug() << "LLNetworkAccessManager" << __FUNCTION__ << "errors: " << errors 
+		<< ", peer certificate chain: ";
+	
+	QSslCertificate cert;
+	foreach(cert, reply->sslConfiguration().peerCertificateChain())
+	{
+		qDebug() << "    cert: " << cert 
+			<< ", issuer = " << cert.issuerInfo(QSslCertificate::CommonName) 
+			<< ", subject = " << cert.subjectInfo(QSslCertificate::CommonName);
+	}
+#endif
 
 	if ( mBrowser && mBrowser->mIgnoreSSLCertErrors )
 	{
@@ -77,10 +106,9 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
 {
     if (reply->error() == QNetworkReply::ContentNotFoundError)
     {
-        QString url = QString(reply->url().toEncoded());
         if (mBrowser)
         {
-            std::string current_url = url.toStdString();
+            std::string current_url = llToStdString(reply->url());
             foreach (LLEmbeddedBrowserWindow *window, mBrowser->windows)
             {
                 if (window->getCurrentUri() == current_url)
@@ -88,59 +116,29 @@ void LLNetworkAccessManager::finishLoading(QNetworkReply* reply)
             }
         }
     }
+
+	// tests if navigation request resulted in a cache hit - useful for testing so leaving here for the moment.
+	//QVariant from_cache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute );
+    //QString url = QString(reply->url().toEncoded());
+    //qDebug() << url << " --- from cache?" << fromCache.toBool() << "\n";
 }
 
-void LLNetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
-{
-#ifndef VANILLA_QT
-    authenticator->tryAgainLater = true;
-#endif
-    AuthDialog authDialog;
-    int i;
-    for (i = 0; i < authDialogs.count(); ++i) {
-        AuthDialog a = authDialogs[i];
-        if (a.realm == authenticator->realm()) {
-            authDialog = a;
-            break;
-        }
-    }
-
-    if (authDialog.realm.isEmpty()) {
-        authDialog.realm = authenticator->realm();
-        QGraphicsWebView *webView = mBrowser->findView(reply);
-        QGraphicsScene *scene = webView->scene();
-        authDialog.authenticationDialog = new QDialog;
-        authDialog.passwordDialog = new Ui::PasswordDialog;
-        authDialog.passwordDialog->setupUi(authDialog.authenticationDialog);
-        authDialog.passwordDialog->icon->setText(QString());
-        authDialog.passwordDialog->icon->setPixmap(qApp->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, 0).pixmap(32, 32));
-        authDialog.passwordDialog->userName->setFocus();
-
-        QString message = tr("<qt>Enter username and password for \"%1\" at %2</qt>")
-            .arg(Qt::escape(authenticator->realm()))
-            .arg(Qt::escape(reply->url().host()));
-        authDialog.passwordDialog->message->setText(message);
-
-        authDialog.proxyWidget = scene->addWidget(authDialog.authenticationDialog);
-        authDialog.proxyWidget->setWindowFlags(Qt::Window); // this makes the item a panel
-        authDialog.proxyWidget->setPanelModality(QGraphicsItem::SceneModal);
-        authDialog.proxyWidget->setPos((webView->boundingRect().width() - authDialog.authenticationDialog->sizeHint().width())/2,
-                                       (webView->boundingRect().height() - authDialog.authenticationDialog->sizeHint().height())/2);
-        authDialog.proxyWidget->setActive(true);
-
-        authDialog.authenticationDialog->show();
-        scene->setFocusItem(authDialog.proxyWidget);
-        authDialogs.append(authDialog);
-    } else if (authDialog.authenticationDialog->result() == QDialog::Accepted) {
-        authenticator->setUser(authDialog.passwordDialog->userName->text());
-        authenticator->setPassword(authDialog.passwordDialog->password->text());
-        authDialog.proxyWidget->deleteLater();
-        authDialog.proxyWidget = 0;
-        authDialog.authenticationDialog = 0;
-        authDialogs.removeAt(i);
-#ifndef VANILLA_QT
-        authenticator->tryAgainLater = false;
-#endif
-    }
+void LLNetworkAccessManager:: authenticationRequiredSlot(QNetworkReply *reply, QAuthenticator *authenticator)
+{	
+	std::string username;
+	std::string password;
+	std::string url = llToStdString(reply->url());
+	std::string realm = llToStdString(authenticator->realm());
+	
+	if(mBrowser->authRequest(url, realm, username, password))
+	{
+		// Got credentials to try, attempt auth with them.
+		authenticator->setUser(QString::fromStdString(username));
+		authenticator->setPassword(QString::fromStdString(password));
+	}
+	else
+	{
+		// The user cancelled, don't attempt auth.
+	}
 }
 

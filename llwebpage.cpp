@@ -45,6 +45,8 @@ LLWebPage::LLWebPage(QObject *parent)
 {
     connect(this, SIGNAL(loadProgress(int)),
             this, SLOT(loadProgressSlot(int)));
+    connect(this, SIGNAL(linkHovered(const QString &, const QString &, const QString &)),
+            this, SLOT(linkHoveredSlot(const QString &, const QString &, const QString &)));
     connect(this, SIGNAL(statusBarMessage(const QString &)),
             this, SLOT(statusBarMessageSlot(const QString &)));
     connect(mainFrame(), SIGNAL(urlChanged(const QUrl&)),
@@ -74,11 +76,22 @@ void LLWebPage::loadProgressSlot(int progress)
     window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onUpdateProgress, event);
 }
 
+void LLWebPage::linkHoveredSlot(const QString &link, const QString &title, const QString &textContent)
+{
+    if (!window)
+        return;
+    LLEmbeddedBrowserWindowEvent event(window->getWindowId());
+	event.setEventUri(llToStdString(link));
+	event.setStringValue(llToStdString(title));
+	event.setStringValue2(llToStdString(textContent));
+    window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onLinkHovered, event);		
+}
+
 void LLWebPage::statusBarMessageSlot(const QString& text)
 {
     if (!window)
         return;
-    window->d->mStatusText = text.toStdString();
+    window->d->mStatusText = llToStdString(text);
     LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 	event.setEventUri(window->getCurrentUri());
 	event.setStringValue(window->d->mStatusText);
@@ -89,7 +102,7 @@ void LLWebPage::titleChangedSlot(const QString& text)
 {
     if (!window)
         return;
-    window->d->mTitle = text.toStdString();
+    window->d->mTitle = llToStdString(text);
 	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 	event.setEventUri(window->getCurrentUri());
 	event.setStringValue(window->d->mTitle);
@@ -137,7 +150,7 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
             encodedUrl = encodedUrl.mid(window->d->mNoFollowScheme.length() + 1);
             encodedUrl = window->d->mNoFollowScheme + "://" + encodedUrl;
         }
-        std::string rawUri = encodedUrl.toStdString();
+        std::string rawUri = llToStdString(encodedUrl);
 		LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 		event.setEventUri(rawUri);
 		window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);
@@ -193,13 +206,8 @@ QString LLWebPage::chooseFile(QWebFrame* parentFrame, const QString& suggestedFi
 {
     Q_UNUSED(parentFrame);
     Q_UNUSED(suggestedFile);
-
-	LLEmbeddedBrowserWindowEvent event(window->getWindowId());
-	event.setEventUri(window->getCurrentUri());
-	event.setStringValue("*.png;*.jpg");
-    std::string filename_chosen = window->d->mEventEmitter.updateAndReturn( &LLEmbeddedBrowserWindowObserver::onRequestFilePicker, event );
-
-    return QString::fromStdString( filename_chosen );
+	
+    return QString::fromStdString( window->requestFilePicker() );
 }
 
 void LLWebPage::javaScriptAlert(QWebFrame* frame, const QString& msg)
@@ -264,4 +272,22 @@ QWebPage *LLWebPage::createWindow(WebWindowType type)
 void LLWebPage::setHostLanguage(const std::string& host_language)
 {
 	mHostLanguage = host_language;
+}
+
+bool LLWebPage::supportsExtension(QWebPage::Extension extension) const
+{
+    if (extension == QWebPage::ErrorPageExtension)
+        return true;
+    return false;
+}
+
+bool LLWebPage::extension(Extension, const ExtensionOption* option, ExtensionReturn* output)
+{
+    const QWebPage::ErrorPageExtensionOption* info = static_cast<const QWebPage::ErrorPageExtensionOption*>(option);
+    QWebPage::ErrorPageExtensionReturn* errorPage = static_cast<QWebPage::ErrorPageExtensionReturn*>(output);
+
+    errorPage->content = QString("<html><head><title>Failed loading page</title></head><body bgcolor=\"#ffe0e0\" text=\"#000000\"><h3><tt>%1</tt></h3></body></html>")
+        .arg(info->errorString).toUtf8();
+
+    return true;
 }

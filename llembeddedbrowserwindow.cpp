@@ -25,14 +25,6 @@
 
 #include <sstream>
 
-#include "llembeddedbrowserwindow.h"
-#include "llembeddedbrowserwindow_p.h"
-
-#include "llembeddedbrowser.h"
-#include "llembeddedbrowser_p.h"
-#include "llnetworkaccessmanager.h"
-
-
 #include <qaction.h>
 #include <qwebframe.h>
 #include <qwebhistory.h>
@@ -41,11 +33,19 @@
 #include <qfile.h>
 #include <QGLWidget>
 
+#include "llembeddedbrowserwindow.h"
+#include "llembeddedbrowserwindow_p.h"
+
+#include "llembeddedbrowser.h"
+#include "llembeddedbrowser_p.h"
+#include "llnetworkaccessmanager.h"
+
 #ifdef STATIC_QT
 	#include <qplugin.h>
 	// Enable gif and jpeg plugins, since web pages look pretty bleak without gifs or jpegs.
-	Q_IMPORT_PLUGIN(qgif)
-	Q_IMPORT_PLUGIN(qjpeg)
+	// Qt 4.7 uses the system gif and jpeg libraries by default, so this is no longer necessary.
+//	Q_IMPORT_PLUGIN(qgif)
+//	Q_IMPORT_PLUGIN(qjpeg)
 #ifndef LL_LINUX
 	// Qt also has its own translators for CJK text encodings we need to pull in.
 	Q_IMPORT_PLUGIN(qcncodecs)
@@ -55,7 +55,7 @@
 #endif
 #endif
 
-//#define LLEMBEDDEDBROWSER_DEBUG
+//#define LLEMBEDDEDBROWSER_DEBUG 1
 
 #ifdef LLEMBEDDEDBROWSER_DEBUG
 #include <qdebug.h>
@@ -158,7 +158,7 @@ int LLEmbeddedBrowserWindow::getObserverNumber()
 // used by observers of this class to get the current URI
 std::string& LLEmbeddedBrowserWindow::getCurrentUri()
 {
-    d->mCurrentUri = QString(d->mPage->mainFrame()->url().toEncoded()).toStdString();
+    d->mCurrentUri = llToStdString(d->mPage->mainFrame()->url());
     return d->mCurrentUri;
 }
 
@@ -209,12 +209,13 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow(int x, int y, int width, int 
         d->mPage->mainFrame()->render(&painter, clip);
 #endif
         painter.end();
-        if (!d->mFlipBitmap)
+        if (d->mFlipBitmap)
         {
             d->mImage = d->mImage.mirrored();
         }
+        d->mImage = d->mImage.rgbSwapped();
     }
-    d->mImage = QGLWidget::convertToGLFormat(d->mImage);
+//    d->mImage = QGLWidget::convertToGLFormat(d->mImage);
     d->mPageBuffer = d->mImage.bits();
     d->mDirty = false;
     return d->mPageBuffer;
@@ -691,7 +692,7 @@ std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
 #endif
     QString q_script = QString::fromStdString(script);
     QString result = d->mPage->mainFrame()->evaluateJavaScript(q_script).toString();
-    return result.toStdString();
+    return llToStdString(result);
 }
 
 bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
@@ -750,7 +751,7 @@ std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
-    return d->mNoFollowScheme.toStdString();
+    return llToStdString(d->mNoFollowScheme);
 }
 
 void LLEmbeddedBrowserWindow::prependHistoryUrl(std::string url)
@@ -856,6 +857,42 @@ void LLEmbeddedBrowserWindow::setTarget(const std::string &target)
 	evaluateJavascript(s.str());
 }
 
+std::string LLEmbeddedBrowserWindow::requestFilePicker()
+{
+	std::string filename_chosen;
+	
+	LLEmbeddedBrowserWindowEvent event(getWindowId());
+	event.setEventUri(getCurrentUri());
+	event.setStringValue("*.png;*.jpg");
+		
+	// If there's at least one observer registered, call it with the event.
+	LLEmbeddedBrowserWindowPrivate::Emitter::iterator i = d->mEventEmitter.begin();
+	if(i != d->mEventEmitter.end())
+	{
+		filename_chosen = (*i)->onRequestFilePicker(event);
+	}
+	
+	return filename_chosen;
+}
+
+bool LLEmbeddedBrowserWindow::authRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
+{
+	bool result = false;
+
+#ifdef LLEMBEDDEDBROWSER_DEBUG
+	qDebug() << "LLEmbeddedBrowserWindow::authRequest: requesting auth for url " << QString::fromStdString(in_url) << ", realm " << QString::fromStdString(in_realm);
+#endif
+	
+	// If there's at least one observer registered, send it the auth request.
+	LLEmbeddedBrowserWindowPrivate::Emitter::iterator i = d->mEventEmitter.begin();
+	if(i != d->mEventEmitter.end())
+	{
+		result = (*i)->onAuthRequest(in_url, in_realm, out_username, out_password);
+	}
+	
+	return result;
+}
+
 LLGraphicsScene::LLGraphicsScene()
     : QGraphicsScene()
     , window(0)
@@ -925,4 +962,20 @@ bool LLWebView::event(QEvent* event)
 		return true;
     }
     return QGraphicsWebView::event(event);
+}
+
+
+std::string llToStdString(const QString &s)
+{
+	return llToStdString(s.toUtf8());
+}
+
+std::string llToStdString(const QByteArray &bytes)
+{
+	return std::string(bytes.constData(), bytes.size());
+}
+
+std::string llToStdString(const QUrl &url)
+{
+	return llToStdString(url.toEncoded());
 }

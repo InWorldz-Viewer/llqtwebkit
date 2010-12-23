@@ -111,16 +111,21 @@ class testGL :
 			mAppTexture( 0 ),
 			mBrowserWindowId( 0 ),
 			mAppWindowName( "testGL" ),
+			mCwd(),
 			mHomeUrl(),
 			mNeedsUpdate( true )						// flag to indicate if browser texture needs an update
 		{
 #ifdef _WINDOWS	// to remove warning on Windows
-            mHomeUrl = _getcwd(NULL, 1024);
+			mCwd = _getcwd(NULL, 1024);
+            mHomeUrl = mCwd;
 #else
-            mHomeUrl = getcwd(NULL, 1024);
+            mCwd = getcwd(NULL, 1024);
+            mHomeUrl = mCwd;
 #endif
             mHomeUrl.append("/testpage.html");
             std::cout << "LLQtWebKit version: " << LLQtWebKit::getInstance()->getVersion() << std::endl;
+            
+            std::cout << "Current working directory is " << mCwd << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -155,14 +160,13 @@ class testGL :
 						0, GL_RGB, GL_UNSIGNED_BYTE, 0 );
 
 			// create a single browser window and set things up.
-			mApplicationDir = argv0.substr( 0, argv0.find_last_of("\\/") );
-
-			mComponentDir = mApplicationDir;
-			mProfileDir = mApplicationDir + PATH_SEPARATOR + "testGL_profile";
+			mProfileDir = mCwd + PATH_SEPARATOR + "testGL_profile";
+			std::cout << "Profiles dir location is " << mProfileDir << std::endl;
 
 			mCookiePath = mProfileDir + PATH_SEPARATOR + "cookies.txt";
+			std::cout << "Cookies.txt file location is " << mCookiePath << std::endl;
 
-			LLQtWebKit::getInstance()->init( mApplicationDir, mComponentDir, mProfileDir, getNativeWindowHandle() );
+			LLQtWebKit::getInstance()->init( mApplicationDir, mApplicationDir, mProfileDir, getNativeWindowHandle() );
 
 			// set host language test (in reality, string will be language code passed into client)
 			// IMPORTANT: must be called before createBrowserWindow(...)
@@ -210,7 +214,10 @@ class testGL :
 
 			// Tell llqtwebkit to look for a CA file in the application directory.
 			// If it can't find or parse the file, this should have no effect.
-			LLQtWebKit::getInstance()->setCAFile(mApplicationDir + PATH_SEPARATOR + "CA.pem");
+			std::string ca_pem_file_loc = mCwd + PATH_SEPARATOR + "CA.pem";
+			
+			LLQtWebKit::getInstance()->addCAFile( ca_pem_file_loc.c_str() );
+			std::cout << "Expected CA.pem file location is " << ca_pem_file_loc << std::endl;
 
 			// go to the "home page" or URL passed in via command line
 			if ( ! argv1.empty() )
@@ -583,7 +590,7 @@ class testGL :
 		// virtual
 		void onNavigateComplete( const EventType& eventIn )
 		{
-			std::cout << "Event: end navigation to " << eventIn.getEventUri() << " with response status of " << eventIn.getIntValue() << std::endl;
+			std::cout << "Event: end navigation to " << eventIn.getEventUri() << std::endl;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -646,6 +653,27 @@ class testGL :
 			std::string fn = chooseFileName();
 			return fn;
 		}
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
+		bool onAuthRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
+		{
+			std::cout << "Auth request, url = " << in_url << ", realm = " << in_realm << std::endl;
+			out_username = "";	// replace these temporarily with site username/password as required.
+			out_password = "";
+			return false;
+		}
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
+		void onLinkHovered( const EventType& eventIn )
+		{
+			std::cout 
+				<< "Link hovered, link = " << eventIn.getEventUri() 
+				<< ", title = " << eventIn.getStringValue() 
+				<< ", text = " << eventIn.getStringValue2() 
+			<< std::endl;
+		};
 
 		////////////////////////////////////////////////////////////////////////////////
 		// virtual
@@ -718,9 +746,9 @@ class testGL :
 		int mBrowserWindowId;
 		std::string mAppWindowName;
 		std::string mHomeUrl;
+		std::string mCwd;
 		bool mNeedsUpdate;
 		std::string mApplicationDir;
-		std::string mComponentDir;
 		std::string mProfileDir;
 		std::string mCookiePath;
 };
@@ -811,15 +839,15 @@ void glutMouseButton( int buttonIn, int stateIn, int xIn, int yIn )
 //
 int main( int argc, char* argv[] )
 {
+	glutInit( &argc, argv );
+	glutInitDisplayMode( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB );
+
 	// implementation in a class so we can observer events
 	// means we need this painful GLUT <--> class shim...
 	theApp = new testGL;
 
 	if ( theApp )
 	{
-		glutInit( &argc, argv );
-		glutInitDisplayMode( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB );
-
 		glutInitWindowPosition( 80, 0 );
 		glutInitWindowSize( theApp->getAppWindowWidth(), theApp->getAppWindowHeight() );
 
@@ -846,7 +874,9 @@ int main( int argc, char* argv[] )
 		glutIdleFunc( glutIdle );
 
 		glutMainLoop();
-
+		
+		std::cout << "glutMainLoop returned" << std::endl;
+		
 		delete theApp;
 	};
 

@@ -1,24 +1,25 @@
 @rem ===== source/destination dirs that may change =====
-@set QT_SRC_DIR=C:\Work\qt\lindenqt
-@set OPENSSL_SRC_DIR=c:\work\qt\openssl-0.9.8l
-@set LLQTWEBKIT_SRC_DIR=C:\Work\llqtwebkit
-@set LLQTWEBKIT_LICENSE_DIR=C:\Work\llqtwebkit\licenses
-@set SL_DEST_DIR="C:\Users\callum\Desktop"
+@set QT_SRC_DIR="%QTDIR%"
+@set OPENSSL_SRC_DIR="%QTDIR%\..\openssl-0.9.8q\"
+@set CURRENT_DIR=%CD%
+@set LLQTWEBKIT_SRC_DIR=%CURRENT_DIR%
+@set LLQTWEBKIT_LICENSE_DIR="%CURRENT_DIR%\licenses"
+@set SL_DEST_DIR="%USERPROFILE%\Desktop"
 
-@rem ===== default archive filename =====
-@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.6-2010XXXX.tar.bz2"
+@rem ===== default archive filename - DO NOT CHANGE THIS =====
+@set DEFAULT_LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.1-2010XXXX.tar.bz2"
 
 @rem ===== archive filename - change this to match build date when you make a new version but do not check in =====
-@set LLQTWEBKIT_LIB_FILENAME=%DEFAULT_LLQTWEBKIT_LIB_FILENAME%
+@set LLQTWEBKIT_LIB_FILENAME="llqtwebkit-windows-qt4.7.1-2010XXXX.tar.bz2"
 
 @rem ===== make sure the filename for the archive is updated =====
 @if %LLQTWEBKIT_LIB_FILENAME% NEQ %DEFAULT_LLQTWEBKIT_LIB_FILENAME% goto CONTINUE
 @:INPUT
-@SET INPUT=
+@set INPUT=
 @ECHO.
-@SET /P INPUT=LLQtWebKit archive file name not set - proceed with default name of %DEFAULT_LLQTWEBKIT_LIB_FILENAME%?: %=%
-@if /i "%INPUT%" EQU "N" GOTO END
-@if /i "%INPUT%" NEQ "Y" GOTO INPUT
+@set /P INPUT=LLQtWebKit archive file name not set - proceed with default name of %DEFAULT_LLQTWEBKIT_LIB_FILENAME%?: %=%
+@if /i "%INPUT%" equ "N" goto END
+@if /i "%INPUT%" neq "Y" goto INPUT
 
 @:CONTINUE
 
@@ -26,16 +27,21 @@
 @echo This batch file copies the Qt, OpenSSL and LLQtWebKit files required 
 @echo by LLQtWebKit into a Second Life client compatible source tree.
 @echo.
-@echo LLQtWebKit tarball will be: %LLQTWEBKIT_LIB_FILENAME%
+@echo Qt files copied from %QT_SRC_DIR%
+@echo.
+@echo LLQtWebKit files copied from %LLQTWEBKIT_SRC_DIR% to %SL_DEST_DIR% 
+@echo.
+@echo LLQtWebKit tarball: %SL_DEST_DIR%\%LLQTWEBKIT_LIB_FILENAME%
 @echo.
 @echo ******* IMPORTANT ******* 
 @echo.
 @echo Check the following before proceeding:
 @echo.
 @echo   1/ You built release and debug versions of LLQtWebKit
-@echo   2/ Directory paths in the settings above are correct
-@echo   3/ LLQtWebKit library filename in the settings above is correct
-@echo   4/ You have a recent version of 'tar' and 'md5sum' in your path
+@echo   2/ You built a recent version of OpenSSL and the name matches the settings above
+@echo   3/ Directory paths in the settings above are correct
+@echo   4/ LLQtWebKit library filename in the settings above is correct
+@echo   5/ You have a recent version of 'tar' and 'md5sum' in your path
 @echo.
 @pause
 
@@ -103,13 +109,13 @@
 @if exist %LLQTWEBKIT_SRC_DIR%\release\llqtwebkit.lib (xcopy %LLQTWEBKIT_SRC_DIR%\release\llqtwebkit.lib %SL_DEST_DIR%\libraries\i686-win32\lib\release\ /y) else echo ****** MISSING: %LLQTWEBKIT_SRC_DIR%\release\llqtwebkit.lib
 
 @rem =============== LLQtWebKit and Qt license files ===============
-@if exist %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-LGPL_EXCEPTION.txt (xcopy %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-LGPL_EXCEPTION.txt %SL_DEST_DIR%\LICENSES\ /y) else echo ****** MISSING: %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-LGPL_EXCEPTION.txt
-@if exist %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-LICENSE.LGPL       (xcopy %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-LICENSE.LGPL       %SL_DEST_DIR%\LICENSES\ /y) else echo ****** MISSING: %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-LICENSE.LGPL
-@if exist %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-linden-changes.txt (xcopy %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-linden-changes.txt %SL_DEST_DIR%\LICENSES\ /y) else echo ****** MISSING: %LLQTWEBKIT_LICENSE_DIR%\qt-4.6-linden-changes.txt
+@if exist %LLQTWEBKIT_LICENSE_DIR%\qt-4.7.0-LGPL_EXCEPTION.txt (xcopy %LLQTWEBKIT_LICENSE_DIR%\qt-4.7.0-LGPL_EXCEPTION.txt %SL_DEST_DIR%\LICENSES\ /y) else echo ****** MISSING: %LLQTWEBKIT_LICENSE_DIR%\qt-4.7.0-LGPL_EXCEPTION.txt
+@if exist %LLQTWEBKIT_LICENSE_DIR%\qt-4.7.0-LICENSE.LGPL       (xcopy %LLQTWEBKIT_LICENSE_DIR%\qt-4.7.0-LICENSE.LGPL       %SL_DEST_DIR%\LICENSES\ /y) else echo ****** MISSING: %LLQTWEBKIT_LICENSE_DIR%\qt-4.7.0-LICENSE.LGPL
 
 @echo.
 @echo Generating tarball: %LLQTWEBKIT_LIB_FILENAME%
 @echo.
+@pushd .
 @cd %SL_DEST_DIR%
 @tar czspf %LLQTWEBKIT_LIB_FILENAME% libraries\ LICENSES\
 
@@ -117,6 +123,7 @@
 @echo.
 @md5sum -b %LLQTWEBKIT_LIB_FILENAME%
 @md5sum -b %LLQTWEBKIT_LIB_FILENAME% > %LLQTWEBKIT_LIB_FILENAME%.md5sum
+@popd
 @echo.
 
 @echo -- Complete --

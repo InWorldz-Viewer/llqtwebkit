@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# turn on verbose debugging output for parabuild logs.
-set -x
 # make errors fatal
 set -e
 
-LLQTWEBKIT_VERSION="4.6-cookies"
-QT_REPOS="http://qt.gitorious.org/qt/lindenqt/archive-tarball/lindenqt"
-QT_ARCHIVE="qt-lindenqt.tar.gz"
-QT_SOURCE_DIR="qt-lindenqt"
+#QT_REPOS="http://qt.gitorious.org/qt/lindenqt/archive-tarball/lindenqt"
+QT_ARCHIVE="qt-everywhere-opensource-src-4.7.1.tar.gz"
+QT_URL="http://get.qt.nokia.com/qt/source/$QT_ARCHIVE"
+QT_MD5="6f88d96507c84e9fea5bf3a71ebeb6d7"
+QT_SOURCE_DIR="qt-everywhere-opensource-src-4.7.1"
 
 if [ -z "$AUTOBUILD" ] ; then 
     fail
@@ -39,25 +38,29 @@ fetch_git_as_tarball()
   curl -q -o "$archive" "$url"
 }
 
-[ -r "$QT_ARCHIVE" ] || fetch_git_as_tarball "$QT_ARCHIVE" "$QT_REPOS"
+# turn on verbose debugging output for logging.
+set -x
+
+fetch_archive "$QT_URL" "$QT_ARCHIVE" "$QT_MD5"
 extract "$QT_ARCHIVE"
 
 top="$(pwd)"
+stage="$(pwd)/stage"
+packages="$stage/packages"
+install="$stage"
+
 case "$AUTOBUILD_PLATFORM" in
     "windows")
         load_vsvars
-        build="$(pwd)/build-vc80"
-        packages="$build/packages"
-        install="$build/install"
         QTDIR=$(cygpath -m "$(pwd)/$QT_SOURCE_DIR")
         pushd "$QT_SOURCE_DIR"
             chmod +x "./configure.exe"
-            yes | head -n 1 | unix2dos | \
-                ./configure.exe -opensource -platform win32-msvc2005 -debug-and-release -no-qt3support -prefix "$QTDIR" -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -I "$(cygpath -m "$packages/include")" -L "$(cygpath -m "$packages/lib/release")"
+            echo "yes" | \
+                ./configure.exe -opensource -platform win32-msvc2005 -fast -debug-and-release -no-qt3support -prefix "$QTDIR" -no-phonon -no-phonon-backend -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -nomake demos -nomake examples -I "$(cygpath -m "$packages/include")" -L "$(cygpath -m "$packages/lib/release")"
             export PATH="$(cygpath -u "$QTDIR")/bin:$PATH"
             export QMAKESPEC="win32-msvc2005"
 
-            nmake sub-src
+            nmake
         popd
 
         qmake "CONFIG-=debug" && nmake
@@ -107,13 +110,12 @@ case "$AUTOBUILD_PLATFORM" in
 
     ;;
     "darwin")
-        build="$(pwd)/build-darwin-i386"
-        packages="$build/packages"
-        install="$build/install"
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
-            yes | head -n 1 | \
-                ./configure -opensource -platform macx-g++40 -no-framework -fast -no-qt3support -prefix "$install" -static -release -no-xmlpatterns -no-phonon -universal -sdk /Developer/SDKs/MacOSX10.4u.sdk/ -nomake examples -nomake demos -nomake docs -nomake translations
+            echo "yes" | \
+                ./configure -opensource -platform macx-g++40 -no-framework -fast -no-qt3support -prefix "$install" \
+                    -static -release -no-xmlpatterns -no-phonon -webkit -sdk /Developer/SDKs/MacOSX10.5.sdk/ -cocoa \
+                    -nomake examples -nomake demos -nomake docs -nomake translations -nomake tools -nomake examples
             make -j4
             make -j4 -C "src/3rdparty/webkit/JavaScriptCore"
             export PATH="$PATH:$QTDIR/bin"
@@ -124,20 +126,25 @@ case "$AUTOBUILD_PLATFORM" in
         xcodebuild -project llqtwebkit.xcodeproj -target llqtwebkit -configuration Release
     ;;
     "linux")
-        build="$(pwd)/build-linux-i686-relwithdebinfo"
-        packages="$build/packages"
-        install="$build/install"
+        export MAKEFLAGS="-j12"
+        export CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector"
+        export CC='distcc gcc-4.1' CFLAGS="-m32 -fno-stack-protector"
+        export LD="g++-4.1" LDFLAGS="-m32"
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
             echo "DISTCC_HOSTS=$DISTCC_HOSTS"
-            yes | head -n 1 | \
-            MAKEFLAGS="-j12" CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector" \
-                             CC='distcc gcc-4.1' CFLAGS="-m32 -fno-stack-protector" \
-                ./configure \
+
+            # fix for build on lenny (not sure why the qt build isn't obeying the environment var
+			patch -p1 < "../000_qt_linux_mkspec_force_g++-4.1.patch"
+
+            echo "yes" | \
+            ./configure \
                 -v -platform linux-g++-32  -fontconfig -fast -no-qt3support -static -release  -no-xmlpatterns -no-phonon \
-                -openssl-linked -no-3dnow -no-sse -no-sse2 -no-gtkstyle -no-xinput -no-sm -buildkey LL$(date +%s) \
+                -openssl-linked -no-3dnow -no-sse -no-sse2 -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 -no-gtkstyle \
+				-no-xinput -no-sm -buildkey LL$(date +%s) \
                 -no-sql-sqlite -no-scripttools -no-cups -no-dbus -qt-libmng -no-glib -qt-libpng -opengl desktop  -no-xkb \
-                -xrender -svg -no-pch -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install/"
+                -xrender -svg -no-pch -webkit -opensource -I"$packages/include" -L"$packages/lib" --prefix="$install" \
+                -nomake examples -nomake demos -nomake docs -nomake translations -nomake tools
             make -j12
             export PATH="$PATH:$QTDIR/bin"
             make install
@@ -145,18 +152,17 @@ case "$AUTOBUILD_PLATFORM" in
         qmake -platform linux-g++-32 CONFIG-=debug
         make -j12
 
-        mkdir -p "install/lib"
-        cp "libllqtwebkit.a" "install/lib"
+        mkdir -p "$install/lib"
+        cp "libllqtwebkit.a" "$install/lib"
 
-        mkdir -p "install/include"
-        cp "llqtwebkit.h" "install/include"
+        mkdir -p "$install/include"
+        cp "llqtwebkit.h" "$install/include"
 
-        cp "$install/lib"/libQt*.a "install/lib"
-        cp "$install/plugins/imageformats"/libq*.a "install/lib"
+        mv "$install/plugins/imageformats"/libq*.a "$install/lib"
     ;;
 esac
-mkdir -p "install/LICENSES"
-cp "LLQTWEBKIT_LICENSE.txt" "install/LICENSES/"
+mkdir -p "$install/LICENSES"
+cp "LLQTWEBKIT_LICENSE.txt" "$install/LICENSES/"
 
 pass
 

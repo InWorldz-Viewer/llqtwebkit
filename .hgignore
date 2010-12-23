@@ -14,5 +14,5 @@ tests/testgl/testGL_profile
 QTDIR
 tests/testgl/libllqtwebkit.dylib
 
-qt-lindenqt*
-build-*/
+qt-everywhere-opensource-*
+stage/

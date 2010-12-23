@@ -166,7 +166,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "llqtwebkit" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* llmozlib */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -230,7 +237,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/include//**",
+					"$(SRCROOT)/QTDIR/include",
+					"$(SRCROOT)/QTDIR/include/QtCore",
+					"$(SRCROOT)/QTDIR/include/QtGui",
+					"$(SRCROOT)/QTDIR/include/QtWebKit",
+					"$(SRCROOT)/QTDIR/include/QtNetwork",
+					"$(SRCROOT)/QTDIR/include/QtOpenGL",
 				);
 				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
@@ -239,13 +251,11 @@
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
 					"$(SRCROOT)/QTDIR/plugins/codecs/",
-					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
+					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore/release/",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
 				OTHER_LDFLAGS = (
-					"-lqjpeg",
-					"-lqgif",
 					"-lqcncodecs",
 					"-lqjpcodecs",
 					"-lqkrcodecs",
@@ -255,7 +265,7 @@
 					"-lQtOpenGL",
 					"-lQtGui",
 					"-lQtCore",
-					"-lJavaScriptCore",
+					"-ljscore",
 					"-framework",
 					ApplicationServices,
 					"-framework",
@@ -286,7 +296,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/include//**",
+					"$(SRCROOT)/QTDIR/include",
+					"$(SRCROOT)/QTDIR/include/QtCore",
+					"$(SRCROOT)/QTDIR/include/QtGui",
+					"$(SRCROOT)/QTDIR/include/QtWebKit",
+					"$(SRCROOT)/QTDIR/include/QtNetwork",
+					"$(SRCROOT)/QTDIR/include/QtOpenGL",
 				);
 				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
@@ -295,13 +310,11 @@
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
 					"$(SRCROOT)/QTDIR/plugins/codecs/",
-					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
+					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore/release/",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
 				OTHER_LDFLAGS = (
-					"-lqjpeg",
-					"-lqgif",
 					"-lqcncodecs",
 					"-lqjpcodecs",
 					"-lqkrcodecs",
@@ -311,7 +324,7 @@
 					"-lQtOpenGL",
 					"-lQtGui",
 					"-lQtCore",
-					"-lJavaScriptCore",
+					"-ljscore",
 					"-framework",
 					ApplicationServices,
 					"-framework",
@@ -333,16 +346,13 @@
 		1DEB914F08733D8E0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				GCC_VERSION = 4.0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DLL_DARWIN=1";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Debug;
 		};
@@ -358,7 +368,7 @@
 					"-DSTATIC_QT=1",
 				);
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Release;
 		};
@@ -373,7 +383,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS)",
-					"$(SRCROOT)/QTDIR/include//**",
+					"$(SRCROOT)/QTDIR/include",
+					"$(SRCROOT)/QTDIR/include/QtCore",
+					"$(SRCROOT)/QTDIR/include/QtGui",
+					"$(SRCROOT)/QTDIR/include/QtWebKit",
+					"$(SRCROOT)/QTDIR/include/QtNetwork",
+					"$(SRCROOT)/QTDIR/include/QtOpenGL",
 				);
 				INSTALL_PATH = "@loader_path/";
 				LIBRARY_SEARCH_PATHS = (
@@ -382,13 +397,11 @@
 					"$(SRCROOT)/QTDIR/lib/",
 					"$(SRCROOT)/QTDIR/plugins/imageformats/",
 					"$(SRCROOT)/QTDIR/plugins/codecs/",
-					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore",
+					"$(SRCROOT)/QTDIR/src/3rdparty/webkit/JavaScriptCore/release/",
 				);
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
 				OTHER_LDFLAGS = (
-					"-lqjpeg",
-					"-lqgif",
 					"-lqcncodecs",
 					"-lqjpcodecs",
 					"-lqkrcodecs",
@@ -398,7 +411,7 @@
 					"-lQtOpenGL",
 					"-lQtGui",
 					"-lQtCore",
-					"-lJavaScriptCore",
+					"-ljscore",
 					"-framework",
 					ApplicationServices,
 					"-framework",
@@ -426,7 +439,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DLL_DARWIN=1";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = "All Symbols";
 		};

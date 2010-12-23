@@ -130,7 +130,11 @@ public:
 	LLWebPageOpenShim *findShim(const std::string &uuid);
 	void deleteShim(LLWebPageOpenShim *shim);
 	void setTarget(const std::string &target);
-		
+	
+	std::string requestFilePicker();
+
+	bool authRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password);
+	
 private:
     friend class LLWebPage;
     friend class LLWebPageOpenShim;
@@ -140,4 +144,20 @@ private:
     LLEmbeddedBrowserWindowPrivate *d;
 
 };
+
+
+// QString::toStdString converts to ascii, not utf8.  Define our own versions that do utf8.
+
+#ifdef QSTRING_H
+std::string llToStdString(const QString &s);
+#endif
+
+#ifdef QBYTEARRAY_H
+std::string llToStdString(const QByteArray &bytes);
+#endif
+
+#ifdef QURL_H
+std::string llToStdString(const QUrl &url);
+#endif
+
 #endif // LLEMBEDEDDBROWSERWINDOW_H

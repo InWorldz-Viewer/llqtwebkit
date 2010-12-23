@@ -32,7 +32,7 @@
 #include <qgraphicsscene.h>
 #include <qgraphicsview.h>
 #include <qwebview.h>
-#include <map>
+#include <list>
 
 ///////////////////////////////////////////////////////////////////////////////
 // manages the process of storing and emitting events that the consumer
@@ -46,8 +46,8 @@ class LLEmbeddedBrowserWindowEmitter
 
         typedef typename T::EventType EventType;
         typedef std::list< T* > ObserverContainer;
+		typedef typename ObserverContainer::iterator iterator;
         typedef void(T::*observerMethod)(const EventType&);
-        typedef std::string(T::*observerMethodReturn)(const EventType&);
 
         ///////////////////////////////////////////////////////////////////////////////
         //
@@ -89,21 +89,21 @@ class LLEmbeddedBrowserWindowEmitter
             }
         }
 
-        ///////////////////////////////////////////////////////////////////////////////
-        //
-        std::string updateAndReturn(observerMethodReturn method, const EventType& msg)
-        {
-            typename std::list< T* >::iterator iter = observers.begin();
-
-			// NOTE: only responds to the first observer
-            return ((*iter)->*method)(msg);
-        }
-
         int getObserverNumber()
         {
             return observers.size();
         }
-
+		
+		iterator begin()
+		{
+			return observers.begin();
+		}
+		
+		iterator end()
+		{
+			return observers.end();
+		}
+		
     protected:
         ObserverContainer observers;
 };
@@ -208,8 +208,9 @@ class LLEmbeddedBrowserWindowPrivate
 	        mGraphicsView->deleteLater();
 		}
     }
-
-    LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver > mEventEmitter;
+	
+	typedef LLEmbeddedBrowserWindowEmitter< LLEmbeddedBrowserWindowObserver> Emitter;
+    Emitter mEventEmitter;
     QImage mImage;
     LLEmbeddedBrowser *mParent;
     LLWebPage *mPage;

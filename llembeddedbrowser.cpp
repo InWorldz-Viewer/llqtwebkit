@@ -55,6 +55,9 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
     {
         static int argc = 0;
         static const char* argv[] = {""};
+		QApplication::setAttribute(Qt::AA_MacPluginApplication);
+		QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+		
         mApplication = new QApplication(argc, (char **)argv);
         mApplication->addLibraryPath(qApp->applicationDirPath());
     }
@@ -67,6 +70,11 @@ LLEmbeddedBrowserPrivate::LLEmbeddedBrowserPrivate()
 	// It does, however, seem to fix at least one problem ( https://jira.secondlife.com/browse/MOZ-12 ).
 	extern void qt_release_app_proc_handler();
 	qt_release_app_proc_handler();
+
+	// This is defined and exported from qwidget_mac.mm.
+	// Calling it with false should prevent qwidget from bringing its process to the foreground, such as when bringing up a popup menu.
+	extern void qt_mac_set_raise_process(bool b);
+	qt_mac_set_raise_process(false);
 #endif
 }
 
@@ -348,6 +356,18 @@ bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
 	return result;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLEmbeddedBrowser::addCAFile(const std::string &ca_file)
+{
+	bool result = false;
+//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
+
+    result = QSslSocket::addDefaultCaCertificates(QString::fromStdString(ca_file));
+
+	return result;
+}
+
 void LLEmbeddedBrowser::setIgnoreSSLCertErrors(bool ignore)
 {
 	d->mIgnoreSSLCertErrors = ignore;
@@ -391,7 +411,7 @@ void LLNetworkCookieJar::onCookieSetFromURL(const QNetworkCookie &cookie, const 
 	{
 		QByteArray cookie_bytes = cookie.toRawForm(QNetworkCookie::Full);
 		std::string cookie_string(cookie_bytes.data(), cookie_bytes.size());
-		std::string url_string = QString(url.toEncoded()).toStdString();
+		std::string url_string = llToStdString(url);
 		mBrowser->cookieChanged(cookie_string, url_string, already_dead);
 	}
 }
@@ -435,4 +455,26 @@ QGraphicsWebView *LLEmbeddedBrowserPrivate::findView(QNetworkReply *reply)
     return windows[0]->d->mView;
 }
 
+bool LLEmbeddedBrowserPrivate::authRequest(const std::string &in_url, const std::string &in_realm, std::string &out_username, std::string &out_password)
+{
+	bool result = false;
+	
+//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "requesting auth for url " << QString::fromStdString(in_url) << ", realm " << QString::fromStdString(in_realm);
+//
+//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "window count is " << windows.count();
+
+	if(windows.count() > 1)
+	{
+		qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "WARNING: authRequest called with more than one window, using the first one";	
+	}
+	
+	LLEmbeddedBrowserWindow* window = windows.first();
+	
+	if(window)
+	{
+		result = window->authRequest(in_url, in_realm, out_username, out_password);
+	}
+	
+	return result;
+}
 
