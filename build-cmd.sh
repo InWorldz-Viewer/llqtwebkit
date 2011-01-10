@@ -41,7 +41,7 @@ fetch_git_as_tarball()
 # turn on verbose debugging output for logging.
 set -x
 
-stage="$(pwd)/stage"
+stage="$(pwd)"
 cd "$(dirname "$0")"
 top="$(pwd)"
 packages="$stage/packages"
