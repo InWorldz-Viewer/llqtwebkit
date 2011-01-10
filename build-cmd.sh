@@ -41,13 +41,14 @@ fetch_git_as_tarball()
 # turn on verbose debugging output for logging.
 set -x
 
-fetch_archive "$QT_URL" "$QT_ARCHIVE" "$QT_MD5"
-extract "$QT_ARCHIVE"
-
-top="$(pwd)"
 stage="$(pwd)/stage"
+cd "$(dirname "$0")"
+top="$(pwd)"
 packages="$stage/packages"
 install="$stage"
+
+fetch_archive "$QT_URL" "$QT_ARCHIVE" "$QT_MD5"
+extract "$QT_ARCHIVE"
 
 case "$AUTOBUILD_PLATFORM" in
     "windows")
