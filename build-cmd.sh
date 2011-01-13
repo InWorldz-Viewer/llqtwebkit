@@ -126,8 +126,8 @@ case "$AUTOBUILD_PLATFORM" in
         ln -s "$QT_SOURCE_DIR" QTDIR
         xcodebuild -project llqtwebkit.xcodeproj -target llqtwebkit -configuration Release
 
-        mkdir -p "$install/lib"
-        cp "build/Release/libllqtwebkit.dylib" "$install/lib"
+        mkdir -p "$install/lib/release"
+        cp "build/Release/libllqtwebkit.dylib" "$install/lib/release"
 
         mkdir -p "$install/include"
         cp "llqtwebkit.h" "$install/include"
@@ -165,7 +165,7 @@ case "$AUTOBUILD_PLATFORM" in
         mkdir -p "$install/include"
         cp "llqtwebkit.h" "$install/include"
 
-        mv "$install/plugins/imageformats"/libq*.a "$install/lib"
+        mv "$install/plugins/imageformats"/libq*.a "$install/lib/release"
     ;;
 esac
 mkdir -p "$install/LICENSES"

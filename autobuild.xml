@@ -150,7 +150,7 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>lib/release/lib*.a</string>
+            <string>lib/release/libllqtwebkit.dylib</string>
           </array>
           <key>name</key>
           <string>darwin</string>
