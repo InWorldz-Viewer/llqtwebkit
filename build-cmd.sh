@@ -48,11 +48,16 @@ packages="$stage/packages"
 install="$stage"
 
 fetch_archive "$QT_URL" "$QT_ARCHIVE" "$QT_MD5"
-extract "$QT_ARCHIVE"
+#extract "$QT_ARCHIVE"
 
 case "$AUTOBUILD_PLATFORM" in
     "windows")
         load_vsvars
+        # Its odd, but the extract command was not extracting configure.exe from the archive in cygwin!
+#	tar -xzvf "$QT_ARCHIVE" "$QT_SOURCE_DIR/configure.exe"
+
+	mkdir -p "$packages/lib/release"
+
         QTDIR=$(cygpath -m "$(pwd)/$QT_SOURCE_DIR")
         pushd "$QT_SOURCE_DIR"
             chmod +x "./configure.exe"
