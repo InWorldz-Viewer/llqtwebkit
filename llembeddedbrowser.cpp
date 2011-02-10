@@ -35,6 +35,7 @@
 #include <qnetworkproxy.h>
 #include <qfile.h>
 #include <qsslconfiguration.h>
+#include <qdesktopservices.h>
 
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
@@ -150,6 +151,10 @@ bool LLEmbeddedBrowser::init(std::string application_directory,
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFontSize, 16);
     QWebSettings::globalSettings()->setFontSize(QWebSettings::DefaultFixedFontSize, 16);
 
+
+ 	QWebSettings::globalSettings()->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, true);
+    QWebSettings::globalSettings()->setOfflineStoragePath(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+    
 	// use default text encoding - not sure how this helps right now so commenting out until we
 	// understand how to use it a little better.
     //QWebSettings::globalSettings()->setDefaultTextEncoding ( "" );
