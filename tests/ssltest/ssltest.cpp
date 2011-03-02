@@ -54,7 +54,7 @@ class sslTest :
 	public LLEmbeddedBrowserWindowObserver
 {
 	public:
-		sslTest( std::string url ) :
+		sslTest( std::string url, bool ignore_ca_file, bool ignore_ssl_errors ) :
 			mBrowserWindowWidth( 512 ),
 			mBrowserWindowHeight( 512 ),
 			mBrowserWindowHandle( 0 ),
@@ -64,12 +64,12 @@ class sslTest :
 			std::string cwd = std::string( _getcwd( NULL, 1024) );
 			std::string profile_dir = cwd + "\\" + "ssltest_profile";
 			void* native_window_handle = (void*)GetDesktopWindow();
-			std::string ca_pem_file_loc = cwd + "\\" + "CA.pem";
+			std::string ca_file_loc = cwd + "\\" + "CA.pem";
 #else
 			std::string cwd = std::string( _getcwd( NULL, 1024) );
 			std::string profile_dir = cwd + "/" + "ssltest_profile";
 			void* native_window_handle = 0;
-			std::string ca_pem_file_loc = cwd + "/" + "CA.pem";
+			std::string ca_file_loc = cwd + "/" + "CA.pem";
 #endif
 
 			std::cout << "ssltest> === begin ===" << std::endl;
@@ -85,10 +85,27 @@ class sslTest :
 			LLQtWebKit::getInstance()->setSize( mBrowserWindowHandle, mBrowserWindowWidth, mBrowserWindowHeight );
 
 			LLQtWebKit::getInstance()->addObserver( mBrowserWindowHandle, this );
+	
+			if ( ! ignore_ca_file )
+			{
+				std::cout << "ssltest> Expected certificate authority file location is " << ca_file_loc << std::endl;
+				LLQtWebKit::getInstance()->addCAFile( ca_file_loc.c_str() );
+			}
+			else
+			{
+				std::cout << "ssltest> Not loading certificate authority file" << std::endl;
+			};
 			
-			std::cout << "ssltest> Expected CA.pem file location is " << ca_pem_file_loc << std::endl;
-			LLQtWebKit::getInstance()->addCAFile( ca_pem_file_loc.c_str() );
-
+			if ( ignore_ssl_errors )
+			{
+				LLQtWebKit::getInstance()->setIgnoreSSLCertErrors( true );
+				std::cout << "ssltest> Ignoring SSL errors " << std::endl;
+			}
+			else
+			{
+				std::cout << "ssltest> Not ignoring SSL errors " << std::endl;
+			};
+		
 			LLQtWebKit::getInstance()->navigateTo( mBrowserWindowHandle, url );
 
 			std::cout << "ssltest> navigating to " << url << std::endl;
@@ -120,33 +137,33 @@ class sslTest :
 		void onNavigateBegin( const EventType& eventIn )
 		{
 			mNavigateInProgress = true;
-			std::cout << "Event: begin navigation to " << eventIn.getEventUri() << std::endl;
+			std::cout << "ssltest> Event: begin navigation to " << eventIn.getEventUri() << std::endl;
 		};
 
 		void onNavigateComplete( const EventType& eventIn )
 		{
-			std::cout << "Event: end navigation to " << eventIn.getEventUri() << std::endl;
+			std::cout << "ssltest> Event: end navigation to " << eventIn.getEventUri() << std::endl;
 			mNavigateInProgress = false;
 		};
 
 		void onUpdateProgress( const EventType& eventIn )
 		{
-			std::cout << "Event: progress value updated to " << eventIn.getIntValue() << std::endl;
+			std::cout << "ssltest> Event: progress value updated to " << eventIn.getIntValue() << std::endl;
 		};
 
 		void onStatusTextChange( const EventType& eventIn )
 		{
-			std::cout << "Event: status updated to " << eventIn.getStringValue() << std::endl;
+			std::cout << "ssltest> Event: status updated to " << eventIn.getStringValue() << std::endl;
 		};
 
 		void onTitleChange( const EventType& eventIn )
 		{
-			std::cout << "Event: title changed to  " << eventIn.getStringValue() << std::endl;
+			std::cout << "ssltest> Event: title changed to  " << eventIn.getStringValue() << std::endl;
 		};
 
 		void onLocationChange( const EventType& eventIn )
 		{
-			std::cout << "Event: location changed to " << eventIn.getStringValue() << std::endl;
+			std::cout << "ssltest> Event: location changed to " << eventIn.getStringValue() << std::endl;
 		};
 
 	private:
@@ -156,31 +173,50 @@ class sslTest :
 		bool mNavigateInProgress;
 };
 
-void navigateURL( std::string url )
+int main( int argc, char* argv[] )
 {
-	sslTest* app = new sslTest( url );
+	bool ingore_ssl_errors = false;
+	bool ignore_ca_file = false;
+	
+	for( int i = 1; i < argc; ++i )
+	{
+		if ( std::string( argv[ i ] ) == "--help" )
+		{
+			std::cout << std::endl << "ssltest <url> [--ignoresslerrors] [--ignorecafile]" << std::endl;
+			std::cout << "Looks for cert file CA.pem in the current working directory";
+			
+			exit( 0 );
+		};
+
+		if ( std::string( argv[ i ] ) == "--ignoresslerrors" )
+			ingore_ssl_errors = true;
+
+		if ( std::string( argv[ i ] ) == "--ignorecafile" )
+			ignore_ca_file = true;
+	};
+
+	std::string url ( "https://id.aditi.lindenlab.com/openid/login" );
+	for( int i = 1; i < argc; ++i )
+	{
+		if ( std::string( argv[ i ] ).substr( 0, 2 ) != "--" )
+		{
+			url = std::string( argv[ i ] );
+			break;
+		};
+	};
+	
+	std::cout << std::endl << " --------- sslTest application starting --------- " << std::endl;
+	std::cout << "ssltest> URL specified is " << url << std::endl;
+	
+	sslTest* app = new sslTest( url, ignore_ca_file, ingore_ssl_errors );
 
 	bool result = app->idle();
 	while( result )
 	{
 		result = app->idle();
 	};
-	
+
 	delete app;
-}
-
-int main( int argc, char* argv[] )
-{
-	std::cout << std::endl << " --------- sslTest application starting --------- " << std::endl;
-
-	if ( argc == 2 )
-	{
-		navigateURL( argv[ 1 ] );		
-	}
-	else
-	{
-		navigateURL( "https://id.aditi.lindenlab.com/openid/login" );
-	};
 
 	std::cout << " --------- sslTest application ending  --------- " << std::endl;
 	
