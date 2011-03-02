@@ -80,24 +80,58 @@ QNetworkReply *LLNetworkAccessManager::createRequest(Operation op, const QNetwor
 
 void LLNetworkAccessManager::sslErrorsSlot(QNetworkReply* reply, const QList<QSslError>& errors)
 {
-	Q_UNUSED( errors );
-
-	// Enabling this code can help diagnose certificate verification issues.
-#if 0
-    qDebug() << "LLNetworkAccessManager" << __FUNCTION__ << "errors: " << errors 
-		<< ", peer certificate chain: ";
+	// Enabling this can help diagnose certificate verification issues.
+	const bool ssl_debugging_on = true;
 	
-	QSslCertificate cert;
-	foreach(cert, reply->sslConfiguration().peerCertificateChain())
+	// flag that indicates if the error that brought us here is one we care about or not
+	bool valid_ssl_error = false;
+	
+	foreach( const QSslError &error, errors )
 	{
-		qDebug() << "    cert: " << cert 
-			<< ", issuer = " << cert.issuerInfo(QSslCertificate::CommonName) 
-			<< ", subject = " << cert.subjectInfo(QSslCertificate::CommonName);
+		if ( ssl_debugging_on )
+		{
+			qDebug() << "SSL error details are (" << (int)(error.error()) << ") - " << error.error();
+		}
+		
+		// SSL "error" codes we don't care about - if we get one of these, we want to continue
+		if ( error.error() != QSslError::NoError
+			 // many more in src/network/ssl/qsslerror.h
+			)
+		{
+			if ( ssl_debugging_on )
+			{
+				qDebug() << "Found valid SSL error - will not ignore";
+			}
+			
+			valid_ssl_error = true;
+		}
+		else
+		{
+			if ( ssl_debugging_on )
+			{
+				qDebug() << "Found invalid SSL error - will ignore and continue";
+			}
+		}
 	}
-#endif
-
-	if ( mBrowser && mBrowser->mIgnoreSSLCertErrors )
+	
+	if ( ssl_debugging_on )
 	{
+		qDebug() << "LLNetworkAccessManager" << __FUNCTION__ << "errors: " << errors 
+			<< ", peer certificate chain: ";
+
+		QSslCertificate cert;
+		foreach(cert, reply->sslConfiguration().peerCertificateChain())
+		{
+			qDebug() << "    cert: " << cert 
+				<< ", issuer = " << cert.issuerInfo(QSslCertificate::CommonName) 
+				<< ", subject = " << cert.subjectInfo(QSslCertificate::CommonName);
+		}
+	}
+
+	// we the SSL error is invalid (in our opinion) or we explicitly ignore all SSL errors
+	if ( valid_ssl_error == false || ( mBrowser && mBrowser->mIgnoreSSLCertErrors ) )
+	{
+		// signal we should ignore and continue processing
 		reply->ignoreSslErrors();
 	};
 }
