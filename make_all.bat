@@ -1,7 +1,7 @@
 @echo.
 @echo This is a very simple batch file that makes debug and release
 @echo versions of LLQtWebKit and then makes release versions of 
-@echo testGL, uBrowser, QtTestApp and Snap Dragon.
+@echo testGL, uBrowser, QtTestApp, sslTest and Snap Dragon.
 @echo.
 @echo To make the Win32GL test, run the copy_llqtwebkit.bat batch file after
 @echo running this one and load the MSVC solution file and build as normal.
@@ -43,6 +43,13 @@
 @del tests\testgl\Makefile
 @del tests\testgl\Makefile.Debug
 @del tests\testgl\Makefile.Release
+
+@rem Delete sslTest files
+@rmdir tests\ssltest\Debug\ /s /q
+@rmdir tests\ssltest\Release\ /s /q
+@del tests\ssltest\Makefile
+@del tests\ssltest\Makefile.Debug
+@del tests\ssltest\Makefile.Release
 
 @rem Delete uBrowserfiles
 @rmdir tests\ubrowser\Debug\ /s /q
@@ -89,6 +96,14 @@ nmake clean
 nmake
 popd
 
+@rem clean and make a release version of sslTest test app
+pushd .
+cd tests\ssltest
+qmake CONFIG-=debug CONFIG+=console
+nmake clean
+nmake
+popd
+
 @rem clean and make a release version of QtTestApp test app
 pushd .
 cd tests\qttestapp
@@ -120,6 +135,7 @@ popd
 @if not exist tests\gl\qttestapp.exe echo ****** ERROR: Failed to build QtTestApp test app
 @if not exist tests\gl\snapdragon.exe echo ****** ERROR: Failed to build SnapDragon test app
 @if not exist tests\gl\testgl.exe echo ****** ERROR: Failed to build testGL test app
+@if not exist tests\gl\ssltest.exe echo ****** ERROR: Failed to build sslTest test app
 @if not exist tests\gl\ubrowser.exe echo ****** ERROR: Failed to build uBrowser test app
 
 @echo -- End of batch file --
