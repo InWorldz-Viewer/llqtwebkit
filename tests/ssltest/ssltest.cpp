@@ -66,12 +66,11 @@ class sslTest :
 			void* native_window_handle = (void*)GetDesktopWindow();
 			std::string ca_file_loc = cwd + "\\" + "CA.pem";
 #else
-			std::string cwd = std::string( _getcwd( NULL, 1024) );
+			std::string cwd = std::string( getcwd( NULL, 1024) );
 			std::string profile_dir = cwd + "/" + "ssltest_profile";
 			void* native_window_handle = 0;
 			std::string ca_file_loc = cwd + "/" + "CA.pem";
 #endif
-
 			std::cout << "ssltest> === begin ===" << std::endl;
 			std::cout << "ssltest> current working dir is " << cwd << std::endl;
 			std::cout << "ssltest> profiles dir location is " << profile_dir << std::endl;
@@ -195,7 +194,7 @@ int main( int argc, char* argv[] )
 			ignore_ca_file = true;
 	};
 
-	std::string url ( "https://id.aditi.lindenlab.com/openid/login" );
+	std::string url ( "https://my.secondlife.com/callum.linden" );
 	for( int i = 1; i < argc; ++i )
 	{
 		if ( std::string( argv[ i ] ).substr( 0, 2 ) != "--" )
