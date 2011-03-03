@@ -35,7 +35,9 @@
 #include <qnetworkproxy.h>
 #include <qfile.h>
 #include <qsslconfiguration.h>
+#include <qsslsocket.h>
 #include <qdesktopservices.h>
+#include <iostream>
 
 // singleton pattern - initialization
 LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
@@ -342,14 +344,14 @@ void LLEmbeddedBrowser::cookieChanged(const std::string &cookie, const std::stri
 bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
 {
 	bool result = false;
-//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
+	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
 
 	// Extract the list of certificates from the specified file
 	QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromStdString(ca_file));
 	
 	if(!certs.isEmpty())
 	{
-//		qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "certs read: " << certs;	
+		qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "certs read: " << certs;	
 
 		// Set the default CA cert for Qt's SSL implementation.
 		QSslConfiguration config = QSslConfiguration::defaultConfiguration();
@@ -365,11 +367,31 @@ bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
 //
 bool LLEmbeddedBrowser::addCAFile(const std::string &ca_file)
 {
-	bool result = false;
-//	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
+	qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (Before add)";
+	QSslCertificate cert;
+	foreach(cert, QSslSocket::defaultCaCertificates())
+	{
+		qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+	}
 
+	bool result = false;
+	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
+	
+	qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (From CA.pem)";
+	QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromStdString(ca_file));
+	foreach(cert, certs)
+	{
+		qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+	}
+	
     result = QSslSocket::addDefaultCaCertificates(QString::fromStdString(ca_file));
 
+	qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (After add)";
+	foreach(cert, QSslSocket::defaultCaCertificates())
+	{
+		qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+	}
+	
 	return result;
 }
 

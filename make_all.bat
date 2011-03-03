@@ -84,7 +84,7 @@ nmake
 
 @rem clean and make a release version of LLQtWebKit
 @rem No longer patching Qt as of v4.7.0 so switch off code that referenced changes
-qmake CONFIG-=debug DEFINES+=VANILLA_QT
+qmake CONFIG-=debug DEFINES+=VANILLA_QT CONFIG+=console
 nmake clean
 nmake
 
