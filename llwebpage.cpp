@@ -136,7 +136,6 @@ bool LLWebPage::event(QEvent *event)
 bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest& request, NavigationType type)
 {
 	Q_UNUSED( frame );
-	Q_UNUSED( type );
 
     if (!window)
         return false;
@@ -153,6 +152,21 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
         std::string rawUri = llToStdString(encodedUrl);
 		LLEmbeddedBrowserWindowEvent event(window->getWindowId());
 		event.setEventUri(rawUri);
+		
+		// pass over the navigation type as per this page: http://apidocs.meego.com/1.1/core/html/qt4/qwebpage.html#NavigationType-enum
+		// pass as strings because telling everyone who needs to know about enums is too invasive.
+		std::string nav_type("unknown");
+		if  (type == QWebPage::NavigationTypeLinkClicked) nav_type="clicked";
+		else
+		if  (type == QWebPage::NavigationTypeFormSubmitted) nav_type="form_submited";
+		else
+		if  (type == QWebPage::NavigationTypeBackOrForward) nav_type="back_forward";
+		else
+		if  (type == QWebPage::NavigationTypeReload) nav_type="reloaded";
+		else
+		if  (type == QWebPage::NavigationTypeFormResubmitted) nav_type="form_resubmited";
+		event.setNavigationType(nav_type);
+		
 		window->d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onClickLinkNoFollow, event);
 
 //	 	qDebug() << "LLWebPage::acceptNavigationRequest: sending onClickLinkNoFollow, NavigationType is " << type << ", url is " << QString::fromStdString(rawUri) ;

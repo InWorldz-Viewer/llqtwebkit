@@ -6,9 +6,7 @@
 # Use Public Upload Locations
 public_build = true
 
-# work in progress flag for configuring whether the package layout is for legacy indra builds or autobuild builds.
-# see https://wiki.lindenlab.com/wiki/Autobuild/Package_Layout
-build_legacy_package = true
+AUTOBUILD_VSVER=100
 
 llqtwebkit-autobuild.PACKAGE_NAME = llqtwebkit
 

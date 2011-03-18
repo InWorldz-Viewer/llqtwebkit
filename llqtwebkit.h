@@ -26,7 +26,7 @@
 #ifndef LLQTWEBKIT_H
 #define LLQTWEBKIT_H
 
-#ifdef _MSC_VER
+#if defined _MSC_VER && _MSC_VER < 1600
 // no pstdint.h in the client where this header is used
 typedef unsigned long uint32_t;
 #else
@@ -39,15 +39,17 @@ typedef unsigned long uint32_t;
 class LLEmbeddedBrowser;
 class LLEmbeddedBrowserWindow;
 
-#ifdef _WINDOWS
-typedef unsigned long uint32_t;
-#endif
-
 // Use this to conditionalize code that depends on particular changes to the llqtwebkit API.
 // This can be useful for times when we're waiting for a rebuild on one platform or another.
 // When you bump this number, please note what the changes were in a comment below the #define,
 // and keep the existing comments as history.
-#define LLQTWEBKIT_API_VERSION 6
+#define LLQTWEBKIT_API_VERSION 8
+// version 8:
+	// Removed calls to set/clear 404 redirects and made the API now emit an event that the 
+	// consumer can catch and decide what to do when an HTTP status code after navigate is 400-499
+// version 7:
+	// Added LLEmbeddedBrowserWindowEvent::setNavigationType() && LLEmbeddedBrowserWindowEvent::getNavigationType()
+	// Used to pass (and retrieve) the type of navigation event that caused a link to be activated.
 // version 6:
 	// Added LLQtWebKit::addCAFile()
 // version 5:
@@ -83,6 +85,7 @@ class LLEmbeddedBrowserWindowEvent
 		virtual ~LLEmbeddedBrowserWindowEvent() {}
 
 		void setEventUri(const std::string &uri) { mEventUri = uri; }
+		void setNavigationType(const std::string &type) { mNavigationType = type; }
 		void setIntValue(int val) { mIntVal = val; }
 		void setStringValue(const std::string &val) { mStringVal = val; }
 		void setStringValue2(const std::string &val) { mStringVal2 = val; }
@@ -96,6 +99,7 @@ class LLEmbeddedBrowserWindowEvent
 
 		int getEventWindowId() const { return mEventWindowId; }
 		std::string getEventUri() const	{ return mEventUri;	}
+		std::string getNavigationType() const { return mNavigationType;	}
 		int getIntValue() const	{ return mIntVal; };
 		std::string getStringValue() const	{ return mStringVal; }
 		std::string getStringValue2() const	{ return mStringVal2; }
@@ -110,6 +114,7 @@ class LLEmbeddedBrowserWindowEvent
 	private:
 		int mEventWindowId;
 		std::string mEventUri;
+		std::string mNavigationType;
 		int mIntVal;
 		std::string mStringVal;
 		std::string mStringVal2;
@@ -134,6 +139,7 @@ class LLEmbeddedBrowserWindowObserver
 		virtual void onPageChanged(const EventType& event);
 		virtual void onNavigateBegin(const EventType& event);
 		virtual void onNavigateComplete(const EventType& event);
+		virtual void onNavigateErrorPage(const EventType& event);
 		virtual void onUpdateProgress(const EventType& event);
 		virtual void onStatusTextChange(const EventType& event);
 		virtual void onTitleChange(const EventType& event);

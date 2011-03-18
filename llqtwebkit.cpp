@@ -570,34 +570,6 @@ std::string LLQtWebKit::evaluateJavascript(int browser_window_id, const std::str
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool LLQtWebKit::set404RedirectUrl(int browser_window_in, std::string redirect_url)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_in);
-    if (browser_window)
-    {
-        browser_window->set404RedirectUrl(redirect_url);
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-bool LLQtWebKit::clr404RedirectUrl(int browser_window_in)
-{
-    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_in);
-    if (browser_window)
-    {
-        browser_window->clr404RedirectUrl();
-        return true;
-    }
-
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
 void LLQtWebKit::prependHistoryUrl(int browser_window_id, std::string url)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
@@ -702,6 +674,10 @@ void LLEmbeddedBrowserWindowObserver::onTitleChange(const EventType&)
 }
 
 void LLEmbeddedBrowserWindowObserver::onLocationChange(const EventType&)
+{
+}
+
+void LLEmbeddedBrowserWindowObserver::onNavigateErrorPage(const EventType&)
 {
 }
 

@@ -1,7 +1,7 @@
 @echo.
 @echo This is a very simple batch file that makes debug and release
 @echo versions of LLQtWebKit and then makes release versions of 
-@echo testGL, uBrowser, QtTestApp, sslTest and Snap Dragon.
+@echo testGL, uBrowser, QtTestApp and Snap Dragon.
 @echo.
 @echo To make the Win32GL test, run the copy_llqtwebkit.bat batch file after
 @echo running this one and load the MSVC solution file and build as normal.
@@ -84,7 +84,7 @@ nmake
 
 @rem clean and make a release version of LLQtWebKit
 @rem No longer patching Qt as of v4.7.0 so switch off code that referenced changes
-qmake CONFIG-=debug DEFINES+=VANILLA_QT CONFIG+=console
+qmake CONFIG-=debug DEFINES+=VANILLA_QT
 nmake clean
 nmake
 

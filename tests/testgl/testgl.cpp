@@ -684,6 +684,14 @@ class testGL :
 
 		////////////////////////////////////////////////////////////////////////////////
 		// virtual
+		void onNavigateErrorPage( const EventType& event )
+		{
+			std::cout << "Error page hit with code of " << event.getIntValue() << " - navigating to another URL" << std::endl;
+			LLQtWebKit::getInstance()->navigateTo( mBrowserWindowId, "http://bestbuy.com" );
+		};
+
+		////////////////////////////////////////////////////////////////////////////////
+		// virtual
 		void onWindowGeometryChangeRequested( const EventType& eventIn)
 		{
 			int x, y, width, height;

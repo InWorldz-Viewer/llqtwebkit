@@ -3,10 +3,6 @@
 # make errors fatal
 set -e
 
-#QT_REPOS="http://qt.gitorious.org/qt/lindenqt/archive-tarball/lindenqt"
-QT_ARCHIVE="qt-everywhere-opensource-src-4.7.1.tar.gz"
-QT_URL="http://get.qt.nokia.com/qt/source/$QT_ARCHIVE"
-QT_MD5="6f88d96507c84e9fea5bf3a71ebeb6d7"
 QT_SOURCE_DIR="qt-everywhere-opensource-src-4.7.1"
 
 if [ -z "$AUTOBUILD" ] ; then 
@@ -20,102 +16,101 @@ fi
 # load autbuild provided shell functions and variables
 eval "$("$AUTOBUILD" source_environment)"
 
-fetch_git_as_tarball()
-{
-  local archive=$1
-  local url=$2
-
-  # *HACK work around the fact that gitorious.org screws us by being
-  # non-blocking while it's building the tarball
-  # *NOTE - keep trying until it actually hands us back a tarball or 15 minutes total
-  local retry_count=30
-  while (($retry_count)) && ! curl -q -I "$url" 2>/dev/null | grep -E "^Content-Type:.*application\/x-gzip" ; do
-    sleep 30
-    let retry_count--
-  done
-
-  # by now hopefully it's actually got a tarball ready for us
-  curl -q -o "$archive" "$url"
-}
-
 # turn on verbose debugging output for logging.
 set -x
 
 stage="$(pwd)"
-cd "$(dirname "$0")"
-top="$(pwd)"
 packages="$stage/packages"
 install="$stage"
 
-fetch_archive "$QT_URL" "$QT_ARCHIVE" "$QT_MD5"
-#extract "$QT_ARCHIVE"
+cd "$(dirname "$0")"
 
 case "$AUTOBUILD_PLATFORM" in
     "windows")
+        # build qt
+        pushd "$stage"
+        
         load_vsvars
-        # Its odd, but the extract command was not extracting configure.exe from the archive in cygwin!
-#	tar -xzvf "$QT_ARCHIVE" "$QT_SOURCE_DIR/configure.exe"
+        
+        QTDIR="$(pwd)/../$QT_SOURCE_DIR"
+        export PATH="$QTDIR"/bin:"$PATH" 
+        export QMAKESPEC="win32-msvc2010"
 
-	mkdir -p "$packages/lib/release"
+        chmod +x "$QTDIR/configure.exe"
+        common_configure_options="-opensource -platform win32-msvc2010 -fast \
+            -no-qt3support -no-phonon -no-phonon-backend \
+            -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -nomake demos -nomake examples -I \
+            "$(cygpath -m "$packages/include")""
 
-        QTDIR=$(cygpath -m "$(pwd)/$QT_SOURCE_DIR")
-        pushd "$QT_SOURCE_DIR"
-            chmod +x "./configure.exe"
-            echo "yes" | \
-                ./configure.exe -opensource -platform win32-msvc2005 -fast -debug-and-release -no-qt3support -prefix "$QTDIR" -no-phonon -no-phonon-backend -qt-libjpeg -qt-libpng -openssl-linked -no-plugin-manifests -nomake demos -nomake examples -I "$(cygpath -m "$packages/include")" -L "$(cygpath -m "$packages/lib/release")"
-            export PATH="$(cygpath -u "$QTDIR")/bin:$PATH"
-            export QMAKESPEC="win32-msvc2005"
+        echo "yes" | \
+            "$QTDIR/configure.exe" $common_configure_options -debug  -L "$(cygpath -m "$packages/lib/debug")"
+        nmake
+        
+        echo "yes" | \
+            "$QTDIR/configure.exe" $common_configure_options -release  -L "$(cygpath -m "$packages/lib/release")"
+        nmake
 
-            nmake
         popd
 
-        qmake "CONFIG-=debug" && nmake
-        qmake "CONFIG+=debug" && nmake
-
-
-        local qtwebkit_libs_debug="QtCored4.dll QtCored4.lib QtGuid4.dll QtGuid4.lib \
-            qtmain.lib QtNetworkd4.dll QtNetworkd4.lib QtOpenGLd4.dll QtOpenGLd4.lib \
-            QtWebKitd4.dll QtWebKitd4.lib"
-
+        # Move around libraries to match autobuild layout.
+        
+        qtwebkit_libs_debug="QtCored4.dll QtCored4.lib QtGuid4.dll QtGuid4.lib \
+            qtmaind.lib QtNetworkd4.dll QtNetworkd4.lib QtOpenGLd4.dll QtOpenGLd4.lib \
+            QtWebKitd4.dll QtWebKitd4.lib QtXmlPatternsd4.dll"
         mkdir -p "$install/lib/debug"
         for lib in $qtwebkit_libs_debug ; do
-            cp "$QT_SOURCE_DIR/lib/$lib" "$install/lib/debug"
+            cp "$stage/lib/$lib" "$install/lib/debug"
         done
 
-        local qtwebkit_libs_release="QtCore4.dll QtCore4.lib QtGui4.dll QtGui4.lib \
+        qtwebkit_libs_release="QtCore4.dll QtCore4.lib QtGui4.dll QtGui4.lib \
             qtmain.lib QtNetwork4.dll QtNetwork4.lib QtOpenGL4.dll QtOpenGL4.lib \
-            QtWebKit4.dll QtWebKit4.lib"
-
+            QtWebKit4.dll QtWebKit4.lib QtXmlPatterns4.dll"
         mkdir -p "$install/lib/release"
         for lib in $qtwebkit_libs_release ; do
-            cp "$QT_SOURCE_DIR/lib/$lib" "$install/lib/release"
+            cp "$stage/lib/$lib" "$install/lib/release"
         done
 
-        local qtwebkit_imageplugins_debug="qgifd4.dll qicod4.dll qjpegd4.dll \
+        qtwebkit_imageplugins_debug="qgifd4.dll qicod4.dll qjpegd4.dll \
             qmngd4.dll qsvgd4.dll qtiffd4.dll"
-
         mkdir -p "$install/lib/debug/imageformats"
         for plugin in $qtwebkit_imageplugins_debug ; do
-            cp "$QT_SOURCE_DIR/plugins/imageformats/$plugin" "$install/lib/debug/imageformats"
+            cp "$stage/plugins/imageformats/$plugin" "$install/lib/debug/imageformats"
         done
 
-        local qtwebkit_imageplugins_release="qgif4.dll qico4.dll qjpeg4.dll \
+        qtwebkit_imageplugins_release="qgif4.dll qico4.dll qjpeg4.dll \
             qmng4.dll qsvg4.dll qtiff4.dll"
-
         mkdir -p "$install/lib/release/imageformats"
         for plugin in $qtwebkit_imageplugins_release ; do
-            cp "$QT_SOURCE_DIR/plugins/imageformats/$plugin" "$install/lib/release/imageformats"
+            cp "$stage/plugins/imageformats/$plugin" "$install/lib/release/imageformats"
         done
 
+        qtwebkit_codecs_debug="qjpcodecsd4.dll qcncodecsd4.dll qkrcodecsd4.dll qtwcodecsd4.dll"
+        mkdir -p "$install/lib/debug/codecs"
+        for codec in $qtwebkit_codecs_debug ; do
+            cp "$stage/plugins/codecs/$codec" "$install/lib/debug/codecs"
+        done
+
+        qtwebkit_codecs_release="qcncodecs4.dll qjpcodecs4.dll qkrcodecs4.dll qtwcodecs4.dll"
+        mkdir -p "$install/lib/release/codecs"
+        for codec in $qtwebkit_codecs_release ; do
+            cp "$stage/plugins/codecs/$codec" "$install/lib/release/codecs"
+        done
+                
+        # Now build llqtwebkit...
+        export PATH=$PATH:"$install/bin/"
+        qmake "CONFIG-=debug" && nmake
+        nmake clean
+        qmake "CONFIG+=debug" && nmake
+
+        mkdir -p "$install/lib/debug"
+        mkdir -p "$install/lib/release"
         cp "debug/llqtwebkitd.lib"  "$install/lib/debug"
         cp "release/llqtwebkit.lib" "$install/lib/release"
-
+        mkdir -p "$install/include"
         cp "llqtwebkit.h" "$install/include"
-
-        # *TODO copy license files to $LICENSE_OUT_DIR/qt-4.5-linden-changes.txt, qt-4.5-LICENSE.LGPL, qt-4.5-LGPL_EXCEPTION.txt
-
     ;;
     "darwin")
+        # Build qt...
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
             echo "yes" | \
@@ -126,9 +121,15 @@ case "$AUTOBUILD_PLATFORM" in
             make -j4 -C "src/3rdparty/webkit/JavaScriptCore"
             export PATH="$PATH:$QTDIR/bin"
             make install
+            
+            cp "src/3rdparty/webkit/JavaScriptCore/release/libjscore.a" "$install/lib"
         popd
 
-        ln -s "$QT_SOURCE_DIR" QTDIR
+        # Now build llqtwebkit
+        if [ ! -e QTDIR ]
+        then
+            ln -s "$install" QTDIR
+        fi
         xcodebuild -project llqtwebkit.xcodeproj -target llqtwebkit -configuration Release
 
         mkdir -p "$install/lib/release"
@@ -138,9 +139,10 @@ case "$AUTOBUILD_PLATFORM" in
         cp "llqtwebkit.h" "$install/include"
     ;;
     "linux")
+        #Build qt...
         export MAKEFLAGS="-j12"
-        export CXX="distcc g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector"
-        export CC='distcc gcc-4.1' CFLAGS="-m32 -fno-stack-protector"
+        export CXX="g++-4.1" CXXFLAGS="-DQT_NO_INOTIFY -m32 -fno-stack-protector"
+        export CC='gcc-4.1' CFLAGS="-m32 -fno-stack-protector"
         export LD="g++-4.1" LDFLAGS="-m32"
         pushd "$QT_SOURCE_DIR"
             export QTDIR="$(pwd)"
@@ -161,20 +163,28 @@ case "$AUTOBUILD_PLATFORM" in
             export PATH="$PATH:$QTDIR/bin"
             make install
         popd
+
+        # Now build llqtwebkit...
+        export PATH=$PATH:"$install/bin/"
         qmake -platform linux-g++-32 CONFIG-=debug
         make -j12
 
+        # Move lib's to cannonical autobuild location.
+        mv "$install/lib" "$install/release"
         mkdir -p "$install/lib"
-        cp "libllqtwebkit.a" "$install/lib"
+        mv "$install/release" "$install/lib"
+
+        LIB_DIR="$install/lib/release"
+        cp "libllqtwebkit.a" "$LIB_DIR"
 
         mkdir -p "$install/include"
         cp "llqtwebkit.h" "$install/include"
 
-        mv "$install/plugins/imageformats"/libq*.a "$install/lib/release"
+        mv "$stage/plugins/imageformats"/libq*.a "$LIB_DIR"
     ;;
 esac
 mkdir -p "$install/LICENSES"
-cp "LLQTWEBKIT_LICENSE.txt" "$install/LICENSES/"
+cp "LLQTWEBKIT_LICENSE.txt" "$install/LICENSES/llqtwebkit.txt"
 
 pass
 

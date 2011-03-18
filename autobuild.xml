@@ -42,9 +42,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>c847d54ac48f2da60d66aab97d350408</string>
+              <string>3e1847f7c38b4c78d8f594d269e96340</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/brad_openssl-autobuild/rev/204126/arch/CYGWIN/installer/openssl-0.9.8j-windows-20100428.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-openssl/rev/220197/arch/CYGWIN/installer/openssl-0.9.8q-windows-20110202.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -106,19 +106,24 @@
     </map>
     <key>package_description</key>
     <map>
+      <key>copyright</key>
+      <string>Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).</string>
+      <key>description</key>
+      <string>QT cross-platform applicaiton and UI framework.</string>
       <key>license</key>
-      <string>lgpl</string>
+      <string>LGPL</string>
       <key>license_file</key>
-      <string>LICENSES/LLQTWEBKIT_LICENSE.txt</string>
+      <string>LICENSES/llqtwebkit.txt</string>
       <key>name</key>
       <string>llqtwebkit</string>
       <key>platforms</key>
       <map>
         <key>common</key>
         <map>
+          <key>build_directory</key>
+          <string>stage</string>
           <key>manifest</key>
           <array>
-            <string>LICENSES/LLQTWEBKIT_LICENSE.txt</string>
             <string>include/llqtwebkit.h</string>
           </array>
           <key>name</key>
@@ -126,26 +131,23 @@
         </map>
         <key>darwin</key>
         <map>
-          <key>build_directory</key>
-          <string>stage</string>
           <key>configurations</key>
           <map>
-            <key>RelWithDebInfo</key>
+            <key>Release</key>
             <map>
               <key>build</key>
               <map>
-                <key>arguments</key>
-                <array>
-                  <string>-c</string>
-                  <string>../build-cmd.sh</string>
-                </array>
                 <key>command</key>
                 <string>sh</string>
+                <key>options</key>
+                <array>
+                  <string>../build-cmd.sh</string>
+                </array>
               </map>
               <key>default</key>
-              <boolean>true</boolean>
+              <string>True</string>
               <key>name</key>
-              <string>RelWithDebInfo</string>
+              <string>Release</string>
             </map>
           </map>
           <key>manifest</key>
@@ -157,31 +159,28 @@
         </map>
         <key>linux</key>
         <map>
-          <key>build_directory</key>
-          <string>stage</string>
           <key>configurations</key>
           <map>
-            <key>RelWithDebInfo</key>
+            <key>Release</key>
             <map>
               <key>build</key>
               <map>
-                <key>arguments</key>
-                <array>
-                  <string>-c</string>
-                  <string>../build-cmd.sh</string>
-                </array>
                 <key>command</key>
                 <string>sh</string>
+                <key>options</key>
+                <array>
+                  <string>../build-cmd.sh</string>
+                </array>
               </map>
               <key>default</key>
-              <boolean>true</boolean>
+              <string>True</string>
               <key>name</key>
-              <string>RelWithDebInfo</string>
+              <string>Release</string>
             </map>
           </map>
           <key>manifest</key>
           <array>
-            <string>lib/lib*.a</string>
+            <string>lib/release/*.a</string>
           </array>
           <key>name</key>
           <string>linux</string>
@@ -192,39 +191,38 @@
           <string>stage</string>
           <key>configurations</key>
           <map>
-            <key>RelWithDebInfo</key>
+            <key>Release</key>
             <map>
               <key>build</key>
               <map>
                 <key>arguments</key>
                 <array>
-                  <string>-c</string>
                   <string>../build-cmd.sh</string>
                 </array>
                 <key>command</key>
                 <string>sh</string>
               </map>
               <key>default</key>
-              <boolean>true</boolean>
+              <string>True</string>
               <key>name</key>
-              <string>RelWithDebInfo</string>
+              <string>Release</string>
             </map>
           </map>
           <key>manifest</key>
           <array>
+            <string>lib/debug/*.lib</string>
+            <string>lib/debug/*.dll</string>
+            <string>lib/debug/codecs/*.dll</string>
+            <string>lib/debug/imageformats/*.dll</string>
             <string>lib/release/*.lib</string>
             <string>lib/release/*.dll</string>
+            <string>lib/release/codecs/*.dll</string>
+            <string>lib/release/imageformats/*.dll</string>
           </array>
           <key>name</key>
           <string>windows</string>
         </map>
       </map>
-      <key>source</key>
-      <string>http://bitbucket.org/lindenlab/llqtwebkit</string>
-      <key>source_directory</key>
-      <string>.</string>
-      <key>source_type</key>
-      <string>hg</string>
       <key>version</key>
       <string>4.7.1</string>
     </map>

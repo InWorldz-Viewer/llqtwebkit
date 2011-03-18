@@ -1,6 +1,6 @@
 @rem ===== source/destination dirs that may change =====
 @set QT_SRC_DIR="%QTDIR%"
-@set OPENSSL_SRC_DIR="%QTDIR%\..\openssl-0.9.8q\"
+@set OPENSSL_SRC_DIR="%QTDIR%\..\openssl-1.0.0c\"
 @set CURRENT_DIR=%CD%
 @set LLQTWEBKIT_SRC_DIR=%CURRENT_DIR%
 @set LLQTWEBKIT_LICENSE_DIR="%CURRENT_DIR%\licenses"

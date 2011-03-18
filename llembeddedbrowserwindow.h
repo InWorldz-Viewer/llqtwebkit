@@ -29,7 +29,7 @@
 #include <string>
 #include <list>
 #include <algorithm>
-#ifdef _MSC_VER
+#if defined _MSC_VER && _MSC_VER < 1600
 #include "pstdint.h"
 #else
 #include <stdint.h>        // Use the C99 official header
@@ -88,11 +88,9 @@ public:
     // javascript access/control
     std::string evaluateJavascript(std::string script);
 
-    // redirection when you hit a missing page
-    bool set404RedirectUrl(std::string redirect_url);
-    bool clr404RedirectUrl();
-    void load404RedirectUrl();
-    
+    // redirection when you hit an error page
+	void navigateErrorPage( int http_status_code );
+
     // host language setting
     void setHostLanguage(const std::string host_language);
 

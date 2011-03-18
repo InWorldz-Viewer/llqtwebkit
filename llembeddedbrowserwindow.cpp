@@ -91,7 +91,6 @@ LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow()
     d->mGraphicsView->setScene(d->mGraphicsScene);
     d->mGraphicsScene->setStickyFocus(true);
     d->mGraphicsView->viewport()->setParent(0);
-    d->m404RedirectUrl = std::string();
 }
 
 LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
@@ -695,15 +694,6 @@ std::string LLEmbeddedBrowserWindow::evaluateJavascript(std::string script)
     return llToStdString(result);
 }
 
-bool LLEmbeddedBrowserWindow::set404RedirectUrl(std::string redirect_url)
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(redirect_url);
-#endif
-    d->m404RedirectUrl = redirect_url;
-    return true;
-}
-
 void LLEmbeddedBrowserWindow::setHostLanguage(const std::string host_language)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
@@ -714,26 +704,12 @@ void LLEmbeddedBrowserWindow::setHostLanguage(const std::string host_language)
     		d->mPage->setHostLanguage( host_language );
 }
 
-bool LLEmbeddedBrowserWindow::clr404RedirectUrl()
+void LLEmbeddedBrowserWindow::navigateErrorPage( int http_status_code )
 {
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    d->m404RedirectUrl = std::string();
-    return true;
-}
+	LLEmbeddedBrowserWindowEvent event(getWindowId());
+	event.setIntValue( http_status_code );
 
-void LLEmbeddedBrowserWindow::load404RedirectUrl()
-{
-#ifdef LLEMBEDDEDBROWSER_DEBUG
-    qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
-#endif
-    if ( ! d->m404RedirectUrl.empty() )
-    {
-        QUrl url = QUrl(QString::fromStdString(d->m404RedirectUrl));
-    	d->mPage->triggerAction(QWebPage::Stop);
-        d->mPage->mainFrame()->load(url);
-    }
+	d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateErrorPage, event);
 }
 
 void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)

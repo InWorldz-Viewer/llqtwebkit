@@ -168,7 +168,6 @@ class LLEmbeddedBrowserWindowPrivate
         , mCurrentUri("")
         , mNoFollowScheme("secondlife")
         , mWindowId(-1)
-        , m404RedirectUrl("")
         , mEnabled(true)
         , mFlipBitmap(false)
         , mPageBuffer(NULL)
@@ -228,7 +227,6 @@ class LLEmbeddedBrowserWindowPrivate
     std::string mCurrentUri;
     QString mNoFollowScheme;
     int mWindowId;
-    std::string m404RedirectUrl;
     bool mEnabled;
     bool mFlipBitmap;
     unsigned char* mPageBuffer;

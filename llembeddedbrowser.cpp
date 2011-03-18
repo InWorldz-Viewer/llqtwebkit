@@ -367,31 +367,45 @@ bool LLEmbeddedBrowser::setCAFile(const std::string &ca_file)
 //
 bool LLEmbeddedBrowser::addCAFile(const std::string &ca_file)
 {
-	qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (Before add)";
-	QSslCertificate cert;
-	foreach(cert, QSslSocket::defaultCaCertificates())
+	// Enabling this can help diagnose certificate verification issues.
+	const bool cert_debugging_on = false;
+
+	if ( cert_debugging_on )
 	{
-		qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+		qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (Before add)";
+		QSslCertificate cert;
+		foreach(cert, QSslSocket::defaultCaCertificates())
+		{
+			qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+		}
 	}
 
 	bool result = false;
 	qDebug() << "LLEmbeddedBrowser::" << __FUNCTION__ << "attempting to read certs from file: " << QString::fromStdString(ca_file);	
 	
-	qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (From CA.pem)";
-	QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromStdString(ca_file));
-	foreach(cert, certs)
+	if ( cert_debugging_on )
 	{
-		qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+		qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (From CA.pem)";
+		QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromStdString(ca_file));
+		QSslCertificate cert;
+		foreach(cert, certs)
+		{
+			qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+		}
 	}
-	
+
     result = QSslSocket::addDefaultCaCertificates(QString::fromStdString(ca_file));
 
-	qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (After add)";
-	foreach(cert, QSslSocket::defaultCaCertificates())
+	if ( cert_debugging_on )
 	{
-		qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+		qDebug() << "\n\nLLEmbeddedBrowser::" << __FUNCTION__ << " ------------------- (After add)";
+		QSslCertificate cert;
+		foreach(cert, QSslSocket::defaultCaCertificates())
+		{
+			qDebug()  << cert.issuerInfo(QSslCertificate::CommonName) << " --- " << cert.subjectInfo(QSslCertificate::CommonName);
+		}
 	}
-	
+
 	return result;
 }
 

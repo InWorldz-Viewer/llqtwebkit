@@ -71,8 +71,6 @@ private slots:
     void canNavigateBack();
     void canNavigateForward_data();
     void canNavigateForward();
-    void clr404RedirectUrl_data();
-    void clr404RedirectUrl();
     void evaluateJavascript_data();
     void evaluateJavascript();
     void flipWindow_data();
@@ -107,8 +105,6 @@ private slots:
     void grabWindow();
     void keyPress_data();
     void keyPress();
-    void load404RedirectUrl_data();
-    void load404RedirectUrl();
     void mouseDown_data();
     void mouseDown();
     void mouseLeftDoubleClick_data();
@@ -131,8 +127,6 @@ private slots:
     void remObserver();
     void scrollByLines_data();
     void scrollByLines();
-    void set404RedirectUrl_data();
-    void set404RedirectUrl();
     void setBackgroundColor_data();
     void setBackgroundColor();
     void setCaretColor_data();
@@ -190,7 +184,6 @@ void tst_LLEmbeddedBrowserWindow::llembeddedbrowserwindow()
     QCOMPARE(window.addObserver((LLEmbeddedBrowserWindowObserver*)0), false);
     QCOMPARE(window.canNavigateBack(), false);
     QCOMPARE(window.canNavigateForward(), false);
-    QCOMPARE(window.clr404RedirectUrl(), true);
     QCOMPARE(window.evaluateJavascript(std::string()), std::string());
     QCOMPARE(window.flipWindow(false), true);
     window.focusBrowser(false);
@@ -208,7 +201,6 @@ void tst_LLEmbeddedBrowserWindow::llembeddedbrowserwindow()
     QCOMPARE(window.getWindowId(), -1);
     QCOMPARE(window.grabWindow(-1, -1, -1, -1), (unsigned char*)0);
     window.keyPress(0);
-    window.load404RedirectUrl();
     window.mouseDown(0, 0);
     window.mouseLeftDoubleClick(0, 0);
     window.mouseMove(0, 0);
@@ -220,7 +212,6 @@ void tst_LLEmbeddedBrowserWindow::llembeddedbrowserwindow()
     QCOMPARE(window.navigateTo(std::string()), true);
     QCOMPARE(window.remObserver((LLEmbeddedBrowserWindowObserver*)0), false);
     window.scrollByLines(0);
-    QCOMPARE(window.set404RedirectUrl(std::string()), true);
     window.setBackgroundColor(0, 0, 0);
     window.setCaretColor(0, 0, 0);
     window.setEnabled(false);
@@ -297,26 +288,6 @@ void tst_LLEmbeddedBrowserWindow::canNavigateForward_data()
 void tst_LLEmbeddedBrowserWindow::canNavigateForward()
 {
     QSKIP("Test is same with canNavigateBack().", SkipAll);
-}
-
-void tst_LLEmbeddedBrowserWindow::clr404RedirectUrl_data()
-{
-    QTest::addColumn<bool>("clr404RedirectUrl");
-    QTest::newRow("true") << true;
-}
-
-// public bool clr404RedirectUrl()
-void tst_LLEmbeddedBrowserWindow::clr404RedirectUrl()
-{
-    QFETCH(bool, clr404RedirectUrl);
-
-    SubLLEmbeddedBrowserWindow window;
-    window.set404RedirectUrl(std::string("http://www.google.com"));
-    window.clr404RedirectUrl();
-    window.load404RedirectUrl();
-    window.getCurrentUri();
-
-    QCOMPARE(window.getCurrentUri(), std::string());
 }
 
 Q_DECLARE_METATYPE(std::string)
@@ -659,25 +630,6 @@ void tst_LLEmbeddedBrowserWindow::keyPress()
     window.keyPress(key_code);
 }
 
-void tst_LLEmbeddedBrowserWindow::load404RedirectUrl_data()
-{
-#if 0
-    QTest::addColumn<int>("foo");
-    QTest::newRow("0") << 0;
-    QTest::newRow("-1") << -1;
-#endif
-}
-
-// public void load404RedirectUrl()
-void tst_LLEmbeddedBrowserWindow::load404RedirectUrl()
-{
-    //QFETCH(int, foo);
-    SubLLEmbeddedBrowserWindow window;
-    window.set404RedirectUrl("http://www.google.ca/");
-    window.load404RedirectUrl();
-    QTRY_COMPARE(QString::fromStdString(window.getCurrentUri()), QString("http://www.google.ca/"));
-}
-
 void tst_LLEmbeddedBrowserWindow::mouseDown_data()
 {
     QTest::addColumn<int16_t>("x");
@@ -899,26 +851,6 @@ void tst_LLEmbeddedBrowserWindow::scrollByLines()
     SubLLEmbeddedBrowserWindow window;
 
     window.scrollByLines(lines);
-}
-
-void tst_LLEmbeddedBrowserWindow::set404RedirectUrl_data()
-{
-    QTest::addColumn<std::string>("redirect_url");
-    QTest::addColumn<bool>("set404RedirectUrl");
-    QTest::newRow("null") << std::string() << true;
-    QTest::newRow("valid") << std::string("http://www.google.ca/") << true;
-}
-
-// public bool set404RedirectUrl(std::string redirect_url)
-void tst_LLEmbeddedBrowserWindow::set404RedirectUrl()
-{
-    QFETCH(std::string, redirect_url);
-    QFETCH(bool, set404RedirectUrl);
-
-    SubLLEmbeddedBrowserWindow window;
-    window.set404RedirectUrl(redirect_url);
-    window.load404RedirectUrl();
-    QTRY_COMPARE(window.getCurrentUri(), redirect_url);
 }
 
 Q_DECLARE_METATYPE(uint8_t)
