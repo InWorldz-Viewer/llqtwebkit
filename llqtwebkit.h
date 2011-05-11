@@ -285,8 +285,9 @@ class LLQtWebKit
 		std::string evaluateJavascript(int browser_window_id, const std::string script);
 
 		// set/clear URL to redirect to when a 404 page is reached
-		bool set404RedirectUrl(int browser_window_in, std::string redirect_url);
-		bool clr404RedirectUrl(int browser_window_in);
+		// removed since LLQTWEBKIT_API_VERSION 8
+		// bool set404RedirectUrl(int browser_window_in, std::string redirect_url);
+		// bool clr404RedirectUrl(int browser_window_in);
 
 		// access to rendered bitmap data
 		const unsigned char* grabBrowserWindow(int browser_window_id);		// renders page to memory and returns pixels
