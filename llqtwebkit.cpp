@@ -483,26 +483,27 @@ bool LLQtWebKit::focusBrowser(int browser_window_id, bool focus_browser)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-void LLQtWebKit::setNoFollowScheme(int browser_window_id, std::string scheme)
+void LLQtWebKit::addNoFollowScheme(int browser_window_id, std::string scheme)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        browser_window->setNoFollowScheme(scheme);
+        browser_window->addNoFollowScheme(scheme);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-std::string LLQtWebKit::getNoFollowScheme(int browser_window_id)
+std::set<std::string> LLQtWebKit::getNoFollowSchemeSet(int browser_window_id)
 {
+    std::set<std::string> ret;
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
     if (browser_window)
     {
-        return browser_window->getNoFollowScheme();
+        ret = browser_window->getNoFollowSchemeSet();
     }
 
-    return ("");
+    return ret;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -28,6 +28,7 @@
 
 #include <string>
 #include <list>
+#include <set>
 #include <algorithm>
 #if defined _MSC_VER && _MSC_VER < 1600
 #include "pstdint.h"
@@ -112,8 +113,8 @@ public:
     int getObserverNumber();
 
     // accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
-    void setNoFollowScheme(std::string scheme);
-    std::string getNoFollowScheme();
+    void addNoFollowScheme(std::string scheme);
+    std::set<std::string> getNoFollowSchemeSet();
 
 	// prepend the current history with the given url
 	void prependHistoryUrl(std::string url);

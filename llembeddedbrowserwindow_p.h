@@ -33,6 +33,7 @@
 #include <qgraphicsview.h>
 #include <qwebview.h>
 #include <list>
+#include <set>
 
 ///////////////////////////////////////////////////////////////////////////////
 // manages the process of storing and emitting events that the consumer
@@ -166,7 +167,6 @@ class LLEmbeddedBrowserWindowPrivate
         , mStatusText("")
         , mTitle("")
         , mCurrentUri("")
-        , mNoFollowScheme("secondlife")
         , mWindowId(-1)
         , mEnabled(true)
         , mFlipBitmap(false)
@@ -174,6 +174,8 @@ class LLEmbeddedBrowserWindowPrivate
         , mDirty(false)
 		, mOpeningSelf(false)
     {
+        mNoFollowSchemeSet.insert("secondlife");
+        mNoFollowSchemeSet.insert("hop");
     }
 
     ~LLEmbeddedBrowserWindowPrivate()
@@ -225,7 +227,7 @@ class LLEmbeddedBrowserWindowPrivate
     std::string mStatusText;
     std::string mTitle;
     std::string mCurrentUri;
-    QString mNoFollowScheme;
+    std::set <QString> mNoFollowSchemeSet;
     int mWindowId;
     bool mEnabled;
     bool mFlipBitmap;

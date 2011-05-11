@@ -712,22 +712,30 @@ void LLEmbeddedBrowserWindow::navigateErrorPage( int http_status_code )
 	d->mEventEmitter.update(&LLEmbeddedBrowserWindowObserver::onNavigateErrorPage, event);
 }
 
-void LLEmbeddedBrowserWindow::setNoFollowScheme(std::string scheme)
+void LLEmbeddedBrowserWindow::addNoFollowScheme(std::string scheme)
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__ << QString::fromStdString(scheme);
 #endif
-    d->mNoFollowScheme = QString::fromStdString(scheme);
-    // The scheme part of the url is what is before '://'
-    d->mNoFollowScheme = d->mNoFollowScheme.mid(0, d->mNoFollowScheme.indexOf("://"));
+      // The scheme part of the url is what is before '://'
+
+      QString parse = QString::fromStdString(scheme);
+      parse  = parse.mid(0,parse.indexOf("://"));
+      d->mNoFollowSchemeSet.insert(parse);
 }
 
-std::string LLEmbeddedBrowserWindow::getNoFollowScheme()
+std::set<std::string> LLEmbeddedBrowserWindow::getNoFollowSchemeSet()
 {
 #ifdef LLEMBEDDEDBROWSER_DEBUG
     qDebug() << "LLEmbeddedBrowserWindow" << __FUNCTION__;
 #endif
-    return llToStdString(d->mNoFollowScheme);
+    std::set<std::string> ret;
+    for(std::set<QString>::iterator it = d->mNoFollowSchemeSet.begin();
+                it != d->mNoFollowSchemeSet.end(); ++it)
+    {
+      ret.insert(llToStdString(*it));
+    }
+    return ret;
 }
 
 void LLEmbeddedBrowserWindow::prependHistoryUrl(std::string url)

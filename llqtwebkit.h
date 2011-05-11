@@ -35,6 +35,7 @@ typedef unsigned long uint32_t;
 
 #include <string>
 #include <map>
+#include <set>
 
 class LLEmbeddedBrowser;
 class LLEmbeddedBrowserWindow;
@@ -314,8 +315,8 @@ class LLQtWebKit
 		bool focusBrowser(int browser_window_id, bool focus_browser);			// set/remove focus to given browser window
 
 		// accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
-		void setNoFollowScheme(int browser_window_id, std::string scheme);
-		std::string getNoFollowScheme(int browser_window_id);
+		void addNoFollowScheme(int browser_window_id, std::string scheme);
+		std::set<std::string> getNoFollowSchemeSet(int browser_window_id);
 
 		void pump(int max_milliseconds);
 

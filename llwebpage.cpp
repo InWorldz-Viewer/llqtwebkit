@@ -140,14 +140,16 @@ bool LLWebPage::acceptNavigationRequest(QWebFrame* frame, const QNetworkRequest&
     if (!window)
         return false;
 
-    if (request.url().scheme() == window->d->mNoFollowScheme)
-    {
+       std::set<QString>::iterator it = window->d->mNoFollowSchemeSet.find(request.url().scheme());
+     if (it != window->d->mNoFollowSchemeSet.end() )
+     {
+        QString scheme =  *it;
         QString encodedUrl = request.url().toEncoded();
         // QUrl is turning foo:///home/bar into foo:/home/bar for some reason while Firefox does not
         // http://bugs.webkit.org/show_bug.cgi?id=24695
-        if (!encodedUrl.startsWith(window->d->mNoFollowScheme + "://")) {
-            encodedUrl = encodedUrl.mid(window->d->mNoFollowScheme.length() + 1);
-            encodedUrl = window->d->mNoFollowScheme + "://" + encodedUrl;
+        if (!encodedUrl.startsWith(scheme + "://")) {
+            encodedUrl = encodedUrl.mid(scheme.length() + 1);
+            encodedUrl = scheme + "://" + encodedUrl;
         }
         std::string rawUri = llToStdString(encodedUrl);
 		LLEmbeddedBrowserWindowEvent event(window->getWindowId());
