@@ -1,0 +1,27 @@
+#misc
+*~
+*.diff
+*.patch
+*.rej
+
+# ignore generated files
+*.a
+*.o
+*.so
+moc_*.cpp
+
+Makefile
+
+ui_passworddialog.h
+tests/testgl/Makefile
+tests/testgl/testgl
+
+# ignore the browser profile/cache directory that gets created when running testgl on the mac.
+tests/testgl/testGL_profile
+
+# ignore a couple of symlinks that are used for local configuration on the mac
+QTDIR
+tests/testgl/libllqtwebkit.dylib
+
+qt-everywhere-opensource-*
+stage/
