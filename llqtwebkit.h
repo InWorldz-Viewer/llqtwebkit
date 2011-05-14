@@ -315,6 +315,7 @@ class LLQtWebKit
 		bool focusBrowser(int browser_window_id, bool focus_browser);			// set/remove focus to given browser window
 
 		// accessor/mutator for scheme that browser doesn't follow - e.g. secondlife.com://
+		#define KOKUA_LLQTWEBKIT_API_ADDNOFOLLOWSCHEME 1
 		void addNoFollowScheme(int browser_window_id, std::string scheme);
 		std::set<std::string> getNoFollowSchemeSet(int browser_window_id);
 
