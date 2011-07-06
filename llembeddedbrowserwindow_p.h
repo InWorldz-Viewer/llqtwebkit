@@ -175,7 +175,8 @@ class LLEmbeddedBrowserWindowPrivate
 		, mOpeningSelf(false)
     {
         mNoFollowSchemeSet.insert("secondlife");
-        mNoFollowSchemeSet.insert("hop");
+        mNoFollowSchemeSet.insert("inworldz");
+		mNoFollowSchemeSet.insert("hop");
     }
 
     ~LLEmbeddedBrowserWindowPrivate()
